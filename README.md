@@ -12,17 +12,19 @@
 
 **Engine:** Unity
 
+**Influences:** Inspired by the gathering and building mechanics of Animal Crossing
+
 ---
 
 ## 2. Game Concept
 
 **Backstory:**
 
-Deep into the future, humanity has taken to the stars and colonized many planets in space. You are a survivor and war hero of the recent Cosmic Rift Wars and, for your heroism, have been awarded a large plot of land on the newly colonized planet, Arcturius Prime, to farm and live out your days in peace.
+Deep into the future, humanity has taken to the stars and colonized many planets in space. You are a survivor and war hero of the recent Cosmic Rift Wars and, for your heroism, have been awarded a small island on the newly colonized planet, Arcturius Prime, to farm and live out your days in peace.
 
 **Gameplay Overview:**
 
-- **Farming and Building:** Collect materials, plant trees, farm, build structures, trade, and sell with the nearby village.
+- **Farming and Building:** Collect materials, plant trees, farm, fish, build structures, or trade and sell with the nearby village.
 
 **Minigames:**
   1. **2D Spaceship Shooter:** Fend off attacking alien spaceships.
@@ -30,7 +32,8 @@ Deep into the future, humanity has taken to the stars and colonized many planets
   3. **2.5D Side-Scrolling Platformer:** Navigate through obstacles to reach valuable minerals at the heart of the planet.
 
 **Progression and Rewards:**
-
+- Grow your homestead by building additional structures.
+- Store additinal food to be able to create additional children or catch additional pets.
 - Choose minigame difficulties for greater rewards.
 - Upgrade various aspects of your base game using resources and currency, making higher difficulties more manageable.
 
@@ -43,35 +46,55 @@ Deep into the future, humanity has taken to the stars and colonized many planets
 - **Resource Collection:** Gather materials from the environment.
 - **Building Structures:** Construct buildings to expand your farm and improve your living conditions.
 - **Planting Trees and Vegetation:** Plant trees and other vegetation to enhance your farm and produce resources.
+- **Food Storage:** Food can be gathered from vegetation, fish, or animals, and can be used for additional children or pets.
 - **Trading:** Sell goods and trade with villagers for currency and rare items.
 - **Items:**
   - **Tools:** Various tools for farming, mining, and building (e.g., shovel, axe, pickaxe).
   - **Crafting Materials:** Items used to craft structures and upgrades (e.g., stone, wood, metal).
   - **More coming soon...**
+- **Animals:**
+  - **Land Animals:** Various land animals will be scattered around the island, and can be caught and kept as pets, or used as food. Catching them uses a gun that shoots a projectile which "sucks up" the nearest animal (if within the radius)
+  - **Fish and Sea Creatures:** Available to catch to use as food or sell, catching them requires a small minigame.
+  - **Variety**: The amount of different animals and fish will depend on availability on the asset store. The prototype will be made with 5 each.
+- **Building Progress:** Player can sleep to speed up time and progress the buildings or vegetation.
 
+**Children and Pets:**
+
+- **Additional Children:** Additional children can be created if there is enough food in storage and space in the house.
+- **Additional Pets:** Caught animals can be turned into pets if there is enough food in storage and space in the house, or space in a fenced in yard.
+  
 **Minigames:**
 
 1. **2D Spaceship Shooter:**
    - **Objective:** Destroy incoming alien ships.
    - **Controls:** WASD keys for movement, mouse for shooting.
    - **Difficulty Levels:** Easy, Medium, Hard, Insane.
+   - **Access From Main Game:** Interact with spaceship (landed in the corner of the island)
 
 2. **3D Space Race:**
    - **Objective:** Complete the race through an asteroid field.
    - **Controls:** WASD for movement, Shift for boost, mouse-aim for direction.
    - **Difficulty Levels:** Easy, Medium, Hard, Insane.
+   - **Access From Main Game:** Interact with spaceship (landed in the corner of the island)
 
 3. **2.5D Side-Scrolling Platformer:**
    - **Objective:** Navigate through obstacles to reach the mineral storage.
    - **Controls:** WASD keys for movement, spacebar for jumping.
    - **Difficulty Levels:** Easy, Medium, Hard, Insane.
+   - **Access From Main Game:** Enter Cave on Island
+
+4. **Fishing**
+   - **Objective:** Get the cursor to the center of the screen, against various forces
+   - **Controls:** WASD keys
+   - **Difficulty Levels:** Difficulty will depend on type of fish and type of fishing gun
+   - **Access:** Shoot gun into water on island
 
 **Upgrades:**
 
 - **Spaceship Speed:** Increase the speed of your spaceship for the race.
 - **Firepower:** Enhance the firepower of your spaceship for the shooter.
 - **Run & Jump:** Improve running speed and jump height for the platformer.
-
+- **Animal Catching/Fishing Gun:** Improve radius of animal catching gun, and decrease difficulty of fishing by upgrading gun.
 ---
 
 ## 4. Art and Sound
@@ -80,6 +103,7 @@ Deep into the future, humanity has taken to the stars and colonized many planets
 
 - Pixel art
 - Low-poly (Space Race, Platformer)
+- Trees, rocks, and water given distinctly different colors than normal, to give an alien feel.
 
 **Sound Design:**
 
@@ -92,12 +116,13 @@ Deep into the future, humanity has taken to the stars and colonized many planets
 
 **Main Character:**
 
-- A war hero awarded land on a new planet to start a peaceful life.
+- A war hero awarded an island on a new planet to start a peaceful life.
 
 **Supporting Characters:**
 
-- **Villagers:** NPCs in the nearby village for trading and interactions.
+- **Trader:** NPC trader at the edge of the island for buying new goods, trading and selling.
 - **Enemies:** Alien attackers in the shooter minigame.
+- **Robot Assistant:** Trusty robot assistant to act as a guide for the game.
 
 ---
 
