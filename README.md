@@ -58,9 +58,8 @@ Deep into the future, humanity has taken to the stars and colonized many planets
   - **Variety**: The amount of different animals and fish will depend on availability on the asset store. The prototype will be made with 5 each.
 - **Building Progress:** Player can sleep to speed up time and progress the buildings or vegetation.
 
-**Children and Pets:**
+**Pets:**
 
-- **Additional Children:** Additional children can be created if there is enough food in storage and space in the house.
 - **Additional Pets:** Caught animals can be turned into pets if there is enough food in storage and space in the house, or space in a fenced in yard.
   
 **Minigames:**
