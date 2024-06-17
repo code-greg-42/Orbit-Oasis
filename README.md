@@ -132,6 +132,7 @@ Deep into the future, humanity has taken to the stars and colonized many planets
 - Further develop a compelling backstory.
 - Continue to develop game mechanics for minerals, trees, items, and other gameplay elements.
 - Deadline: Wednesday, June 19th
+- UPDATE: COMPLETED 6.17
 
 **Phase 2: Prototype Building/Simulation** (June 19th - July 3rd)
 - Develop the basic gameplay for farming, building structures, and inventory systems using primitive shapes.
