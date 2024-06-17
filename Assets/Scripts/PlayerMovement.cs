@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    private readonly float moveSpeed = 5.0f;
+    private readonly float moveSpeed = 7.0f;
 
     [Header("References")]
     [SerializeField] private Transform orientation;
