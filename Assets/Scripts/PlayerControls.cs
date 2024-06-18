@@ -11,20 +11,24 @@ public class PlayerControls : MonoBehaviour
     public float axeRange = 3.0f;
     public float pickupRange = 0.5f;
 
+    [Header("References")]
+    [SerializeField] private PlayerAxe axe;
+
     // Update is called once per frame
     void Update()
     {
         // change this later to incorporate the axe hitting the tree etc
         if (Input.GetKeyDown(axeKeybind))
         {
-            foreach (Collider collider in Physics.OverlapSphere(transform.position, axeRange))
-            {
-                if (collider.gameObject.TryGetComponent<FarmableObject>(out var farmableObject))
-                {
-                    farmableObject.FarmObject();
-                    return;
-                }
-            }
+            axe.SwingAxe();
+            //foreach (Collider collider in Physics.OverlapSphere(transform.position, axeRange))
+            //{
+            //    if (collider.gameObject.TryGetComponent<FarmableObject>(out var farmableObject))
+            //    {
+            //        farmableObject.FarmObject();
+            //        return;
+            //    }
+            //}
         }
 
         // CHANGE LATER TO INCLUDE OVERLAPSPHERENONALLOC WITH A PICKUP OBJECTS LAYER
