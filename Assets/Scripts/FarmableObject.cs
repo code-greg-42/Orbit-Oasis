@@ -7,10 +7,10 @@ public class FarmableObject : MonoBehaviour
     [Header("Material Settings")]
     [SerializeField] private GameObject materialPrefab;
     [SerializeField] private int farmableMaterialCount;
+    [SerializeField] private float dropForce;
+    [SerializeField] private float dropHeight;
 
     private List<GameObject> materials;
-    private readonly float dropForce = 2.0f;
-    private readonly float dropHeight = 1.0f;
 
     private void Awake()
     {
@@ -25,7 +25,7 @@ public class FarmableObject : MonoBehaviour
         for (int i = 0; i < farmableMaterialCount; i++)
         {
             material = Instantiate(materialPrefab);
-            Physics.IgnoreCollision(material.GetComponent<Collider>(), GetComponent<Collider>());
+            // Physics.IgnoreCollision(material.GetComponent<Collider>(), GetComponent<Collider>());
             material.SetActive(false);
             materials.Add(material);
         }

@@ -6,6 +6,7 @@ public class FarmableMaterial : MonoBehaviour
 {
     public void PickupMaterial()
     {
+        Debug.Log("Picking up material!");
         gameObject.SetActive(false);
     }
 }
