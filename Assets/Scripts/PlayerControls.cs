@@ -6,6 +6,7 @@ public class PlayerControls : MonoBehaviour
 {
     public KeyCode axeKeybind = KeyCode.E;
     public KeyCode pickupKeybind = KeyCode.F;
+    public KeyCode inventoryKeybind = KeyCode.B;
 
     // temporary solution
     public float axeRange = 3.0f;
@@ -43,6 +44,12 @@ public class PlayerControls : MonoBehaviour
                     farmableMaterial.PickupMaterial();
                 }
             }
+        }
+
+        // INVENTORY
+        if (Input.GetKeyDown(inventoryKeybind))
+        {
+            InventoryManager.Instance.ToggleInventoryMenu();
         }
     }
 }
