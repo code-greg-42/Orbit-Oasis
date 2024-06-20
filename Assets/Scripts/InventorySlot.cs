@@ -21,10 +21,19 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
     [SerializeField] private Image itemImage;
     [SerializeField] private GameObject selectedBackground;
     [SerializeField] private TMP_Text descriptionText;
+    [SerializeField] private GameObject buttonMenu;
+    [SerializeField] private Button dropOneButton;
+    [SerializeField] private Button dropAllButton;
 
     private bool isFull;
     private bool isPopulated;
     private bool isSelected;
+
+    private void Start()
+    {
+        dropOneButton.onClick.AddListener(DropOneItem);
+        dropAllButton.onClick.AddListener(DropAllItems);
+    }
 
     public void AddItem(string name, Sprite sprite, string description)
     {
@@ -57,6 +66,16 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
         }
     }
 
+    private void DropOneItem()
+    {
+        Debug.Log("One item dropped!");
+    }
+
+    private void DropAllItems()
+    {
+        Debug.Log("All items from the slot dropped!");
+    }
+
     public string GetItemName()
     {
         return itemName;
@@ -65,6 +84,9 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
     private void OnLeftClick()
     {
         InventoryManager.Instance.RemoveSlotSelection();
+
+        // reset button menu if active
+        buttonMenu.SetActive(false);
 
         // select slot if slot has an item
         if (isPopulated)
@@ -75,7 +97,11 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
 
     private void OnRightClick()
     {
-
+        // bring up button menu if slot has an item
+        if (isPopulated)
+        {
+            buttonMenu.SetActive(true);
+        }
     }
 
     public bool IsSlotFull()
@@ -117,7 +143,7 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
             OnLeftClick();
         }
 
-        if (eventData.button == PointerEventData.InputButton.Left)
+        if (eventData.button == PointerEventData.InputButton.Right)
         {
             OnRightClick();
         }
