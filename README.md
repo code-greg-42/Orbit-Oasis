@@ -29,11 +29,10 @@ Deep into the future, humanity has taken to the stars and colonized many planets
 **Minigames:**
   1. **2D Spaceship Shooter:** Fend off attacking alien spaceships.
   2. **3D Space Race:** Race your spaceship through an asteroid field, competing against other villagers' times.
-  3. **2.5D Side-Scrolling Platformer:** Navigate through obstacles to reach valuable minerals at the heart of the planet.
 
 **Progression and Rewards:**
 - Grow your homestead by building additional structures.
-- Store additinal food to be able to create additional children or catch additional pets.
+- Store additinal food to be able to catch additional pets.
 - Choose minigame difficulties for greater rewards.
 - Upgrade various aspects of your base game using resources and currency, making higher difficulties more manageable.
 
@@ -46,7 +45,7 @@ Deep into the future, humanity has taken to the stars and colonized many planets
 - **Resource Collection:** Gather materials from the environment.
 - **Building Structures:** Construct buildings to expand your farm and improve your living conditions.
 - **Planting Trees and Vegetation:** Plant trees and other vegetation to enhance your farm and produce resources.
-- **Food Storage:** Food can be gathered from vegetation, fish, or animals, and can be used for additional children or pets.
+- **Food Storage:** Food can be gathered from vegetation, fish, or animals, and can be used for feeding pets.
 - **Trading:** Sell goods and trade with villagers for currency and rare items.
 - **Items:**
   - **Tools:** Various tools for farming, mining, and building (e.g., shovel, axe, pickaxe).
@@ -55,7 +54,7 @@ Deep into the future, humanity has taken to the stars and colonized many planets
 - **Animals:**
   - **Land Animals:** Various land animals will be scattered around the island, and can be caught and kept as pets, or used as food. Catching them uses a gun that shoots a projectile which "sucks up" the nearest animal (if within the radius)
   - **Fish and Sea Creatures:** Available to catch to use as food or sell, catching them requires a small minigame.
-  - **Variety**: The amount of different animals and fish will depend on availability on the asset store. The prototype will be made with 5 each.
+  - **Variety**: The amount of different animals and fish will depend on availability on the asset store. The prototype will be made with 3 each.
 - **Building Progress:** Player can sleep to speed up time and progress the buildings or vegetation.
 
 **Pets:**
@@ -68,21 +67,15 @@ Deep into the future, humanity has taken to the stars and colonized many planets
    - **Objective:** Destroy incoming alien ships.
    - **Controls:** WASD keys for movement, mouse for shooting.
    - **Difficulty Levels:** Easy, Medium, Hard, Insane.
-   - **Access From Main Game:** Interact with spaceship (landed in the corner of the island)
+   - **Access From Main Game:** Interact with spaceship (landed on the corner of the island)
 
 2. **3D Space Race:**
    - **Objective:** Complete the race through an asteroid field.
    - **Controls:** WASD for movement, Shift for boost, mouse-aim for direction.
    - **Difficulty Levels:** Easy, Medium, Hard, Insane.
-   - **Access From Main Game:** Interact with spaceship (landed in the corner of the island)
+   - **Access From Main Game:** Interact with spaceship (landed on the corner of the island)
 
-3. **2.5D Side-Scrolling Platformer:**
-   - **Objective:** Navigate through obstacles to reach the mineral storage.
-   - **Controls:** WASD keys for movement, spacebar for jumping.
-   - **Difficulty Levels:** Easy, Medium, Hard, Insane.
-   - **Access From Main Game:** Enter Cave on Island
-
-4. **Fishing**
+3. **Fishing**
    - **Objective:** Get the cursor to the center of the screen, against various forces
    - **Controls:** WASD keys
    - **Difficulty Levels:** Difficulty will depend on type of fish and type of fishing gun
@@ -92,8 +85,8 @@ Deep into the future, humanity has taken to the stars and colonized many planets
 
 - **Spaceship Speed:** Increase the speed of your spaceship for the race.
 - **Firepower:** Enhance the firepower of your spaceship for the shooter.
-- **Run & Jump:** Improve running speed and jump height for the platformer.
 - **Animal Catching/Fishing Gun:** Improve radius of animal catching gun, and decrease difficulty of fishing by upgrading gun.
+
 ---
 
 ## 4. Art and Sound
@@ -101,7 +94,7 @@ Deep into the future, humanity has taken to the stars and colonized many planets
 **Art Style:**
 
 - Pixel art
-- Low-poly (Space Race, Platformer)
+- Low-poly
 - Trees, rocks, and water given distinctly different colors than normal, to give an alien feel.
 
 **Sound Design:**
@@ -134,43 +127,39 @@ Deep into the future, humanity has taken to the stars and colonized many planets
 - Deadline: Wednesday, June 19th
 - UPDATE: COMPLETED 6.17
 
-**Phase 2: Prototype Building/Simulation** (June 19th - July 3rd)
+**Phase 2: Prototype Building/Simulation** (June 19th - July 10th)
 - Develop the basic gameplay for farming, building structures, and inventory systems using primitive shapes.
-- Deadline: Wednesday, July 3rd
-
-**Phase 3: Prototype 2D Spaceship Shooter** (July 3rd - July 10th)
-- Implement the core mechanics of the 2D spaceship shooter using primitive shapes.
 - Deadline: Wednesday, July 10th
 
-**Phase 4: Prototype 3D Space Race** (July 10th - July 24th)
+**Phase 3: Prototype 2D Spaceship Shooter** (July 10th - July 17th)
+- Implement the core mechanics of the 2D spaceship shooter using primitive shapes.
+- Deadline: Wednesday, July 17th
+
+**Phase 4: Prototype 3D Space Race** (July 17th - July 24th)
 - Create the core gameplay for the 3D space race using primitive shapes.
 - Deadline: Wednesday, July 24th
 
-**Phase 5: Prototype 2.5D Platformer** (July 24th - July 31st)
-- Develop the main mechanics for the 2.5D side-scrolling platformer using primitive shapes.
+**Phase 5: Integrate Rewards, Upgrading, Difficulties, and Dialogue** (July 24th - July 31st)
+- Finalize the rewards system, upgrading mechanics, difficulty settings, and dialogue across all prototypes.
 - Deadline: Wednesday, July 31st
 
-**Phase 6: Integrate Rewards, Upgrading, and Difficulties** (July 31st - August 14th)
-- Finalize the rewards system, upgrading mechanics, and difficulty settings across all prototypes.
-- Deadline: Wednesday, August 14th
-
-**Phase 7: UI/UX Design and Integration** (August 14th - August 21st)
-- Design and integrate user interface elements and improve user experience.
+**Phase 6: Models and Animations** (July 31st - August 21st)
+- Integrate pixel art and low poly models and animations for the game.
 - Deadline: Wednesday, August 21st
 
-**Phase 8: Models and Animations** (August 21st - September 4th)
-- Create and integrate pixel art models and animations for the game.
+**Phase 7: UI/UX Design and Integration** (August 21st - September 4th)
+- Design and integrate user interface elements and improve user experience.
 - Deadline: Wednesday, September 4th
 
-**Phase 9: Background Music, Sound Effects, and Particle Effects** (September 4th - September 11th)
+**Phase 8: Background Music, Sound Effects, and Particle Effects** (September 4th - September 11th)
 - Add and integrate background music, sound effects, and particle effects into the game.
 - Deadline: Wednesday, September 11th
 
-**Phase 10: Testing and Bug Fixing** (September 11th - September 16th)
+**Phase 9: Testing and Bug Fixing** (September 11th - September 16th)
 - Conduct thorough self-testing to ensure the game runs smoothly and is free of major bugs.
 - Deadline: Monday, September 16th
 
-**Phase 11: Release** (September 17th)
+**Phase 10: Release** (September 17th)
 - Prepare and release the game on Steam or itch.io.
 - Allow friends and family to play and provide feedback.
 - Deadline: Tuesday, September 17th
