@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    private readonly float moveSpeed = 7.0f;
+    // movement speed variables
+    private float moveSpeed = 7.0f;
+    private readonly float baseSpeed = 7.0f;
+    private readonly float boostMultiplier = 1.5f;
 
     [Header("References")]
     [SerializeField] private Transform orientation;
@@ -36,6 +39,16 @@ public class PlayerMovement : MonoBehaviour
         // get user input
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
+
+        // check for speed boost
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            moveSpeed = baseSpeed * boostMultiplier;
+        }
+        else
+        {
+            moveSpeed = baseSpeed;
+        }
     }
 
     private void MovePlayer()
