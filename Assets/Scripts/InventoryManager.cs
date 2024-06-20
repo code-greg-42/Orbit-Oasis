@@ -24,13 +24,35 @@ public class InventoryManager : MonoBehaviour
 
     public void AddItem(string name, Sprite itemSprite, string description)
     {
+        // index for first open slot
+        int emptySlotIndex = -1;
+
+        // loop through all inventory slots
         for (int i = 0; i < inventorySlots.Length; i++)
         {
-            if (!inventorySlots[i].IsSlotFull())
+            // check if slot already contains the item and is not full
+            if (inventorySlots[i].IsSlotPopulated() && !inventorySlots[i].IsSlotFull() && inventorySlots[i].GetItemName() == name)
             {
-                inventorySlots[i].AddItem(name, itemSprite, description);
+                inventorySlots[i].AddAdditionalItem();
                 return;
             }
+
+            // track the first empty slot
+            if (!inventorySlots[i].IsSlotPopulated() && emptySlotIndex == -1)
+            {
+                emptySlotIndex = i;
+            }
+        }
+
+        // if no existing stack was found, add the item to the first available empty slot
+        if (emptySlotIndex != -1)
+        {
+            inventorySlots[emptySlotIndex].AddItem(name, itemSprite, description);
+        }
+        else
+        {
+            // add full inventory logic here later
+            Debug.Log("No inventory slots available");
         }
     }
 

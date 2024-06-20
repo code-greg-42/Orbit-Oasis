@@ -11,6 +11,10 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
     private string itemName;
     private string itemDescription;
     private Sprite itemSprite;
+    private int itemQuantity;
+
+    // max allowed in slot
+    private readonly int maxQuantity = 5;
 
     // inventory slot
     [SerializeField] private TMP_Text quantityText;
@@ -19,27 +23,51 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
     [SerializeField] private TMP_Text descriptionText;
 
     private bool isFull;
+    private bool isPopulated;
     private bool isSelected;
 
     public void AddItem(string name, Sprite sprite, string description)
     {
+        // set name, description, and image
         itemName = name;
         itemDescription = description;
         itemSprite = sprite;
 
-        isFull = true;
+        // set item slot as populated
+        isPopulated = true;
 
-        quantityText.text = "1";
+        // increase item quantity
+        itemQuantity++;
+
+        // set quantity text and image and enable quantity text
+        quantityText.text = itemQuantity.ToString();
         quantityText.enabled = true;
-
         itemImage.sprite = itemSprite;
+    }
+
+    public void AddAdditionalItem()
+    {
+        itemQuantity++;
+        quantityText.text = itemQuantity.ToString();
+
+        // set slot to full if max quantity is reached
+        if (itemQuantity >= maxQuantity)
+        {
+            isFull = true;
+        }
+    }
+
+    public string GetItemName()
+    {
+        return itemName;
     }
 
     private void OnLeftClick()
     {
         InventoryManager.Instance.RemoveSlotSelection();
 
-        if (isFull)
+        // select slot if slot has an item
+        if (isPopulated)
         {
             SelectSlot();
         }
@@ -53,6 +81,11 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
     public bool IsSlotFull()
     {
         return isFull;
+    }
+
+    public bool IsSlotPopulated()
+    {
+        return isPopulated;
     }
 
     public bool IsSlotSelected()
@@ -76,6 +109,7 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
         descriptionText.text = string.Empty;
     }
 
+    // required for IPointerClick
     public void OnPointerClick(PointerEventData eventData)
     {
         if (eventData.button == PointerEventData.InputButton.Left)
