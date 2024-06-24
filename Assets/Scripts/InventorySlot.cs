@@ -28,11 +28,18 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
     private bool isFull;
     private bool isPopulated;
     private bool isSelected;
+    private bool isMenuActivated;
 
     private void Start()
     {
         dropOneButton.onClick.AddListener(DropOneItem);
         dropAllButton.onClick.AddListener(DropAllItems);
+    }
+
+    private void ActivateSlotMenu()
+    {
+        buttonMenu.SetActive(true);
+        isMenuActivated = true;
     }
 
     public void AddItem(string name, Sprite sprite, string description)
@@ -66,6 +73,12 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
         }
     }
 
+    public void DeactivateSlotMenu()
+    {
+        buttonMenu.SetActive(false);
+        isMenuActivated = false;
+    }
+
     private void DropOneItem()
     {
         Debug.Log("One item dropped!");
@@ -83,10 +96,8 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
 
     private void OnLeftClick()
     {
+        // unselect current selection
         InventoryManager.Instance.RemoveSlotSelection();
-
-        // reset button menu if active
-        buttonMenu.SetActive(false);
 
         // select slot if slot has an item
         if (isPopulated)
@@ -97,11 +108,20 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
 
     private void OnRightClick()
     {
-        // bring up button menu if slot has an item
+        // unselect current selection
+        InventoryManager.Instance.RemoveSlotSelection();
+
+        // bring up button menu and select slot if slot has an item
         if (isPopulated)
         {
-            buttonMenu.SetActive(true);
+            ActivateSlotMenu();
+            SelectSlot();
         }
+    }
+
+    public bool IsSlotMenuActivated()
+    {
+        return isMenuActivated;
     }
 
     public bool IsSlotFull()

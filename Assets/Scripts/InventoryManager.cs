@@ -63,11 +63,21 @@ public class InventoryManager : MonoBehaviour
 
     public void RemoveSlotSelection()
     {
+        // loop through slots
         for (int i = 0; i < inventorySlots.Length; i++)
         {
-            if (inventorySlots[i].IsSlotSelected())
+            // if a slot is selected or has an active menu, deselect it or deactivate the menu, or both
+            if (inventorySlots[i].IsSlotSelected() || inventorySlots[i].IsSlotMenuActivated())
             {
-                inventorySlots[i].DeselectSlot();
+                if (inventorySlots[i].IsSlotSelected())
+                {
+                    inventorySlots[i].DeselectSlot();
+                }
+                
+                if (inventorySlots[i].IsSlotMenuActivated())
+                {
+                    inventorySlots[i].DeactivateSlotMenu();
+                }
             }
         }
     }
