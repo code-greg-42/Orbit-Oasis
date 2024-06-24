@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class InventorySlot : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IEndDragHandler, IDragHandler
+public class InventorySlot : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IEndDragHandler, IDragHandler, IDropHandler
 {
     // item data
     private string itemName;
@@ -16,15 +16,16 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IBeginDragHand
     // max allowed in slot
     private readonly int maxQuantity = 5;
 
-    // inventory slot
+    [Header("References")]
     [SerializeField] private TMP_Text quantityText;
     [SerializeField] private Image itemImage;
+    [SerializeField] private Sprite emptySlotImage;
     [SerializeField] private GameObject selectedBackground;
     [SerializeField] private TMP_Text descriptionText;
     [SerializeField] private GameObject buttonMenu;
     [SerializeField] private Button dropOneButton;
     [SerializeField] private Button dropAllButton;
-
+    
     private bool isFull;
     private bool isPopulated;
     private bool isSelected;
@@ -155,6 +156,33 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IBeginDragHand
         descriptionText.text = string.Empty;
     }
 
+    private void SwapItems(InventorySlot originalSlot)
+    {
+        Debug.Log($"Swapping items: {itemName} with {originalSlot.itemName}");
+
+        // swap item data
+        (itemName, originalSlot.itemName) = (originalSlot.itemName, itemName);
+        (itemDescription, originalSlot.itemDescription) = (originalSlot.itemDescription, itemDescription);
+        (itemSprite, originalSlot.itemSprite) = (originalSlot.itemSprite, itemSprite);
+        (itemQuantity, originalSlot.itemQuantity) = (originalSlot.itemQuantity, itemQuantity);
+
+        // update ui
+        itemImage.sprite = itemSprite != null ? itemSprite : emptySlotImage;
+        originalSlot.itemImage.sprite = originalSlot.itemSprite != null ? originalSlot.itemSprite : emptySlotImage;
+
+        quantityText.text = itemQuantity.ToString();
+        quantityText.enabled = itemQuantity > 0; // enable if quantity > 0
+
+        originalSlot.quantityText.text = originalSlot.itemQuantity.ToString();
+        originalSlot.quantityText.enabled = originalSlot.itemQuantity > 0; // enable if quantity > 0
+
+        // update bools
+        isPopulated = itemQuantity > 0;
+        isFull = itemQuantity >= maxQuantity;
+        originalSlot.isPopulated = originalSlot.itemQuantity > 0;
+        originalSlot.isFull = originalSlot.itemQuantity >= originalSlot.maxQuantity;
+    }
+
     // ------- required interface methods --------
     public void OnPointerClick(PointerEventData eventData)
     {
@@ -174,6 +202,7 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IBeginDragHand
         if (isPopulated)
         {
             InventoryManager.Instance.SetDragImage(itemSprite, Input.mousePosition);
+            InventoryManager.Instance.SetDragSlot(this);
             InventoryManager.Instance.SetIsDragging();
         }
     }
@@ -192,6 +221,15 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IBeginDragHand
         {
             InventoryManager.Instance.SetIsDragging(false);
             InventoryManager.Instance.DeactivateDragImage();
+            InventoryManager.Instance.ResetDragSlot();
+        }
+    }
+
+    public void OnDrop(PointerEventData eventData)
+    {
+        if (InventoryManager.Instance.GetDragSlot() != null)
+        {
+            SwapItems(InventoryManager.Instance.GetDragSlot());
         }
     }
 }

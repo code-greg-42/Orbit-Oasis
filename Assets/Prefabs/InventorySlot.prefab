@@ -483,6 +483,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   quantityText: {fileID: 2102499399710795633}
   itemImage: {fileID: 1171538472352039447}
+  emptySlotImage: {fileID: 10917, guid: 0000000000000000f000000000000000, type: 0}
   selectedBackground: {fileID: 6799050104141952968}
   descriptionText: {fileID: 0}
   buttonMenu: {fileID: 6726003234906962189}

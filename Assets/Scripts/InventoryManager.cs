@@ -13,6 +13,7 @@ public class InventoryManager : MonoBehaviour
 
     private bool menuActivated;
     private bool isDragging;
+    private InventorySlot dragSlot;
 
     private void Awake()
     {
@@ -116,6 +117,28 @@ public class InventoryManager : MonoBehaviour
     public bool GetIsDragging()
     {
         return isDragging;
+    }
+
+    public void SetDragSlot(InventorySlot slot)
+    {
+        Debug.Log("setting drag slot");
+        if (!isDragging)
+        {
+            dragSlot = slot;
+        }
+    }
+
+    public void ResetDragSlot()
+    {
+        if (dragSlot != null)
+        {
+            dragSlot = null;
+        }
+    }
+
+    public InventorySlot GetDragSlot()
+    {
+        return dragSlot;
     }
 
     public void DeactivateDragImage()
