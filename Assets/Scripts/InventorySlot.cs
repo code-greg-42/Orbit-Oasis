@@ -12,6 +12,7 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IBeginDragHand
     private string itemDescription;
     private Sprite itemSprite;
     private int itemQuantity;
+    private GameObject itemPrefab;
 
     // max allowed in slot
     private readonly int maxQuantity = 5;
@@ -43,12 +44,13 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IBeginDragHand
         isMenuActivated = true;
     }
 
-    public void AddItem(string name, Sprite sprite, string description)
+    public void AddItem(string name, Sprite sprite, string description, GameObject prefab)
     {
-        // set name, description, and image
+        // set name, description, image, and prefab
         itemName = name;
         itemDescription = description;
         itemSprite = sprite;
+        itemPrefab = prefab;
 
         // set item slot as populated
         isPopulated = true;
@@ -80,9 +82,15 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IBeginDragHand
         isMenuActivated = false;
     }
 
+    // CHANGE LATER TO INCLUDE INVENTORY UPDATES
+
+    // CHANGE THIS METHOD LATER USING A GAME MANAGER SCRIPT WITH A REFERENCE TO THE PLAYER
     private void DropOneItem()
     {
         Debug.Log("One item dropped!");
+        GameObject player = GameObject.Find("PlayerObj");
+        GameObject droppedItem = Instantiate(itemPrefab, player.transform.position, Quaternion.identity);
+        droppedItem.SetActive(true);
     }
 
     private void DropAllItems()
@@ -156,6 +164,7 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IBeginDragHand
         descriptionText.text = string.Empty;
     }
 
+    // ????? UPDATE THIS LATER WITH A SEPARATE CLASS FOR ITEM DATA ?????
     private void SwapItems(InventorySlot originalSlot)
     {
         Debug.Log($"Swapping items: {itemName} with {originalSlot.itemName}");
@@ -165,6 +174,7 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IBeginDragHand
         (itemDescription, originalSlot.itemDescription) = (originalSlot.itemDescription, itemDescription);
         (itemSprite, originalSlot.itemSprite) = (originalSlot.itemSprite, itemSprite);
         (itemQuantity, originalSlot.itemQuantity) = (originalSlot.itemQuantity, itemQuantity);
+        (itemPrefab, originalSlot.itemPrefab) = (originalSlot.itemPrefab, itemPrefab);
 
         // update ui
         itemImage.sprite = itemSprite != null ? itemSprite : emptySlotImage;

@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 7604442617982505678}
   - component: {fileID: 4052166426336339440}
   - component: {fileID: 1651176624605970005}
-  - component: {fileID: 1336289077326504273}
   - component: {fileID: 4335100939259620627}
+  - component: {fileID: 1336289077326504273}
   - component: {fileID: 6544196308716839980}
   m_Layer: 0
   m_Name: Wood
@@ -86,6 +86,21 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &4335100939259620627
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7710616936816269101}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3c4313d5fbd085488e3f5b5d17a4cc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  materialImage: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
+  materialName: Wood
+  materialDescription: Material used for building. Farmed from trees.
 --- !u!65 &1336289077326504273
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -107,21 +122,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &4335100939259620627
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7710616936816269101}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c3c4313d5fbd085488e3f5b5d17a4cc6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  materialImage: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  materialName: Wood
-  materialDescription: Material used for building. Farmed from trees.
 --- !u!54 &6544196308716839980
 Rigidbody:
   m_ObjectHideFlags: 0

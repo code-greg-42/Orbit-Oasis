@@ -26,7 +26,7 @@ public class InventoryManager : MonoBehaviour
         menuActivated = !menuActivated;
     }
 
-    public void AddItem(string name, Sprite itemSprite, string description)
+    public void AddItem(string name, Sprite itemSprite, string description, GameObject itemPrefab)
     {
         // index for first open slot
         int emptySlotIndex = -1;
@@ -51,7 +51,7 @@ public class InventoryManager : MonoBehaviour
         // if no existing stack was found, add the item to the first available empty slot
         if (emptySlotIndex != -1)
         {
-            inventorySlots[emptySlotIndex].AddItem(name, itemSprite, description);
+            inventorySlots[emptySlotIndex].AddItem(name, itemSprite, description, itemPrefab);
         }
         else
         {
