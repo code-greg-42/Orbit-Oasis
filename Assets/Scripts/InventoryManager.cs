@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class InventoryManager : MonoBehaviour
 {
@@ -8,8 +9,10 @@ public class InventoryManager : MonoBehaviour
 
     [SerializeField] private GameObject inventoryMenu;
     [SerializeField] private InventorySlot[] inventorySlots;
+    [SerializeField] private Image dragImage; // image used for drag and drop functionality
 
     private bool menuActivated;
+    private bool isDragging;
 
     private void Awake()
     {
@@ -80,5 +83,43 @@ public class InventoryManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void SetDragImage(Sprite imageSprite, Vector3 mousePosition)
+    {
+        if (!isDragging)
+        {
+            dragImage.sprite = imageSprite;
+
+            Color seeThrough = Color.white;
+            seeThrough.a = 0.5f;
+            dragImage.color = seeThrough;
+
+            dragImage.transform.position = mousePosition;
+            dragImage.gameObject.SetActive(true);
+        }
+    }
+
+    public void SetDragPosition(Vector3 mousePosition)
+    {
+        if (isDragging)
+        {
+            dragImage.transform.position = mousePosition;
+        }
+    }
+
+    public void SetIsDragging(bool dragging = true)
+    {
+        isDragging = dragging;
+    }
+
+    public bool GetIsDragging()
+    {
+        return isDragging;
+    }
+
+    public void DeactivateDragImage()
+    {
+        dragImage.gameObject.SetActive(false);
     }
 }

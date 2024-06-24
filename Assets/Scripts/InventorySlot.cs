@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class InventorySlot : MonoBehaviour, IPointerClickHandler
+public class InventorySlot : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IEndDragHandler, IDragHandler
 {
     // item data
     private string itemName;
@@ -155,7 +155,7 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
         descriptionText.text = string.Empty;
     }
 
-    // required for IPointerClick
+    // ------- required interface methods --------
     public void OnPointerClick(PointerEventData eventData)
     {
         if (eventData.button == PointerEventData.InputButton.Left)
@@ -166,6 +166,32 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
         if (eventData.button == PointerEventData.InputButton.Right)
         {
             OnRightClick();
+        }
+    }
+
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        if (isPopulated)
+        {
+            InventoryManager.Instance.SetDragImage(itemSprite, Input.mousePosition);
+            InventoryManager.Instance.SetIsDragging();
+        }
+    }
+
+    public void OnDrag(PointerEventData eventData)
+    {
+        if (InventoryManager.Instance.GetIsDragging())
+        {
+            InventoryManager.Instance.SetDragPosition(Input.mousePosition);
+        }
+    }
+
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        if (InventoryManager.Instance.GetIsDragging())
+        {
+            InventoryManager.Instance.SetIsDragging(false);
+            InventoryManager.Instance.DeactivateDragImage();
         }
     }
 }
