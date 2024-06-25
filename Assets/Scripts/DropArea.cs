@@ -10,6 +10,7 @@ public class DropArea : MonoBehaviour, IDropHandler
         if (InventoryManager.Instance.GetIsDragging())
         {
             Debug.Log("Dropping item!");
+            InventoryManager.Instance.DropDraggedItem();
         }
     }
 }

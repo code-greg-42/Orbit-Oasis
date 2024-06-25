@@ -103,6 +103,11 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IBeginDragHand
         return itemName;
     }
 
+    public GameObject GetItemPrefab()
+    {
+        return itemPrefab;
+    }
+
     private void OnLeftClick()
     {
         // unselect current selection

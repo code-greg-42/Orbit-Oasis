@@ -10,6 +10,7 @@ public class InventoryManager : MonoBehaviour
     [SerializeField] private GameObject inventoryMenu;
     [SerializeField] private InventorySlot[] inventorySlots;
     [SerializeField] private Image dragImage; // image used for drag and drop functionality
+    [SerializeField] private Transform playerTransform;
 
     private bool menuActivated;
     private bool isDragging;
@@ -144,5 +145,18 @@ public class InventoryManager : MonoBehaviour
     public void DeactivateDragImage()
     {
         dragImage.gameObject.SetActive(false);
+    }
+
+    public void DropDraggedItem()
+    {
+        if (dragSlot != null)
+        {
+            // instantiate item in game world near player
+            Vector3 dropPos = playerTransform.position + playerTransform.forward * 2;
+            GameObject droppedItem = Instantiate(dragSlot.GetItemPrefab(), dropPos, Quaternion.identity);
+            droppedItem.SetActive(true);
+
+            // add removal of item from item slot later
+        }
     }
 }
