@@ -176,13 +176,13 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IBeginDragHand
         (itemQuantity, originalSlot.itemQuantity) = (originalSlot.itemQuantity, itemQuantity);
         (itemPrefab, originalSlot.itemPrefab) = (originalSlot.itemPrefab, itemPrefab);
 
-        // update ui
+        // update ui image
         itemImage.sprite = itemSprite != null ? itemSprite : emptySlotImage;
         originalSlot.itemImage.sprite = originalSlot.itemSprite != null ? originalSlot.itemSprite : emptySlotImage;
 
+        // update quantity text
         quantityText.text = itemQuantity.ToString();
         quantityText.enabled = itemQuantity > 0; // enable if quantity > 0
-
         originalSlot.quantityText.text = originalSlot.itemQuantity.ToString();
         originalSlot.quantityText.enabled = originalSlot.itemQuantity > 0; // enable if quantity > 0
 
@@ -191,6 +191,13 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IBeginDragHand
         isFull = itemQuantity >= maxQuantity;
         originalSlot.isPopulated = originalSlot.itemQuantity > 0;
         originalSlot.isFull = originalSlot.itemQuantity >= originalSlot.maxQuantity;
+
+        // deselect original slot if selected and select new slot
+        if (originalSlot.IsSlotSelected())
+        {
+            originalSlot.DeselectSlot();
+            SelectSlot();
+        }
     }
 
     // ------- required interface methods --------
