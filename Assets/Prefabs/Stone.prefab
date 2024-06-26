@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3063864238489837098}
   - component: {fileID: 8478319077696433261}
   - component: {fileID: 8414674291527379411}
-  - component: {fileID: 8987754081767244674}
+  - component: {fileID: 1608427112759921920}
   - component: {fileID: 5875436577496752169}
   - component: {fileID: 3287625765816620367}
   m_Layer: 0
@@ -86,7 +86,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &8987754081767244674
+--- !u!114 &1608427112759921920
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -95,12 +95,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 430345377458627022}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c3c4313d5fbd085488e3f5b5d17a4cc6, type: 3}
+  m_Script: {fileID: 11500000, guid: cbb7480af2b2ec74398bd45178b27b11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  materialImage: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  materialName: Stone
-  materialDescription: Material used for building. Farmed from rocks.
+  itemName: Stone
+  description: A material used for building. Can be farmed from rocks.
+  image: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  prefab: {fileID: 430345377458627022}
+  maxStackQuantity: 20
+  quantity: 1
 --- !u!54 &5875436577496752169
 Rigidbody:
   m_ObjectHideFlags: 0

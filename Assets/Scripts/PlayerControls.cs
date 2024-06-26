@@ -4,44 +4,33 @@ using UnityEngine;
 
 public class PlayerControls : MonoBehaviour
 {
+    [Header("Keybinds")]
     public KeyCode axeKeybind = KeyCode.E;
     public KeyCode pickupKeybind = KeyCode.F;
     public KeyCode inventoryKeybind = KeyCode.B;
 
-    // temporary solution
-    public float axeRange = 3.0f;
-    public float pickupRange = 0.5f;
+    private readonly float pickupRange = 1.5f;
 
     [Header("References")]
     [SerializeField] private PlayerAxe axe;
 
-    // Update is called once per frame
     void Update()
     {
-        // change this later to incorporate the axe hitting the tree etc
         if (Input.GetKeyDown(axeKeybind))
         {
             axe.SwingAxe();
-            //foreach (Collider collider in Physics.OverlapSphere(transform.position, axeRange))
-            //{
-            //    if (collider.gameObject.TryGetComponent<FarmableObject>(out var farmableObject))
-            //    {
-            //        farmableObject.FarmObject();
-            //        return;
-            //    }
-            //}
         }
 
-        // CHANGE LATER TO INCLUDE OVERLAPSPHERENONALLOC WITH A PICKUP OBJECTS LAYER
-
-        // change this later to include inventory
+        // CHANGE LATER TO INCLUDE OVERLAPSPHERENONALLOC WITH AN ITEMS LAYER
         if (Input.GetKeyDown(pickupKeybind))
         {
+            Debug.Log("Pickup keybind pressed.");
             foreach (Collider collider in Physics.OverlapSphere(transform.position, pickupRange))
             {
-                if (collider.gameObject.TryGetComponent<FarmableMaterial>(out var farmableMaterial))
+                if (collider.gameObject.TryGetComponent<Item>(out var item))
                 {
-                    farmableMaterial.PickupMaterial();
+                    Debug.Log("trying to pickup item.");
+                    item.PickupItem();
                 }
             }
         }

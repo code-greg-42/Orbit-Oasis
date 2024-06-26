@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 7604442617982505678}
   - component: {fileID: 4052166426336339440}
   - component: {fileID: 1651176624605970005}
-  - component: {fileID: 4335100939259620627}
-  - component: {fileID: 1336289077326504273}
+  - component: {fileID: -5507403532353054358}
   - component: {fileID: 6544196308716839980}
+  - component: {fileID: 1336289077326504273}
   m_Layer: 0
   m_Name: Wood
   m_TagString: Untagged
@@ -86,7 +86,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &4335100939259620627
+--- !u!114 &-5507403532353054358
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -95,33 +95,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 7710616936816269101}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c3c4313d5fbd085488e3f5b5d17a4cc6, type: 3}
+  m_Script: {fileID: 11500000, guid: cbb7480af2b2ec74398bd45178b27b11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  materialImage: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  materialName: Wood
-  materialDescription: Material used for building. Farmed from trees.
---- !u!65 &1336289077326504273
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7710616936816269101}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  itemName: Wood
+  description: A material used for building. Can be farmed from trees.
+  image: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  prefab: {fileID: 7710616936816269101}
+  maxStackQuantity: 20
+  quantity: 1
 --- !u!54 &6544196308716839980
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -149,3 +131,24 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!65 &1336289077326504273
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7710616936816269101}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
