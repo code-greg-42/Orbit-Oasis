@@ -24,6 +24,8 @@ public class Item : MonoBehaviour
         private set => quantity = value;
     }
 
+    public bool IsFullStack => Quantity >= MaxStackQuantity;
+
     public void AddQuantity(int amount)
     {
         Quantity += amount;
@@ -31,7 +33,18 @@ public class Item : MonoBehaviour
 
     public void PickupItem()
     {
-        InventoryManager.Instance.AddItem(this);
-        gameObject.SetActive(false);
+        // add item to inventory
+        bool addedToNewSlot = InventoryManager.Instance.AddItem(this);
+
+        // deactivate if a new stack was made, otherwise destroy game object
+        if (addedToNewSlot)
+        {
+            transform.SetParent(InventoryManager.Instance.PlayerInventory.transform);
+            gameObject.SetActive(false);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 }

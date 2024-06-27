@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class InventoryManager : MonoBehaviour
 {
@@ -11,6 +12,9 @@ public class InventoryManager : MonoBehaviour
     [SerializeField] private InventorySlot[] inventorySlots;
     [SerializeField] private Image dragImage; // image used for drag and drop functionality
     [SerializeField] private Transform playerTransform;
+    [SerializeField] private GameObject playerInventory;
+
+    public GameObject PlayerInventory => playerInventory;
 
     private bool menuActivated;
     private bool isDragging;
@@ -61,7 +65,7 @@ public class InventoryManager : MonoBehaviour
     //    }
     //}
 
-    public void AddItem(Item item)
+    public bool AddItem(Item item)
     {
         // index for first open slot
         int emptySlotIndex = -1;
@@ -70,14 +74,14 @@ public class InventoryManager : MonoBehaviour
         for (int i = 0; i < inventorySlots.Length; i++)
         {
             // check if slot already contains the item and is not full
-            if (inventorySlots[i].IsSlotPopulated() && !inventorySlots[i].IsSlotFull() && inventorySlots[i].SlotItem.ItemName == item.ItemName)
+            if (inventorySlots[i].SlotItem != null && !inventorySlots[i].SlotItem.IsFullStack && inventorySlots[i].SlotItem.ItemName == item.ItemName)
             {
                 inventorySlots[i].AddAdditionalItem();
-                return;
+                return false;
             }
 
             // track the first empty slot
-            if (!inventorySlots[i].IsSlotPopulated() && emptySlotIndex == -1)
+            if (inventorySlots[i].SlotItem == null && emptySlotIndex == -1)
             {
                 emptySlotIndex = i;
             }
@@ -87,17 +91,16 @@ public class InventoryManager : MonoBehaviour
         if (emptySlotIndex != -1)
         {
             inventorySlots[emptySlotIndex].AddItem(item);
+            return true;
         }
         else
         {
             // add full inventory logic here later
             Debug.Log("No inventory slots available");
-        }
-    }
 
-    public bool IsMenuActive()
-    {
-        return menuActivated;
+            // change this method to (??? return int and then either destroys object, deactivates object, or just throws object into the air and does nothing)
+            return false;
+        }
     }
 
     public void RemoveSlotSelection()
@@ -105,7 +108,7 @@ public class InventoryManager : MonoBehaviour
         // loop through slots
         for (int i = 0; i < inventorySlots.Length; i++)
         {
-            if (inventorySlots[i].IsSlotSelected())
+            if (inventorySlots[i].IsSelected)
             {
                 inventorySlots[i].DeselectSlot();
                 return;
