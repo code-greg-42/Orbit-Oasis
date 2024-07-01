@@ -54,7 +54,7 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IBeginDragHand
         descriptionText.text = string.Empty;
     }
 
-    private void SwapItems(InventorySlot originalSlot)
+    public void SwapItems(InventorySlot originalSlot)
     {
         (this.SlotItem, originalSlot.SlotItem) = (originalSlot.SlotItem, this.SlotItem);
 

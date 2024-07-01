@@ -36,6 +36,7 @@ public class InventoryManager : MonoBehaviour
     {
         // index for first open slot
         int emptySlotIndex = -1;
+        int stackSlotIndex = -1;
 
         // loop through all inventory slots
         for (int i = 0; i < inventorySlots.Length; i++)
@@ -43,14 +44,19 @@ public class InventoryManager : MonoBehaviour
             // check if slot already contains the item and is not full
             if (inventorySlots[i].SlotItem != null && !inventorySlots[i].SlotItem.IsFullStack && inventorySlots[i].SlotItem.ItemName == item.ItemName)
             {
+                stackSlotIndex = i;
+
+                // add additional to stack and get remainder
                 int remainder = inventorySlots[i].AddAdditionalItem(item.Quantity);
 
+                // if remainder, set item quantity to remainder to add to new slot
                 if (remainder > 0)
                 {
                     item.SetQuantity(remainder);
                 }
                 else
                 {
+                    // if no remainder, return false as no additional gameobject is needed
                     return false;
                 }
             }
@@ -62,10 +68,16 @@ public class InventoryManager : MonoBehaviour
             }
         }
 
-        // if no existing stack was found, add the item to the first available empty slot
+        // if no existing stack was found or a remainder was found, add the item to the first available empty slot
         if (emptySlotIndex != -1)
         {
             inventorySlots[emptySlotIndex].AddItem(item);
+
+            // swap slots to keep the highest stack on the left
+            if (emptySlotIndex < stackSlotIndex)
+            {
+                inventorySlots[emptySlotIndex].SwapItems(inventorySlots[stackSlotIndex]);
+            }
             return true;
         }
         else
