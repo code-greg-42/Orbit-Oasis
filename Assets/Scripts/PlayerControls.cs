@@ -16,6 +16,7 @@ public class PlayerControls : MonoBehaviour
 
     void Update()
     {
+        // FARMING
         if (Input.GetKeyDown(axeKeybind))
         {
             axe.SwingAxe();
@@ -24,12 +25,10 @@ public class PlayerControls : MonoBehaviour
         // CHANGE LATER TO INCLUDE OVERLAPSPHERENONALLOC WITH AN ITEMS LAYER
         if (Input.GetKeyDown(pickupKeybind))
         {
-            Debug.Log("Pickup keybind pressed.");
             foreach (Collider collider in Physics.OverlapSphere(transform.position, pickupRange))
             {
                 if (collider.gameObject.TryGetComponent<Item>(out var item))
                 {
-                    Debug.Log("trying to pickup item.");
                     item.PickupItem();
                 }
             }

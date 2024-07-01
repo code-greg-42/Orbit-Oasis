@@ -10,93 +10,33 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IBeginDragHand
     public Item SlotItem { get; private set; }
     public bool IsSelected { get; private set; }
 
-    // item data
-    //private string itemName;
-    //private string itemDescription;
-    //private Sprite itemSprite;
-    //private int itemQuantity;
-    //private GameObject itemPrefab;
-
-    // max allowed in slot
-    //private readonly int maxQuantity = 5;
-
     [Header("References")]
     [SerializeField] private TMP_Text quantityText;
     [SerializeField] private Image itemImage;
     [SerializeField] private Sprite emptySlotImage;
     [SerializeField] private GameObject selectedBackground;
     [SerializeField] private TMP_Text descriptionText;
-    
-    //private bool isFull;
-    //private bool isPopulated;
-    //private bool isSelected;
-
-    //public void AddItem(string name, Sprite sprite, string description, GameObject prefab)
-    //{
-    //    // set name, description, image, and prefab
-    //    itemName = name;
-    //    itemDescription = description;
-    //    itemSprite = sprite;
-    //    itemPrefab = prefab;
-
-    //    // set item slot as populated
-    //    isPopulated = true;
-
-    //    // increase item quantity
-    //    itemQuantity++;
-
-    //    // set quantity text and image and enable quantity text
-    //    quantityText.text = itemQuantity.ToString();
-    //    quantityText.enabled = true;
-    //    itemImage.sprite = itemSprite;
-    //}
 
     public void AddItem(Item itemToAdd)
     {
-        // set name, description, image, and prefab
         SlotItem = itemToAdd;
-
-        //isPopulated = true;
-
         UpdateSlotUI();
     }
 
-    public void AddAdditionalItem()
+    public int AddAdditionalItem(int quantityToAdd)
     {
-        SlotItem.AddQuantity(1);
+        // calculate the remainder for if the new quantity exceeds MaxStackQuantity
+        int remainder = SlotItem.Quantity + quantityToAdd - SlotItem.MaxStackQuantity;
+
+        // add quantity to SlotItem
+        SlotItem.SetQuantity(SlotItem.Quantity + quantityToAdd);
+
+        // update quantity UI
         quantityText.text = SlotItem.Quantity.ToString();
 
-        //// set slot to full if max quantity is reached
-        //if (SlotItem.Quantity >= SlotItem.MaxStackQuantity)
-        //{
-        //    isFull = true;
-        //}
+        // return remainder if applicable
+        return Mathf.Max(remainder, 0);
     }
-
-    //public string GetItemName()
-    //{
-    //    return itemName;
-    //}
-
-    //public GameObject GetItemPrefab()
-    //{
-    //    return itemPrefab;
-    //}
-
-    //public bool IsSlotFull()
-    //{
-    //    return isFull;
-    //}
-
-    //public bool IsSlotPopulated()
-    //{
-    //    return isPopulated;
-    //}
-
-    //public bool IsSlotSelected()
-    //{
-    //    return isSelected;
-    //}
 
     private void SelectSlot()
     {
@@ -114,55 +54,12 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IBeginDragHand
         descriptionText.text = string.Empty;
     }
 
-    // ????? UPDATE THIS LATER WITH A SEPARATE CLASS FOR ITEM DATA ?????
-    //private void SwapItems(InventorySlot originalSlot)
-    //{
-    //    Debug.Log($"Swapping items: {itemName} with {originalSlot.itemName}");
-
-    //    // swap item data
-    //    (itemName, originalSlot.itemName) = (originalSlot.itemName, itemName);
-    //    (itemDescription, originalSlot.itemDescription) = (originalSlot.itemDescription, itemDescription);
-    //    (itemSprite, originalSlot.itemSprite) = (originalSlot.itemSprite, itemSprite);
-    //    (itemQuantity, originalSlot.itemQuantity) = (originalSlot.itemQuantity, itemQuantity);
-    //    (itemPrefab, originalSlot.itemPrefab) = (originalSlot.itemPrefab, itemPrefab);
-
-    //    // update ui image
-    //    itemImage.sprite = itemSprite != null ? itemSprite : emptySlotImage;
-    //    originalSlot.itemImage.sprite = originalSlot.itemSprite != null ? originalSlot.itemSprite : emptySlotImage;
-
-    //    // update quantity text
-    //    quantityText.text = itemQuantity.ToString();
-    //    quantityText.enabled = itemQuantity > 0; // enable if quantity > 0
-    //    originalSlot.quantityText.text = originalSlot.itemQuantity.ToString();
-    //    originalSlot.quantityText.enabled = originalSlot.itemQuantity > 0; // enable if quantity > 0
-
-    //    // update bools
-    //    isPopulated = itemQuantity > 0;
-    //    isFull = itemQuantity >= maxQuantity;
-    //    originalSlot.isPopulated = originalSlot.itemQuantity > 0;
-    //    originalSlot.isFull = originalSlot.itemQuantity >= originalSlot.maxQuantity;
-
-    //    // deselect original slot if selected and select new slot
-    //    if (originalSlot.IsSlotSelected())
-    //    {
-    //        originalSlot.DeselectSlot();
-    //        SelectSlot();
-    //    }
-    //}
-
     private void SwapItems(InventorySlot originalSlot)
     {
         (this.SlotItem, originalSlot.SlotItem) = (originalSlot.SlotItem, this.SlotItem);
 
         originalSlot.UpdateSlotUI();
         this.UpdateSlotUI();
-
-        // Update bools for both slots
-        //isPopulated = SlotItem != null && SlotItem.Quantity > 0;
-        //isFull = SlotItem != null && SlotItem.Quantity >= SlotItem.MaxStackQuantity;
-
-        //originalSlot.isPopulated = originalSlot.SlotItem != null && originalSlot.SlotItem.Quantity > 0;
-        //originalSlot.isFull = originalSlot.SlotItem != null && originalSlot.SlotItem.Quantity >= originalSlot.SlotItem.MaxStackQuantity;
 
         // deselect original slot if selected and select new slot
         if (originalSlot.IsSelected)
@@ -183,15 +80,22 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IBeginDragHand
         }
         else
         {
-            // clear slot UI
-            SlotItem = null;
-            quantityText.text = string.Empty;
-            quantityText.enabled = false;
-            itemImage.sprite = emptySlotImage;
+            ClearSlot();
         }
     }
 
-    // ------- required interface methods --------
+    public void ClearSlot()
+    {
+        // clear slot
+        SlotItem = null;
+
+        // clear slot UI
+        quantityText.text = string.Empty;
+        quantityText.enabled = false;
+        itemImage.sprite = emptySlotImage;
+    }
+
+    // ------- required interface methods -------- //
     public void OnPointerClick(PointerEventData eventData)
     {
         if (eventData.button == PointerEventData.InputButton.Left)
@@ -211,6 +115,8 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IBeginDragHand
     {
         if (SlotItem != null)
         {
+            InventoryManager.Instance.RemoveSlotSelection();
+            SelectSlot();
             InventoryManager.Instance.SetDragImage(SlotItem.Image, Input.mousePosition);
             InventoryManager.Instance.SetDragSlot(this);
             InventoryManager.Instance.SetIsDragging();

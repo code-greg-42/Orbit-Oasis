@@ -26,9 +26,9 @@ public class Item : MonoBehaviour
 
     public bool IsFullStack => Quantity >= MaxStackQuantity;
 
-    public void AddQuantity(int amount)
+    public void SetQuantity(int amount)
     {
-        Quantity += amount;
+        Quantity = Mathf.Min(amount, MaxStackQuantity);
     }
 
     public void PickupItem()
@@ -39,12 +39,26 @@ public class Item : MonoBehaviour
         // deactivate if a new stack was made, otherwise destroy game object
         if (addedToNewSlot)
         {
+            // set object as child of player inventory and deactivate object
             transform.SetParent(InventoryManager.Instance.PlayerInventory.transform);
             gameObject.SetActive(false);
         }
         else
         {
+            // destroy object as it's not needed
             Destroy(gameObject);
         }
+    }
+
+    public void DropItem(Vector3 dropPosition)
+    {
+        // remove object as child of player inventory
+        transform.SetParent(null);
+
+        // set position to drop position
+        transform.position = dropPosition;
+
+        // activate object in hierarchy
+        gameObject.SetActive(true);
     }
 }

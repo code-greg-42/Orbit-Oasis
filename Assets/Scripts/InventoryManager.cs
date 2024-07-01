@@ -29,41 +29,8 @@ public class InventoryManager : MonoBehaviour
     {
         inventoryMenu.SetActive(!menuActivated);
         menuActivated = !menuActivated;
+        RemoveSlotSelection();
     }
-
-    //public void AddItem(string name, Sprite itemSprite, string description, GameObject itemPrefab)
-    //{
-    //    // index for first open slot
-    //    int emptySlotIndex = -1;
-
-    //    // loop through all inventory slots
-    //    for (int i = 0; i < inventorySlots.Length; i++)
-    //    {
-    //        // check if slot already contains the item and is not full
-    //        if (inventorySlots[i].IsSlotPopulated() && !inventorySlots[i].IsSlotFull() && inventorySlots[i].GetItemName() == name)
-    //        {
-    //            inventorySlots[i].AddAdditionalItem();
-    //            return;
-    //        }
-
-    //        // track the first empty slot
-    //        if (!inventorySlots[i].IsSlotPopulated() && emptySlotIndex == -1)
-    //        {
-    //            emptySlotIndex = i;
-    //        }
-    //    }
-
-    //    // if no existing stack was found, add the item to the first available empty slot
-    //    if (emptySlotIndex != -1)
-    //    {
-    //        inventorySlots[emptySlotIndex].AddItem(name, itemSprite, description, itemPrefab);
-    //    }
-    //    else
-    //    {
-    //        // add full inventory logic here later
-    //        Debug.Log("No inventory slots available");
-    //    }
-    //}
 
     public bool AddItem(Item item)
     {
@@ -76,8 +43,16 @@ public class InventoryManager : MonoBehaviour
             // check if slot already contains the item and is not full
             if (inventorySlots[i].SlotItem != null && !inventorySlots[i].SlotItem.IsFullStack && inventorySlots[i].SlotItem.ItemName == item.ItemName)
             {
-                inventorySlots[i].AddAdditionalItem();
-                return false;
+                int remainder = inventorySlots[i].AddAdditionalItem(item.Quantity);
+
+                if (remainder > 0)
+                {
+                    item.SetQuantity(remainder);
+                }
+                else
+                {
+                    return false;
+                }
             }
 
             // track the first empty slot
@@ -151,7 +126,6 @@ public class InventoryManager : MonoBehaviour
 
     public void SetDragSlot(InventorySlot slot)
     {
-        Debug.Log("setting drag slot");
         if (!isDragging)
         {
             dragSlot = slot;
@@ -179,14 +153,20 @@ public class InventoryManager : MonoBehaviour
     public void DropDraggedItem()
     {
         Debug.Log("dropping item!");
-        //if (dragSlot != null)
-        //{
-        //    // instantiate item in game world near player
-        //    Vector3 dropPos = playerTransform.position + playerTransform.forward * 2;
-        //    GameObject droppedItem = Instantiate(dragSlot., dropPos, Quaternion.identity);
-        //    droppedItem.SetActive(true);
+        if (dragSlot != null)
+        {
+            // instantiate item in game world near player
+            Vector3 dropPos = playerTransform.position + playerTransform.forward * 2;
+            dragSlot.SlotItem.DropItem(dropPos);
 
-        //    // add removal of item from item slot later
-        //}
+            // clear slot selection
+            if (dragSlot.IsSelected)
+            {
+                RemoveSlotSelection();
+            }
+
+            // clear slot from inventory
+            dragSlot.ClearSlot();
+        }
     }
 }
