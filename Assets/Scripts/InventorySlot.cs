@@ -117,35 +117,31 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IBeginDragHand
         {
             InventoryManager.Instance.RemoveSlotSelection();
             SelectSlot();
-            InventoryManager.Instance.SetDragImage(SlotItem.Image, Input.mousePosition);
-            InventoryManager.Instance.SetDragSlot(this);
-            InventoryManager.Instance.SetIsDragging();
+            InventoryManager.Instance.StartDrag(this, Input.mousePosition);
         }
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        if (InventoryManager.Instance.GetIsDragging())
+        if (InventoryManager.Instance.IsDragging)
         {
-            InventoryManager.Instance.SetDragPosition(Input.mousePosition);
+            InventoryManager.Instance.UpdateDragPosition(Input.mousePosition);
         }
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        if (InventoryManager.Instance.GetIsDragging())
+        if (InventoryManager.Instance.IsDragging)
         {
-            InventoryManager.Instance.SetIsDragging(false);
-            InventoryManager.Instance.DeactivateDragImage();
-            InventoryManager.Instance.ResetDragSlot();
+            InventoryManager.Instance.EndDrag();
         }
     }
 
     public void OnDrop(PointerEventData eventData)
     {
-        if (InventoryManager.Instance.GetDragSlot() != null)
+        if (InventoryManager.Instance.DragSlot != null)
         {
-            SwapItems(InventoryManager.Instance.GetDragSlot());
+            SwapItems(InventoryManager.Instance.DragSlot);
         }
     }
 }

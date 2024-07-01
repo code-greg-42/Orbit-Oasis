@@ -15,10 +15,9 @@ public class InventoryManager : MonoBehaviour
     [SerializeField] private GameObject playerInventory;
 
     public GameObject PlayerInventory => playerInventory;
-
-    private bool menuActivated;
-    private bool isDragging;
-    private InventorySlot dragSlot;
+    public bool IsMenuActive { get; private set; }
+    public bool IsDragging { get; private set; }
+    public InventorySlot DragSlot { get; private set; }
 
     private void Awake()
     {
@@ -27,8 +26,9 @@ public class InventoryManager : MonoBehaviour
 
     public void ToggleInventoryMenu()
     {
-        inventoryMenu.SetActive(!menuActivated);
-        menuActivated = !menuActivated;
+        inventoryMenu.SetActive(!IsMenuActive);
+        IsMenuActive = !IsMenuActive;
+
         RemoveSlotSelection();
     }
 
@@ -103,9 +103,29 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
-    public void SetDragImage(Sprite imageSprite, Vector3 mousePosition)
+    public void StartDrag(InventorySlot slot, Vector3 mousePos)
     {
-        if (!isDragging)
+        if (!IsDragging && slot.SlotItem != null)
+        {
+            SetDragImage(slot.SlotItem.Image, mousePos);
+            DragSlot = slot;
+            IsDragging = true;
+        }
+    }
+
+    public void EndDrag()
+    {
+        if (IsDragging)
+        {
+            IsDragging = false;
+            DragSlot = null;
+            dragImage.gameObject.SetActive(false);
+        }
+    }
+
+    private void SetDragImage(Sprite imageSprite, Vector3 mousePosition)
+    {
+        if (!IsDragging)
         {
             dragImage.sprite = imageSprite;
 
@@ -118,67 +138,31 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
-    public void SetDragPosition(Vector3 mousePosition)
+    public void UpdateDragPosition(Vector3 mousePos)
     {
-        if (isDragging)
+        if (IsDragging)
         {
-            dragImage.transform.position = mousePosition;
+            dragImage.transform.position = mousePos;
         }
-    }
-
-    public void SetIsDragging(bool dragging = true)
-    {
-        isDragging = dragging;
-    }
-
-    public bool GetIsDragging()
-    {
-        return isDragging;
-    }
-
-    public void SetDragSlot(InventorySlot slot)
-    {
-        if (!isDragging)
-        {
-            dragSlot = slot;
-        }
-    }
-
-    public void ResetDragSlot()
-    {
-        if (dragSlot != null)
-        {
-            dragSlot = null;
-        }
-    }
-
-    public InventorySlot GetDragSlot()
-    {
-        return dragSlot;
-    }
-
-    public void DeactivateDragImage()
-    {
-        dragImage.gameObject.SetActive(false);
     }
 
     public void DropDraggedItem()
     {
         Debug.Log("dropping item!");
-        if (dragSlot != null)
+        if (DragSlot != null)
         {
             // instantiate item in game world near player
             Vector3 dropPos = playerTransform.position + playerTransform.forward * 2;
-            dragSlot.SlotItem.DropItem(dropPos);
+            DragSlot.SlotItem.DropItem(dropPos);
 
             // clear slot selection
-            if (dragSlot.IsSelected)
+            if (DragSlot.IsSelected)
             {
                 RemoveSlotSelection();
             }
 
             // clear slot from inventory
-            dragSlot.ClearSlot();
+            DragSlot.ClearSlot();
         }
     }
 }

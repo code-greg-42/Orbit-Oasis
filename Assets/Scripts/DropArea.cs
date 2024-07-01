@@ -7,7 +7,7 @@ public class DropArea : MonoBehaviour, IDropHandler, IPointerClickHandler
 {
     public void OnDrop(PointerEventData eventData)
     {
-        if (InventoryManager.Instance.GetIsDragging())
+        if (InventoryManager.Instance.IsDragging)
         {
             InventoryManager.Instance.DropDraggedItem();
         }
