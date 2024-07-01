@@ -3,16 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using TMPro;
 
 public class InventoryManager : MonoBehaviour
 {
     public static InventoryManager Instance {  get; private set; }
 
+    [Header("References")]
     [SerializeField] private GameObject inventoryMenu;
     [SerializeField] private InventorySlot[] inventorySlots;
     [SerializeField] private Image dragImage; // image used for drag and drop functionality
     [SerializeField] private Transform playerTransform;
     [SerializeField] private GameObject playerInventory;
+    [SerializeField] private GameObject sellSlotHighlightPanel;
+    [SerializeField] private TMP_Text sellSlotMoneyDisplay;
 
     public GameObject PlayerInventory => playerInventory;
     public bool IsMenuActive { get; private set; }
@@ -110,6 +114,8 @@ public class InventoryManager : MonoBehaviour
             SetDragImage(slot.SlotItem.Image, mousePos);
             DragSlot = slot;
             IsDragging = true;
+            sellSlotHighlightPanel.SetActive(true);
+            sellSlotMoneyDisplay.text = "SELL";
         }
     }
 
@@ -120,6 +126,7 @@ public class InventoryManager : MonoBehaviour
             IsDragging = false;
             DragSlot = null;
             dragImage.gameObject.SetActive(false);
+            sellSlotHighlightPanel.SetActive(false);
         }
     }
 
@@ -163,6 +170,29 @@ public class InventoryManager : MonoBehaviour
 
             // clear slot from inventory
             DragSlot.ClearSlot();
+        }
+    }
+
+    public void SellDraggedItem()
+    {
+        Debug.Log("selling item!");
+        if (DragSlot != null)
+        {
+            // calculate sell price
+            float sellPrice = DragSlot.SlotItem.Quantity * DragSlot.SlotItem.PricePerUnit;
+
+            // update Data Manager
+            DataManager.Instance.AddCurrency(sellPrice);
+
+            // clear slot selection
+            if (DragSlot.IsSelected)
+            {
+                RemoveSlotSelection();
+            }
+            DragSlot.ClearSlot();
+
+            // update UI
+            sellSlotMoneyDisplay.text = "$" + DataManager.Instance.PlayerCurrency;
         }
     }
 }
