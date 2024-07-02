@@ -17,24 +17,37 @@ public class Animal : Item
         agent = GetComponent<NavMeshAgent>();
     }
 
-    private void Start()
+    private void OnEnable()
     {
-        SetRandomDestination();
+        StartCoroutine(RoamCoroutine());
     }
 
-    private void Update()
+    private void OnDisable()
     {
-        if (!agent.pathPending && agent.remainingDistance < 0.5f)
+        StopAllCoroutines();
+    }
+
+    private IEnumerator RoamCoroutine()
+    {
+        while (true)
         {
-            SetRandomDestination();
+            if (!agent.pathPending && agent.remainingDistance < 0.5f)
+            {
+                SetRandomDestination();
+            }
+            yield return new WaitForSeconds(0.5f);
         }
     }
 
     private void SetRandomDestination()
     {
+        // find random direction within range
         Vector3 randomDirection = Random.insideUnitSphere * roamRadius;
+
+        // adjust direction to be relative to current position
         randomDirection += transform.position;
 
+        // if a valid path is found, set destination to that location
         if (NavMesh.SamplePosition(randomDirection, out NavMeshHit hit, roamRadius, NavMesh.AllAreas))
         {
             agent.SetDestination(hit.position);

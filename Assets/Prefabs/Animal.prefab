@@ -140,6 +140,8 @@ MonoBehaviour:
   pricePerUnit: 500
   foodPerUnit: 4
   roamRadius: 10
+  movementDelayMin: 10
+  movementDelayMax: 20
 --- !u!136 &2376330724468046515
 CapsuleCollider:
   m_ObjectHideFlags: 0
