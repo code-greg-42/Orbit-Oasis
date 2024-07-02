@@ -48,7 +48,7 @@ public class Item : MonoBehaviour
         else
         {
             // destroy object as it's not needed
-            Destroy(gameObject);
+            DeleteItem();
         }
     }
 
@@ -62,5 +62,10 @@ public class Item : MonoBehaviour
 
         // activate object in hierarchy
         gameObject.SetActive(true);
+    }
+
+    public void DeleteItem()
+    {
+        Destroy(gameObject);
     }
 }

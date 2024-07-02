@@ -184,6 +184,9 @@ public class InventoryManager : MonoBehaviour
             // update Data Manager
             DataManager.Instance.AddCurrency(sellPrice);
 
+            // delete game object from player inventory
+            DragSlot.SlotItem.DeleteItem();
+
             // clear slot selection
             if (DragSlot.IsSelected)
             {

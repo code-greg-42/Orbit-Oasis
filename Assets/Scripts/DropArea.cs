@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 
 public class DropArea : MonoBehaviour, IDropHandler, IPointerClickHandler
 {
-    public void OnDrop(PointerEventData eventData)
+    public virtual void OnDrop(PointerEventData eventData)
     {
         if (InventoryManager.Instance.IsDragging)
         {
