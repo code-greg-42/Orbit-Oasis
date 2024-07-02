@@ -36,19 +36,20 @@ public class Item : MonoBehaviour
     public void PickupItem()
     {
         // add item to inventory
-        bool addedToNewSlot = InventoryManager.Instance.AddItem(this);
+        InventoryManager.InventoryAddStatus status = InventoryManager.Instance.AddItem(this);
 
-        // deactivate if a new stack was made, otherwise destroy game object
-        if (addedToNewSlot)
+        switch (status)
         {
-            // set object as child of player inventory and deactivate object
-            transform.SetParent(InventoryManager.Instance.PlayerInventory.transform);
-            gameObject.SetActive(false);
-        }
-        else
-        {
-            // destroy object as it's not needed
-            DeleteItem();
+            case InventoryManager.InventoryAddStatus.NewItemAdded:
+                transform.SetParent(InventoryManager.Instance.PlayerInventory.transform);
+                gameObject.SetActive(false);
+                break;
+            case InventoryManager.InventoryAddStatus.ItemAddedToStack:
+                DeleteItem();
+                break;
+            case InventoryManager.InventoryAddStatus.InventoryFull:
+                DropItem(InventoryManager.Instance.PlayerInventory.transform.position);
+                break;
         }
     }
 

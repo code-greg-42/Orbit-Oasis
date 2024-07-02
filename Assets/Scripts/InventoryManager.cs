@@ -23,6 +23,15 @@ public class InventoryManager : MonoBehaviour
     public bool IsDragging { get; private set; }
     public InventorySlot DragSlot { get; private set; }
 
+    private float dragSlotSellPrice;
+
+    public enum InventoryAddStatus
+    {
+        ItemAddedToStack,
+        NewItemAdded,
+        InventoryFull
+    }
+
     private void Awake()
     {
         Instance = this;
@@ -36,7 +45,7 @@ public class InventoryManager : MonoBehaviour
         RemoveSlotSelection();
     }
 
-    public bool AddItem(Item item)
+    public InventoryAddStatus AddItem(Item item)
     {
         // index for first open slot
         int emptySlotIndex = -1;
@@ -60,8 +69,8 @@ public class InventoryManager : MonoBehaviour
                 }
                 else
                 {
-                    // if no remainder, return false as no additional gameobject is needed
-                    return false;
+                    // if no remainder, return ItemAddedToStack as no additional gameobject is needed
+                    return InventoryAddStatus.ItemAddedToStack;
                 }
             }
 
@@ -82,15 +91,12 @@ public class InventoryManager : MonoBehaviour
             {
                 inventorySlots[emptySlotIndex].SwapItems(inventorySlots[stackSlotIndex]);
             }
-            return true;
+            return InventoryAddStatus.NewItemAdded;
         }
         else
         {
-            // add full inventory logic here later
             Debug.Log("No inventory slots available");
-
-            // change this method to (??? return int and then either destroys object, deactivates object, or just throws object into the air and does nothing)
-            return false;
+            return InventoryAddStatus.InventoryFull;
         }
     }
 
@@ -114,8 +120,9 @@ public class InventoryManager : MonoBehaviour
             SetDragImage(slot.SlotItem.Image, mousePos);
             DragSlot = slot;
             IsDragging = true;
+            CalculateSellPrice();
             sellSlotHighlightPanel.SetActive(true);
-            sellSlotMoneyDisplay.text = "SELL";
+            sellSlotMoneyDisplay.text = "SELL\n($" + dragSlotSellPrice + ")";
         }
     }
 
@@ -127,6 +134,7 @@ public class InventoryManager : MonoBehaviour
             DragSlot = null;
             dragImage.gameObject.SetActive(false);
             sellSlotHighlightPanel.SetActive(false);
+            UpdateCurrencyDisplay();
         }
     }
 
@@ -151,6 +159,11 @@ public class InventoryManager : MonoBehaviour
         {
             dragImage.transform.position = mousePos;
         }
+    }
+
+    public void UpdateCurrencyDisplay()
+    {
+        sellSlotMoneyDisplay.text = "$" + DataManager.Instance.PlayerCurrency;
     }
 
     public void DropDraggedItem()
@@ -178,11 +191,8 @@ public class InventoryManager : MonoBehaviour
         Debug.Log("selling item!");
         if (DragSlot != null)
         {
-            // calculate sell price
-            float sellPrice = DragSlot.SlotItem.Quantity * DragSlot.SlotItem.PricePerUnit;
-
             // update Data Manager
-            DataManager.Instance.AddCurrency(sellPrice);
+            DataManager.Instance.AddCurrency(dragSlotSellPrice);
 
             // delete game object from player inventory
             DragSlot.SlotItem.DeleteItem();
@@ -193,9 +203,25 @@ public class InventoryManager : MonoBehaviour
                 RemoveSlotSelection();
             }
             DragSlot.ClearSlot();
+        }
+    }
 
-            // update UI
-            sellSlotMoneyDisplay.text = "$" + DataManager.Instance.PlayerCurrency;
+    private void CalculateSellPrice()
+    {
+        if (DragSlot != null)
+        {
+            if (DragSlot.SlotItem != null)
+            {
+                dragSlotSellPrice = DragSlot.SlotItem.Quantity * DragSlot.SlotItem.PricePerUnit;
+            }
+            else
+            {
+                Debug.LogWarning("SlotItem is null. Cannot calculate sell price.");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("DragSlot is null. Cannot calculate sell price.");
         }
     }
 }

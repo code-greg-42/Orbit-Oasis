@@ -35,7 +35,7 @@ public class PlayerControls : MonoBehaviour
         }
 
         // INVENTORY
-        if (Input.GetKeyDown(inventoryKeybind))
+        if (Input.GetKeyDown(inventoryKeybind) && !InventoryManager.Instance.IsDragging)
         {
             InventoryManager.Instance.ToggleInventoryMenu();
         }
