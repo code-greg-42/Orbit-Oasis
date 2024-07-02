@@ -9,7 +9,7 @@ public class StoreDropArea : DropArea
     {
         if (InventoryManager.Instance.IsDragging)
         {
-            Debug.Log("storing item!");
+            InventoryManager.Instance.StoreDraggedItem();
         }
     }
 }

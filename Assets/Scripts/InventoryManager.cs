@@ -17,6 +17,8 @@ public class InventoryManager : MonoBehaviour
     [SerializeField] private GameObject playerInventory;
     [SerializeField] private GameObject sellSlotHighlightPanel;
     [SerializeField] private TMP_Text sellSlotMoneyDisplay;
+    [SerializeField] private GameObject storeSlotHighlightPanel;
+    [SerializeField] private TMP_Text storeSlotAmountDisplay;
 
     public GameObject PlayerInventory => playerInventory;
     public bool IsMenuActive { get; private set; }
@@ -24,6 +26,7 @@ public class InventoryManager : MonoBehaviour
     public InventorySlot DragSlot { get; private set; }
 
     private float dragSlotSellPrice;
+    private float dragSlotStoreAmount;
 
     public enum InventoryAddStatus
     {
@@ -120,9 +123,15 @@ public class InventoryManager : MonoBehaviour
             SetDragImage(slot.SlotItem.Image, mousePos);
             DragSlot = slot;
             IsDragging = true;
-            CalculateSellPrice();
+            CalculateSellPrices();
             sellSlotHighlightPanel.SetActive(true);
             sellSlotMoneyDisplay.text = "SELL\n($" + dragSlotSellPrice + ")";
+
+            if (DragSlot.SlotItem is Animal)
+            {
+                storeSlotHighlightPanel.SetActive(true);
+                storeSlotAmountDisplay.text = "STORE FOOD\n(" + dragSlotStoreAmount + " days)";
+            }
         }
     }
 
@@ -134,6 +143,7 @@ public class InventoryManager : MonoBehaviour
             DragSlot = null;
             dragImage.gameObject.SetActive(false);
             sellSlotHighlightPanel.SetActive(false);
+            storeSlotHighlightPanel.SetActive(false);
             UpdateCurrencyDisplay();
         }
     }
@@ -164,6 +174,7 @@ public class InventoryManager : MonoBehaviour
     public void UpdateCurrencyDisplay()
     {
         sellSlotMoneyDisplay.text = "$" + DataManager.Instance.PlayerCurrency;
+        storeSlotAmountDisplay.text = DataManager.Instance.PlayerFood + "\nDays of Food";
     }
 
     public void DropDraggedItem()
@@ -206,13 +217,38 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
-    private void CalculateSellPrice()
+    public void StoreDraggedItem()
+    {
+        if (DragSlot != null && DragSlot.SlotItem is Animal)
+        {
+            Debug.Log("storing item as food!");
+            // update Data Manager
+            DataManager.Instance.AddFood(dragSlotStoreAmount);
+
+            // delete game object from player inventory
+            DragSlot.SlotItem.DeleteItem();
+
+            // clear slot selection
+            if (DragSlot.IsSelected)
+            {
+                RemoveSlotSelection();
+            }
+            DragSlot.ClearSlot();
+        }
+    }
+
+    private void CalculateSellPrices()
     {
         if (DragSlot != null)
         {
             if (DragSlot.SlotItem != null)
             {
                 dragSlotSellPrice = DragSlot.SlotItem.Quantity * DragSlot.SlotItem.PricePerUnit;
+
+                if (DragSlot.SlotItem is Animal animal)
+                {
+                    dragSlotStoreAmount = animal.Quantity * animal.FoodPerUnit;
+                }
             }
             else
             {
