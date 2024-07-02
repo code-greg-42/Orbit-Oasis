@@ -55,33 +55,26 @@ public class PlayerControls : MonoBehaviour
 
     private void ShootProjectile()
     {
-        Ray ray = mainCamera.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
-
-        Vector3 targetPoint;
-        if (Physics.Raycast(ray, out RaycastHit hit))
-        {
-            targetPoint = hit.point;
-        }
-        else
-        {
-            targetPoint = ray.GetPoint(1000); // arbitrary distance
-        }
-
-        Vector3 direction = (targetPoint - playerObject.position).normalized;
-
-        GameObject projectile = Instantiate(projectilePrefab, playerObject.position, Quaternion.identity);
+        GameObject projectile = ProjectilePool.Instance.GetPooledObject();
 
         // calc direction
-        //Vector3 direction = playerObject.forward;
+        Vector3 direction = new Vector3(playerObject.forward.x, 0, playerObject.forward.z).normalized;
+        Debug.Log(direction);
+
         // adjust to add a slight lob
-        direction = Quaternion.Euler(shotAngle, 0, 0) * direction;
+        //direction = Quaternion.Euler(-shotAngle, 0, 0) * direction;
+        //Debug.Log(direction);
 
         // ignore collision with player object
         if (playerObject.TryGetComponent(out Collider playerCollider) && projectile.TryGetComponent(out Collider projectileCollider))
         {
-            Debug.Log("Ignoring collision!");
             Physics.IgnoreCollision(playerCollider, projectileCollider);
         }
+
+        // reposition projectile
+        projectile.transform.position = playerObject.position;
+        // activate projectile
+        projectile.SetActive(true);
 
         // apply force to projectile
         if (projectile.TryGetComponent(out Rigidbody rb))
