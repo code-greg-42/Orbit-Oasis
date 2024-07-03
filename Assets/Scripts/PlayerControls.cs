@@ -7,8 +7,9 @@ public class PlayerControls : MonoBehaviour
     [Header("Keybinds")]
     public KeyCode axeKeybind = KeyCode.E;
     public KeyCode pickupKeybind = KeyCode.F;
-    public KeyCode inventoryKeybind = KeyCode.B;
+    public KeyCode inventoryKeybind = KeyCode.Tab;
     public KeyCode shootingKeybind = KeyCode.C;
+    public KeyCode buildModeKeybind = KeyCode.B;
 
     private readonly float pickupRange = 1.5f;
     private readonly float projectileLobHeight = 0.35f;
@@ -25,48 +26,57 @@ public class PlayerControls : MonoBehaviour
 
     void Update()
     {
-        // FARMING
-        if (Input.GetKeyDown(axeKeybind))
+        if (!BuildManager.Instance.BuildModeActive)
         {
-            axe.SwingAxe();
-        }
-
-        // CHANGE LATER TO INCLUDE OVERLAPSPHERENONALLOC WITH AN ITEMS LAYER
-        if (Input.GetKeyDown(pickupKeybind))
-        {
-            foreach (Collider collider in Physics.OverlapSphere(transform.position, pickupRange))
+            // FARMING
+            if (Input.GetKeyDown(axeKeybind))
             {
-                if (collider.gameObject.TryGetComponent<Item>(out var item))
+                axe.SwingAxe();
+            }
+
+            // CHANGE LATER TO INCLUDE OVERLAPSPHERENONALLOC WITH AN ITEMS LAYER
+            if (Input.GetKeyDown(pickupKeybind))
+            {
+                foreach (Collider collider in Physics.OverlapSphere(transform.position, pickupRange))
                 {
-                    item.PickupItem();
+                    if (collider.gameObject.TryGetComponent<Item>(out var item))
+                    {
+                        item.PickupItem();
+                    }
                 }
+            }
+
+            // INVENTORY
+            if (Input.GetKeyDown(inventoryKeybind) && !InventoryManager.Instance.IsDragging)
+            {
+                InventoryManager.Instance.ToggleInventoryMenu();
+            }
+
+            // SHOOTING
+            if (Input.GetKeyDown(shootingKeybind))
+            {
+                shootingChargeTime = 0.0f;
+            }
+
+            if (Input.GetKey(shootingKeybind))
+            {
+                shootingChargeTime += Time.deltaTime;
+                shootingChargeTime = Mathf.Min(shootingChargeTime, maxChargeTime); // cap at max charge time
+            }
+
+            if (Input.GetKeyUp(shootingKeybind))
+            {
+                // calc additional force amount
+                float additionalForce = shootingChargeTime / maxChargeTime * maxAdditionalForce;
+                // shoot with additional force added
+                ShootProjectile(additionalForce);
             }
         }
 
-        // INVENTORY
-        if (Input.GetKeyDown(inventoryKeybind) && !InventoryManager.Instance.IsDragging)
+        // BUILD MODE
+        if (Input.GetKeyDown(buildModeKeybind))
         {
-            InventoryManager.Instance.ToggleInventoryMenu();
-        }
-
-        // SHOOTING
-        if (Input.GetKeyDown(shootingKeybind))
-        {
-            shootingChargeTime = 0.0f;
-        }
-
-        if (Input.GetKey(shootingKeybind))
-        {
-            shootingChargeTime += Time.deltaTime;
-            shootingChargeTime = Mathf.Min(shootingChargeTime, maxChargeTime); // cap at max charge time
-        }
-
-        if (Input.GetKeyUp(shootingKeybind))
-        {
-            // calc additional force amount
-            float additionalForce = shootingChargeTime / maxChargeTime * maxAdditionalForce;
-            // shoot with additional force added
-            ShootProjectile(additionalForce);
+            BuildManager.Instance.ToggleBuildMode();
         }
     }
 

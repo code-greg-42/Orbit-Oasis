@@ -3505,8 +3505,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   axeKeybind: 101
   pickupKeybind: 102
-  inventoryKeybind: 98
+  inventoryKeybind: 9
   shootingKeybind: 99
+  buildModeKeybind: 98
   axe: {fileID: 2044193600}
   projectilePrefab: {fileID: 5737325398390983765, guid: 173f303122a3a444ab857f65056347d7, type: 3}
   playerObject: {fileID: 1644633452}
@@ -3682,7 +3683,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1287715202}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.09252102, y: 0.000000017659854, z: -0.0000000016409462, w: 0.99571073}
+  m_LocalRotation: {x: 0.09252102, y: -0.00000001765986, z: 0.0000000016409466, w: 0.99571073}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -5415,6 +5416,7 @@ GameObject:
   - component: {fileID: 1963380234}
   - component: {fileID: 1963380233}
   - component: {fileID: 1963380235}
+  - component: {fileID: 1963380236}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -5463,6 +5465,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   amountToPool: 10
   objectToPool: {fileID: 5737325398390983765, guid: 173f303122a3a444ab857f65056347d7, type: 3}
+--- !u!114 &1963380236
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1963380232}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef42e0ede6ff20748aa18cd4ea41b2c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wallPrefab: {fileID: 1425455576726032593, guid: c44be03b315e63a40b12315febeb9d5d, type: 3}
+  orientation: {fileID: 1341371024}
+  placementDistance: 5
 --- !u!1001 &2004955737
 PrefabInstance:
   m_ObjectHideFlags: 0
