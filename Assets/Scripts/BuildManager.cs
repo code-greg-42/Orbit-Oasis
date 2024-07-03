@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class BuildManager : MonoBehaviour
@@ -13,8 +14,10 @@ public class BuildManager : MonoBehaviour
     [SerializeField] private Transform orientation;
     [SerializeField] private float placementDistance = 5.0f;
     [SerializeField] private KeyCode placeBuildKey = KeyCode.F;
+    [SerializeField] private Material buildPreviewMaterial;
 
     private GameObject currentPreview;
+    private Material originalMaterial;
 
     private void Awake()
     {
@@ -43,6 +46,17 @@ public class BuildManager : MonoBehaviour
 
     public void ToggleBuildMode()
     {
+        if (BuildModeActive)
+        {
+            if (currentPreview != null)
+            {
+                Destroy(currentPreview);
+                currentPreview = null;
+            }
+            originalMaterial = null;
+        }
+
+        // toggle bool
         BuildModeActive = !BuildModeActive;
     }
 
@@ -52,41 +66,35 @@ public class BuildManager : MonoBehaviour
         {
             // calc the position in front of the camera
             Vector3 targetPosition = orientation.position + orientation.forward * placementDistance;
-
             currentPreview.transform.position = targetPosition;
         }
     }
 
     private void PlaceBuild()
     {
-        if (currentPreview != null)
+        if (BuildModeActive && currentPreview != null)
         {
             // change material to solid
             SetPreviewMaterial(false);
 
             // finalize placement
             currentPreview = null;
+            originalMaterial = null;
         }
     }
 
     private void SetPreviewMaterial(bool isPreview)
     {
-        Renderer[] renderers = currentPreview.GetComponentsInChildren<Renderer>();
-        foreach (Renderer renderer in renderers)
+        if (currentPreview.TryGetComponent<Renderer>(out var renderer))
         {
             if (isPreview)
             {
-                // Make material see-through
-                Color color = renderer.material.color;
-                color.a = 0.5f;
-                renderer.material.color = color;
+                originalMaterial = renderer.material;
+                renderer.material = buildPreviewMaterial;
             }
             else
             {
-                // Make material solid
-                Color color = renderer.material.color;
-                color.a = 1.0f;
-                renderer.material.color = color;
+                renderer.material = originalMaterial;
             }
         }
     }
