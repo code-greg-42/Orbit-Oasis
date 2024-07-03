@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FarmableObject : MonoBehaviour
+public class FarmableObject : Item
 {
     [Header("Material Settings")]
     [SerializeField] private GameObject materialPrefab;

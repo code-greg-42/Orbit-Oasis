@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class Item : MonoBehaviour
 {
+    [Header("Item Settings")]
     [SerializeField] private string itemName;
     [SerializeField] private string description;
     [SerializeField] private Sprite image;

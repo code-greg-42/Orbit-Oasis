@@ -11,14 +11,17 @@ public class PlayerControls : MonoBehaviour
     public KeyCode shootingKeybind = KeyCode.C;
 
     private readonly float pickupRange = 1.5f;
-    private readonly float shotAngle = 30.0f;
-    private readonly float projectileSpeed = 20.0f;
+    private readonly float projectileLobHeight = 0.35f;
+    private readonly float baseProjectileForce = 10.0f;
+    private readonly float maxChargeTime = 2.0f;
+    private readonly float maxAdditionalForce = 20.0f;
+
+    private float shootingChargeTime;
 
     [Header("References")]
     [SerializeField] private PlayerAxe axe;
     [SerializeField] private GameObject projectilePrefab;
     [SerializeField] private Transform playerObject;
-    [SerializeField] private Camera mainCamera;
 
     void Update()
     {
@@ -49,21 +52,34 @@ public class PlayerControls : MonoBehaviour
         // SHOOTING
         if (Input.GetKeyDown(shootingKeybind))
         {
-            ShootProjectile();
+            shootingChargeTime = 0.0f;
+        }
+
+        if (Input.GetKey(shootingKeybind))
+        {
+            shootingChargeTime += Time.deltaTime;
+            shootingChargeTime = Mathf.Min(shootingChargeTime, maxChargeTime); // cap at max charge time
+        }
+
+        if (Input.GetKeyUp(shootingKeybind))
+        {
+            // calc additional force amount
+            float additionalForce = shootingChargeTime / maxChargeTime * maxAdditionalForce;
+            // shoot with additional force added
+            ShootProjectile(additionalForce);
         }
     }
 
-    private void ShootProjectile()
+    private void ShootProjectile(float additionalForce)
     {
+        // get projectile from pool
         GameObject projectile = ProjectilePool.Instance.GetPooledObject();
 
         // calc direction
-        Vector3 direction = new Vector3(playerObject.forward.x, 0, playerObject.forward.z).normalized;
-        Debug.Log(direction);
+        Vector3 direction = playerObject.forward;
 
-        // adjust to add a slight lob
-        //direction = Quaternion.Euler(-shotAngle, 0, 0) * direction;
-        //Debug.Log(direction);
+        // adjust y value for a slight lob
+        direction.y = projectileLobHeight;
 
         // ignore collision with player object
         if (playerObject.TryGetComponent(out Collider playerCollider) && projectile.TryGetComponent(out Collider projectileCollider))
@@ -71,15 +87,16 @@ public class PlayerControls : MonoBehaviour
             Physics.IgnoreCollision(playerCollider, projectileCollider);
         }
 
-        // reposition projectile
+        // reposition projectile to player object
         projectile.transform.position = playerObject.position;
+
         // activate projectile
         projectile.SetActive(true);
 
         // apply force to projectile
         if (projectile.TryGetComponent(out Rigidbody rb))
         {
-            rb.AddForce(direction * projectileSpeed, ForceMode.Impulse);
+            rb.AddForce(direction * (baseProjectileForce + additionalForce), ForceMode.Impulse);
         }
     }
 }
