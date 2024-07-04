@@ -14,10 +14,14 @@ public class BuildManager : MonoBehaviour
     [SerializeField] private Transform orientation;
     [SerializeField] private float placementDistance = 5.0f;
     [SerializeField] private KeyCode placeBuildKey = KeyCode.F;
+    [SerializeField] private KeyCode rotateLeftKey = KeyCode.LeftArrow;
+    [SerializeField] private KeyCode rotateRightKey = KeyCode.RightArrow;
     [SerializeField] private Material buildPreviewMaterial;
+    [SerializeField] private float rotationSpeed = 60.0f; // degrees per second
 
     private GameObject currentPreview;
     private Material originalMaterial;
+    private float currentRotation;
 
     private void Awake()
     {
@@ -40,6 +44,17 @@ public class BuildManager : MonoBehaviour
             if (Input.GetKeyDown(placeBuildKey))
             {
                 PlaceBuild();
+            }
+
+            // handle rotation
+            if (Input.GetKey(rotateLeftKey))
+            {
+                currentRotation -= rotationSpeed * Time.deltaTime;
+            }
+
+            if (Input.GetKey(rotateRightKey))
+            {
+                currentRotation += rotationSpeed * Time.deltaTime;
             }
         }
     }
@@ -66,7 +81,12 @@ public class BuildManager : MonoBehaviour
         {
             // calc the position in front of the camera
             Vector3 targetPosition = orientation.position + orientation.forward * placementDistance;
-            currentPreview.transform.position = targetPosition;
+
+            // calc rotation offset based on orientation and user input
+            Quaternion targetRotation = Quaternion.LookRotation(orientation.forward) * Quaternion.Euler(0, currentRotation, 0);
+
+            // set position and rotation
+            currentPreview.transform.SetPositionAndRotation(targetPosition, targetRotation);
         }
     }
 
