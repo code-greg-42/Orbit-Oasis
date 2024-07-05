@@ -13,15 +13,26 @@ public class BuildManager : MonoBehaviour
     [SerializeField] private GameObject wallPrefab;
     [SerializeField] private Transform orientation;
     [SerializeField] private float placementDistance = 5.0f;
-    [SerializeField] private KeyCode placeBuildKey = KeyCode.F;
-    [SerializeField] private KeyCode rotateLeftKey = KeyCode.LeftArrow;
-    [SerializeField] private KeyCode rotateRightKey = KeyCode.RightArrow;
     [SerializeField] private Material buildPreviewMaterial;
     [SerializeField] private float rotationSpeed = 60.0f; // degrees per second
+    [SerializeField] private float previewMoveSpeed = 2.0f; // units per second
+
+    private KeyCode placeBuildKey = KeyCode.F;
+    private KeyCode rotateLeftKey = KeyCode.Q;
+    private KeyCode rotateRightKey = KeyCode.E;
+    private KeyCode moveUpKey = KeyCode.UpArrow;
+    private KeyCode moveDownKey = KeyCode.DownArrow;
+    private KeyCode moveLeftKey = KeyCode.LeftArrow;
+    private KeyCode moveRightKey = KeyCode.RightArrow;
+    private KeyCode resetKey = KeyCode.R;
+
+    // add boundary variables to keep the preview on the screen
 
     private GameObject currentPreview;
     private Material originalMaterial;
-    private float currentRotation;
+    private float userRotation;
+    private float verticalOffset;
+    private float horizontalOffset;
 
     private void Awake()
     {
@@ -46,16 +57,7 @@ public class BuildManager : MonoBehaviour
                 PlaceBuild();
             }
 
-            // handle rotation
-            if (Input.GetKey(rotateLeftKey))
-            {
-                currentRotation -= rotationSpeed * Time.deltaTime;
-            }
-
-            if (Input.GetKey(rotateRightKey))
-            {
-                currentRotation += rotationSpeed * Time.deltaTime;
-            }
+            HandleUserInput();
         }
     }
 
@@ -69,6 +71,7 @@ public class BuildManager : MonoBehaviour
                 currentPreview = null;
             }
             originalMaterial = null;
+            ResetPreviewState();
         }
 
         // toggle bool
@@ -80,10 +83,10 @@ public class BuildManager : MonoBehaviour
         if (BuildModeActive)
         {
             // calc the position in front of the camera
-            Vector3 targetPosition = orientation.position + orientation.forward * placementDistance;
+            Vector3 targetPosition = orientation.position + orientation.forward * placementDistance + Vector3.up * verticalOffset + orientation.right * horizontalOffset;
 
             // calc rotation offset based on orientation and user input
-            Quaternion targetRotation = Quaternion.LookRotation(orientation.forward) * Quaternion.Euler(0, currentRotation, 0);
+            Quaternion targetRotation = Quaternion.LookRotation(orientation.forward) * Quaternion.Euler(0, userRotation, 0);
 
             // set position and rotation
             currentPreview.transform.SetPositionAndRotation(targetPosition, targetRotation);
@@ -117,5 +120,45 @@ public class BuildManager : MonoBehaviour
                 renderer.material = originalMaterial;
             }
         }
+    }
+
+    // add boundaries to keep the preview on the screen later
+    private void HandleUserInput()
+    {
+        if (Input.GetKey(rotateLeftKey))
+        {
+            userRotation -= rotationSpeed * Time.deltaTime;
+        }
+        if (Input.GetKey(rotateRightKey))
+        {
+            userRotation += rotationSpeed * Time.deltaTime;
+        }
+        if (Input.GetKey(moveLeftKey))
+        {
+            horizontalOffset -= previewMoveSpeed * Time.deltaTime;
+        }
+        if (Input.GetKey(moveRightKey))
+        {
+            horizontalOffset += previewMoveSpeed * Time.deltaTime;
+        }
+        if (Input.GetKey(moveUpKey))
+        {
+            verticalOffset += previewMoveSpeed * Time.deltaTime;
+        }
+        if (Input.GetKey(moveDownKey))
+        {
+            verticalOffset -= previewMoveSpeed * Time.deltaTime;
+        }
+        if (Input.GetKeyDown(resetKey))
+        {
+            ResetPreviewState();
+        }
+    }
+
+    private void ResetPreviewState()
+    {
+        userRotation = 0f;
+        verticalOffset = 0f;
+        horizontalOffset = 0f;
     }
 }
