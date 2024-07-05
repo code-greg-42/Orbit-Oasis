@@ -10,7 +10,7 @@ public class BuildManager : MonoBehaviour
     public bool BuildModeActive { get; private set; }
 
     [Header("References")]
-    [SerializeField] private GameObject wallPrefab;
+    [SerializeField] private GameObject[] buildPrefabs;
     [SerializeField] private Transform orientation;
     [SerializeField] private float placementDistance = 5.0f;
     [SerializeField] private Material buildPreviewMaterial;
@@ -33,6 +33,7 @@ public class BuildManager : MonoBehaviour
     private float userRotation;
     private float verticalOffset;
     private float horizontalOffset;
+    private int currentPrefabIndex = 0; // index to track current selection
 
     private void Awake()
     {
@@ -45,8 +46,8 @@ public class BuildManager : MonoBehaviour
         {
             if (currentPreview == null)
             {
-                // instantiate preview
-                currentPreview = Instantiate(wallPrefab);
+                Vector3 targetPosition = CalcTargetPosition();
+                currentPreview = Instantiate(buildPrefabs[currentPrefabIndex], targetPosition, buildPrefabs[currentPrefabIndex].transform.rotation);
                 SetPreviewMaterial(true);
             }
 
@@ -82,14 +83,11 @@ public class BuildManager : MonoBehaviour
     {
         if (BuildModeActive)
         {
-            // calc the position in front of the camera ( - 1 accounts for the height of the orientation game object)
-            Vector3 targetPosition = orientation.position +
-                orientation.forward * placementDistance +
-                Vector3.up * ((wallPrefab.transform.position.y - 1) + verticalOffset) +
-                orientation.right * horizontalOffset;
+            Vector3 targetPosition = CalcTargetPosition();
             
             // calc rotation offset based on orientation and user input
-            Quaternion targetRotation = Quaternion.LookRotation(orientation.forward) * Quaternion.Euler(0, userRotation, 0);
+            Quaternion targetRotation = Quaternion.LookRotation(orientation.forward) *
+                Quaternion.Euler(buildPrefabs[currentPrefabIndex].transform.rotation.eulerAngles.x, userRotation, buildPrefabs[currentPrefabIndex].transform.rotation.eulerAngles.z);
 
             // set position and rotation
             currentPreview.transform.SetPositionAndRotation(targetPosition, targetRotation);
@@ -156,6 +154,35 @@ public class BuildManager : MonoBehaviour
         {
             ResetPreviewState();
         }
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            ChangePrefab(0);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            ChangePrefab(1);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            ChangePrefab(2);
+        }
+    }
+
+    private void ChangePrefab(int index)
+    {
+        if (index >= 0 && index < buildPrefabs.Length)
+        {
+            if (currentPreview != null)
+            {
+                Destroy(currentPreview);
+            }
+            currentPrefabIndex = index;
+
+            Vector3 targetPosition = CalcTargetPosition();
+            Debug.Log(buildPrefabs[currentPrefabIndex].transform.rotation);
+            currentPreview = Instantiate(buildPrefabs[currentPrefabIndex], targetPosition, buildPrefabs[currentPrefabIndex].transform.rotation);
+            SetPreviewMaterial(true);
+        }
     }
 
     private void ResetPreviewState()
@@ -163,5 +190,16 @@ public class BuildManager : MonoBehaviour
         userRotation = 0f;
         verticalOffset = 0f;
         horizontalOffset = 0f;
+    }
+
+    private Vector3 CalcTargetPosition()
+    {
+        // calc the position in front of the camera ( - 1 accounts for the height of the orientation game object)
+        Vector3 targetPosition = orientation.position +
+            orientation.forward * placementDistance +
+            Vector3.up * ((buildPrefabs[currentPrefabIndex].transform.position.y - 1) + verticalOffset) +
+            orientation.right * horizontalOffset;
+
+        return targetPosition;
     }
 }
