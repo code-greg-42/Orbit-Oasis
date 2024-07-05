@@ -82,9 +82,12 @@ public class BuildManager : MonoBehaviour
     {
         if (BuildModeActive)
         {
-            // calc the position in front of the camera
-            Vector3 targetPosition = orientation.position + orientation.forward * placementDistance + Vector3.up * verticalOffset + orientation.right * horizontalOffset;
-
+            // calc the position in front of the camera ( - 1 accounts for the height of the orientation game object)
+            Vector3 targetPosition = orientation.position +
+                orientation.forward * placementDistance +
+                Vector3.up * ((wallPrefab.transform.position.y - 1) + verticalOffset) +
+                orientation.right * horizontalOffset;
+            
             // calc rotation offset based on orientation and user input
             Quaternion targetRotation = Quaternion.LookRotation(orientation.forward) * Quaternion.Euler(0, userRotation, 0);
 
