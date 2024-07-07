@@ -16,6 +16,7 @@ public class BuildManager : MonoBehaviour
     [SerializeField] private Material buildPreviewMaterial;
     [SerializeField] private float rotationSpeed = 60.0f; // degrees per second
     [SerializeField] private float previewMoveSpeed = 2.0f; // units per second
+    [SerializeField] private float attachmentSearchRadius = 2.0f;
 
     private KeyCode placeBuildKey = KeyCode.F;
     private KeyCode rotateLeftKey = KeyCode.Q;
@@ -83,11 +84,24 @@ public class BuildManager : MonoBehaviour
     {
         if (BuildModeActive)
         {
-            Vector3 targetPosition = CalcTargetPosition();
-            
-            // calc rotation offset based on orientation and user input
-            Quaternion targetRotation = Quaternion.LookRotation(orientation.forward) *
-                Quaternion.Euler(buildPrefabs[currentPrefabIndex].transform.rotation.eulerAngles.x, userRotation, buildPrefabs[currentPrefabIndex].transform.rotation.eulerAngles.z);
+            Transform closestAttachmentPoint = FindClosestAttachmentPoint();
+
+            Vector3 targetPosition;
+            Quaternion targetRotation;
+
+            if (closestAttachmentPoint != null)
+            {
+                targetPosition = closestAttachmentPoint.position;
+                targetRotation = closestAttachmentPoint.rotation;
+            }
+            else
+            {
+                targetPosition = CalcTargetPosition();
+
+                // calc rotation offset based on orientation and user input
+                targetRotation = Quaternion.LookRotation(orientation.forward) *
+                    Quaternion.Euler(buildPrefabs[currentPrefabIndex].transform.rotation.eulerAngles.x, userRotation, buildPrefabs[currentPrefabIndex].transform.rotation.eulerAngles.z);
+            }
 
             // set position and rotation
             currentPreview.transform.SetPositionAndRotation(targetPosition, targetRotation);
@@ -100,11 +114,46 @@ public class BuildManager : MonoBehaviour
         {
             // change material to solid
             SetPreviewMaterial(false);
+            if (currentPreview.TryGetComponent<BuildableObject>(out var buildable))
+            {
+                buildable.PlaceBuildableObject();
+            }
 
             // finalize placement
             currentPreview = null;
             originalMaterial = null;
         }
+    }
+
+    private Transform FindClosestAttachmentPoint()
+    {
+        // Default preview position
+        Vector3 defaultPreviewPosition = orientation.position + orientation.forward * placementDistance +
+                                         Vector3.up * verticalOffset + orientation.right * horizontalOffset;
+
+        // ADD BUILDALBE OBJECT LAYER AND IGNORE FUNCTION
+        Collider[] colliders = Physics.OverlapSphere(defaultPreviewPosition, attachmentSearchRadius);
+        Transform closestAttachmentPoint = null;
+        float closestDistance = Mathf.Infinity;
+
+        foreach (Collider collider in colliders)
+        {
+            if (collider.TryGetComponent(out BuildableObject buildable))
+            {
+                if (buildable.IsPlaced)
+                {
+                    Transform attachmentPoint = buildable.AttachmentPoint;
+                    float distance = Vector3.Distance(defaultPreviewPosition, attachmentPoint.position);
+                    if (distance < closestDistance)
+                    {
+                        closestDistance = distance;
+                        closestAttachmentPoint = attachmentPoint;
+                    }
+                }
+            }
+        }
+
+        return closestAttachmentPoint;
     }
 
     private void SetPreviewMaterial(bool isPreview)
