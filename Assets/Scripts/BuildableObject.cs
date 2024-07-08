@@ -7,6 +7,7 @@ public class BuildableObject : MonoBehaviour
     [SerializeField] private BuildEnums.BuildType buildType;
     [SerializeField] private BuildAttachmentPoint[] attachmentPoints;
     public bool IsPlaced { get; private set; }
+    public BuildEnums.BuildType BuildType => buildType;
 
     public void PlaceObject()
     {

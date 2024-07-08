@@ -8,7 +8,7 @@ public class BuildAttachmentPoint : MonoBehaviour
 
     public bool IsUsed { get; private set; }
 
-    public BuildEnums.BuildType Type => attachmentType;
+    public BuildEnums.BuildType AttachmentType => attachmentType;
 
     public void MarkUsed()
     {

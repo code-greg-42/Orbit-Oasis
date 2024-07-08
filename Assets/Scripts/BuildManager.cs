@@ -129,8 +129,9 @@ public class BuildManager : MonoBehaviour
     private Transform FindClosestAttachmentPoint()
     {
         Vector3 previewPosition = CalcTargetPosition();
+        BuildableObject currentBuildableObject = currentPreview.GetComponent<BuildableObject>();
 
-        Collider[] results = new Collider[6];
+        Collider[] results = new Collider[10];
         int size = Physics.OverlapSphereNonAlloc(previewPosition, attachmentSearchRadius, results, attachmentLayer);
 
         Transform closestAttachmentPoint = null;
@@ -140,11 +141,14 @@ public class BuildManager : MonoBehaviour
         {
             if (results[i].TryGetComponent(out BuildAttachmentPoint attachmentPoint))
             {
-                float sqrDistance = (previewPosition - attachmentPoint.transform.position).sqrMagnitude;
-                if (sqrDistance < closestSqrDistance)
+                if (attachmentPoint.AttachmentType == currentBuildableObject.BuildType)
                 {
-                    closestSqrDistance = sqrDistance;
-                    closestAttachmentPoint = attachmentPoint.transform;
+                    float sqrDistance = (previewPosition - attachmentPoint.transform.position).sqrMagnitude;
+                    if (sqrDistance < closestSqrDistance)
+                    {
+                        closestSqrDistance = sqrDistance;
+                        closestAttachmentPoint = attachmentPoint.transform;
+                    }
                 }
             }
         }
