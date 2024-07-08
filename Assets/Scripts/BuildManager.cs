@@ -17,6 +17,7 @@ public class BuildManager : MonoBehaviour
     [SerializeField] private float rotationSpeed = 60.0f; // degrees per second
     [SerializeField] private float previewMoveSpeed = 2.0f; // units per second
     [SerializeField] private float attachmentSearchRadius = 2.0f;
+    [SerializeField] private LayerMask attachmentLayer;
 
     private KeyCode placeBuildKey = KeyCode.F;
     private KeyCode rotateLeftKey = KeyCode.Q;
@@ -116,7 +117,7 @@ public class BuildManager : MonoBehaviour
             SetPreviewMaterial(false);
             if (currentPreview.TryGetComponent<BuildableObject>(out var buildable))
             {
-                buildable.PlaceBuildableObject();
+                buildable.PlaceObject();
             }
 
             // finalize placement
@@ -127,32 +128,26 @@ public class BuildManager : MonoBehaviour
 
     private Transform FindClosestAttachmentPoint()
     {
-        // Default preview position
-        Vector3 defaultPreviewPosition = orientation.position + orientation.forward * placementDistance +
-                                         Vector3.up * verticalOffset + orientation.right * horizontalOffset;
+        Vector3 previewPosition = CalcTargetPosition();
 
-        // ADD BUILDALBE OBJECT LAYER AND IGNORE FUNCTION
-        Collider[] colliders = Physics.OverlapSphere(defaultPreviewPosition, attachmentSearchRadius);
+        Collider[] results = new Collider[6];
+        int size = Physics.OverlapSphereNonAlloc(previewPosition, attachmentSearchRadius, results, attachmentLayer);
+
         Transform closestAttachmentPoint = null;
-        float closestDistance = Mathf.Infinity;
+        float closestSqrDistance = attachmentSearchRadius;
 
-        foreach (Collider collider in colliders)
+        for (int i = 0; i < size; i++)
         {
-            if (collider.TryGetComponent(out BuildableObject buildable))
+            if (results[i].TryGetComponent(out BuildAttachmentPoint attachmentPoint))
             {
-                if (buildable.IsPlaced)
+                float sqrDistance = (previewPosition - attachmentPoint.transform.position).sqrMagnitude;
+                if (sqrDistance < closestSqrDistance)
                 {
-                    Transform attachmentPoint = buildable.AttachmentPoint;
-                    float distance = Vector3.Distance(defaultPreviewPosition, attachmentPoint.position);
-                    if (distance < closestDistance)
-                    {
-                        closestDistance = distance;
-                        closestAttachmentPoint = attachmentPoint;
-                    }
+                    closestSqrDistance = sqrDistance;
+                    closestAttachmentPoint = attachmentPoint.transform;
                 }
             }
         }
-
         return closestAttachmentPoint;
     }
 
@@ -250,5 +245,14 @@ public class BuildManager : MonoBehaviour
             orientation.right * horizontalOffset;
 
         return targetPosition;
+    }
+
+    void OnDrawGizmos()
+    {
+        if (BuildModeActive && currentPreview != null)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(currentPreview.transform.position, attachmentSearchRadius);
+        }
     }
 }
