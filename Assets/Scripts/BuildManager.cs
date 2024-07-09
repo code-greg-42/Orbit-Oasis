@@ -17,9 +17,12 @@ public class BuildManager : MonoBehaviour
     [SerializeField] private float rotationSpeed = 60.0f; // degrees per second
     [SerializeField] private float previewMoveSpeed = 2.0f; // units per second
     [SerializeField] private float attachmentSearchRadius = 2.0f;
+    [SerializeField] private float attachmentDisableRadius = 7.0f;
     [SerializeField] private LayerMask attachmentLayer;
+    [SerializeField] private LayerMask buildLayer;
 
     private float cameraVerticalOffset = 0.25f;
+    private Collider[] overlapResults = new Collider[10];
 
     private KeyCode placeBuildKey = KeyCode.F;
     private KeyCode rotateLeftKey = KeyCode.Q;
@@ -113,11 +116,16 @@ public class BuildManager : MonoBehaviour
     {
         if (BuildModeActive && currentPreview != null)
         {
+            Vector3 placedPosition;
+
             // change material to solid
             SetPreviewMaterial(false);
             if (currentPreview.TryGetComponent<BuildableObject>(out var buildable))
             {
-                buildable.PlaceObject();
+                placedPosition = buildable.PlaceObject();
+
+                // deactivate any impacted attachment points
+                CheckAndDisableAttachmentPoints(placedPosition);
             }
 
             // finalize placement
@@ -167,6 +175,22 @@ public class BuildManager : MonoBehaviour
             else
             {
                 renderer.material = originalMaterial;
+            }
+        }
+    }
+
+    private void CheckAndDisableAttachmentPoints(Vector3 placedPosition)
+    {
+        // clear array
+        System.Array.Clear(overlapResults, 0, overlapResults.Length);
+
+        int size = Physics.OverlapSphereNonAlloc(placedPosition, attachmentDisableRadius, overlapResults, buildLayer);
+
+        for (int i = 0; i < size; i++)
+        {
+            if (overlapResults[i].TryGetComponent(out BuildableObject buildObject))
+            {
+                buildObject.CheckAndDisableAttachmentPoints(buildLayer);
             }
         }
     }
