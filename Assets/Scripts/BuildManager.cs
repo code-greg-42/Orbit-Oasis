@@ -19,6 +19,8 @@ public class BuildManager : MonoBehaviour
     [SerializeField] private float attachmentSearchRadius = 2.0f;
     [SerializeField] private LayerMask attachmentLayer;
 
+    private float cameraVerticalOffset = 0.25f;
+
     private KeyCode placeBuildKey = KeyCode.F;
     private KeyCode rotateLeftKey = KeyCode.Q;
     private KeyCode rotateRightKey = KeyCode.E;
@@ -243,10 +245,21 @@ public class BuildManager : MonoBehaviour
     private Vector3 CalcTargetPosition()
     {
         // calc the position in front of the camera ( - 1 accounts for the height of the orientation game object)
-        Vector3 targetPosition = orientation.position +
-            orientation.forward * placementDistance +
-            Vector3.up * ((buildPrefabs[currentPrefabIndex].transform.position.y - 1) + verticalOffset) +
-            orientation.right * horizontalOffset;
+        //Vector3 targetPosition = orientation.position +
+        //    orientation.forward * placementDistance +
+        //    Vector3.up * ((buildPrefabs[currentPrefabIndex].transform.position.y - 1) + verticalOffset) +
+        //    orientation.right * horizontalOffset;
+
+        //return targetPosition;
+
+        Vector3 targetPosition = orientation.position + orientation.forward * placementDistance;
+
+        // get camera's forward direction
+        Vector3 cameraForward = Camera.main.transform.forward;
+
+        float verticalAdjustment = (cameraForward.y + cameraVerticalOffset) * placementDistance;
+
+        targetPosition.y = Mathf.Max(buildPrefabs[currentPrefabIndex].transform.position.y, targetPosition.y + verticalAdjustment);
 
         return targetPosition;
     }
