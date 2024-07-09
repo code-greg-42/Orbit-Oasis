@@ -30,8 +30,6 @@ public class BuildManager : MonoBehaviour
     private KeyCode moveRightKey = KeyCode.RightArrow;
     private KeyCode resetKey = KeyCode.R;
 
-    // add boundary variables to keep the preview on the screen
-
     private GameObject currentPreview;
     private Material originalMaterial;
     private float userRotation;
@@ -133,7 +131,7 @@ public class BuildManager : MonoBehaviour
         Vector3 previewPosition = CalcTargetPosition();
         BuildableObject currentBuildableObject = currentPreview.GetComponent<BuildableObject>();
 
-        Collider[] results = new Collider[10];
+        Collider[] results = new Collider[16];
         int size = Physics.OverlapSphereNonAlloc(previewPosition, attachmentSearchRadius, results, attachmentLayer);
 
         Transform closestAttachmentPoint = null;
