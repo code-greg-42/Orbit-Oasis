@@ -23,7 +23,7 @@ public class BuildAttachmentPoint : MonoBehaviour
         {
             if (overlaps[i].TryGetComponent(out BuildableObject buildable))
             {
-                return true;
+                if (buildable.IsPlaced) return true;
             }
         }
 

@@ -12,15 +12,18 @@ public class BuildableObject : MonoBehaviour
     public bool IsPlaced { get; private set; }
     public BuildEnums.BuildType BuildType => buildType;
 
-    public Vector3 PlaceObject()
+    public void PlaceObject()
     {
         foreach (GameObject attachmentSlot in attachmentSlots)
         {
             attachmentSlot.SetActive(true);
         }
         IsPlaced = true;
+    }
 
-        return transform.position;
+    public void DeleteObject()
+    {
+        Destroy(gameObject);
     }
 
     public void CheckAndDisableAttachmentPoints(LayerMask buildLayer)
@@ -43,6 +46,38 @@ public class BuildableObject : MonoBehaviour
                         break;
                     }
                 }
+            }
+        }
+    }
+
+    public void CheckAndEnableAttachmentPoints(LayerMask buildLayer)
+    {
+        Collider[] overlaps = new Collider[10];
+
+        foreach (GameObject slot in attachmentSlots)
+        {
+            // skip active slots
+            if (slot.activeSelf) continue;
+
+            bool allClear = true;
+
+            // cycle through points in slot
+            foreach (Transform attachmentPoint in slot.transform)
+            {
+                if (attachmentPoint.TryGetComponent(out BuildAttachmentPoint buildAttachmentPoint))
+                {
+                    if (buildAttachmentPoint.CheckForNearbyBuild(overlaps, buildLayer))
+                    {
+                        allClear = false;
+                        break;
+                    }
+                }
+            }
+
+            // if no nearby builds were found, activate slot
+            if (allClear)
+            {
+                slot.SetActive(true);
             }
         }
     }

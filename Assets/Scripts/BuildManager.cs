@@ -12,32 +12,24 @@ public class BuildManager : MonoBehaviour
     [Header("References")]
     [SerializeField] private GameObject[] buildPrefabs;
     [SerializeField] private Transform orientation;
-    [SerializeField] private float placementDistance = 5.0f;
     [SerializeField] private Material buildPreviewMaterial;
-    [SerializeField] private float rotationSpeed = 60.0f; // degrees per second
-    [SerializeField] private float previewMoveSpeed = 2.0f; // units per second
-    [SerializeField] private float attachmentSearchRadius = 2.0f;
-    [SerializeField] private float attachmentDisableRadius = 7.0f;
     [SerializeField] private LayerMask attachmentLayer;
     [SerializeField] private LayerMask buildLayer;
 
+    // build settings
+    private float placementDistance = 5.0f;
+    private float attachmentSearchRadius = 2.5f;
+    private float attachmentDisableRadius = 7.0f;
     private float cameraVerticalOffset = 0.25f;
 
+    // keybinds
     private KeyCode placeBuildKey = KeyCode.F;
-    private KeyCode rotateLeftKey = KeyCode.Q;
-    private KeyCode rotateRightKey = KeyCode.E;
-    private KeyCode moveUpKey = KeyCode.UpArrow;
-    private KeyCode moveDownKey = KeyCode.DownArrow;
-    private KeyCode moveLeftKey = KeyCode.LeftArrow;
-    private KeyCode moveRightKey = KeyCode.RightArrow;
-    private KeyCode resetKey = KeyCode.R;
+    private KeyCode undoBuildKey = KeyCode.Q;
 
     private GameObject currentPreview;
+    private GameObject lastPlacedBuild;
     private Material originalMaterial;
-    private float userRotation;
-    private float verticalOffset;
-    private float horizontalOffset;
-    private int currentPrefabIndex = 0; // index to track current selection
+    private int currentPrefabIndex = 0; // index to track build object type selection
 
     private void Awake()
     {
@@ -57,9 +49,14 @@ public class BuildManager : MonoBehaviour
 
             UpdatePreviewPosition();
 
-            if (Input.GetKeyDown(placeBuildKey))
+            if (Input.GetKeyDown(placeBuildKey) && currentPreview != null)
             {
                 PlaceBuild();
+            }
+
+            if (Input.GetKeyDown(undoBuildKey) && lastPlacedBuild != null)
+            {
+                UndoRecentBuild();
             }
 
             HandleUserInput();
@@ -76,10 +73,7 @@ public class BuildManager : MonoBehaviour
                 currentPreview = null;
             }
             originalMaterial = null;
-            ResetPreviewState();
         }
-
-        // toggle bool
         BuildModeActive = !BuildModeActive;
     }
 
@@ -100,13 +94,10 @@ public class BuildManager : MonoBehaviour
             else
             {
                 targetPosition = CalcTargetPosition();
-
-                // calc rotation offset based on orientation and user input
                 targetRotation = Quaternion.LookRotation(orientation.forward) *
-                    Quaternion.Euler(buildPrefabs[currentPrefabIndex].transform.rotation.eulerAngles.x, userRotation, buildPrefabs[currentPrefabIndex].transform.rotation.eulerAngles.z);
+                                    Quaternion.Euler(buildPrefabs[currentPrefabIndex].transform.rotation.eulerAngles);
             }
 
-            // set position and rotation
             currentPreview.transform.SetPositionAndRotation(targetPosition, targetRotation);
         }
     }
@@ -115,21 +106,39 @@ public class BuildManager : MonoBehaviour
     {
         if (BuildModeActive && currentPreview != null)
         {
-            Vector3 placedPosition;
+            lastPlacedBuild = currentPreview;
 
             // change material to solid
             SetPreviewMaterial(false);
             if (currentPreview.TryGetComponent<BuildableObject>(out var buildable))
             {
-                placedPosition = buildable.PlaceObject();
+                // place build
+                buildable.PlaceObject();
 
                 // deactivate any impacted attachment points
-                CheckAndDisableAttachmentPoints(placedPosition);
+                CheckAttachmentPoints(lastPlacedBuild.transform.position);
             }
 
             // finalize placement
             currentPreview = null;
             originalMaterial = null;
+        }
+    }
+
+    private void UndoRecentBuild()
+    {
+        if (BuildModeActive && lastPlacedBuild != null)
+        {
+            // get position of build to use for attachment update
+            Vector3 lastBuildPosition = lastPlacedBuild.transform.position;
+
+            // deactivate before destroying so CheckAttachmentPoints runs as expected
+            lastPlacedBuild.SetActive(false);
+            Destroy(lastPlacedBuild);
+            lastPlacedBuild = null;
+
+            // enable any free attachment points
+            CheckAttachmentPoints(lastBuildPosition, true);
         }
     }
 
@@ -178,52 +187,44 @@ public class BuildManager : MonoBehaviour
         }
     }
 
-    private void CheckAndDisableAttachmentPoints(Vector3 placedPosition)
+    private void CheckAttachmentPoints(Vector3 placedPosition, bool enable = false)
     {
         Collider[] overlapResults = new Collider[12];
 
         int numResults = Physics.OverlapSphereNonAlloc(placedPosition, attachmentDisableRadius, overlapResults, buildLayer);
 
-        for (int i = 0; i < numResults; i++)
+        if (!enable)
         {
-            if (overlapResults[i].TryGetComponent(out BuildableObject buildObject))
+            // disable any used attachment points
+            for (int i = 0; i < numResults; i++)
             {
-                buildObject.CheckAndDisableAttachmentPoints(buildLayer);
+                if (overlapResults[i].TryGetComponent(out BuildableObject buildObject))
+                {
+                    if (buildObject.IsPlaced)
+                    {
+                        buildObject.CheckAndDisableAttachmentPoints(buildLayer);
+                    }
+                }
+            }
+        }
+        else
+        {
+            // enable any unused attachment points
+            for (int i = 0; i < numResults; i++)
+            {
+                if (overlapResults[i].TryGetComponent(out BuildableObject buildObject))
+                {
+                    if (buildObject.IsPlaced)
+                    {
+                        buildObject.CheckAndEnableAttachmentPoints(buildLayer);
+                    }
+                }
             }
         }
     }
 
-    // add boundaries to keep the preview on the screen later
     private void HandleUserInput()
     {
-        if (Input.GetKey(rotateLeftKey))
-        {
-            userRotation -= rotationSpeed * Time.deltaTime;
-        }
-        if (Input.GetKey(rotateRightKey))
-        {
-            userRotation += rotationSpeed * Time.deltaTime;
-        }
-        if (Input.GetKey(moveLeftKey))
-        {
-            horizontalOffset -= previewMoveSpeed * Time.deltaTime;
-        }
-        if (Input.GetKey(moveRightKey))
-        {
-            horizontalOffset += previewMoveSpeed * Time.deltaTime;
-        }
-        if (Input.GetKey(moveUpKey))
-        {
-            verticalOffset += previewMoveSpeed * Time.deltaTime;
-        }
-        if (Input.GetKey(moveDownKey))
-        {
-            verticalOffset -= previewMoveSpeed * Time.deltaTime;
-        }
-        if (Input.GetKeyDown(resetKey))
-        {
-            ResetPreviewState();
-        }
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             ChangePrefab(0);
@@ -255,23 +256,8 @@ public class BuildManager : MonoBehaviour
         }
     }
 
-    private void ResetPreviewState()
-    {
-        userRotation = 0f;
-        verticalOffset = 0f;
-        horizontalOffset = 0f;
-    }
-
     private Vector3 CalcTargetPosition()
     {
-        // calc the position in front of the camera ( - 1 accounts for the height of the orientation game object)
-        //Vector3 targetPosition = orientation.position +
-        //    orientation.forward * placementDistance +
-        //    Vector3.up * ((buildPrefabs[currentPrefabIndex].transform.position.y - 1) + verticalOffset) +
-        //    orientation.right * horizontalOffset;
-
-        //return targetPosition;
-
         Vector3 targetPosition = orientation.position + orientation.forward * placementDistance;
 
         // get camera's forward direction
@@ -282,14 +268,5 @@ public class BuildManager : MonoBehaviour
         targetPosition.y = Mathf.Max(buildPrefabs[currentPrefabIndex].transform.position.y, targetPosition.y + verticalAdjustment);
 
         return targetPosition;
-    }
-
-    void OnDrawGizmos()
-    {
-        if (BuildModeActive && currentPreview != null)
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(currentPreview.transform.position, attachmentSearchRadius);
-        }
     }
 }
