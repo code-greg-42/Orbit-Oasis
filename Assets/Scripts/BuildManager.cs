@@ -22,7 +22,6 @@ public class BuildManager : MonoBehaviour
     [SerializeField] private LayerMask buildLayer;
 
     private float cameraVerticalOffset = 0.25f;
-    private Collider[] overlapResults = new Collider[10];
 
     private KeyCode placeBuildKey = KeyCode.F;
     private KeyCode rotateLeftKey = KeyCode.Q;
@@ -181,12 +180,11 @@ public class BuildManager : MonoBehaviour
 
     private void CheckAndDisableAttachmentPoints(Vector3 placedPosition)
     {
-        // clear array
-        System.Array.Clear(overlapResults, 0, overlapResults.Length);
+        Collider[] overlapResults = new Collider[12];
 
-        int size = Physics.OverlapSphereNonAlloc(placedPosition, attachmentDisableRadius, overlapResults, buildLayer);
+        int numResults = Physics.OverlapSphereNonAlloc(placedPosition, attachmentDisableRadius, overlapResults, buildLayer);
 
-        for (int i = 0; i < size; i++)
+        for (int i = 0; i < numResults; i++)
         {
             if (overlapResults[i].TryGetComponent(out BuildableObject buildObject))
             {
