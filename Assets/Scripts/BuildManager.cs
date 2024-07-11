@@ -21,6 +21,9 @@ public class BuildManager : MonoBehaviour
     private float attachmentSearchRadius = 2.5f;
     private float attachmentDisableRadius = 7.0f;
     private float cameraVerticalOffset = 0.25f;
+    private float groundSnapThreshold = 1.0f;
+    private Color validPreviewColor = new(166 / 255f, 166 / 255f, 166 / 255f, 40 / 255f); // gray transparent color
+    private Color invalidPreviewColor = new(255 / 255f, 0 / 255f, 0 / 255f, 65 / 255f); // red transparent color
 
     // keybinds
     private KeyCode placeBuildKey = KeyCode.F;
@@ -30,6 +33,7 @@ public class BuildManager : MonoBehaviour
     private GameObject lastPlacedBuild;
     private Material originalMaterial;
     private int currentPrefabIndex = 0; // index to track build object type selection
+    private bool previewIsPlaceable; // bool to track whether preview is in a placeable position
 
     private void Awake()
     {
@@ -49,7 +53,7 @@ public class BuildManager : MonoBehaviour
 
             UpdatePreviewPosition();
 
-            if (Input.GetKeyDown(placeBuildKey) && currentPreview != null)
+            if (Input.GetKeyDown(placeBuildKey) && currentPreview != null && previewIsPlaceable)
             {
                 PlaceBuild();
             }
@@ -72,7 +76,9 @@ public class BuildManager : MonoBehaviour
                 Destroy(currentPreview);
                 currentPreview = null;
             }
+            // reset
             originalMaterial = null;
+            previewIsPlaceable = false;
         }
         BuildModeActive = !BuildModeActive;
     }
@@ -90,21 +96,32 @@ public class BuildManager : MonoBehaviour
             {
                 targetPosition = closestAttachmentPoint.position;
                 targetRotation = closestAttachmentPoint.rotation;
+                previewIsPlaceable = true;
             }
             else
             {
                 targetPosition = CalcTargetPosition();
                 targetRotation = Quaternion.LookRotation(orientation.forward) *
                                     Quaternion.Euler(buildPrefabs[currentPrefabIndex].transform.rotation.eulerAngles);
+
+                if (targetPosition.y == buildPrefabs[currentPrefabIndex].transform.position.y)
+                {
+                    previewIsPlaceable = true;
+                }
+                else
+                {
+                    previewIsPlaceable = false;
+                }
             }
 
             currentPreview.transform.SetPositionAndRotation(targetPosition, targetRotation);
+            UpdatePreviewColor(previewIsPlaceable);
         }
     }
 
     private void PlaceBuild()
     {
-        if (BuildModeActive && currentPreview != null)
+        if (BuildModeActive && currentPreview != null && previewIsPlaceable)
         {
             lastPlacedBuild = currentPreview;
 
@@ -122,6 +139,21 @@ public class BuildManager : MonoBehaviour
             // finalize placement
             currentPreview = null;
             originalMaterial = null;
+            // reset bool
+            previewIsPlaceable = false;
+        }
+    }
+
+    private void UpdatePreviewColor(bool isPlaceable)
+    {
+        if (currentPreview.TryGetComponent(out Renderer renderer))
+        {
+            Color targetColor = isPlaceable ? validPreviewColor : invalidPreviewColor;
+
+            if (renderer.material.color != targetColor)
+            {
+                renderer.material.color = targetColor;
+            }
         }
     }
 
@@ -258,14 +290,23 @@ public class BuildManager : MonoBehaviour
 
     private Vector3 CalcTargetPosition()
     {
+        // get original position as the position out in front of the camera, adjusted for where the camera is looking left/right
         Vector3 targetPosition = orientation.position + orientation.forward * placementDistance;
 
-        // get camera's forward direction
+        // get camera's forward direction for up/down calculation
         Vector3 cameraForward = Camera.main.transform.forward;
 
+        // adjust slightly to make the position slightly higher than where the camera is looking (allows for building up)
         float verticalAdjustment = (cameraForward.y + cameraVerticalOffset) * placementDistance;
 
+        // ensure target position is at minimum, above ground
         targetPosition.y = Mathf.Max(buildPrefabs[currentPrefabIndex].transform.position.y, targetPosition.y + verticalAdjustment);
+
+        // if it's near the ground, snap it to the ground
+        if (targetPosition.y < buildPrefabs[currentPrefabIndex].transform.position.y + groundSnapThreshold)
+        {
+            targetPosition.y = buildPrefabs[currentPrefabIndex].transform.position.y;
+        }
 
         return targetPosition;
     }
