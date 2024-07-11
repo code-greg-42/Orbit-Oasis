@@ -10,14 +10,25 @@ public class Projectile : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.TryGetComponent(out Item item))
+        if (BuildManager.Instance.BuildModeActive)
         {
-            item.PickupItem();
+            if (collision.gameObject.TryGetComponent(out BuildableObject buildable))
+            {
+                buildable.DeleteObject();
+            }
             Deactivate();
         }
-        else if (collision.gameObject.CompareTag("Ground") && groundSequenceCoroutine == null)
+        else
         {
-            groundSequenceCoroutine = StartCoroutine(GroundSequence());
+            if (collision.gameObject.TryGetComponent(out Item item))
+            {
+                item.PickupItem();
+                Deactivate();
+            }
+            else if ((collision.gameObject.CompareTag("Ground") || collision.gameObject.TryGetComponent(out BuildableObject _)) && groundSequenceCoroutine == null)
+            {
+                groundSequenceCoroutine = StartCoroutine(GroundSequence());
+            }
         }
     }
 
@@ -26,10 +37,10 @@ public class Projectile : MonoBehaviour
         // Wait for the specified delay
         yield return new WaitForSeconds(groundSequenceDelay);
 
-        // check for nearby animals
+        // check for nearby items
         Collider[] colliders = Physics.OverlapSphere(transform.position, captureRadius);
 
-        // find any animals in collider array
+        // find any items in collider array
         foreach (var collider in colliders)
         {
             if (collider.TryGetComponent(out Item item))
@@ -40,7 +51,7 @@ public class Projectile : MonoBehaviour
             }
         }
 
-        // deactivate if no animals captured
+        // deactivate if no items captured
         Deactivate();
     }
 

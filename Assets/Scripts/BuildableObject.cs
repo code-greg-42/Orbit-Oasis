@@ -14,15 +14,34 @@ public class BuildableObject : MonoBehaviour
 
     public void PlaceObject()
     {
+        // activate attachment slots
         foreach (GameObject attachmentSlot in attachmentSlots)
         {
             attachmentSlot.SetActive(true);
         }
+
+        // enable the collider
+        if (TryGetComponent(out Collider collider))
+        {
+            collider.enabled = true;
+        }
+
+        // set bool
         IsPlaced = true;
     }
 
     public void DeleteObject()
     {
+        // save position to variable
+        Vector3 checkPosition = gameObject.transform.position;
+
+        // set to inactive
+        gameObject.SetActive(false);
+
+        // reactivate any freed up attachments
+        BuildManager.Instance.CheckAttachmentPoints(checkPosition, true);
+
+        // destroy object
         Destroy(gameObject);
     }
 

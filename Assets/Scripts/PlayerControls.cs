@@ -34,7 +34,7 @@ public class PlayerControls : MonoBehaviour
                 axe.SwingAxe();
             }
 
-            // CHANGE LATER TO INCLUDE OVERLAPSPHERENONALLOC WITH AN ITEMS LAYER
+            // ITEM PICKUP
             if (Input.GetKeyDown(pickupKeybind))
             {
                 foreach (Collider collider in Physics.OverlapSphere(transform.position, pickupRange))
@@ -68,8 +68,30 @@ public class PlayerControls : MonoBehaviour
             {
                 // calc additional force amount
                 float additionalForce = shootingChargeTime / maxChargeTime * maxAdditionalForce;
-                // shoot with additional force added
-                ShootProjectile(additionalForce);
+                // shoot with additional force and slight lob added
+                ShootProjectile(additionalForce, true);
+            }
+        }
+        else
+        {
+            // DESTROYING BUILDS
+            if (Input.GetKeyDown(shootingKeybind))
+            {
+                shootingChargeTime = 0.0f;
+            }
+
+            if (Input.GetKey(shootingKeybind))
+            {
+                shootingChargeTime += Time.deltaTime;
+                shootingChargeTime = Mathf.Min(shootingChargeTime, maxChargeTime); // cap at max charge time
+            }
+
+            if (Input.GetKeyUp(shootingKeybind))
+            {
+                // calc additional force amount
+                float additionalForce = shootingChargeTime / maxChargeTime * maxAdditionalForce;
+                // shoot with additional force, but no lob added
+                ShootProjectile(additionalForce, false);
             }
         }
 
@@ -80,7 +102,7 @@ public class PlayerControls : MonoBehaviour
         }
     }
 
-    private void ShootProjectile(float additionalForce)
+    private void ShootProjectile(float additionalForce, bool addLob)
     {
         // get projectile from pool
         GameObject projectile = ProjectilePool.Instance.GetPooledObject();
@@ -88,8 +110,11 @@ public class PlayerControls : MonoBehaviour
         // calc direction
         Vector3 direction = playerObject.forward;
 
-        // adjust y value for a slight lob
-        direction.y = projectileLobHeight;
+        if (addLob)
+        {
+            // adjust y value for a slight lob
+            direction.y = projectileLobHeight;
+        }
 
         // ignore collision with player object
         if (playerObject.TryGetComponent(out Collider playerCollider) && projectile.TryGetComponent(out Collider projectileCollider))
@@ -100,13 +125,17 @@ public class PlayerControls : MonoBehaviour
         // reposition projectile to player object
         projectile.transform.position = playerObject.position;
 
-        // activate projectile
-        projectile.SetActive(true);
-
         // apply force to projectile
         if (projectile.TryGetComponent(out Rigidbody rb))
         {
+            rb.velocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+
+            // activate projectile
+            projectile.SetActive(true);
+
             rb.AddForce(direction * (baseProjectileForce + additionalForce), ForceMode.Impulse);
+            Debug.Log("Projectile shot with force: " + (baseProjectileForce + additionalForce));
         }
     }
 }

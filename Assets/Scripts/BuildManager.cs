@@ -46,9 +46,8 @@ public class BuildManager : MonoBehaviour
         {
             if (currentPreview == null)
             {
-                Vector3 targetPosition = CalcTargetPosition();
-                currentPreview = Instantiate(buildPrefabs[currentPrefabIndex], targetPosition, buildPrefabs[currentPrefabIndex].transform.rotation);
-                SetPreviewMaterial(true);
+                // instantiate new preview
+                CreatePreview();
             }
 
             UpdatePreviewPosition();
@@ -81,6 +80,40 @@ public class BuildManager : MonoBehaviour
             previewIsPlaceable = false;
         }
         BuildModeActive = !BuildModeActive;
+    }
+
+    private void CreatePreview()
+    {
+        if (currentPreview == null)
+        {
+            Vector3 targetPosition = CalcTargetPosition();
+            currentPreview = Instantiate(buildPrefabs[currentPrefabIndex], targetPosition, buildPrefabs[currentPrefabIndex].transform.rotation);
+
+            // disable collider on the current preview object
+            if (currentPreview.TryGetComponent(out Collider previewCollider))
+            {
+                previewCollider.enabled = false;
+            }
+
+            // set preview material to transparent material
+            SetPreviewMaterial(true);
+        }
+    }
+
+    private void ChangePrefab(int index)
+    {
+        if (index >= 0 && index < buildPrefabs.Length)
+        {
+            if (currentPreview != null)
+            {
+                Destroy(currentPreview);
+                currentPreview = null;
+            }
+            currentPrefabIndex = index;
+
+            // instantiate a new preview with the new prefab index
+            CreatePreview();
+        }
     }
 
     private void UpdatePreviewPosition()
@@ -219,7 +252,7 @@ public class BuildManager : MonoBehaviour
         }
     }
 
-    private void CheckAttachmentPoints(Vector3 placedPosition, bool enable = false)
+    public void CheckAttachmentPoints(Vector3 placedPosition, bool enable = false)
     {
         Collider[] overlapResults = new Collider[12];
 
@@ -268,23 +301,6 @@ public class BuildManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
             ChangePrefab(2);
-        }
-    }
-
-    private void ChangePrefab(int index)
-    {
-        if (index >= 0 && index < buildPrefabs.Length)
-        {
-            if (currentPreview != null)
-            {
-                Destroy(currentPreview);
-            }
-            currentPrefabIndex = index;
-
-            Vector3 targetPosition = CalcTargetPosition();
-            Debug.Log(buildPrefabs[currentPrefabIndex].transform.rotation);
-            currentPreview = Instantiate(buildPrefabs[currentPrefabIndex], targetPosition, buildPrefabs[currentPrefabIndex].transform.rotation);
-            SetPreviewMaterial(true);
         }
     }
 
