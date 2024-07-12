@@ -6,7 +6,7 @@ using UnityEngine;
 public class FishingPlayerMovement : MonoBehaviour
 {
     private float moveSpeed = 50.0f;
-    private float boostForce = 30.0f;
+    private float boostForce = 20.0f;
 
     [Header("References")]
     [SerializeField] private Rigidbody2D rb;
@@ -104,6 +104,15 @@ public class FishingPlayerMovement : MonoBehaviour
             }
 
             playerObject.rotation = Quaternion.Euler(0, 0, angle);
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("FishingFish"))
+        {
+            Debug.Log("Player caught da fish!");
+            collision.gameObject.SetActive(false);
         }
     }
 }

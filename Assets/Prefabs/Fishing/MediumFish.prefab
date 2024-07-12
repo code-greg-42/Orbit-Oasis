@@ -11,9 +11,10 @@ GameObject:
   - component: {fileID: 2113648187902225839}
   - component: {fileID: 6882394715159033140}
   - component: {fileID: 6704694694248357974}
+  - component: {fileID: 7150351135642257388}
   m_Layer: 0
   m_Name: MediumFish
-  m_TagString: Untagged
+  m_TagString: FishingFish
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -60,7 +61,7 @@ Rigidbody2D:
   m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 1
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!114 &6704694694248357974
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -76,6 +77,42 @@ MonoBehaviour:
   moveSpeed: 9
   intervalRangeMin: 1.5
   intervalRangeMax: 2.5
+  fishObject: {fileID: 2714109071130721058}
+--- !u!70 &7150351135642257388
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 462365217564682785}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.019857408, y: 0.0000000023671873}
+  m_Size: {x: 1.251518, y: 0.6823047}
+  m_Direction: 1
 --- !u!1 &7797806313882266336
 GameObject:
   m_ObjectHideFlags: 0

@@ -5,9 +5,13 @@ using UnityEngine;
 
 public class FishingFishMovement : MonoBehaviour
 {
+    [Header("Movement")]
     [SerializeField] private float moveSpeed = 10.0f;
     [SerializeField] private float intervalRangeMin = 2.0f;
     [SerializeField] private float intervalRangeMax = 4.0f;
+
+    [Header("References")]
+    [SerializeField] private Transform fishObject;
 
     private const float xBoundary = 8.0f;
     private const float yBoundary = 4.0f;
@@ -15,6 +19,7 @@ public class FishingFishMovement : MonoBehaviour
     private Rigidbody2D rb;
     private Vector2 moveDirection;
 
+    private bool isFacingLeft = true;
     private bool outOfBounds = false;
 
     private void Start()
@@ -26,6 +31,7 @@ public class FishingFishMovement : MonoBehaviour
     private void FixedUpdate()
     {
         BoundaryCheck();
+        FlipSprite();
     }
 
     private IEnumerator ChangeDirectionCoroutine()
@@ -74,5 +80,36 @@ public class FishingFishMovement : MonoBehaviour
         {
             outOfBounds = false;
         }
+    }
+
+    private void FlipSprite()
+    {
+        Vector2 velocity = rb.velocity;
+
+        if (velocity.x < 0 && !isFacingLeft)
+        {
+            FlipToFacingLeft();
+        }
+        else if (velocity.x > 0 && isFacingLeft)
+        {
+            FlipToFacingRight();
+        }
+    }
+
+    // adjust these after getting new sprites
+    private void FlipToFacingLeft()
+    {
+        Vector3 scale = fishObject.localScale;
+        scale.y = Mathf.Abs(scale.y);
+        fishObject.localScale = scale;
+        isFacingLeft = true;
+    }
+
+    private void FlipToFacingRight()
+    {
+        Vector3 scale = fishObject.localScale;
+        scale.y = -Mathf.Abs(scale.y);
+        fishObject.localScale = scale;
+        isFacingLeft = false;
     }
 }
