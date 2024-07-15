@@ -33,7 +33,7 @@ public class BuildManager : MonoBehaviour
     private KeyCode deleteModeKey = KeyCode.V;
 
     private GameObject currentPreview;
-    private GameObject lastPlacedBuild;
+    private BuildableObject lastPlacedBuild;
     private BuildableObject currentDeleteModeHighlightedBuild;
     private Material originalMaterial;
     private int currentPrefabIndex = 0; // index to track build object type selection
@@ -51,6 +51,11 @@ public class BuildManager : MonoBehaviour
             if (DeleteModeActive)
             {
                 UpdateDeleteModeHighlight();
+
+                if (Input.GetKeyDown(placeBuildKey) && currentDeleteModeHighlightedBuild != null)
+                {
+                    currentDeleteModeHighlightedBuild.DeleteObject();
+                }
             }
             else
             {
@@ -69,7 +74,7 @@ public class BuildManager : MonoBehaviour
 
                 if (Input.GetKeyDown(undoBuildKey) && lastPlacedBuild != null)
                 {
-                    UndoRecentBuild();
+                    lastPlacedBuild.DeleteObject();
                 }
 
                 HandleUserInput();
@@ -200,12 +205,12 @@ public class BuildManager : MonoBehaviour
     {
         if (BuildModeActive && currentPreview != null && previewIsPlaceable)
         {
-            lastPlacedBuild = currentPreview;
-
             // change material to solid
             SetPreviewMaterial(false);
             if (currentPreview.TryGetComponent<BuildableObject>(out var buildable))
             {
+                lastPlacedBuild = buildable;
+
                 // place build
                 buildable.PlaceObject();
 
@@ -231,23 +236,6 @@ public class BuildManager : MonoBehaviour
             {
                 renderer.material.color = targetColor;
             }
-        }
-    }
-
-    private void UndoRecentBuild()
-    {
-        if (BuildModeActive && lastPlacedBuild != null)
-        {
-            // get position of build to use for attachment update
-            Vector3 lastBuildPosition = lastPlacedBuild.transform.position;
-
-            // deactivate before destroying so CheckAttachmentPoints runs as expected
-            lastPlacedBuild.SetActive(false);
-            Destroy(lastPlacedBuild);
-            lastPlacedBuild = null;
-
-            // enable any free attachment points
-            CheckAttachmentPoints(lastBuildPosition, true);
         }
     }
 
