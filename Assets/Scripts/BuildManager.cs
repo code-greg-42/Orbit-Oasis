@@ -20,6 +20,7 @@ public class BuildManager : MonoBehaviour
     private float placementDistance = 5.0f;
     private float attachmentSearchRadius = 2.5f;
     private float attachmentDisableRadius = 7.0f;
+    private float deleteHighlightRadius = 5.0f;
     private float cameraVerticalOffset = 0.25f;
     private float groundSnapThreshold = 1.0f;
     private Color validPreviewColor = new(166 / 255f, 166 / 255f, 166 / 255f, 40 / 255f); // gray transparent color
@@ -28,12 +29,15 @@ public class BuildManager : MonoBehaviour
     // keybinds
     private KeyCode placeBuildKey = KeyCode.F;
     private KeyCode undoBuildKey = KeyCode.Q;
+    private KeyCode deleteModeKey = KeyCode.V;
 
     private GameObject currentPreview;
     private GameObject lastPlacedBuild;
+    private BuildableObject currentDeleteModeHighlightedBuild;
     private Material originalMaterial;
     private int currentPrefabIndex = 0; // index to track build object type selection
     private bool previewIsPlaceable; // bool to track whether preview is in a placeable position
+    private bool deleteModeActive;
 
     private void Awake()
     {
@@ -60,6 +64,16 @@ public class BuildManager : MonoBehaviour
             if (Input.GetKeyDown(undoBuildKey) && lastPlacedBuild != null)
             {
                 UndoRecentBuild();
+            }
+
+            if (Input.GetKeyDown(deleteModeKey))
+            {
+                deleteModeActive = true;
+            }
+
+            if (deleteModeActive)
+            {
+                UpdateDeleteModeHighlight();
             }
 
             HandleUserInput();
@@ -207,6 +221,51 @@ public class BuildManager : MonoBehaviour
         }
     }
 
+    private void UpdateDeleteModeHighlight()
+    {
+        if (BuildModeActive && deleteModeActive)
+        {
+            BuildableObject closestBuild = FindClosestBuildableObject();
+
+            if (closestBuild != null)
+            {
+                if (currentDeleteModeHighlightedBuild != null)
+                {
+                    if (currentDeleteModeHighlightedBuild != closestBuild)
+                    {
+                        // disable highlight on currently highlighted build
+                        currentDeleteModeHighlightedBuild.DisableDeleteHighlight();
+
+                        // enable highlight on new closest build
+                        closestBuild.EnableDeleteHighlight();
+
+                        // set reference
+                        currentDeleteModeHighlightedBuild = closestBuild;
+                    }
+                }
+                else
+                {
+                    // enable highlight
+                    closestBuild.EnableDeleteHighlight();
+
+                    // set reference
+                    currentDeleteModeHighlightedBuild = closestBuild;
+                }
+            }
+            else
+            {
+                if (currentDeleteModeHighlightedBuild != null)
+                {
+                    // disable highlight
+                    currentDeleteModeHighlightedBuild.DisableDeleteHighlight();
+
+                    // set reference to null
+                    currentDeleteModeHighlightedBuild = null;
+                }
+            }
+        }
+    }
+
     private Transform FindClosestAttachmentPoint()
     {
         Vector3 previewPosition = CalcTargetPosition();
@@ -234,6 +293,34 @@ public class BuildManager : MonoBehaviour
             }
         }
         return closestAttachmentPoint;
+    }
+
+    private BuildableObject FindClosestBuildableObject()
+    {
+        Vector3 startPosition = CalcTargetPosition();
+
+        Collider[] results = new Collider[10];
+        int numResults = Physics.OverlapSphereNonAlloc(startPosition, deleteHighlightRadius, results, buildLayer);
+
+        BuildableObject closestBuildableObject = null;
+        float closestSqrDistance = deleteHighlightRadius;
+
+        for (int i = 0; i < numResults; i++)
+        {
+            if (results[i].TryGetComponent(out BuildableObject buildableObject))
+            {
+                if (buildableObject.IsPlaced)
+                {
+                    float sqrDistance = (startPosition - buildableObject.transform.position).sqrMagnitude;
+                    if (sqrDistance < closestSqrDistance)
+                    {
+                        closestSqrDistance = sqrDistance;
+                        closestBuildableObject = buildableObject;
+                    }
+                }
+            }
+        }
+        return closestBuildableObject;
     }
 
     private void SetPreviewMaterial(bool isPreview)

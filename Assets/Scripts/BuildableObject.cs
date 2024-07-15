@@ -5,9 +5,10 @@ using UnityEngine;
 public class BuildableObject : MonoBehaviour
 {
     [SerializeField] private BuildEnums.BuildType buildType;
-    [SerializeField] private BuildAttachmentPoint[] attachmentPoints;
 
+    [Header("References")]
     [SerializeField] private GameObject[] attachmentSlots;
+    [SerializeField] private GameObject deleteHighlight;
 
     public bool IsPlaced { get; private set; }
     public BuildEnums.BuildType BuildType => buildType;
@@ -43,6 +44,16 @@ public class BuildableObject : MonoBehaviour
 
         // destroy object
         Destroy(gameObject);
+    }
+
+    public void EnableDeleteHighlight()
+    {
+        deleteHighlight.SetActive(true);
+    }
+
+    public void DisableDeleteHighlight()
+    {
+        deleteHighlight.SetActive(false);
     }
 
     public void CheckAndDisableAttachmentPoints(LayerMask buildLayer)
