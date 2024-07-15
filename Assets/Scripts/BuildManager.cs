@@ -8,6 +8,7 @@ public class BuildManager : MonoBehaviour
     public static BuildManager Instance { get; private set; }
 
     public bool BuildModeActive { get; private set; }
+    public bool DeleteModeActive { get; private set; }
 
     [Header("References")]
     [SerializeField] private GameObject[] buildPrefabs;
@@ -17,10 +18,10 @@ public class BuildManager : MonoBehaviour
     [SerializeField] private LayerMask buildLayer;
 
     // build settings
-    private float placementDistance = 5.0f;
+    private float placementDistance = 4.2f;
     private float attachmentSearchRadius = 2.5f;
     private float attachmentDisableRadius = 7.0f;
-    private float deleteHighlightRadius = 5.0f;
+    private float deleteHighlightRadius = 6.0f;
     private float cameraVerticalOffset = 0.25f;
     private float groundSnapThreshold = 1.0f;
     private Color validPreviewColor = new(166 / 255f, 166 / 255f, 166 / 255f, 40 / 255f); // gray transparent color
@@ -37,7 +38,6 @@ public class BuildManager : MonoBehaviour
     private Material originalMaterial;
     private int currentPrefabIndex = 0; // index to track build object type selection
     private bool previewIsPlaceable; // bool to track whether preview is in a placeable position
-    private bool deleteModeActive;
 
     private void Awake()
     {
@@ -48,35 +48,37 @@ public class BuildManager : MonoBehaviour
     {
         if (BuildModeActive)
         {
-            if (currentPreview == null)
-            {
-                // instantiate new preview
-                CreatePreview();
-            }
-
-            UpdatePreviewPosition();
-
-            if (Input.GetKeyDown(placeBuildKey) && currentPreview != null && previewIsPlaceable)
-            {
-                PlaceBuild();
-            }
-
-            if (Input.GetKeyDown(undoBuildKey) && lastPlacedBuild != null)
-            {
-                UndoRecentBuild();
-            }
-
-            if (Input.GetKeyDown(deleteModeKey))
-            {
-                deleteModeActive = true;
-            }
-
-            if (deleteModeActive)
+            if (DeleteModeActive)
             {
                 UpdateDeleteModeHighlight();
             }
+            else
+            {
+                if (currentPreview == null)
+                {
+                    // instantiate new preview
+                    CreatePreview();
+                }
 
-            HandleUserInput();
+                UpdatePreviewPosition();
+
+                if (Input.GetKeyDown(placeBuildKey) && currentPreview != null && previewIsPlaceable)
+                {
+                    PlaceBuild();
+                }
+
+                if (Input.GetKeyDown(undoBuildKey) && lastPlacedBuild != null)
+                {
+                    UndoRecentBuild();
+                }
+
+                HandleUserInput();
+            }
+            
+            if (Input.GetKeyDown(deleteModeKey))
+            {
+                ToggleDeleteMode();
+            }
         }
     }
 
@@ -92,8 +94,36 @@ public class BuildManager : MonoBehaviour
             // reset
             originalMaterial = null;
             previewIsPlaceable = false;
+
+            // cancel delete mode if active
+            if (DeleteModeActive)
+            {
+                ToggleDeleteMode();
+            }
         }
         BuildModeActive = !BuildModeActive;
+    }
+
+    public void ToggleDeleteMode()
+    {
+        if (BuildModeActive)
+        {
+            if (currentPreview != null)
+            {
+                // clear current preview
+                Destroy(currentPreview);
+                currentPreview = null;
+            }
+
+            // turn off highlight and reset reference if active
+            if (currentDeleteModeHighlightedBuild != null)
+            {
+                currentDeleteModeHighlightedBuild.DisableDeleteHighlight();
+                currentDeleteModeHighlightedBuild = null;
+            }
+            // swap bool
+            DeleteModeActive = !DeleteModeActive;
+        }
     }
 
     private void CreatePreview()
@@ -223,7 +253,7 @@ public class BuildManager : MonoBehaviour
 
     private void UpdateDeleteModeHighlight()
     {
-        if (BuildModeActive && deleteModeActive)
+        if (BuildModeActive && DeleteModeActive)
         {
             BuildableObject closestBuild = FindClosestBuildableObject();
 

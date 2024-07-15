@@ -5426,12 +5426,7 @@ MonoBehaviour:
   - {fileID: 8511935437913631543, guid: e5d694da9ca830e4fa36f74fe137a658, type: 3}
   - {fileID: 7402690563332859964, guid: aacc61030a8c47644b9532fdc6f3dff3, type: 3}
   orientation: {fileID: 1341371024}
-  placementDistance: 5
   buildPreviewMaterial: {fileID: 2100000, guid: c2970681c9aa29a4692a4b26fb82d87c, type: 2}
-  rotationSpeed: 60
-  previewMoveSpeed: 2
-  attachmentSearchRadius: 2.5
-  attachmentDisableRadius: 7
   attachmentLayer:
     serializedVersion: 2
     m_Bits: 2048
