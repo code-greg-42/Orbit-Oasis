@@ -77,7 +77,7 @@ public class BuildManager : MonoBehaviour
                     lastPlacedBuild.DeleteObject();
                 }
 
-                HandleUserInput();
+                HandleUserPrefabChange();
             }
             
             if (Input.GetKeyDown(deleteModeKey))
@@ -293,7 +293,9 @@ public class BuildManager : MonoBehaviour
         int size = Physics.OverlapSphereNonAlloc(previewPosition, attachmentSearchRadius, results, attachmentLayer);
 
         Transform closestAttachmentPoint = null;
+        Transform secondClosestAttachmentPoint = null;
         float closestSqrDistance = attachmentSearchRadius;
+        float secondClosestSqrDistance = attachmentSearchRadius;
 
         for (int i = 0; i < size; i++)
         {
@@ -304,12 +306,37 @@ public class BuildManager : MonoBehaviour
                     float sqrDistance = (previewPosition - attachmentPoint.transform.position).sqrMagnitude;
                     if (sqrDistance < closestSqrDistance)
                     {
+                        secondClosestAttachmentPoint = closestAttachmentPoint;
+                        secondClosestSqrDistance = closestSqrDistance;
+
                         closestSqrDistance = sqrDistance;
                         closestAttachmentPoint = attachmentPoint.transform;
+                    }
+                    else if (sqrDistance < secondClosestSqrDistance)
+                    {
+                        secondClosestSqrDistance = sqrDistance;
+                        secondClosestAttachmentPoint = attachmentPoint.transform;
                     }
                 }
             }
         }
+
+        // if the two closest points are very close to each other
+        if (closestAttachmentPoint != null && secondClosestAttachmentPoint != null &&
+            (closestAttachmentPoint.position - secondClosestAttachmentPoint.position).sqrMagnitude < 0.05f * 0.05f)
+        {
+            // Compare their Y rotations with the current preview's Y rotation
+            float yRotationCurrentPreview = currentPreview.transform.eulerAngles.y;
+            float yRotationClosest = closestAttachmentPoint.eulerAngles.y;
+            float yRotationSecondClosest = secondClosestAttachmentPoint.eulerAngles.y;
+
+            float firstAngleDiff = Mathf.Abs(Mathf.DeltaAngle(yRotationCurrentPreview, yRotationClosest));
+            float secondAngleDiff = Mathf.Abs(Mathf.DeltaAngle(yRotationCurrentPreview, yRotationSecondClosest));
+
+            // return point with rotation most similar to current preview
+            return firstAngleDiff < secondAngleDiff ? closestAttachmentPoint : secondClosestAttachmentPoint;
+        }
+
         return closestAttachmentPoint;
     }
 
@@ -393,7 +420,7 @@ public class BuildManager : MonoBehaviour
         }
     }
 
-    private void HandleUserInput()
+    private void HandleUserPrefabChange()
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
