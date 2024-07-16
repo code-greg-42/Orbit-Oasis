@@ -64,11 +64,11 @@ public class FishingPlayerMovement : MonoBehaviour
 
     private void FlipSprite()
     {
-        if (movement.x < 0 && !isFlipped)
+        if (rb.velocity.x < 0 && !isFlipped)
         {
             FlipToFacingLeft();
         }
-        else if (movement.x > 0 && isFlipped)
+        else if (rb.velocity.x > 0 && isFlipped)
         {
             FlipToFacingRight();
         }
@@ -103,6 +103,7 @@ public class FishingPlayerMovement : MonoBehaviour
                 angle += 180;
             }
 
+            // set the target rotation
             playerObject.rotation = Quaternion.Euler(0, 0, angle);
         }
     }
