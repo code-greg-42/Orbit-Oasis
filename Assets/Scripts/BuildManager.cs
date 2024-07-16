@@ -67,6 +67,10 @@ public class BuildManager : MonoBehaviour
 
                 UpdatePreviewPosition();
 
+                UpdatePreviewIsPlaceable();
+
+                UpdatePreviewColor(previewIsPlaceable);
+
                 if (Input.GetKeyDown(placeBuildKey) && currentPreview != null && previewIsPlaceable)
                 {
                     PlaceBuild();
@@ -197,7 +201,6 @@ public class BuildManager : MonoBehaviour
             }
 
             currentPreview.transform.SetPositionAndRotation(targetPosition, targetRotation);
-            UpdatePreviewColor(previewIsPlaceable);
         }
     }
 
@@ -209,15 +212,20 @@ public class BuildManager : MonoBehaviour
             SetPreviewMaterial(false);
             if (currentPreview.TryGetComponent<BuildableObject>(out var buildable))
             {
-                lastPlacedBuild = buildable;
+                if (DataManager.Instance.PlayerBuildMaterial > buildable.BuildCost)
+                {
+                    lastPlacedBuild = buildable;
 
-                // place build
-                buildable.PlaceObject();
+                    // place build
+                    buildable.PlaceObject();
 
-                // deactivate any impacted attachment points
-                CheckAttachmentPoints(lastPlacedBuild.transform.position);
+                    // update inventory with building cost
+                    InventoryManager.Instance.UseItem(buildable.BuildMaterialName, buildable.BuildCost, true);
+
+                    // deactivate any impacted attachment points
+                    CheckAttachmentPoints(lastPlacedBuild.transform.position);
+                }
             }
-
             // finalize placement
             currentPreview = null;
             originalMaterial = null;
@@ -235,6 +243,21 @@ public class BuildManager : MonoBehaviour
             if (renderer.material.color != targetColor)
             {
                 renderer.material.color = targetColor;
+            }
+        }
+    }
+
+    private void UpdatePreviewIsPlaceable()
+    {
+        if (currentPreview != null)
+        {
+            if (currentPreview.TryGetComponent(out BuildableObject buildable))
+            {
+                // if player doesn't have enough materials, set to false
+                if (DataManager.Instance.PlayerBuildMaterial < buildable.BuildCost)
+                {
+                    previewIsPlaceable = false;
+                }
             }
         }
     }

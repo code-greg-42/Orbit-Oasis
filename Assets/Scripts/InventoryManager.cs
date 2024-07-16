@@ -65,6 +65,13 @@ public class InventoryManager : MonoBehaviour
                 // add additional to stack and get remainder
                 int remainder = inventorySlots[i].AddAdditionalItem(item.Quantity);
 
+                // if item is a build material, add to data manager (minus the remainder which will be added below for consistency)
+                if (item.BuildMaterialPerUnit > 0)
+                {
+                    float amountToAdd = (item.Quantity - remainder) * item.BuildMaterialPerUnit;
+                    DataManager.Instance.AddBuildMaterial(amountToAdd);
+                }
+
                 // if remainder, set item quantity to remainder to add to new slot
                 if (remainder > 0)
                 {
@@ -88,6 +95,12 @@ public class InventoryManager : MonoBehaviour
         if (emptySlotIndex != -1)
         {
             inventorySlots[emptySlotIndex].AddItem(item);
+
+            // if item is a build material, add to data manager
+            if (item.BuildMaterialPerUnit > 0)
+            {
+                DataManager.Instance.AddBuildMaterial(item.BuildMaterialPerUnit * item.Quantity);
+            }
 
             // swap slots to keep the highest stack on the left
             if (emptySlotIndex < stackSlotIndex)
@@ -202,7 +215,13 @@ public class InventoryManager : MonoBehaviour
         Debug.Log("selling item!");
         if (DragSlot != null)
         {
-            // update Data Manager
+            // if build material, subtract amount from data manager
+            if (DragSlot.SlotItem.BuildMaterialPerUnit > 0)
+            {
+                DataManager.Instance.SubtractBuildMaterial(DragSlot.SlotItem.BuildMaterialPerUnit * DragSlot.SlotItem.Quantity);
+            }
+
+            // update Data Manager with new currency
             DataManager.Instance.AddCurrency(dragSlotSellPrice);
 
             // delete game object from player inventory
@@ -234,6 +253,49 @@ public class InventoryManager : MonoBehaviour
                 RemoveSlotSelection();
             }
             DragSlot.ClearSlot();
+        }
+    }
+
+    public void UseItem(string itemName, float quantity, bool isBuildingMaterial = false)
+    {
+        List<InventorySlot> matchingSlots = new List<InventorySlot>();
+
+        // find all slots containing the item
+        foreach (InventorySlot slot in inventorySlots)
+        {
+            if (slot.SlotItem != null && slot.SlotItem.ItemName == itemName)
+            {
+                matchingSlots.Add(slot);
+            }
+        }
+
+        // sort the slots by item quantity in ascending order
+        matchingSlots.Sort((a, b) => a.SlotItem.Quantity.CompareTo(b.SlotItem.Quantity));
+
+        // if building material, update data manager
+        if (isBuildingMaterial)
+        {
+            DataManager.Instance.SubtractBuildMaterial(quantity);
+        }
+
+        // use the item
+        foreach(InventorySlot slot in matchingSlots)
+        {
+            if (quantity <= 0) break;
+
+            if (quantity >= slot.SlotItem.Quantity)
+            {
+                // decrement quantity and clear slot
+                quantity -= slot.SlotItem.Quantity;
+                slot.ClearSlot();
+            }
+            else
+            {
+                // set new quantity, don't clear slot
+                slot.SlotItem.SetQuantity(slot.SlotItem.Quantity - (int)quantity);
+                slot.UpdateSlotUI();
+                quantity = 0;
+            }
         }
     }
 

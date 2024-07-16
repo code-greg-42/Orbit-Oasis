@@ -105,6 +105,7 @@ MonoBehaviour:
   maxStackQuantity: 3
   quantity: 1
   pricePerUnit: 20
+  buildMaterialPerUnit: 1
 --- !u!54 &6544196308716839980
 Rigidbody:
   m_ObjectHideFlags: 0

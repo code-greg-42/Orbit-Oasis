@@ -69,7 +69,7 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IBeginDragHand
         }
     }
 
-    private void UpdateSlotUI()
+    public void UpdateSlotUI()
     {
         if (SlotItem != null && SlotItem.Quantity > 0)
         {

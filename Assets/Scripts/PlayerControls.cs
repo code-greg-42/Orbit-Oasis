@@ -46,12 +46,6 @@ public class PlayerControls : MonoBehaviour
                 }
             }
 
-            // INVENTORY
-            if (Input.GetKeyDown(inventoryKeybind) && !InventoryManager.Instance.IsDragging)
-            {
-                InventoryManager.Instance.ToggleInventoryMenu();
-            }
-
             // SHOOTING
             if (Input.GetKeyDown(shootingKeybind))
             {
@@ -72,28 +66,12 @@ public class PlayerControls : MonoBehaviour
                 ShootProjectile(additionalForce, true);
             }
         }
-        //else
-        //{
-        //    // DESTROYING BUILDS
-        //    if (Input.GetKeyDown(shootingKeybind))
-        //    {
-        //        shootingChargeTime = 0.0f;
-        //    }
 
-        //    if (Input.GetKey(shootingKeybind))
-        //    {
-        //        shootingChargeTime += Time.deltaTime;
-        //        shootingChargeTime = Mathf.Min(shootingChargeTime, maxChargeTime); // cap at max charge time
-        //    }
-
-        //    if (Input.GetKeyUp(shootingKeybind))
-        //    {
-        //        // calc additional force amount
-        //        float additionalForce = shootingChargeTime / maxChargeTime * maxAdditionalForce;
-        //        // shoot with additional force, but no lob added
-        //        ShootProjectile(additionalForce, false);
-        //    }
-        //}
+        // INVENTORY
+        if (Input.GetKeyDown(inventoryKeybind) && !InventoryManager.Instance.IsDragging)
+        {
+            InventoryManager.Instance.ToggleInventoryMenu();
+        }
 
         // BUILD MODE
         if (Input.GetKeyDown(buildModeKeybind))

@@ -13,6 +13,7 @@ public class Item : MonoBehaviour
     [SerializeField] private int maxStackQuantity;
     [SerializeField] private int quantity = 1;
     [SerializeField] private float pricePerUnit;
+    [SerializeField] private float buildMaterialPerUnit;
 
     public string ItemName => itemName;
     public string Description => description;
@@ -20,6 +21,7 @@ public class Item : MonoBehaviour
     public GameObject Prefab => prefab;
     public int MaxStackQuantity => maxStackQuantity;
     public float PricePerUnit => pricePerUnit;
+    public float BuildMaterialPerUnit => buildMaterialPerUnit;
 
     public int Quantity
     {
@@ -56,6 +58,12 @@ public class Item : MonoBehaviour
 
     public void DropItem(Vector3 dropPosition)
     {
+        // if item is a build material, subtract material from data manager
+        if (BuildMaterialPerUnit > 0)
+        {
+            DataManager.Instance.SubtractBuildMaterial(Quantity * BuildMaterialPerUnit);
+        }
+
         // remove object as child of player inventory
         transform.SetParent(null);
 

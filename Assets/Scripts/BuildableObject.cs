@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class BuildableObject : MonoBehaviour
 {
+    [Header("Build Settings")]
     [SerializeField] private BuildEnums.BuildType buildType;
+    [SerializeField] private float buildCost;
+    [SerializeField] private string buildMaterialName;
 
     [Header("References")]
     [SerializeField] private GameObject[] attachmentSlots;
@@ -12,6 +15,8 @@ public class BuildableObject : MonoBehaviour
 
     public bool IsPlaced { get; private set; }
     public BuildEnums.BuildType BuildType => buildType;
+    public float BuildCost => buildCost;
+    public string BuildMaterialName => buildMaterialName;
 
     public void PlaceObject()
     {

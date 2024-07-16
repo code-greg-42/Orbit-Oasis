@@ -672,6 +672,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildType: 1
+  buildCost: 10
+  buildMaterialName: Wood
   attachmentSlots:
   - {fileID: 3860510283745649863}
   - {fileID: 4761757167698099379}
