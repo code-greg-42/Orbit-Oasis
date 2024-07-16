@@ -930,6 +930,7 @@ MonoBehaviour:
   buildType: 2
   buildCost: 5
   buildMaterialName: Wood
+  buildMaterialPrefab: {fileID: 7710616936816269101, guid: 6bc024b61437f244ab7ee62a090c2c14, type: 3}
   attachmentSlots:
   - {fileID: 8491874858867977195}
   - {fileID: 1502545860158297858}

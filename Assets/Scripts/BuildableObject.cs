@@ -6,8 +6,9 @@ public class BuildableObject : MonoBehaviour
 {
     [Header("Build Settings")]
     [SerializeField] private BuildEnums.BuildType buildType;
-    [SerializeField] private float buildCost;
+    [SerializeField] private float buildCost; // multiple of 5
     [SerializeField] private string buildMaterialName;
+    [SerializeField] private GameObject buildMaterialPrefab;
 
     [Header("References")]
     [SerializeField] private GameObject[] attachmentSlots;
@@ -17,6 +18,7 @@ public class BuildableObject : MonoBehaviour
     public BuildEnums.BuildType BuildType => buildType;
     public float BuildCost => buildCost;
     public string BuildMaterialName => buildMaterialName;
+    public GameObject BuildMaterialPrefab => buildMaterialPrefab;
 
     public void PlaceObject()
     {

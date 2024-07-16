@@ -10,25 +10,14 @@ public class Projectile : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (BuildManager.Instance.BuildModeActive)
+        if (collision.gameObject.TryGetComponent(out Item item))
         {
-            if (collision.gameObject.TryGetComponent(out BuildableObject buildable))
-            {
-                buildable.DeleteObject();
-            }
+            item.PickupItem();
             Deactivate();
         }
-        else
+        else if ((collision.gameObject.CompareTag("Ground") || collision.gameObject.TryGetComponent(out BuildableObject _)) && groundSequenceCoroutine == null)
         {
-            if (collision.gameObject.TryGetComponent(out Item item))
-            {
-                item.PickupItem();
-                Deactivate();
-            }
-            else if ((collision.gameObject.CompareTag("Ground") || collision.gameObject.TryGetComponent(out BuildableObject _)) && groundSequenceCoroutine == null)
-            {
-                groundSequenceCoroutine = StartCoroutine(GroundSequence());
-            }
+            groundSequenceCoroutine = StartCoroutine(GroundSequence());
         }
     }
 

@@ -6,7 +6,6 @@ using UnityEngine;
 public class BuildManager : MonoBehaviour
 {
     public static BuildManager Instance { get; private set; }
-
     public bool BuildModeActive { get; private set; }
     public bool DeleteModeActive { get; private set; }
 
@@ -26,6 +25,7 @@ public class BuildManager : MonoBehaviour
     private float groundSnapThreshold = 1.0f;
     private Color validPreviewColor = new(166 / 255f, 166 / 255f, 166 / 255f, 40 / 255f); // gray transparent color
     private Color invalidPreviewColor = new(255 / 255f, 0 / 255f, 0 / 255f, 65 / 255f); // red transparent color
+    private float buildRefundRatio = 0.8f;
 
     // keybinds
     private KeyCode placeBuildKey = KeyCode.F;
@@ -54,7 +54,8 @@ public class BuildManager : MonoBehaviour
 
                 if (Input.GetKeyDown(placeBuildKey) && currentDeleteModeHighlightedBuild != null)
                 {
-                    currentDeleteModeHighlightedBuild.DeleteObject();
+                    //currentDeleteModeHighlightedBuild.DeleteObject();
+                    DeleteBuild(currentDeleteModeHighlightedBuild);
                 }
             }
             else
@@ -78,7 +79,8 @@ public class BuildManager : MonoBehaviour
 
                 if (Input.GetKeyDown(undoBuildKey) && lastPlacedBuild != null)
                 {
-                    lastPlacedBuild.DeleteObject();
+                    //lastPlacedBuild.DeleteObject();
+                    DeleteBuild(lastPlacedBuild);
                 }
 
                 HandleUserPrefabChange();
@@ -208,23 +210,21 @@ public class BuildManager : MonoBehaviour
     {
         if (BuildModeActive && currentPreview != null && previewIsPlaceable)
         {
-            // change material to solid
-            SetPreviewMaterial(false);
             if (currentPreview.TryGetComponent<BuildableObject>(out var buildable))
             {
-                if (DataManager.Instance.PlayerBuildMaterial > buildable.BuildCost)
-                {
-                    lastPlacedBuild = buildable;
+                // change material to solid
+                SetPreviewMaterial(false);
 
-                    // place build
-                    buildable.PlaceObject();
+                lastPlacedBuild = buildable;
 
-                    // update inventory with building cost
-                    InventoryManager.Instance.UseItem(buildable.BuildMaterialName, buildable.BuildCost, true);
+                // place build
+                buildable.PlaceObject();
 
-                    // deactivate any impacted attachment points
-                    CheckAttachmentPoints(lastPlacedBuild.transform.position);
-                }
+                // update inventory with building cost
+                InventoryManager.Instance.UseItem(buildable.BuildMaterialName, buildable.BuildCost, true);
+
+                // deactivate any impacted attachment points
+                CheckAttachmentPoints(lastPlacedBuild.transform.position);
             }
             // finalize placement
             currentPreview = null;
@@ -232,6 +232,27 @@ public class BuildManager : MonoBehaviour
             // reset bool
             previewIsPlaceable = false;
         }
+    }
+
+    private void DeleteBuild(BuildableObject build)
+    {
+        // instantiate material object
+        GameObject materialPrefabObj = Instantiate(build.BuildMaterialPrefab, orientation.position, Quaternion.identity, null);
+        materialPrefabObj.SetActive(false);
+
+        // get the item component
+        if (materialPrefabObj.TryGetComponent(out Item item))
+        {
+            // set quantity to build cost * refund ratio
+            item.SetQuantity((int)(build.BuildCost * buildRefundRatio));
+
+            // add item to inventory by using .pickup --- if there is no space the item will be dropped accordingly
+            // data manager will be updated via PickupItem - no need to do it here
+            item.PickupItem();
+        }
+
+        // delete the object whether refund was issued or not
+        build.DeleteObject();
     }
 
     private void UpdatePreviewColor(bool isPlaceable)
