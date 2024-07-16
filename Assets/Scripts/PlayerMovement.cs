@@ -23,6 +23,7 @@ public class PlayerMovement : MonoBehaviour
     private const float groundCheckBuffer = 0.2f;
     private const float groundDrag = 5.0f;
     private const float airDrag = 0.1f;
+    private const float airMultiplier = 0.5f;
     private bool isGrounded;
 
     private float horizontalInput;
@@ -79,6 +80,11 @@ public class PlayerMovement : MonoBehaviour
         if (isGrounded)
         {
             rb.AddForce(10f * moveSpeed * moveDirection.normalized, ForceMode.Force);
+        }
+        else
+        {
+            // move based on air multiplier
+            rb.AddForce(10f * airMultiplier * moveSpeed * moveDirection.normalized, ForceMode.Force);
         }
     }
 
