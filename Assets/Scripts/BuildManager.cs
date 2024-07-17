@@ -215,6 +215,11 @@ public class BuildManager : MonoBehaviour
 
                 lastPlacedBuild = buildable;
 
+                // add gameobject to build list
+                DataManager.Instance.AddBuild(buildable.gameObject);
+
+                Debug.Log(DataManager.Instance.BuildList.Count);
+
                 // place build
                 buildable.PlaceObject();
 
@@ -251,6 +256,11 @@ public class BuildManager : MonoBehaviour
             // data manager will be updated via PickupItem - no need to do it here
             item.PickupItem();
         }
+
+        // remove game object from build list
+        DataManager.Instance.RemoveBuild(build.gameObject);
+
+        Debug.Log(DataManager.Instance.BuildList.Count);
 
         // delete the object whether refund was issued or not
         build.DeleteObject();

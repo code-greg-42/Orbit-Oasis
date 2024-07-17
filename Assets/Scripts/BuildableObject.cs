@@ -14,6 +14,8 @@ public class BuildableObject : MonoBehaviour
     [SerializeField] private GameObject[] attachmentSlots;
     [SerializeField] private GameObject deleteHighlight;
 
+    public Vector3 PlacementPosition { get; private set; }
+    public Quaternion PlacementRotation { get; private set; }
     public bool IsPlaced { get; private set; }
     public BuildEnums.BuildType BuildType => buildType;
     public float BuildCost => buildCost;
@@ -33,6 +35,10 @@ public class BuildableObject : MonoBehaviour
         {
             collider.enabled = true;
         }
+
+        // set placement values
+        PlacementPosition = transform.position;
+        PlacementRotation = transform.rotation;
 
         // set bool
         IsPlaced = true;
