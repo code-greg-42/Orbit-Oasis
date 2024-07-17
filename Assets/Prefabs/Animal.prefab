@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8503058075837464284}
   - component: {fileID: 1328740760680484435}
   - component: {fileID: 9183652213039286827}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 7549228683025302702}
   - component: {fileID: 2376330724468046515}
   - component: {fileID: 6175932079581963053}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Animal
   m_TagString: Animal
   m_Icon: {fileID: 0}
@@ -138,6 +138,7 @@ MonoBehaviour:
   maxStackQuantity: 1
   quantity: 1
   pricePerUnit: 500
+  buildMaterialPerUnit: 0
   foodPerUnit: 4
   roamRadius: 10
 --- !u!136 &2376330724468046515
@@ -197,7 +198,7 @@ GameObject:
   - component: {fileID: 910046397423980651}
   - component: {fileID: 2811132721144520004}
   - component: {fileID: 6448123940995367427}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: RightHorn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -301,7 +302,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8594898437091733566}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Horns
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -337,7 +338,7 @@ GameObject:
   - component: {fileID: 5555282934569152947}
   - component: {fileID: 7540534065430344778}
   - component: {fileID: 9043770134309932591}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: LeftHorn
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -41,7 +41,20 @@ public class PlayerControls : MonoBehaviour
                 {
                     if (collider.gameObject.TryGetComponent<Item>(out var item))
                     {
-                        item.PickupItem();
+                        if (item is FarmableObject)
+                        {
+                            Debug.Log("Shake tree!");
+                            // shake farmable object
+                        }
+                        else if (item is Animal)
+                        {
+                            Debug.Log("Pet animal! Hello fren");
+                            // pet animal
+                        }
+                        else
+                        {
+                            item.PickupItem();
+                        }
                     }
                 }
             }
