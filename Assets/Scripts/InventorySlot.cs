@@ -28,6 +28,9 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IBeginDragHand
         // calculate the remainder for if the new quantity exceeds MaxStackQuantity
         int remainder = SlotItem.Quantity + quantityToAdd - SlotItem.MaxStackQuantity;
 
+        // add to DataManager first so it finds the correct slot to add to
+        DataManager.Instance.ChangeItemQuantity(SlotItem, SlotItem.Quantity + quantityToAdd);
+
         // add quantity to SlotItem
         SlotItem.SetQuantity(SlotItem.Quantity + quantityToAdd);
 

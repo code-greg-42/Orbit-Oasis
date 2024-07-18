@@ -47,23 +47,32 @@ public class InventoryManager : MonoBehaviour
     {
         // load any inventory items from data manager
         LoadInventory();
+
+        // update currency from data manager
+        UpdateCurrencyDisplay();
     }
 
     private void LoadInventory()
     {
         if (DataManager.Instance.InventoryItems.Count > 0)
         {
-            List<Item> itemList = new(DataManager.Instance.InventoryItems);
+            // copy of item list to iterate through
+            List<ItemData> itemDataList = new(DataManager.Instance.InventoryItems);
 
-            foreach(Item item in itemList)
+            // clear build materials and item list as they will be re-added in .PickupItem()
+            DataManager.Instance.ClearInventoryItems();
+            DataManager.Instance.ClearPlayerBuildMaterial();
+
+            // loop through each item
+            foreach (ItemData itemData in itemDataList)
             {
                 // instantiate new item from prefab
-                GameObject itemObject = Instantiate(itemPrefabs[item.PrefabIndex]);
+                GameObject itemObject = Instantiate(itemPrefabs[itemData.PrefabIndex]);
 
                 if (itemObject.TryGetComponent(out Item newItem))
                 {
                     // set quantity equal to that in data manager
-                    newItem.SetQuantity(item.Quantity);
+                    newItem.SetQuantity(itemData.Quantity);
 
                     // "pickup" item to ensure it goes through all necessary steps for adding to inventory
                     newItem.PickupItem();
@@ -330,9 +339,18 @@ public class InventoryManager : MonoBehaviour
             }
             else
             {
+                int newQuantity = slot.SlotItem.Quantity - (int)quantity;
+
+                // update data manager first so it finds correct slot
+                DataManager.Instance.ChangeItemQuantity(slot.SlotItem, newQuantity);
+
                 // set new quantity, don't clear slot
-                slot.SlotItem.SetQuantity(slot.SlotItem.Quantity - (int)quantity);
+                slot.SlotItem.SetQuantity(newQuantity);
+
+                // update UI
                 slot.UpdateSlotUI();
+
+                // reset variable
                 quantity = 0;
             }
         }

@@ -180,12 +180,12 @@ public class BuildManager : MonoBehaviour
         if (DataManager.Instance.BuildList.Count > 0)
         {
             // copy of list
-            List<BuildableObject> builds = new(DataManager.Instance.BuildList);
+            List<BuildableObjectData> builds = new(DataManager.Instance.BuildList);
 
-            foreach (BuildableObject buildable in builds)
+            foreach (BuildableObjectData buildData in builds)
             {
                 // instantiate new prefab at the saved position and rotation
-                GameObject newBuildObject = Instantiate(buildPrefabs[buildable.BuildPrefabIndex], buildable.PlacementPosition, buildable.PlacementRotation);
+                GameObject newBuildObject = Instantiate(buildPrefabs[buildData.BuildPrefabIndex], buildData.PlacementPosition, buildData.PlacementRotation);
 
                 if (newBuildObject.TryGetComponent(out BuildableObject newBuildable))
                 {

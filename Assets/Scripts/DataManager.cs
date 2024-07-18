@@ -10,8 +10,8 @@ public class DataManager : MonoBehaviour
     public float PlayerCurrency { get; private set; }
     public float PlayerFood { get; private set; }
     public float PlayerBuildMaterial { get; private set; }
-    public List<BuildableObject> BuildList { get; private set; }
-    public List<Item> InventoryItems { get; private set; }
+    public List<BuildableObjectData> BuildList { get; private set; }
+    public List<ItemData> InventoryItems { get; private set; }
 
     private void Awake()
     {
@@ -21,8 +21,8 @@ public class DataManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
 
             // initialize lists
-            BuildList = new List<BuildableObject>();
-            InventoryItems = new List<Item>();
+            BuildList = new List<BuildableObjectData>();
+            InventoryItems = new List<ItemData>();
         }
         else
         {
@@ -41,17 +41,27 @@ public class DataManager : MonoBehaviour
 
     public void AddBuild(BuildableObject build)
     {
-        BuildList.Add(build);
+        // create new build data instance with the values from the build
+        BuildableObjectData buildData = new(build.transform.position, build.transform.rotation, build.BuildPrefabIndex);
+
+        // add to list
+        BuildList.Add(buildData);
     }
 
     public void RemoveBuild(BuildableObject build)
     {
-        BuildList.RemoveAll(b => b.PlacementPosition == build.PlacementPosition && b.PlacementRotation == build.PlacementRotation);
+        // accounts for float point inconsistencies
+        BuildList.RemoveAll(b => (b.PlacementPosition - build.transform.position).sqrMagnitude < 0.0001f
+            && Quaternion.Angle(b.PlacementRotation, build.transform.rotation) < 0.01f);
     }
 
     public void AddItem(Item item)
     {
-        InventoryItems.Add(item);
+        // create new item data instance with the values from the item
+        ItemData itemData = new(item.ItemName, item.PrefabIndex, item.Quantity);
+
+        // add to list
+        InventoryItems.Add(itemData);
     }
 
     public void RemoveItem(Item item)
@@ -68,7 +78,24 @@ public class DataManager : MonoBehaviour
         }
     }
 
-    public void AddBuildMaterial(float amount) { PlayerBuildMaterial += amount; Debug.Log("Build Material: " + PlayerBuildMaterial); }
+    public void ChangeItemQuantity(Item item, int newQuantity)
+    {
+        int index = InventoryItems.FindIndex(x => x.ItemName == item.ItemName && x.Quantity == item.Quantity);
+
+        if (index != -1)
+        {
+            InventoryItems[index].Quantity = newQuantity;
+        }
+        else
+        {
+            Debug.LogWarning("Attempted to change item quantity, but item was not found in InventoryItems list.");
+        }
+    }
+
+    public void AddBuildMaterial(float amount)
+    {
+        PlayerBuildMaterial += amount; Debug.Log("Build Material: " + PlayerBuildMaterial);
+    }
 
     public void AddCurrency(float amount)
     {
@@ -78,6 +105,18 @@ public class DataManager : MonoBehaviour
     public void AddFood(float amount)
     {
         PlayerFood += amount;
+    }
+
+    // used only on load
+    public void ClearInventoryItems()
+    {
+        InventoryItems.Clear();
+    }
+
+    // used only on load
+    public void ClearPlayerBuildMaterial()
+    {
+        PlayerBuildMaterial = 0;
     }
 
     public void SubtractBuildMaterial(float amount)
