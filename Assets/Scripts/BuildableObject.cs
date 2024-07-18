@@ -6,6 +6,7 @@ public class BuildableObject : MonoBehaviour
 {
     [Header("Build Settings")]
     [SerializeField] private BuildEnums.BuildType buildType;
+    [SerializeField] private int buildPrefabIndex; // used for loading builds in new scene
     [SerializeField] private float buildCost; // multiple of 5
     [SerializeField] private string buildMaterialName;
     [SerializeField] private GameObject buildMaterialPrefab;
@@ -21,6 +22,7 @@ public class BuildableObject : MonoBehaviour
     public float BuildCost => buildCost;
     public string BuildMaterialName => buildMaterialName;
     public GameObject BuildMaterialPrefab => buildMaterialPrefab;
+    public int BuildPrefabIndex => buildPrefabIndex;
 
     public void PlaceObject()
     {

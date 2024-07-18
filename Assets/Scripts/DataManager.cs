@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Build.Reporting;
 using UnityEngine;
 using UnityEngine.SceneManagement; // TEMPORARY FOR TESTING PURPOSES
 
@@ -8,10 +9,8 @@ public class DataManager : MonoBehaviour
     public static DataManager Instance { get; private set; }
     public float PlayerCurrency { get; private set; }
     public float PlayerFood { get; private set; }
-
     public float PlayerBuildMaterial { get; private set; }
-
-    public List<GameObject> BuildList { get; private set; }
+    public List<BuildableObject> BuildList { get; private set; }
 
     private void Awake()
     {
@@ -21,7 +20,7 @@ public class DataManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
 
             // initialize build list
-            BuildList = new List<GameObject>();
+            BuildList = new List<BuildableObject>();
         }
         else
         {
@@ -38,14 +37,14 @@ public class DataManager : MonoBehaviour
         }
     }
 
-    public void AddBuild(GameObject build)
+    public void AddBuild(BuildableObject build)
     {
         BuildList.Add(build);
     }
 
-    public void RemoveBuild(GameObject build)
+    public void RemoveBuild(BuildableObject build)
     {
-        BuildList.Remove(build);
+        BuildList.RemoveAll(b => b.PlacementPosition == build.PlacementPosition && b.PlacementRotation == build.PlacementRotation);
     }
 
     public void AddBuildMaterial(float amount) { PlayerBuildMaterial += amount; Debug.Log("Build Material: " + PlayerBuildMaterial); }

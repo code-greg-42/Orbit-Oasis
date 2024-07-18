@@ -44,6 +44,12 @@ public class BuildManager : MonoBehaviour
         Instance = this;
     }
 
+    private void Start()
+    {
+        // load and instantiate buildable objects from DataManager's BuildList
+        LoadBuilds();
+    }
+
     private void Update()
     {
         if (BuildModeActive)
@@ -169,6 +175,33 @@ public class BuildManager : MonoBehaviour
         }
     }
 
+    private void LoadBuilds()
+    {
+        if (DataManager.Instance.BuildList.Count > 0)
+        {
+            // copy of list
+            List<BuildableObject> builds = new(DataManager.Instance.BuildList);
+
+            foreach (BuildableObject buildable in builds)
+            {
+                // instantiate new prefab at the saved position and rotation
+                GameObject newBuildObject = Instantiate(buildPrefabs[buildable.BuildPrefabIndex], buildable.PlacementPosition, buildable.PlacementRotation);
+
+                if (newBuildObject.TryGetComponent(out BuildableObject newBuildable))
+                {
+                    // place object in scene and activate all attachments/components
+                    newBuildable.PlaceObject();
+                }
+                else
+                {
+                    Debug.LogError("New BuildableObject component not found.");
+                }
+            }
+            // update navmesh with new builds
+            NavMeshManager.Instance.UpdateNavMesh();
+        }
+    }
+
     private void UpdatePreviewPosition()
     {
         if (BuildModeActive)
@@ -216,7 +249,7 @@ public class BuildManager : MonoBehaviour
                 lastPlacedBuild = buildable;
 
                 // add gameobject to build list
-                DataManager.Instance.AddBuild(buildable.gameObject);
+                DataManager.Instance.AddBuild(buildable);
 
                 Debug.Log(DataManager.Instance.BuildList.Count);
 
@@ -240,30 +273,30 @@ public class BuildManager : MonoBehaviour
         }
     }
 
-    private void DeleteBuild(BuildableObject build)
+    private void DeleteBuild(BuildableObject buildable)
     {
         // instantiate material object
-        GameObject materialPrefabObj = Instantiate(build.BuildMaterialPrefab, orientation.position, Quaternion.identity, null);
+        GameObject materialPrefabObj = Instantiate(buildable.BuildMaterialPrefab, orientation.position, Quaternion.identity, null);
         materialPrefabObj.SetActive(false);
 
         // get the item component
         if (materialPrefabObj.TryGetComponent(out Item item))
         {
             // set quantity to build cost * refund ratio
-            item.SetQuantity((int)(build.BuildCost * buildRefundRatio));
+            item.SetQuantity((int)(buildable.BuildCost * buildRefundRatio));
 
             // add item to inventory by using .pickup --- if there is no space the item will be dropped accordingly
             // data manager will be updated via PickupItem - no need to do it here
             item.PickupItem();
         }
 
-        // remove game object from build list
-        DataManager.Instance.RemoveBuild(build.gameObject);
+        // remove from build list
+        DataManager.Instance.RemoveBuild(buildable);
 
         Debug.Log(DataManager.Instance.BuildList.Count);
 
         // delete the object whether refund was issued or not
-        build.DeleteObject();
+        buildable.DeleteObject();
 
         // update navmesh surface
         NavMeshManager.Instance.UpdateNavMesh();
