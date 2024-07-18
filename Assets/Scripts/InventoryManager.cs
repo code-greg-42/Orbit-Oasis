@@ -20,6 +20,9 @@ public class InventoryManager : MonoBehaviour
     [SerializeField] private GameObject storeSlotHighlightPanel;
     [SerializeField] private TMP_Text storeSlotAmountDisplay;
 
+    [Header("Item List")]
+    [SerializeField] private GameObject[] itemPrefabs; // used for instantiating saved items
+
     public GameObject PlayerInventory => playerInventory;
     public bool IsMenuActive { get; private set; }
     public bool IsDragging { get; private set; }
@@ -38,6 +41,39 @@ public class InventoryManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+    }
+
+    private void Start()
+    {
+        // load any inventory items from data manager
+        LoadInventory();
+    }
+
+    private void LoadInventory()
+    {
+        if (DataManager.Instance.InventoryItems.Count > 0)
+        {
+            List<Item> itemList = new(DataManager.Instance.InventoryItems);
+
+            foreach(Item item in itemList)
+            {
+                // instantiate new item from prefab
+                GameObject itemObject = Instantiate(itemPrefabs[item.PrefabIndex]);
+
+                if (itemObject.TryGetComponent(out Item newItem))
+                {
+                    // set quantity equal to that in data manager
+                    newItem.SetQuantity(item.Quantity);
+
+                    // "pickup" item to ensure it goes through all necessary steps for adding to inventory
+                    newItem.PickupItem();
+                }
+                else
+                {
+                    Debug.LogError("Attempted to add item to inventory, but prefab does not contain an Item component.");
+                }
+            }
+        }
     }
 
     public void ToggleInventoryMenu()
@@ -95,6 +131,9 @@ public class InventoryManager : MonoBehaviour
         if (emptySlotIndex != -1)
         {
             inventorySlots[emptySlotIndex].AddItem(item);
+
+            // add item to data manager
+            DataManager.Instance.AddItem(item);
 
             // if item is a build material, add to data manager
             if (item.BuildMaterialPerUnit > 0)

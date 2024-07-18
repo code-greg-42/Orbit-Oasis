@@ -234,10 +234,11 @@ MonoBehaviour:
   itemName: Tree
   description: It's a large tree. Drop it to place it anywhere!
   image: {fileID: 21300000, guid: 4b78cfc37ca1a4c4db295541fdc61a15, type: 3}
-  prefab: {fileID: 6901442814216216723}
   maxStackQuantity: 1
   quantity: 1
   pricePerUnit: 300
+  buildMaterialPerUnit: 0
+  prefabIndex: 1
   materialPrefab: {fileID: 7710616936816269101, guid: 6bc024b61437f244ab7ee62a090c2c14, type: 3}
   farmableMaterialCount: 6
   dropForce: 4

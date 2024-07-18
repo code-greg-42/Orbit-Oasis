@@ -134,11 +134,11 @@ MonoBehaviour:
   itemName: Cow
   description: It's a cute little cow.
   image: {fileID: 21300000, guid: b2ca5f5a0a17f714381912666605a1b6, type: 3}
-  prefab: {fileID: 1559233621923983395}
   maxStackQuantity: 1
   quantity: 1
   pricePerUnit: 500
   buildMaterialPerUnit: 0
+  prefabIndex: 2
   foodPerUnit: 4
   roamRadius: 10
 --- !u!136 &2376330724468046515

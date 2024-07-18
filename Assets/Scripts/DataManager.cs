@@ -11,6 +11,7 @@ public class DataManager : MonoBehaviour
     public float PlayerFood { get; private set; }
     public float PlayerBuildMaterial { get; private set; }
     public List<BuildableObject> BuildList { get; private set; }
+    public List<Item> InventoryItems { get; private set; }
 
     private void Awake()
     {
@@ -19,8 +20,9 @@ public class DataManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
 
-            // initialize build list
+            // initialize lists
             BuildList = new List<BuildableObject>();
+            InventoryItems = new List<Item>();
         }
         else
         {
@@ -45,6 +47,25 @@ public class DataManager : MonoBehaviour
     public void RemoveBuild(BuildableObject build)
     {
         BuildList.RemoveAll(b => b.PlacementPosition == build.PlacementPosition && b.PlacementRotation == build.PlacementRotation);
+    }
+
+    public void AddItem(Item item)
+    {
+        InventoryItems.Add(item);
+    }
+
+    public void RemoveItem(Item item)
+    {
+        int index = InventoryItems.FindIndex(x => x.ItemName == item.ItemName && x.Quantity == item.Quantity);
+
+        if (index != -1)
+        {
+            InventoryItems.RemoveAt(index);
+        }
+        else
+        {
+            Debug.LogWarning("Attempted to remove item, but item not found in InventoryItems list.");
+        }
     }
 
     public void AddBuildMaterial(float amount) { PlayerBuildMaterial += amount; Debug.Log("Build Material: " + PlayerBuildMaterial); }
