@@ -5,6 +5,7 @@ using UnityEditor.Build.Reporting;
 using UnityEngine;
 using UnityEngine.SceneManagement; // TEMPORARY FOR TESTING PURPOSES
 
+// script execution time of -100 to run before other scripts
 public class DataManager : MonoBehaviour
 {
     public static DataManager Instance { get; private set; }
@@ -24,6 +25,8 @@ public class DataManager : MonoBehaviour
             // initialize lists
             BuildList = new List<BuildableObjectData>();
             InventoryItems = new List<ItemData>();
+
+            LoadGameFromFile();
         }
         else
         {
@@ -36,8 +39,6 @@ public class DataManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Y))
         {
-            Debug.Log("Data path: + " + Application.persistentDataPath);
-            SaveGameToFile();
             SwapScenes();
         }
     }
@@ -151,20 +152,40 @@ public class DataManager : MonoBehaviour
         }
     }
 
+    // add places to save game periodically later
     private void SaveGameToFile()
     {
+        // convert DataManager values to <GameData> serializable class
         GameData gameData = new(PlayerCurrency, PlayerFood, BuildList, InventoryItems);
 
-        Debug.Log("Build List Count: " + gameData.buildList.Count);
-        Debug.Log("Inventory Count: " + gameData.inventoryItems.Count);
+        // convert to json format
+        string json = JsonUtility.ToJson(gameData);
 
-        // pretty print only for testing purposes
-        string json = JsonUtility.ToJson(gameData, true);
-        Debug.Log(json);
+        // write json to file
+        File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
 
-        //File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
+        Debug.Log("Game Saved Successfully.");
+    }
 
-        // testing purposes
-        //Debug.Log("Game Saved Successfully.");
+    private void LoadGameFromFile()
+    {
+        string path = Application.persistentDataPath + "/savefile.json";
+
+        if (File.Exists(path))
+        {
+            // read json from file
+            string json = File.ReadAllText(path);
+
+            // convert json back to <GameData>
+            GameData gameData = JsonUtility.FromJson<GameData>(json);
+
+            // set DataManager values to <GameData> values
+            PlayerCurrency = gameData.playerCurrency;
+            PlayerFood = gameData.playerFood;
+            BuildList = gameData.buildList;
+            InventoryItems = gameData.inventoryItems;
+
+            Debug.Log("Game Loaded Successfully.");
+        }
     }
 }
