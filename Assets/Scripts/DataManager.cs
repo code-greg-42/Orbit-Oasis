@@ -106,7 +106,6 @@ public class DataManager : MonoBehaviour
     public void AddCaughtFish(int index)
     {
         CaughtFishIndex.Add(index);
-        Debug.Log(CaughtFishIndex);
     }
 
     public void ClearCaughtFish()

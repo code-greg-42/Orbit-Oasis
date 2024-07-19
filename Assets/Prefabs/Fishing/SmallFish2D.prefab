@@ -267,7 +267,7 @@ GameObject:
   - component: {fileID: 3283194570956003080}
   - component: {fileID: 7286735979090476689}
   m_Layer: 0
-  m_Name: SmallFish
+  m_Name: SmallFish2D
   m_TagString: FishingFish
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -332,7 +332,7 @@ MonoBehaviour:
   intervalRangeMin: 0.5
   intervalRangeMax: 1.5
   isExplosive: 0
-  itemPrefabIndex: 0
+  itemPrefabIndex: 3
   fishObject: {fileID: 8992106088312865502}
 --- !u!70 &7286735979090476689
 CapsuleCollider2D:

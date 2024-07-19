@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6704694694248357974}
   - component: {fileID: 7150351135642257388}
   m_Layer: 0
-  m_Name: MediumFish
+  m_Name: ExplosiveFish2D
   m_TagString: FishingFish
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -74,11 +74,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b50222baffc8f2d41ab03339cc5699e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 12
-  intervalRangeMin: 1
-  intervalRangeMax: 2
-  isExplosive: 0
-  itemPrefabIndex: 0
+  moveSpeed: 13
+  intervalRangeMin: 1.1
+  intervalRangeMax: 2.2
+  isExplosive: 1
+  itemPrefabIndex: -1
   fishObject: {fileID: 2714109071130721058}
 --- !u!70 &7150351135642257388
 CapsuleCollider2D:
@@ -191,7 +191,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: -9095717837082945937, guid: 207ee8102dd4143d288186ef0be518ee, type: 3}
-  m_Color: {r: 0.1917883, g: 0.3207547, b: 0.0045389733, a: 1}
+  m_Color: {r: 1, g: 0, b: 0.17174721, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

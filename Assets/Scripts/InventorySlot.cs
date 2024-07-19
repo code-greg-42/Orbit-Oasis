@@ -89,9 +89,6 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IBeginDragHand
 
     public void ClearSlot()
     {
-        // remove item from data manager
-        DataManager.Instance.RemoveItem(SlotItem);
-
         // clear slot
         SlotItem = null;
 

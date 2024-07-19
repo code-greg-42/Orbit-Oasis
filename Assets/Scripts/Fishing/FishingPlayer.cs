@@ -43,6 +43,15 @@ public class FishingPlayer : MonoBehaviour
         }
     }
 
+    private void CatchFish(FishingFish fish)
+    {
+        // get the item prefab index from the fish
+        int prefabIndex = fish.ItemPrefabIndex;
+
+        // upload the index to the data manager to update it about the catch
+        DataManager.Instance.AddCaughtFish(prefabIndex);
+    }
+
     private void GetInput()
     {
         // get inputs from WASD keys
@@ -112,7 +121,18 @@ public class FishingPlayer : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("FishingFish"))
         {
-            Debug.Log("Player caught da fish!");
+            if (collision.gameObject.TryGetComponent(out FishingFish fish))
+            {
+                if (!fish.IsExplosive)
+                {
+                    CatchFish(fish);
+                }
+                else
+                {
+                    Debug.Log("Ah! That's an explosive fish!");
+                    DataManager.Instance.ClearCaughtFish();
+                }
+            }
             collision.gameObject.SetActive(false);
         }
     }

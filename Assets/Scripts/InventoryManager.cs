@@ -83,6 +83,33 @@ public class InventoryManager : MonoBehaviour
                 }
             }
         }
+
+        // check for any caught fish
+        if (DataManager.Instance.CaughtFishIndex.Count > 0)
+        {
+            // copy of list of caught fish
+            List<int> fishIndices = new(DataManager.Instance.CaughtFishIndex);
+
+            // loop through each caught fish index
+            foreach(int fishIndex in fishIndices)
+            {
+                // instantiate new fish object from item prefab array
+                GameObject fishObject = Instantiate(itemPrefabs[fishIndex]);
+
+                if (fishObject.TryGetComponent(out Item newFishItem))
+                {
+                    // pickup new item
+                    newFishItem.PickupItem();
+                }
+                else
+                {
+                    Debug.LogError("Attempted to add fish item to inventory, but prefab does not contain an Item component.");
+                }
+            }
+
+            // clear caught fish list
+            DataManager.Instance.ClearCaughtFish();
+        }
     }
 
     public void ToggleInventoryMenu()
@@ -253,6 +280,9 @@ public class InventoryManager : MonoBehaviour
                 RemoveSlotSelection();
             }
 
+            // remove item from data manager
+            DataManager.Instance.RemoveItem(DragSlot.SlotItem);
+
             // clear slot from inventory
             DragSlot.ClearSlot();
         }
@@ -271,6 +301,9 @@ public class InventoryManager : MonoBehaviour
 
             // update Data Manager with new currency
             DataManager.Instance.AddCurrency(dragSlotSellPrice);
+
+            // update Data Manager by removing item
+            DataManager.Instance.RemoveItem(DragSlot.SlotItem);
 
             // delete game object from player inventory
             DragSlot.SlotItem.DeleteItem();
@@ -291,6 +324,8 @@ public class InventoryManager : MonoBehaviour
             Debug.Log("storing item as food!");
             // update Data Manager
             DataManager.Instance.AddFood(dragSlotStoreAmount);
+
+            DataManager.Instance.RemoveItem(DragSlot.SlotItem);
 
             // delete game object from player inventory
             DragSlot.SlotItem.DeleteItem();
@@ -333,6 +368,9 @@ public class InventoryManager : MonoBehaviour
 
             if (quantity >= slot.SlotItem.Quantity)
             {
+                // update data manager
+                DataManager.Instance.RemoveItem(slot.SlotItem);
+
                 // decrement quantity and clear slot
                 quantity -= slot.SlotItem.Quantity;
                 slot.ClearSlot();
