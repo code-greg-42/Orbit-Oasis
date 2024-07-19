@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class FishingPlayerMovement : MonoBehaviour
+public class FishingPlayer : MonoBehaviour
 {
     private float moveSpeed = 50.0f;
     private float boostForce = 20.0f;
@@ -17,14 +17,14 @@ public class FishingPlayerMovement : MonoBehaviour
     private KeyCode boostKeyAlt = KeyCode.Space;
 
     private Vector2 movement;
-    private bool isFlipped = false;
+    //private bool isFlipped = false;
     private bool setBoost = false;
 
     private void Update()
     {
         GetInput();
-        FlipSprite();
-        RotateVisual();
+        //FlipSprite();
+        //RotateVisual();
 
         if (Input.GetKeyDown(boostKey) || Input.GetKeyDown(boostKeyAlt))
         {
@@ -62,51 +62,51 @@ public class FishingPlayerMovement : MonoBehaviour
         rb.AddForce(movement.normalized * boostForce, ForceMode2D.Impulse);
     }
 
-    private void FlipSprite()
-    {
-        if (rb.velocity.x < 0 && !isFlipped)
-        {
-            FlipToFacingLeft();
-        }
-        else if (rb.velocity.x > 0 && isFlipped)
-        {
-            FlipToFacingRight();
-        }
-    }
+    //private void FlipSprite()
+    //{
+    //    if (rb.velocity.x < 0 && !isFlipped)
+    //    {
+    //        FlipToFacingLeft();
+    //    }
+    //    else if (rb.velocity.x > 0 && isFlipped)
+    //    {
+    //        FlipToFacingRight();
+    //    }
+    //}
 
-    private void FlipToFacingLeft()
-    {
-        Vector3 scale = playerObject.localScale;
-        scale.x = -Mathf.Abs(scale.x);
-        playerObject.localScale = scale;
-        isFlipped = true;
-    }
+    //private void FlipToFacingLeft()
+    //{
+    //    Vector3 scale = playerObject.localScale;
+    //    scale.x = -Mathf.Abs(scale.x);
+    //    playerObject.localScale = scale;
+    //    isFlipped = true;
+    //}
 
-    private void FlipToFacingRight()
-    {
-        Vector3 scale = playerObject.localScale;
-        scale.x = Mathf.Abs(scale.x);
-        playerObject.localScale = scale;
-        isFlipped = false;
-    }
+    //private void FlipToFacingRight()
+    //{
+    //    Vector3 scale = playerObject.localScale;
+    //    scale.x = Mathf.Abs(scale.x);
+    //    playerObject.localScale = scale;
+    //    isFlipped = false;
+    //}
 
-    private void RotateVisual()
-    {
-        Vector2 velocity = rb.velocity;
+    //private void RotateVisual()
+    //{
+    //    Vector2 velocity = rb.velocity;
 
-        if (velocity != Vector2.zero)
-        {
-            float angle = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg;
+    //    if (velocity != Vector2.zero)
+    //    {
+    //        float angle = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg;
 
-            if (isFlipped)
-            {
-                angle += 180;
-            }
+    //        if (isFlipped)
+    //        {
+    //            angle += 180;
+    //        }
 
-            // set the target rotation
-            playerObject.rotation = Quaternion.Euler(0, 0, angle);
-        }
-    }
+    //        // set the target rotation
+    //        playerObject.rotation = Quaternion.Euler(0, 0, angle);
+    //    }
+    //}
 
     private void OnCollisionEnter2D(Collision2D collision)
     {

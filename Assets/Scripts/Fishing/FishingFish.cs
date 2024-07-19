@@ -3,12 +3,18 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public class FishingFishMovement : MonoBehaviour
+public class FishingFish : MonoBehaviour
 {
     [Header("Movement")]
     [SerializeField] private float moveSpeed = 10.0f;
     [SerializeField] private float intervalRangeMin = 2.0f;
     [SerializeField] private float intervalRangeMax = 4.0f;
+
+    [Header("Explosive?")]
+    [SerializeField] private bool isExplosive;
+
+    [Header("Prefab Index")]
+    [SerializeField] private int itemPrefabIndex;
 
     [Header("References")]
     [SerializeField] private Transform fishObject;
@@ -21,6 +27,9 @@ public class FishingFishMovement : MonoBehaviour
 
     private bool isFacingLeft = true;
     private bool outOfBounds = false;
+
+    public bool IsExplosive => isExplosive;
+    public int ItemPrefabIndex => itemPrefabIndex;
 
     private void Start()
     {
@@ -38,13 +47,13 @@ public class FishingFishMovement : MonoBehaviour
     {
         while (true)
         {
-            float randomInterval = Random.Range(intervalRangeMin, intervalRangeMax);
-            yield return new WaitForSeconds(randomInterval);
             if (!outOfBounds)
             {
                 ChooseRandomDirection();
                 rb.AddForce(moveDirection * moveSpeed, ForceMode2D.Impulse);
             }
+            float randomInterval = Random.Range(intervalRangeMin, intervalRangeMax);
+            yield return new WaitForSeconds(randomInterval);
         }
     }
 

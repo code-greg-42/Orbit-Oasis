@@ -198,7 +198,7 @@ Transform:
   m_GameObject: {fileID: 8880710968861493147}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5, y: -2, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -244,9 +244,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b50222baffc8f2d41ab03339cc5699e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 6
-  intervalRangeMin: 2
-  intervalRangeMax: 3
+  moveSpeed: 9
+  intervalRangeMin: 1.5
+  intervalRangeMax: 2.5
+  isExplosive: 0
+  itemPrefabIndex: 0
   fishObject: {fileID: 2943847508786647824}
 --- !u!70 &4074379350377419467
 CapsuleCollider2D:

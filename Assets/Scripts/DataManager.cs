@@ -14,6 +14,7 @@ public class DataManager : MonoBehaviour
     public float PlayerBuildMaterial { get; private set; }
     public List<BuildableObjectData> BuildList { get; private set; }
     public List<ItemData> InventoryItems { get; private set; }
+    public List<int> CaughtFishIndex { get; private set; }
 
     private void Awake()
     {
@@ -25,6 +26,7 @@ public class DataManager : MonoBehaviour
             // initialize lists
             BuildList = new List<BuildableObjectData>();
             InventoryItems = new List<ItemData>();
+            CaughtFishIndex = new List<int>();
 
             LoadGameFromFile();
         }
@@ -99,6 +101,17 @@ public class DataManager : MonoBehaviour
     public void AddBuildMaterial(float amount)
     {
         PlayerBuildMaterial += amount; Debug.Log("Build Material: " + PlayerBuildMaterial);
+    }
+
+    public void AddCaughtFish(int index)
+    {
+        CaughtFishIndex.Add(index);
+        Debug.Log(CaughtFishIndex);
+    }
+
+    public void ClearCaughtFish()
+    {
+        CaughtFishIndex.Clear();
     }
 
     public void AddCurrency(float amount)
