@@ -5,14 +5,14 @@ using UnityEngine;
 [System.Serializable]
 public class BuildableObjectData
 {
-    public readonly Vector3 PlacementPosition;
-    public readonly Quaternion PlacementRotation;
-    public readonly int BuildPrefabIndex;
+    public Vector3 placementPosition;
+    public Quaternion placementRotation;
+    public int buildPrefabIndex;
 
     public BuildableObjectData(Vector3 position, Quaternion rotation, int prefabIndex)
     {
-        PlacementPosition = position;
-        PlacementRotation = rotation;
-        BuildPrefabIndex = prefabIndex;
+        placementPosition = position;
+        placementRotation = rotation;
+        buildPrefabIndex = prefabIndex;
     }
 }

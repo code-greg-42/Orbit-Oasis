@@ -185,7 +185,7 @@ public class BuildManager : MonoBehaviour
             foreach (BuildableObjectData buildData in builds)
             {
                 // instantiate new prefab at the saved position and rotation
-                GameObject newBuildObject = Instantiate(buildPrefabs[buildData.BuildPrefabIndex], buildData.PlacementPosition, buildData.PlacementRotation);
+                GameObject newBuildObject = Instantiate(buildPrefabs[buildData.buildPrefabIndex], buildData.placementPosition, buildData.placementRotation);
 
                 if (newBuildObject.TryGetComponent(out BuildableObject newBuildable))
                 {

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
 using UnityEngine.SceneManagement; // TEMPORARY FOR TESTING PURPOSES
@@ -35,6 +36,8 @@ public class DataManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Y))
         {
+            Debug.Log("Data path: + " + Application.persistentDataPath);
+            SaveGameToFile();
             SwapScenes();
         }
     }
@@ -51,8 +54,8 @@ public class DataManager : MonoBehaviour
     public void RemoveBuild(BuildableObject build)
     {
         // accounts for float point inconsistencies
-        BuildList.RemoveAll(b => (b.PlacementPosition - build.transform.position).sqrMagnitude < 0.0001f
-            && Quaternion.Angle(b.PlacementRotation, build.transform.rotation) < 0.01f);
+        BuildList.RemoveAll(b => (b.placementPosition - build.transform.position).sqrMagnitude < 0.0001f
+            && Quaternion.Angle(b.placementRotation, build.transform.rotation) < 0.01f);
     }
 
     public void AddItem(Item item)
@@ -66,7 +69,7 @@ public class DataManager : MonoBehaviour
 
     public void RemoveItem(Item item)
     {
-        int index = InventoryItems.FindIndex(x => x.ItemName == item.ItemName && x.Quantity == item.Quantity);
+        int index = InventoryItems.FindIndex(x => x.itemName == item.ItemName && x.quantity == item.Quantity);
 
         if (index != -1)
         {
@@ -80,11 +83,11 @@ public class DataManager : MonoBehaviour
 
     public void ChangeItemQuantity(Item item, int newQuantity)
     {
-        int index = InventoryItems.FindIndex(x => x.ItemName == item.ItemName && x.Quantity == item.Quantity);
+        int index = InventoryItems.FindIndex(x => x.itemName == item.ItemName && x.quantity == item.Quantity);
 
         if (index != -1)
         {
-            InventoryItems[index].Quantity = newQuantity;
+            InventoryItems[index].quantity = newQuantity;
         }
         else
         {
@@ -146,5 +149,22 @@ public class DataManager : MonoBehaviour
         {
             SceneManager.LoadScene(0);
         }
+    }
+
+    private void SaveGameToFile()
+    {
+        GameData gameData = new(PlayerCurrency, PlayerFood, BuildList, InventoryItems);
+
+        Debug.Log("Build List Count: " + gameData.buildList.Count);
+        Debug.Log("Inventory Count: " + gameData.inventoryItems.Count);
+
+        // pretty print only for testing purposes
+        string json = JsonUtility.ToJson(gameData, true);
+        Debug.Log(json);
+
+        //File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
+
+        // testing purposes
+        //Debug.Log("Game Saved Successfully.");
     }
 }

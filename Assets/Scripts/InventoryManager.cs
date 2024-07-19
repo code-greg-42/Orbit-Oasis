@@ -67,12 +67,12 @@ public class InventoryManager : MonoBehaviour
             foreach (ItemData itemData in itemDataList)
             {
                 // instantiate new item from prefab
-                GameObject itemObject = Instantiate(itemPrefabs[itemData.PrefabIndex]);
+                GameObject itemObject = Instantiate(itemPrefabs[itemData.prefabIndex]);
 
                 if (itemObject.TryGetComponent(out Item newItem))
                 {
                     // set quantity equal to that in data manager
-                    newItem.SetQuantity(itemData.Quantity);
+                    newItem.SetQuantity(itemData.quantity);
 
                     // "pickup" item to ensure it goes through all necessary steps for adding to inventory
                     newItem.PickupItem();

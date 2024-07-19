@@ -5,20 +5,14 @@ using UnityEngine;
 [System.Serializable]
 public class ItemData
 {
-    public readonly string ItemName;
-    public readonly int PrefabIndex;
-    private int quantity;
+    public string itemName;
+    public int prefabIndex;
+    public int quantity;
 
-    public int Quantity
+    public ItemData(string name, int index, int initialQuantity)
     {
-        get => quantity;
-        set => quantity = value;
-    }
-
-    public ItemData(string itemName, int prefabIndex, int initialQuantity)
-    {
-        ItemName = itemName;
-        PrefabIndex = prefabIndex;
-        Quantity = initialQuantity;
+        itemName = name;
+        prefabIndex = index;
+        quantity = initialQuantity;
     }
 }
