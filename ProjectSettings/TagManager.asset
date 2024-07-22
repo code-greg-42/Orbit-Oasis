@@ -9,6 +9,7 @@ TagManager:
   - Animal
   - FishingFish
   - FishingSeaweed
+  - RaceCheckpoint
   layers:
   - Default
   - TransparentFX

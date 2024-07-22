@@ -13,6 +13,9 @@ public class AxeColliderForwarder : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        playerAxe.HandleCollision(other);
+        if (playerAxe != null)
+        {
+            playerAxe.HandleCollision(other);
+        }
     }
 }

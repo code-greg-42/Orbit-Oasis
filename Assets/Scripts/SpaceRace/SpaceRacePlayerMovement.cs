@@ -60,9 +60,6 @@ public class SpaceRacePlayerMovement : MonoBehaviour
         {
             rb.AddForce(accelMultiplier * forwardSpeed * transform.forward, ForceMode.Force);
         }
-
-        Debug.Log("Velocity: " + rb.velocity);
-        Debug.Log("Magnitude: " + rb.velocity.magnitude);
     }
 
     private void GetInput()
@@ -94,6 +91,14 @@ public class SpaceRacePlayerMovement : MonoBehaviour
         {
             Vector3 newMinForwardVel = new(rb.velocity.x, rb.velocity.y, minForwardSpeed);
             rb.velocity = newMinForwardVel;
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("RaceCheckpoint"))
+        {
+            Debug.Log("Successfully went through a checkpoint!");
         }
     }
 }
