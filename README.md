@@ -27,7 +27,7 @@ Deep into the future, humanity has taken to the stars and colonized many planets
 - **Farming and Building:** Collect materials, plant trees, farm, fish, build structures, or trade and sell with the nearby village.
 
 **Minigames:**
-  1. **2D Spaceship Shooter:** Fend off attacking alien spaceships.
+  1. **2D Spaceship Shooter:** Fend off attacking alien spaceships. // removed
   2. **3D Space Race:** Race your spaceship through an asteroid field, competing against other villagers' times.
 
 **Progression and Rewards:**
@@ -63,7 +63,7 @@ Deep into the future, humanity has taken to the stars and colonized many planets
   
 **Minigames:**
 
-1. **2D Spaceship Shooter:**
+1. **2D Spaceship Shooter:** // removed
    - **Objective:** Destroy incoming alien ships.
    - **Controls:** WASD keys for movement, mouse for shooting.
    - **Difficulty Levels:** Easy, Medium, Hard, Insane.
@@ -84,7 +84,7 @@ Deep into the future, humanity has taken to the stars and colonized many planets
 **Upgrades:**
 
 - **Spaceship Speed:** Increase the speed of your spaceship for the race.
-- **Firepower:** Enhance the firepower of your spaceship for the shooter.
+- **Firepower:** Enhance the firepower of your spaceship for the shooter. // removed
 - **Animal Catching/Fishing Gun:** Improve radius of animal catching gun, and decrease difficulty of fishing by upgrading gun.
 
 ---
@@ -130,14 +130,18 @@ Deep into the future, humanity has taken to the stars and colonized many planets
 **Phase 2: Prototype Building/Simulation** (June 19th - July 10th)
 - Develop the basic gameplay for farming, building structures, and inventory systems using primitive shapes.
 - Deadline: Wednesday, July 10th
+- UPDATE: CHANGED TO Wednesday, July 17th, removed 2D Spaceship Shooter minigame to allow for more time on main game
+- UPDATE: COMPLETED 7.19
 
 **Phase 3: Prototype 2D Spaceship Shooter** (July 10th - July 17th)
 - Implement the core mechanics of the 2D spaceship shooter using primitive shapes.
 - Deadline: Wednesday, July 17th
+- UPDATE: REMOVED to allow for more time on main game prototype
 
 **Phase 4: Prototype 3D Space Race** (July 17th - July 24th)
 - Create the core gameplay for the 3D space race using primitive shapes.
 - Deadline: Wednesday, July 24th
+- UPDATE: CURRENT PHASE
 
 **Phase 5: Integrate Rewards, Upgrading, Difficulties, and Dialogue** (July 24th - July 31st)
 - Finalize the rewards system, upgrading mechanics, difficulty settings, and dialogue across all prototypes.
