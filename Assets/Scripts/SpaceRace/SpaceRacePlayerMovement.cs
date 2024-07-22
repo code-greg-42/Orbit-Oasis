@@ -8,15 +8,14 @@ public class SpaceRacePlayerMovement : MonoBehaviour
     [SerializeField] private Transform shipObjectTransform;
 
     private const float moveSpeed = 20.0f;
-    private const float baseForwardSpeed = 20.0f;
-    private const float minForwardSpeed = 15.0f;
     private const float accelMultiplier = 20.0f;
-    private const float boostSpeed = 40.0f;
+    private const float boostMultiplier = 2.0f;
 
-    private float forwardSpeed = 20.0f;
+    private float forwardSpeed = 40.0f;
+    private float minForwardSpeed = 32.0f;
     private bool boostActive;
 
-    private KeyCode boostKey = KeyCode.LeftShift;
+    private const KeyCode boostKey = KeyCode.LeftShift;
 
     private float horizontalInput;
     private float verticalInput;
@@ -37,13 +36,15 @@ public class SpaceRacePlayerMovement : MonoBehaviour
         if (!boostActive && Input.GetKey(boostKey))
         {
             boostActive = true;
-            forwardSpeed = boostSpeed;
+            forwardSpeed *= boostMultiplier;
+            minForwardSpeed *= boostMultiplier;
         }
 
         if (Input.GetKeyUp(boostKey))
         {
+            forwardSpeed /= boostMultiplier;
+            minForwardSpeed /= boostMultiplier;
             boostActive = false;
-            forwardSpeed = baseForwardSpeed;
         }
     }
 
@@ -72,6 +73,15 @@ public class SpaceRacePlayerMovement : MonoBehaviour
 
     private void SpeedControl()
     {
+        // directional movement speed control
+        Vector3 directionalVel = new(rb.velocity.x, rb.velocity.y, 0);
+
+        if (directionalVel.magnitude > moveSpeed)
+        {
+            Vector3 newDirectionalVel = directionalVel.normalized * moveSpeed;
+            rb.velocity = new(newDirectionalVel.x, newDirectionalVel.y, rb.velocity.z);
+        }
+
         // limit forward velocity if needed
         Vector3 forwardVel = new(0, 0, rb.velocity.z);
 
@@ -84,15 +94,6 @@ public class SpaceRacePlayerMovement : MonoBehaviour
         {
             Vector3 newMinForwardVel = new(rb.velocity.x, rb.velocity.y, minForwardSpeed);
             rb.velocity = newMinForwardVel;
-        }
-
-        // directional movement speed control
-        Vector3 directionalVel = new(rb.velocity.x, rb.velocity.y, 0);
-
-        if (directionalVel.magnitude > moveSpeed)
-        {
-            Vector3 newDirectionalVel = directionalVel.normalized * moveSpeed;
-            rb.velocity = new(newDirectionalVel.x, newDirectionalVel.y, rb.velocity.z);
         }
     }
 }
