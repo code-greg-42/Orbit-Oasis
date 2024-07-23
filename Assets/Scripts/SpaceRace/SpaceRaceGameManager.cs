@@ -1,3 +1,4 @@
+using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -6,17 +7,26 @@ using UnityEngine;
 public class SpaceRaceGameManager : MonoBehaviour
 {
     public static SpaceRaceGameManager Instance { get; private set; }
+    public bool IsGameActive { get; private set; }
 
     [SerializeField] private Transform playerTransform;
+    [SerializeField] private CinemachineVirtualCamera virtualCamera;
 
+    // checkpoint variables
     private const float checkpointBoundaryX = 100.0f;
     private const float checkpointBoundaryY = 75.0f;
     private const float distanceBetweenCheckpoints = 300.0f;
     private const int initialCheckpointsToLoad = 4;
-
+    private const float checkpointBuffer = 25.0f;
     private int checkpointsLoaded = 0;
-
     private List<SpaceRaceCheckpoint> activeCheckpoints = new List<SpaceRaceCheckpoint>();
+
+    // asteroid variables
+    private const float asteroidBoundaryX = 150.0f;
+    private const float asteroidBoundaryY = 100.0f;
+    private const float asteroidBuffer = 25.0f;
+
+    private const float endGameSequenceTime = 5.0f;
 
     private void Awake()
     {
@@ -25,6 +35,8 @@ public class SpaceRaceGameManager : MonoBehaviour
 
     private void Start()
     {
+        IsGameActive = true;
+
         for (int i = 0; i < initialCheckpointsToLoad; i++)
         {
             SpawnNewCheckpoint();
@@ -38,27 +50,52 @@ public class SpaceRaceGameManager : MonoBehaviour
 
     private void CheckCheckpoints()
     {
-        for (int i = activeCheckpoints.Count - 1; i >= 0; i--)
+        if (IsGameActive)
         {
-            SpaceRaceCheckpoint checkpoint = activeCheckpoints[i];
-
-            if (!checkpoint.CheckpointSuccess && checkpoint.transform.position.z < playerTransform.position.z)
+            for (int i = activeCheckpoints.Count - 1; i >= 0; i--)
             {
-                Debug.Log("Checkpoint missed!");
+                SpaceRaceCheckpoint checkpoint = activeCheckpoints[i];
+
+                if (!checkpoint.CheckpointSuccess && checkpoint.transform.position.z + checkpointBuffer < playerTransform.position.z)
+                {
+                    Debug.Log("Checkpoint missed!");
+                    ChangeCheckpointsToRed();
+                    EndGame();
+                }
             }
         }
     }
 
-    private Vector3 GetCheckpointLocation(float xBoundary, float yBoundary)
+    private void ChangeCheckpointsToRed()
+    {
+        foreach (SpaceRaceCheckpoint checkpoint in activeCheckpoints)
+        {
+            checkpoint.ChangeColor(false);
+        }
+    }
+
+    private Vector3 GetSpawnLocation(float xBoundary, float yBoundary, bool randomizeZ = false)
     {
         // randomize x and y values
         float randomX = Random.Range(-xBoundary, xBoundary);
         float randomY = Random.Range(-yBoundary, yBoundary);
+        float zPos;
 
-        // calculate z positioning based on how many checkpoints have been loaded in scene
-        float zPosition = checkpointsLoaded * distanceBetweenCheckpoints + distanceBetweenCheckpoints;
+        if (randomizeZ)
+        {
+            // calculate min based on checkpoint area + a buffer around the checkpoint
+            float zMin = checkpointsLoaded * distanceBetweenCheckpoints + asteroidBuffer;
+            // calculate max based on next checkpoint area - buffer around the checkpoint
+            float zMax = zMin + distanceBetweenCheckpoints - asteroidBuffer;
+            zPos = Random.Range(zMin, zMax);
+        }
+        else
+        {
+            // calculate z positioning based on how many checkpoints have been loaded in scene
+            zPos = checkpointsLoaded * distanceBetweenCheckpoints + distanceBetweenCheckpoints;
+        }
 
-        return new Vector3(randomX, randomY, zPosition);
+        return new Vector3(randomX, randomY, zPos);
     }
 
     public void SpawnNewCheckpoint()
@@ -69,7 +106,7 @@ public class SpaceRaceGameManager : MonoBehaviour
         if (checkpoint != null)
         {
             // calculate randomized positioning
-            Vector3 newPosition = GetCheckpointLocation(checkpointBoundaryX, checkpointBoundaryY);
+            Vector3 newPosition = GetSpawnLocation(checkpointBoundaryX, checkpointBoundaryY);
 
             // set checkpoint object to newly calculated position
             checkpoint.transform.position = newPosition;
@@ -90,5 +127,24 @@ public class SpaceRaceGameManager : MonoBehaviour
     public void UnregisterCheckpoint(SpaceRaceCheckpoint checkpoint)
     {
         activeCheckpoints.Remove(checkpoint);
+    }
+
+    public void EndGame()
+    {
+        IsGameActive = false;
+        virtualCamera.Follow = null;
+
+        StartCoroutine(EndGameSequence());
+    }
+
+    private IEnumerator EndGameSequence()
+    {
+        // wait for alloted amount of time (for crash scene or exit scene)
+        yield return new WaitForSeconds(endGameSequenceTime);
+
+        // deactivate player object
+        playerTransform.gameObject.SetActive(false);
+
+        Debug.Log("End game and scene here.");
     }
 }

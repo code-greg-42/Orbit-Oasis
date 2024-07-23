@@ -21,6 +21,7 @@ public class SpaceRacePlayerMovement : MonoBehaviour
     private float verticalInput;
 
     private Vector3 moveDirection;
+    private bool isCrashing;
 
     void Start()
     {
@@ -50,15 +51,18 @@ public class SpaceRacePlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (horizontalInput != 0 || verticalInput != 0)
+        if (!isCrashing)
         {
-            moveDirection = transform.up * verticalInput + transform.right * horizontalInput;
+            if (SpaceRaceGameManager.Instance.IsGameActive && horizontalInput != 0 || verticalInput != 0)
+            {
+                moveDirection = transform.up * verticalInput + transform.right * horizontalInput;
 
-            rb.AddForce(accelMultiplier * moveSpeed * moveDirection, ForceMode.Force);
-        }
-        else
-        {
-            rb.AddForce(accelMultiplier * forwardSpeed * transform.forward, ForceMode.Force);
+                rb.AddForce(accelMultiplier * moveSpeed * moveDirection, ForceMode.Force);
+            }
+            else
+            {
+                rb.AddForce(accelMultiplier * forwardSpeed * transform.forward, ForceMode.Force);
+            }
         }
     }
 
@@ -94,11 +98,19 @@ public class SpaceRacePlayerMovement : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void Crash()
     {
-        if (other.gameObject.CompareTag("RaceCheckpoint"))
+        isCrashing = true;
+        rb.useGravity = true;
+        rb.drag = 1.0f;
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Asteroid"))
         {
-            Debug.Log("Successfully went through a checkpoint!");
+            Crash();
+            SpaceRaceGameManager.Instance.EndGame();
         }
     }
 }

@@ -11,6 +11,7 @@ TagManager:
   - FishingSeaweed
   - RaceCheckpoint
   - RacePlayerShip
+  - Asteroid
   layers:
   - Default
   - TransparentFX
