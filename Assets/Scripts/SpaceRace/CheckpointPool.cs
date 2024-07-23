@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CheckpointPool : ObjectPool
 {
-    public static CheckpointPool Instance;
+    public static CheckpointPool Instance { get; private set; }
 
     protected override void Awake()
     {

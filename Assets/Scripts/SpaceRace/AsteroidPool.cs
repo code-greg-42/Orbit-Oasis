@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AsteroidPool : ObjectPool
 {
-    public static AsteroidPool Instance;
+    public static AsteroidPool Instance { get; private set; }
 
     protected override void Awake()
     {

@@ -7,7 +7,20 @@ public class SpaceRaceCheckpoint : MonoBehaviour
     [SerializeField] private Renderer[] renderers;
     [SerializeField] private Color originalColor;
 
-    private float deactivationTime = 2.0f;
+    private const float deactivationTime = 2.0f;
+
+    public bool CheckpointSuccess { get; private set; }
+
+    private void OnEnable()
+    {
+        CheckpointSuccess = false;
+        SpaceRaceGameManager.Instance.RegisterCheckpoint(this);
+    }
+
+    private void OnDisable()
+    {
+        SpaceRaceGameManager.Instance.UnregisterCheckpoint(this);
+    }
 
     public void ChangeColor(bool success)
     {
@@ -28,7 +41,15 @@ public class SpaceRaceCheckpoint : MonoBehaviour
     {
         if (other.gameObject.CompareTag("RacePlayerShip"))
         {
+            CheckpointSuccess = true;
+
+            // change color to green to show success
             ChangeColor(true);
+
+            // load future part of race
+            SpaceRaceGameManager.Instance.SpawnNewCheckpoint();
+
+            // deactivate after timer
             StartCoroutine(DeactivationCoroutine());
         }
     }
