@@ -25,6 +25,7 @@ public class SpaceRaceGameManager : MonoBehaviour
     private const float asteroidBoundaryX = 150.0f;
     private const float asteroidBoundaryY = 100.0f;
     private const float asteroidBuffer = 25.0f;
+    private const int asteroidsPerCheckpoint = 50;
 
     private const float endGameSequenceTime = 5.0f;
 
@@ -40,6 +41,7 @@ public class SpaceRaceGameManager : MonoBehaviour
         for (int i = 0; i < initialCheckpointsToLoad; i++)
         {
             SpawnNewCheckpoint();
+            SpawnNewAsteroids();
         }
     }
 
@@ -116,6 +118,27 @@ public class SpaceRaceGameManager : MonoBehaviour
 
             // update counter
             checkpointsLoaded++;
+        }
+    }
+
+    private void SpawnNewAsteroids()
+    {
+        for (int i = 0; i < asteroidsPerCheckpoint; i++)
+        {
+            // get asteroid from pool
+            GameObject asteroid = AsteroidPool.Instance.GetPooledObject();
+
+            if (asteroid != null)
+            {
+                // calculate randomized positioning
+                Vector3 newPosition = GetSpawnLocation(asteroidBoundaryX, asteroidBoundaryY, true);
+
+                // set asteroid object to newly calculated position
+                asteroid.transform.position = newPosition;
+
+                // activate in scene
+                asteroid.SetActive(true);
+            }
         }
     }
 
