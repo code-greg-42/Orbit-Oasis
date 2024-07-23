@@ -6,11 +6,14 @@ public class SpaceRacePlayerAttack : MonoBehaviour
 {
     private const float attackCooldown = 1.0f;
     private const KeyCode attackKey = KeyCode.Space;
+    private Vector3 bulletSpawnOffset = new(0, 0, 1);
 
     private bool attackReady = true;
 
     // references
     [SerializeField] private Transform spaceshipObject;
+    [SerializeField] private Collider leftWingCollider;
+    [SerializeField] private Collider rightWingCollider;
 
     private void Update()
     {
@@ -37,6 +40,8 @@ public class SpaceRacePlayerAttack : MonoBehaviour
             foreach (var bulletCollider in bulletColliders)
             {
                 Physics.IgnoreCollision(shipCollider, bulletCollider);
+                Physics.IgnoreCollision(leftWingCollider, bulletCollider);
+                Physics.IgnoreCollision(rightWingCollider, bulletCollider);
             }
         }
         else
@@ -44,8 +49,8 @@ public class SpaceRacePlayerAttack : MonoBehaviour
             Debug.Log("Ship collider not found.");
         }
 
-        // set bullet position to ship position
-        bullet.transform.position = transform.position;
+        // set bullet position to ship position plus offset
+        bullet.transform.position = transform.position + bulletSpawnOffset;
 
         // set active
         bullet.SetActive(true);

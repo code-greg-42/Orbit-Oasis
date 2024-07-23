@@ -211,6 +211,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spaceshipObject: {fileID: 1673963240}
+  leftWingCollider: {fileID: 433357712}
+  rightWingCollider: {fileID: 1392525405}
 --- !u!1 &433357710
 GameObject:
   m_ObjectHideFlags: 0
@@ -614,7 +616,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objectToPool: {fileID: 1715991331483229026, guid: 43affca6a3f146c438966ee724a50edd, type: 3}
-  amountToPool: 300
+  amountToPool: 400
 --- !u!1 &1289896130
 GameObject:
   m_ObjectHideFlags: 0
