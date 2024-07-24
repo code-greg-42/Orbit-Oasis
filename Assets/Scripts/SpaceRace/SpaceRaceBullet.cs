@@ -52,7 +52,7 @@ public class SpaceRaceBullet : MonoBehaviour
 
     public void HandleCollision(Collider collider)
     {
-        if (!collider.gameObject.CompareTag("RaceCheckpoint"))
+        if (collider.gameObject.CompareTag("Asteroid"))
         {
             Debug.Log("Direct hit! Woo!");
             collider.gameObject.SetActive(false);

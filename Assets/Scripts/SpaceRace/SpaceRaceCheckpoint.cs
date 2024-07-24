@@ -41,17 +41,22 @@ public class SpaceRaceCheckpoint : MonoBehaviour
     {
         if (other.gameObject.CompareTag("RacePlayerShip"))
         {
-            CheckpointSuccess = true;
-
-            // change color to green to show success
-            ChangeColor(true);
-
-            // load future part of race
-            SpaceRaceGameManager.Instance.SpawnNewCheckpoint();
-
-            // deactivate after timer
-            StartCoroutine(DeactivationCoroutine());
+            CheckpointCompleted();
         }
+    }
+
+    private void CheckpointCompleted()
+    {
+        CheckpointSuccess = true;
+
+        // change color to green to show success
+        ChangeColor(true);
+
+        // load future part of race (and despawn old asteroids)
+        SpaceRaceGameManager.Instance.SpawnNewWave();
+
+        // deactivate after timer
+        StartCoroutine(DeactivationCoroutine());
     }
 
     private IEnumerator DeactivationCoroutine()

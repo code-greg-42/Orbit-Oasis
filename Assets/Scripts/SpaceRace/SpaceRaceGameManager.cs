@@ -16,7 +16,7 @@ public class SpaceRaceGameManager : MonoBehaviour
     private const float checkpointBoundaryX = 100.0f;
     private const float checkpointBoundaryY = 75.0f;
     private const float distanceBetweenCheckpoints = 300.0f;
-    private const int initialCheckpointsToLoad = 4;
+    private const int initialCheckpointsToLoad = 6;
     private const float checkpointBuffer = 25.0f;
     private int checkpointsLoaded = 0;
     private List<SpaceRaceCheckpoint> activeCheckpoints = new List<SpaceRaceCheckpoint>();
@@ -26,6 +26,7 @@ public class SpaceRaceGameManager : MonoBehaviour
     private const float asteroidBoundaryY = 100.0f;
     private const float asteroidBuffer = 25.0f;
     private const int asteroidsPerCheckpoint = 50;
+    private List<SpaceRaceAsteroid> activeAsteroids = new List<SpaceRaceAsteroid>();
 
     private const float endGameSequenceTime = 5.0f;
 
@@ -54,6 +55,7 @@ public class SpaceRaceGameManager : MonoBehaviour
     {
         if (IsGameActive)
         {
+            // backwards in case of list change
             for (int i = activeCheckpoints.Count - 1; i >= 0; i--)
             {
                 SpaceRaceCheckpoint checkpoint = activeCheckpoints[i];
@@ -68,36 +70,11 @@ public class SpaceRaceGameManager : MonoBehaviour
         }
     }
 
-    private void ChangeCheckpointsToRed()
+    public void SpawnNewWave()
     {
-        foreach (SpaceRaceCheckpoint checkpoint in activeCheckpoints)
-        {
-            checkpoint.ChangeColor(false);
-        }
-    }
-
-    private Vector3 GetSpawnLocation(float xBoundary, float yBoundary, bool randomizeZ = false)
-    {
-        // randomize x and y values
-        float randomX = Random.Range(-xBoundary, xBoundary);
-        float randomY = Random.Range(-yBoundary, yBoundary);
-        float zPos;
-
-        if (randomizeZ)
-        {
-            // calculate min based on checkpoint area + a buffer around the checkpoint
-            float zMin = checkpointsLoaded * distanceBetweenCheckpoints + asteroidBuffer;
-            // calculate max based on next checkpoint area - buffer around the checkpoint
-            float zMax = zMin + distanceBetweenCheckpoints - asteroidBuffer;
-            zPos = Random.Range(zMin, zMax);
-        }
-        else
-        {
-            // calculate z positioning based on how many checkpoints have been loaded in scene
-            zPos = checkpointsLoaded * distanceBetweenCheckpoints + distanceBetweenCheckpoints;
-        }
-
-        return new Vector3(randomX, randomY, zPos);
+        SpawnNewCheckpoint();
+        SpawnNewAsteroids();
+        DespawnOldAsteroids();
     }
 
     public void SpawnNewCheckpoint()
@@ -139,6 +116,61 @@ public class SpaceRaceGameManager : MonoBehaviour
                 // activate in scene
                 asteroid.SetActive(true);
             }
+            else
+            {
+                Debug.LogError("Unable to get asteroid from asteroid pool.");
+            }
+        }
+    }
+
+    private void DespawnOldAsteroids()
+    {
+        if (IsGameActive)
+        {
+            // backwards in case of list change
+            for (int i = activeAsteroids.Count - 1; i >= 0; i--)
+            {
+                SpaceRaceAsteroid asteroid = activeAsteroids[i];
+
+                // if asteroid is behind the player (buffer amount included so asteroid is off screen)
+                if (asteroid.transform.position.z < playerTransform.position.z - asteroidBuffer)
+                {
+                    // disable asteroid (send back to pool)
+                    asteroid.gameObject.SetActive(false);
+                }
+            }
+        }
+    }
+
+    private Vector3 GetSpawnLocation(float xBoundary, float yBoundary, bool randomizeZ = false)
+    {
+        // randomize x and y values
+        float randomX = Random.Range(-xBoundary, xBoundary);
+        float randomY = Random.Range(-yBoundary, yBoundary);
+        float zPos;
+
+        if (randomizeZ)
+        {
+            // calculate min based on checkpoint area + a buffer around the checkpoint
+            float zMin = checkpointsLoaded * distanceBetweenCheckpoints + asteroidBuffer;
+            // calculate max based on next checkpoint area - buffer around the checkpoint (x2 for near and far buffer)
+            float zMax = zMin + distanceBetweenCheckpoints - asteroidBuffer * 2;
+            zPos = Random.Range(zMin, zMax);
+        }
+        else
+        {
+            // calculate z positioning based on how many checkpoints have been loaded in scene
+            zPos = checkpointsLoaded * distanceBetweenCheckpoints + distanceBetweenCheckpoints;
+        }
+
+        return new Vector3(randomX, randomY, zPos);
+    }
+
+    private void ChangeCheckpointsToRed()
+    {
+        foreach (SpaceRaceCheckpoint checkpoint in activeCheckpoints)
+        {
+            checkpoint.ChangeColor(false);
         }
     }
 
@@ -150,6 +182,16 @@ public class SpaceRaceGameManager : MonoBehaviour
     public void UnregisterCheckpoint(SpaceRaceCheckpoint checkpoint)
     {
         activeCheckpoints.Remove(checkpoint);
+    }
+
+    public void RegisterAsteroid(SpaceRaceAsteroid asteroid)
+    {
+        activeAsteroids.Add(asteroid);
+    }
+
+    public void UnregisterAsteroid(SpaceRaceAsteroid asteroid)
+    {
+        activeAsteroids.Remove(asteroid);
     }
 
     public void EndGame()
