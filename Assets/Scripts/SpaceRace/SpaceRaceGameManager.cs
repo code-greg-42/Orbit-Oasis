@@ -30,6 +30,9 @@ public class SpaceRaceGameManager : MonoBehaviour
 
     private const float endGameSequenceTime = 5.0f;
 
+    public float AsteroidBoundaryX => asteroidBoundaryX;
+    public float AsteroidBoundaryY => asteroidBoundaryY;
+
     private void Awake()
     {
         Instance = this;
