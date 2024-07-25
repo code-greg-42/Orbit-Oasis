@@ -54,6 +54,12 @@ public class SpaceRaceGameManager : MonoBehaviour
     {
         if (!IsGameActive)
         {
+            // change this positioning number based on the SPEED of the ship on different settings
+            if (!SpaceRaceUIManager.Instance.CountdownStarted && playerTransform.position.z >= -160)
+            {
+                SpaceRaceUIManager.Instance.StartCountdown();
+            }
+
             if (playerTransform.position.z > 0 && playerTransform.position.z < checkpointBuffer)
             {
                 StartRace();

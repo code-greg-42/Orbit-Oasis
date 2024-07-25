@@ -15,11 +15,13 @@ public class SpaceRacePlayerAttack : MonoBehaviour
     [SerializeField] private Collider leftWingCollider;
     [SerializeField] private Collider rightWingCollider;
 
+    private int numRockets = 10;
+
     private void Update()
     {
         if (SpaceRaceGameManager.Instance.IsGameActive)
         {
-            if (attackReady && Input.GetKey(attackKey))
+            if (attackReady && numRockets > 0 && Input.GetKey(attackKey))
             {
                 Attack();
             }
@@ -29,6 +31,9 @@ public class SpaceRacePlayerAttack : MonoBehaviour
     private void Attack()
     {
         attackReady = false;
+
+        numRockets--;
+        SpaceRaceUIManager.Instance.UpdateRocketAmount(numRockets);
 
         // get bullet from bullet pool
         GameObject bullet = BulletPool.Instance.GetPooledObject();

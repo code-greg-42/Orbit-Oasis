@@ -31,6 +31,7 @@ public class SpaceRacePlayerMovement : MonoBehaviour
 
     void Update()
     {
+        Debug.Log(rb.velocity);
         if (SpaceRaceGameManager.Instance.IsGameActive)
         {
             GetInput();
