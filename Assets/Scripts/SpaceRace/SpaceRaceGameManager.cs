@@ -56,7 +56,7 @@ public class SpaceRaceGameManager : MonoBehaviour
         {
             if (playerTransform.position.z > 0 && playerTransform.position.z < checkpointBuffer)
             {
-                IsGameActive = true;
+                StartRace();
             }
         }
         else
@@ -64,6 +64,13 @@ public class SpaceRaceGameManager : MonoBehaviour
             CheckCheckpoints();
             UpdateCheckpointIndicator();
         }
+    }
+
+    private void StartRace()
+    {
+        IsGameActive = true;
+        checkpointIndicator.gameObject.SetActive(true);
+        SpaceRaceUIManager.Instance.DisableIntroText();
     }
 
     private void UpdateCheckpointIndicator()
