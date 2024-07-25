@@ -53,7 +53,7 @@ public class SpaceRaceCheckpoint : MonoBehaviour
         ChangeColor(true);
 
         // load future part of race (and despawn old asteroids)
-        SpaceRaceGameManager.Instance.SpawnNewWave();
+        SpaceRaceGameManager.Instance.CheckpointPassed();
 
         // deactivate after timer
         StartCoroutine(DeactivationCoroutine());

@@ -11,6 +11,7 @@ public class SpaceRaceGameManager : MonoBehaviour
 
     [SerializeField] private Transform playerTransform;
     [SerializeField] private CinemachineVirtualCamera virtualCamera;
+    [SerializeField] private Transform checkpointIndicator;
 
     // checkpoint variables
     private const float checkpointBoundaryX = 100.0f;
@@ -20,6 +21,7 @@ public class SpaceRaceGameManager : MonoBehaviour
     private const float checkpointBuffer = 25.0f;
     private int checkpointsLoaded = 0;
     private List<SpaceRaceCheckpoint> activeCheckpoints = new List<SpaceRaceCheckpoint>();
+    private SpaceRaceCheckpoint nextCheckpoint;
 
     // asteroid variables
     private const float asteroidBoundaryX = 150.0f;
@@ -28,6 +30,10 @@ public class SpaceRaceGameManager : MonoBehaviour
     private const int asteroidsPerCheckpoint = 50;
     private List<SpaceRaceAsteroid> activeAsteroids = new List<SpaceRaceAsteroid>();
 
+    // indicator/navigation variables
+    private const float indicatorRotationSpeed = 100.0f;
+
+    // game management variables
     private const float endGameSequenceTime = 5.0f;
 
     public float AsteroidBoundaryX => asteroidBoundaryX;
@@ -52,6 +58,23 @@ public class SpaceRaceGameManager : MonoBehaviour
     private void Update()
     {
         CheckCheckpoints();
+        UpdateCheckpointIndicator();
+    }
+
+    private void UpdateCheckpointIndicator()
+    {
+        // ignore adjusting indicator when player gets too close to the checkpoint for aesthetics
+        if (nextCheckpoint != null && nextCheckpoint.transform.position.z - playerTransform.position.z > checkpointBuffer)
+        {
+            // calc direction from the player to next checkpoint
+            Vector3 checkpointDirection = nextCheckpoint.transform.position - playerTransform.position;
+
+            // create target rotation based on direction
+            Quaternion targetRotation = Quaternion.LookRotation(checkpointDirection);
+
+            // smoothly rotate
+            checkpointIndicator.rotation = Quaternion.RotateTowards(checkpointIndicator.rotation, targetRotation, indicatorRotationSpeed * Time.deltaTime);
+        }
     }
 
     private void CheckCheckpoints()
@@ -73,7 +96,14 @@ public class SpaceRaceGameManager : MonoBehaviour
         }
     }
 
-    public void SpawnNewWave()
+    public void CheckpointPassed()
+    {
+        nextCheckpoint = activeCheckpoints[1]; // 2nd checkpoint in list because current one has not despawned/been removed yet
+
+        SpawnNewWave();
+    }
+
+    private void SpawnNewWave()
     {
         SpawnNewCheckpoint();
         SpawnNewAsteroids();
@@ -201,6 +231,9 @@ public class SpaceRaceGameManager : MonoBehaviour
     {
         IsGameActive = false;
         virtualCamera.Follow = null;
+        nextCheckpoint = null;
+
+        checkpointIndicator.gameObject.SetActive(false);
 
         StartCoroutine(EndGameSequence());
     }

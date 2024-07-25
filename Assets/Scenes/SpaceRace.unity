@@ -789,6 +789,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerTransform: {fileID: 73735490}
   virtualCamera: {fileID: 1289896131}
+  checkpointIndicator: {fileID: 1811769017}
 --- !u!114 &1078641225
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1278,7 +1279,7 @@ Transform:
   m_GameObject: {fileID: 1811769016}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -3, z: 6.5}
+  m_LocalPosition: {x: 0, y: -3, z: 6}
   m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
   m_ConstrainProportionsScale: 0
   m_Children:
