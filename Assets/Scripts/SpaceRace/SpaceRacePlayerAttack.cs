@@ -17,9 +17,12 @@ public class SpaceRacePlayerAttack : MonoBehaviour
 
     private void Update()
     {
-        if (attackReady && Input.GetKey(attackKey))
+        if (SpaceRaceGameManager.Instance.IsGameActive)
         {
-            Attack();
+            if (attackReady && Input.GetKey(attackKey))
+            {
+                Attack();
+            }
         }
     }
 

@@ -2,6 +2,7 @@ using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using TMPro.EditorUtilities;
 using UnityEngine;
 
 public class SpaceRaceGameManager : MonoBehaviour
@@ -46,19 +47,23 @@ public class SpaceRaceGameManager : MonoBehaviour
 
     private void Start()
     {
-        IsGameActive = true;
-
-        for (int i = 0; i < initialCheckpointsToLoad; i++)
-        {
-            SpawnNewCheckpoint();
-            SpawnNewAsteroids();
-        }
+        SpawnInitialScene();
     }
 
     private void Update()
     {
-        CheckCheckpoints();
-        UpdateCheckpointIndicator();
+        if (!IsGameActive)
+        {
+            if (playerTransform.position.z > 0 && playerTransform.position.z < checkpointBuffer)
+            {
+                IsGameActive = true;
+            }
+        }
+        else
+        {
+            CheckCheckpoints();
+            UpdateCheckpointIndicator();
+        }
     }
 
     private void UpdateCheckpointIndicator()
@@ -108,6 +113,32 @@ public class SpaceRaceGameManager : MonoBehaviour
         SpawnNewCheckpoint();
         SpawnNewAsteroids();
         DespawnOldAsteroids();
+    }
+
+    private void SpawnInitialCheckpoint()
+    {
+        GameObject checkpoint = CheckpointPool.Instance.GetPooledObject();
+
+        if (checkpoint != null)
+        {
+            checkpoint.transform.position = Vector3.zero;
+
+            checkpoint.SetActive(true);
+
+            checkpointsLoaded++;
+        }
+    }
+
+    private void SpawnInitialScene()
+    {
+        SpawnInitialCheckpoint();
+        SpawnNewAsteroids();
+
+        for (int i = 0; i < initialCheckpointsToLoad - 1; i++)
+        {
+            SpawnNewCheckpoint();
+            SpawnNewAsteroids();
+        }
     }
 
     public void SpawnNewCheckpoint()

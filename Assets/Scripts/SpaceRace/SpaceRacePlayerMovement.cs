@@ -31,22 +31,11 @@ public class SpaceRacePlayerMovement : MonoBehaviour
 
     void Update()
     {
-        GetInput();
+        if (SpaceRaceGameManager.Instance.IsGameActive)
+        {
+            GetInput();
+        }
         SpeedControl();
-
-        if (!boostActive && Input.GetKey(boostKey))
-        {
-            boostActive = true;
-            forwardSpeed *= boostMultiplier;
-            minForwardSpeed *= boostMultiplier;
-        }
-
-        if (Input.GetKeyUp(boostKey))
-        {
-            forwardSpeed /= boostMultiplier;
-            minForwardSpeed /= boostMultiplier;
-            boostActive = false;
-        }
     }
 
     private void FixedUpdate()
@@ -70,6 +59,20 @@ public class SpaceRacePlayerMovement : MonoBehaviour
     {
         horizontalInput = Input.GetAxis("Horizontal");
         verticalInput = Input.GetAxis("Vertical");
+
+        if (!boostActive && Input.GetKey(boostKey))
+        {
+            boostActive = true;
+            forwardSpeed *= boostMultiplier;
+            minForwardSpeed *= boostMultiplier;
+        }
+
+        if (Input.GetKeyUp(boostKey))
+        {
+            forwardSpeed /= boostMultiplier;
+            minForwardSpeed /= boostMultiplier;
+            boostActive = false;
+        }
     }
 
     private void SpeedControl()

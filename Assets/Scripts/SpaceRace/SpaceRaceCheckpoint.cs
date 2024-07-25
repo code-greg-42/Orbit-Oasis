@@ -43,6 +43,14 @@ public class SpaceRaceCheckpoint : MonoBehaviour
         {
             CheckpointCompleted();
         }
+        else if (other.gameObject.CompareTag("Asteroid"))
+        {
+            if (other.gameObject.TryGetComponent(out SpaceRaceAsteroid asteroid))
+            {
+                // move away from checkpoint
+                asteroid.ReverseZMovement();
+            }
+        }
     }
 
     private void CheckpointCompleted()

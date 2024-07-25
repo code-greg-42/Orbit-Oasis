@@ -97,4 +97,11 @@ public class SpaceRaceAsteroid : MonoBehaviour
             rb.AddForce(Vector3.down * moveSpeed);
         }
     }
+
+    public void ReverseZMovement()
+    {
+        Vector3 newVelocity = new(rb.velocity.x, rb.velocity.y, -rb.velocity.z);
+
+        rb.velocity = newVelocity;
+    }
 }
