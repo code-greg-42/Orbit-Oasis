@@ -38,7 +38,11 @@ public class SpaceRaceAsteroid : MonoBehaviour
 
         // weighted roll for size
         int weightIndex = WeightedRandom.GetWeightedRandomIndex(sizeWeights);
-        transform.localScale *= sizes[weightIndex];
+        float sizeAdjustment = sizes[weightIndex];
+        transform.localScale *= sizeAdjustment;
+
+        // adjust mass to scale
+        rb.mass *= sizeAdjustment;
 
         // roll for whether or not asteroid should move
         float shouldMove = Random.Range(0f, 1f);
