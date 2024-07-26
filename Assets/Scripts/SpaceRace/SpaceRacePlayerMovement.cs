@@ -124,7 +124,7 @@ public class SpaceRacePlayerMovement : MonoBehaviour
                 boostAvailable = Mathf.Min(boostAvailable + boostRechargeRate * Time.deltaTime, 100);
 
                 // update UI with new value
-                SpaceRaceUIManager.Instance.UpdateBoostAmount(boostAvailable);
+                SpaceRaceUIManager.Instance.UpdateBoostAmount(boostAvailable, boostUseThreshold);
             }
         }
     }
@@ -132,8 +132,12 @@ public class SpaceRacePlayerMovement : MonoBehaviour
     private IEnumerator DelayRecharge()
     {
         rechargeReady = false;
+        SpaceRaceUIManager.Instance.ChangeBoostTextColor();
+
         yield return new WaitForSeconds(rechargeDelayTime);
+
         rechargeReady = true;
+        // don't change back as it'll be changed back once boostAvailable > the use threshold
     }
 
     private void SpeedControl()

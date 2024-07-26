@@ -14,6 +14,9 @@ public class SpaceRaceUIManager : MonoBehaviour
     [SerializeField] private TMP_Text rocketsAmountText;
     [SerializeField] private Image boostBar;
     [SerializeField] private TMP_Text countdownTimerText;
+    [SerializeField] private TMP_Text boostText;
+    [SerializeField] private TMP_Text rocketsText;
+    [SerializeField] private Color outOfResourceTextColor;
 
     // sentence display variables
     private float wordDisplayDelay = 0.1f; // rate of words being added to the sentence
@@ -94,20 +97,42 @@ public class SpaceRaceUIManager : MonoBehaviour
             rocketsAmountText.fontSize = 20;
             rocketsAmountText.characterSpacing = 0;
             rocketsAmountText.text = "OUT OF ROCKETS";
+            rocketsText.color = outOfResourceTextColor;
         }
     }
 
     public void UpdateBoostAmount(float amount)
+    {
+        ChangeBoostFill(amount);
+    }
+
+    public void UpdateBoostAmount(float amount, float useThreshold)
+    {
+        ChangeBoostFill(amount);
+
+        // change color if needed
+        if (boostText.color != Color.white && amount >= useThreshold)
+        {
+            boostText.color = Color.white;
+        }
+    }
+
+    public void ChangeBoostTextColor()
+    {
+        boostText.color = outOfResourceTextColor;
+    }
+
+    public void DisableIntroText()
+    {
+        introTextBox.SetActive(false);
+    }
+
+    private void ChangeBoostFill(float amount)
     {
         // change fill
         if (amount >= 0 && amount <= 100)
         {
             boostBar.fillAmount = amount / 100;
         }
-    }
-
-    public void DisableIntroText()
-    {
-        introTextBox.SetActive(false);
     }
 }
