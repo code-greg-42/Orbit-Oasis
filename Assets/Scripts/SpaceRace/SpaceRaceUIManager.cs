@@ -8,6 +8,7 @@ public class SpaceRaceUIManager : MonoBehaviour
 {
     public static SpaceRaceUIManager Instance { get; private set; }
 
+    [Header("References")]
     [SerializeField] private TMP_Text introText;
     [SerializeField] private GameObject introTextBox;
     [SerializeField] private TMP_Text rocketsAmountText;
@@ -93,6 +94,15 @@ public class SpaceRaceUIManager : MonoBehaviour
             rocketsAmountText.fontSize = 20;
             rocketsAmountText.characterSpacing = 0;
             rocketsAmountText.text = "OUT OF ROCKETS";
+        }
+    }
+
+    public void UpdateBoostAmount(float amount)
+    {
+        // change fill
+        if (amount >= 0 && amount <= 100)
+        {
+            boostBar.fillAmount = amount / 100;
         }
     }
 

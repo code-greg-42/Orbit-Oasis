@@ -7,35 +7,59 @@ public class SpaceRacePlayerMovement : MonoBehaviour
     private Rigidbody rb;
     [SerializeField] private Transform shipObjectTransform;
 
-    private const float moveSpeed = 20.0f;
-    private const float accelMultiplier = 20.0f;
-    private const float boostMultiplier = 2.0f;
-
+    // active use speed variables
     private float forwardSpeed = 40.0f;
-    private float minForwardSpeed = 32.0f;
+    private float minForwardSpeed;
+    private float boostSpeed;
+    private float regularSpeed;
+    private Vector3 moveDirection;
+
+    // const multipliers
+    private const float minForwardSpeedMultiplier = 0.8f;
+    private const float boostSpeedMultiplier = 2.0f;
+
+    // boost variables
     private bool boostActive;
+    private float boostAvailable = 100.0f;
+    private float boostUsageRate = 15.0f; // usage % per second
+    private float boostRechargeRate = 10.0f; // recharge % per second
+    private float boostUseThreshold = 15.0f; // % of boost available necessary for initiating boost
+    private float rechargeDelayTime = 2.0f; // delay recharging if boost hits 0
+    private bool rechargeReady = true;
 
+    // const variables
     private const KeyCode boostKey = KeyCode.LeftShift;
+    private const float accelMultiplier = 20.0f;
+    private const float moveSpeed = 20.0f; // speed for directional movement
 
+    // input variables
     private float horizontalInput;
     private float verticalInput;
 
-    private Vector3 moveDirection;
     private bool isCrashing;
+    
 
     void Start()
     {
+        // set initial variables based on default forwardSpeed
+        minForwardSpeed = forwardSpeed * minForwardSpeedMultiplier;
+        boostSpeed = forwardSpeed * boostSpeedMultiplier;
+        regularSpeed = forwardSpeed;
+
+        // get rigidbody component and set velocity to forward speed
         rb = GetComponent<Rigidbody>();
         rb.velocity = Vector3.forward * forwardSpeed;
     }
 
     void Update()
     {
-        Debug.Log(rb.velocity);
         if (SpaceRaceGameManager.Instance.IsGameActive)
         {
             GetInput();
+            UpdateBoost();
         }
+
+        // speed control always last as it's dependent on speed variables that change from other methods
         SpeedControl();
     }
 
@@ -61,19 +85,55 @@ public class SpaceRacePlayerMovement : MonoBehaviour
         horizontalInput = Input.GetAxis("Horizontal");
         verticalInput = Input.GetAxis("Vertical");
 
-        if (!boostActive && Input.GetKey(boostKey))
+        if (!boostActive && boostAvailable >= boostUseThreshold && Input.GetKey(boostKey))
         {
-            boostActive = true;
-            forwardSpeed *= boostMultiplier;
-            minForwardSpeed *= boostMultiplier;
+            ActivateBoost();
         }
 
-        if (Input.GetKeyUp(boostKey))
+        if (boostActive && Input.GetKeyUp(boostKey))
         {
-            forwardSpeed /= boostMultiplier;
-            minForwardSpeed /= boostMultiplier;
-            boostActive = false;
+            DeactivateBoost();
         }
+    }
+
+    private void UpdateBoost()
+    {
+        if (boostActive && boostAvailable > 0)
+        {
+            // USE
+            float newBoostAmount = boostAvailable - boostUsageRate * Time.deltaTime;
+
+            if (newBoostAmount > 0)
+            {
+                boostAvailable = newBoostAmount;
+            }
+            else
+            {
+                boostAvailable = 0;
+                DeactivateBoost();
+                StartCoroutine(DelayRecharge());
+            }
+            // update UI with new value
+            SpaceRaceUIManager.Instance.UpdateBoostAmount(boostAvailable);
+        }
+        else if (rechargeReady)
+        {
+            // RECHARGE
+            if (boostAvailable < 100)
+            {
+                boostAvailable = Mathf.Min(boostAvailable + boostRechargeRate * Time.deltaTime, 100);
+
+                // update UI with new value
+                SpaceRaceUIManager.Instance.UpdateBoostAmount(boostAvailable);
+            }
+        }
+    }
+
+    private IEnumerator DelayRecharge()
+    {
+        rechargeReady = false;
+        yield return new WaitForSeconds(rechargeDelayTime);
+        rechargeReady = true;
     }
 
     private void SpeedControl()
@@ -100,6 +160,20 @@ public class SpaceRacePlayerMovement : MonoBehaviour
             Vector3 newMinForwardVel = new(rb.velocity.x, rb.velocity.y, minForwardSpeed);
             rb.velocity = newMinForwardVel;
         }
+    }
+
+    private void ActivateBoost()
+    {
+        boostActive = true;
+        forwardSpeed = boostSpeed;
+        minForwardSpeed = boostSpeed * minForwardSpeedMultiplier;
+    }
+
+    private void DeactivateBoost()
+    {
+        forwardSpeed = regularSpeed;
+        minForwardSpeed = regularSpeed * minForwardSpeedMultiplier;
+        boostActive = false;
     }
 
     private void Crash()
