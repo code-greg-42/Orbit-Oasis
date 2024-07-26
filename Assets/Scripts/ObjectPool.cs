@@ -13,7 +13,7 @@ public class ObjectPool : MonoBehaviour
         InitializePool();
     }
 
-    private void InitializePool()
+    protected virtual void InitializePool()
     {
         // initialize object pool with inactive enemy objects
         pooledObjects = new List<GameObject>();

@@ -1280,8 +1280,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea5cbec6293e8d44190c558fc0e3299d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objectToPool: {fileID: 6123279987556253554, guid: 543f85c367b24464098124fcc11a6955, type: 3}
+  objectToPool: {fileID: 0}
   amountToPool: 500
+  asteroidPrefabs:
+  - {fileID: 2942051580892192243, guid: d57d6419728ca4fa486055a9b54eb326, type: 3}
+  - {fileID: 3539412230784186596, guid: 607f852e894b2474e8037bde96a3f38c, type: 3}
+  - {fileID: 8003495884289897023, guid: 2408f749a3ad04e23b2abe82997c4b61, type: 3}
+  - {fileID: 3712215468181072183, guid: e0cfb534d47614c7b825642df2d44a40, type: 3}
+  - {fileID: 6123279987556253554, guid: 543f85c367b24464098124fcc11a6955, type: 3}
 --- !u!114 &1078641227
 MonoBehaviour:
   m_ObjectHideFlags: 0
