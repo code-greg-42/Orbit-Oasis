@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class SpaceRaceAsteroid : MonoBehaviour
 {
-    private Rigidbody rb;
-
     private float moveSpeed;
 
     private float movePercentage = 0.6f; // percentage of asteroids that move
@@ -15,6 +13,8 @@ public class SpaceRaceAsteroid : MonoBehaviour
 
     private float[] sizes = { 0.7f, 0.8f, 0.9f, 1.0f, 1.05f, 1.1f, 1.15f, 1.2f, 1.5f, 2f };
     private int[] sizeWeights = { 5, 5, 15, 25, 20, 10, 5, 5, 5, 5 };
+
+    private Rigidbody rb;
 
     private void Start()
     {

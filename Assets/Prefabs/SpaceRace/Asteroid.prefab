@@ -98,6 +98,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81bc65461f9e59645ab5b1b854b92e49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  asteroidMaterials:
+  - {fileID: 2100000, guid: 4a81d6c5819c847a6a46c6ecfe84c60a, type: 2}
+  - {fileID: 2100000, guid: 443d49db2da184f60b9a1ca1ddca60f8, type: 2}
+  - {fileID: 2100000, guid: d89e3e2cf10054b0ab7bac50c51f0e77, type: 2}
+  - {fileID: 2100000, guid: f7244c98095f64982b9ac3654f88d268, type: 2}
+  - {fileID: 2100000, guid: 1b35ffaf2734547b28c818dfc441a1bf, type: 2}
 --- !u!135 &6887627930527980920
 SphereCollider:
   m_ObjectHideFlags: 0
