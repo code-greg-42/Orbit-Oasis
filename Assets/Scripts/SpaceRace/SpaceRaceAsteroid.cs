@@ -11,7 +11,7 @@ public class SpaceRaceAsteroid : MonoBehaviour
     private int[] speeds = { 15, 30, 45, 80 }; // list of different asteroid speeds
     private int[] speedWeights = { 35, 35, 25, 5 }; // percentages each speed will be picked
 
-    private float[] sizes = { 0.7f, 0.8f, 0.9f, 1.0f, 1.05f, 1.1f, 1.15f, 1.2f, 1.5f, 2f };
+    private float[] sizes = { 0.9f, 1.0f, 1.05f, 1.1f, 1.15f, 1.2f, 1.25f, 1.3f, 1.5f, 2.0f };
     private int[] sizeWeights = { 5, 5, 15, 25, 20, 10, 5, 5, 5, 5 };
 
     private Rigidbody rb;

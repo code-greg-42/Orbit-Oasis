@@ -8,7 +8,7 @@ public class SpaceRacePlayerMovement : MonoBehaviour
     [SerializeField] private Transform shipObjectTransform;
 
     // active use speed variables
-    private float forwardSpeed = 40.0f;
+    private float forwardSpeed;
     private float minForwardSpeed;
     private float boostSpeed;
     private float regularSpeed;
@@ -31,6 +31,7 @@ public class SpaceRacePlayerMovement : MonoBehaviour
     private const KeyCode boostKey = KeyCode.LeftShift;
     private const float accelMultiplier = 20.0f;
     private const float moveSpeed = 20.0f; // speed for directional movement
+    private const float introSpeed = 20.0f; // forward speed for intro
 
     // input variables
     private float horizontalInput;
@@ -38,13 +39,15 @@ public class SpaceRacePlayerMovement : MonoBehaviour
 
     private bool isCrashing;
     
-
     void Start()
     {
         // set initial variables based on default forwardSpeed
-        minForwardSpeed = forwardSpeed * minForwardSpeedMultiplier;
-        boostSpeed = forwardSpeed * boostSpeedMultiplier;
-        regularSpeed = forwardSpeed;
+        //minForwardSpeed = forwardSpeed * minForwardSpeedMultiplier;
+        //boostSpeed = forwardSpeed * boostSpeedMultiplier;
+        //regularSpeed = forwardSpeed;
+
+        // set initial speed to intro speed
+        forwardSpeed = introSpeed;
 
         // get rigidbody component and set velocity to forward speed
         rb = GetComponent<Rigidbody>();
@@ -78,6 +81,14 @@ public class SpaceRacePlayerMovement : MonoBehaviour
                 rb.AddForce(accelMultiplier * forwardSpeed * transform.forward, ForceMode.Force);
             }
         }
+    }
+
+    public void SetRaceSpeed(float speed)
+    {
+        forwardSpeed = speed;
+        minForwardSpeed = speed * minForwardSpeedMultiplier;
+        boostSpeed = speed * boostSpeedMultiplier;
+        regularSpeed = speed;
     }
 
     private void GetInput()

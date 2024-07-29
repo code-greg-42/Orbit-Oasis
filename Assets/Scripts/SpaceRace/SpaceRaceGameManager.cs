@@ -13,6 +13,7 @@ public class SpaceRaceGameManager : MonoBehaviour
     [SerializeField] private Transform playerTransform;
     [SerializeField] private CinemachineVirtualCamera virtualCamera;
     [SerializeField] private Transform checkpointIndicator;
+    [SerializeField] private SpaceRacePlayerMovement playerMovement;
 
     // checkpoint variables
     private const float checkpointBoundaryX = 100.0f;
@@ -38,6 +39,9 @@ public class SpaceRaceGameManager : MonoBehaviour
     // game management variables
     private const float endGameSequenceTime = 5.0f;
 
+    // separate bool from IsGameActive that is never set to false -- used only for starting the race
+    private bool hasRaceStarted;
+
     public float AsteroidBoundaryX => asteroidBoundaryX;
     public float AsteroidBoundaryY => asteroidBoundaryY;
     public int[] AsteroidPrefabWeights => asteroidPrefabWeights;
@@ -57,12 +61,12 @@ public class SpaceRaceGameManager : MonoBehaviour
         if (!IsGameActive)
         {
             // change this positioning number based on the SPEED of the ship on different settings
-            if (!SpaceRaceUIManager.Instance.CountdownStarted && playerTransform.position.z >= -160)
+            if (!SpaceRaceUIManager.Instance.CountdownStarted && playerTransform.position.z >= -80)
             {
                 SpaceRaceUIManager.Instance.StartCountdown();
             }
 
-            if (playerTransform.position.z > 0 && playerTransform.position.z < checkpointBuffer)
+            if (!hasRaceStarted && playerTransform.position.z > 0)
             {
                 StartRace();
             }
@@ -77,6 +81,11 @@ public class SpaceRaceGameManager : MonoBehaviour
     private void StartRace()
     {
         IsGameActive = true;
+        hasRaceStarted = true;
+
+        // update this speed with DataManager, based on difficulty selected --- later
+        playerMovement.SetRaceSpeed(40.0f);
+
         checkpointIndicator.gameObject.SetActive(true);
         SpaceRaceUIManager.Instance.DisableIntroText();
     }
