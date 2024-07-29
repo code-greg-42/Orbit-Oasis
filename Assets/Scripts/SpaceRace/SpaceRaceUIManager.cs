@@ -16,10 +16,13 @@ public class SpaceRaceUIManager : MonoBehaviour
     [SerializeField] private TMP_Text countdownTimerText;
     [SerializeField] private TMP_Text boostText;
     [SerializeField] private TMP_Text rocketsText;
+    [SerializeField] private TMP_Text gameClockText;
     [SerializeField] private TMP_Text checkpointStatusWindow;
+    [SerializeField] private TMP_Text victoryText;
     [SerializeField] private Color outOfResourceTextColor;
     [SerializeField] private Color checkpointPassedColor;
     [SerializeField] private Color checkpointMissedColor;
+    [SerializeField] private Color victoryTextColor;
 
     // ui setting variables
     private float wordDisplayDelay = 0.1f; // rate of words being added to the sentence
@@ -35,6 +38,7 @@ public class SpaceRaceUIManager : MonoBehaviour
 
     private Coroutine countdownCoroutine;
     private Coroutine statusWindowCoroutine;
+    private Coroutine victoryTextCoroutine;
 
     public bool CountdownStarted { get; private set; }
 
@@ -65,24 +69,33 @@ public class SpaceRaceUIManager : MonoBehaviour
         }
     }
 
-    public void UpdateCheckpointStatus(int checkpointNumber = 0, int totalCheckpoints = 0)
+    public void UpdateCheckpointStatusWindow(bool checkpointCompleted = true)
     {
-        statusWindowCoroutine = StartCoroutine(UpdateCheckpointStatusWindowCoroutine(checkpointNumber, totalCheckpoints));
+        statusWindowCoroutine = StartCoroutine(UpdateCheckpointStatusWindowCoroutine(checkpointCompleted));
     }
 
-    private IEnumerator UpdateCheckpointStatusWindowCoroutine(int checkpointNumber, int totalCheckpoints)
+    public void UpdateGameClock(float gameTime)
+    {
+        int minutes = Mathf.FloorToInt(gameTime / 60F);
+        int seconds = Mathf.FloorToInt(gameTime % 60F);
+        int fraction = Mathf.FloorToInt((gameTime * 100) % 100);
+
+        gameClockText.text = string.Format("{0:00}:{1:00}.{2:00}", minutes, seconds, fraction);
+    }
+
+    private IEnumerator UpdateCheckpointStatusWindowCoroutine(bool checkpointCompleted)
     {
         Color originalColor = checkpointStatusWindow.color;
 
-        if (checkpointNumber == 0)
+        if (checkpointCompleted)
         {
-            checkpointStatusWindow.color = checkpointMissedColor;
-            checkpointStatusWindow.text = "Checkpoint Missed!";
+            checkpointStatusWindow.color = checkpointPassedColor;
+            checkpointStatusWindow.text = "Checkpoint Passed!";
         }
         else
         {
-            checkpointStatusWindow.color = checkpointPassedColor;
-            checkpointStatusWindow.text = "Checkpoint " + checkpointNumber + "/" + totalCheckpoints + " Passed!";
+            checkpointStatusWindow.color = checkpointMissedColor;
+            checkpointStatusWindow.text = "Checkpoint Missed!";
         }
 
         // set fade alpha
@@ -106,6 +119,15 @@ public class SpaceRaceUIManager : MonoBehaviour
 
         // reset to original color
         checkpointStatusWindow.color = originalColor;
+    }
+
+    public void DisplayVictoryText()
+    {
+        if (victoryTextCoroutine == null)
+        {
+            string victoryTextString = "Race Completed!";
+            victoryTextCoroutine = StartCoroutine(ShowAndFadeText(victoryText, victoryTextString, victoryTextColor, 2.0f, 3.0f));
+        }
     }
 
     private IEnumerator DisplayCountdown()
@@ -183,5 +205,47 @@ public class SpaceRaceUIManager : MonoBehaviour
         {
             boostBar.fillAmount = amount / 100;
         }
+    }
+
+    private IEnumerator ShowAndFadeText(TMP_Text textBox, string text, Color startColor, float displayDuration, float fadeDuration)
+    {
+        // save original color to be able to return it at the end
+        Color originalColor = textBox.color;
+
+        // change text color to assigned color
+        textBox.color = startColor;
+
+        // add assigned text
+        textBox.text = text;
+
+        textBox.gameObject.SetActive(true);
+
+        // set fadeColor to start color with an alpha of 0
+        Color fadeColor = startColor;
+        fadeColor.a = 0;
+
+        // wait for display time
+        yield return new WaitForSeconds(displayDuration);
+
+        // gradually reduce alpha over time
+        float elapsedTime = 0f;
+        while (elapsedTime < fadeDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            textBox.color = Color.Lerp(startColor, fadeColor, elapsedTime / fadeDuration);
+            yield return null;
+        }
+
+        // set fully faded
+        textBox.color = fadeColor;
+
+        // reset text
+        textBox.text = "";
+
+        // disable textbox
+        textBox.gameObject.SetActive(false);
+
+        // reset original textbox color
+        textBox.color = originalColor;
     }
 }

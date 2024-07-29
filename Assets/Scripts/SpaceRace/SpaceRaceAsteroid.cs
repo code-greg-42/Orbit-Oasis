@@ -6,6 +6,9 @@ public class SpaceRaceAsteroid : MonoBehaviour
 {
     private float moveSpeed;
 
+    private const float boundarySpeedMinimum = 20.0f;
+    private const float boundarySpeedModifier = 2.0f;
+
     private float movePercentage = 0.6f; // percentage of asteroids that move
 
     private int[] speeds = { 15, 30, 45, 80 }; // list of different asteroid speeds
@@ -80,21 +83,29 @@ public class SpaceRaceAsteroid : MonoBehaviour
 
     private void BoundaryCheck()
     {
+        // set to a minimum amount for asteroids with a move speed of 0 that were bumped by other asteroids
+        float boundarySpeedBase = Mathf.Max(boundarySpeedMinimum, moveSpeed);
+        float boundarySpeed = boundarySpeedBase * boundarySpeedModifier;
+
         if (transform.position.x < -SpaceRaceGameManager.Instance.AsteroidBoundaryX)
         {
-            rb.AddForce(Vector3.right * moveSpeed);
+            rb.AddForce(Vector3.right * boundarySpeed);
         }
         else if (transform.position.x > SpaceRaceGameManager.Instance.AsteroidBoundaryX)
         {
-            rb.AddForce(Vector3.left * moveSpeed);
+            rb.AddForce(Vector3.left * boundarySpeed);
         }
         else if (transform.position.y < -SpaceRaceGameManager.Instance.AsteroidBoundaryY)
         {
-            rb.AddForce(Vector3.up * moveSpeed);
+            rb.AddForce(Vector3.up * boundarySpeed);
         }
         else if (transform.position.y > SpaceRaceGameManager.Instance.AsteroidBoundaryY)
         {
-            rb.AddForce(Vector3.down * moveSpeed);
+            rb.AddForce(Vector3.down * boundarySpeed);
+        }
+        else if (transform.position.z > SpaceRaceGameManager.Instance.FinalAsteroidBoundary)
+        {
+            rb.AddForce(Vector3.back * boundarySpeed);
         }
     }
 

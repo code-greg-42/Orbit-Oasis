@@ -16,6 +16,7 @@ public class SpaceRaceGameManager : MonoBehaviour
     [SerializeField] private SpaceRacePlayerMovement playerMovement;
 
     // checkpoint variables
+    private const int finalCheckpoint = 10; // last checkpoint to win the race
     private const float checkpointBoundaryX = 100.0f;
     private const float checkpointBoundaryY = 75.0f;
     private const float distanceBetweenCheckpoints = 300.0f;
@@ -32,12 +33,22 @@ public class SpaceRaceGameManager : MonoBehaviour
     private const int asteroidsPerCheckpoint = 50;
     private List<SpaceRaceAsteroid> activeAsteroids = new List<SpaceRaceAsteroid>();
     private int[] asteroidPrefabWeights = { 15, 15, 15, 15, 40 };
+    
+    // boundary for z end of asteroid field
+    public float FinalAsteroidBoundary
+    {
+        get { return distanceBetweenCheckpoints * finalCheckpoint; }
+    }
 
     // indicator/navigation variables
     private const float indicatorRotationSpeed = 100.0f;
 
     // game management variables
     private const float endGameSequenceTime = 5.0f;
+    private float gameClock = 0.0f;
+    private float gameClockInterval = 0.01f; // interval that gameclock changes in
+    private Coroutine gameClockCoroutine;
+    private Coroutine updateClockCoroutine;
 
     // separate bool from IsGameActive that is never set to false -- used only for starting the race
     private bool hasRaceStarted;
@@ -88,6 +99,37 @@ public class SpaceRaceGameManager : MonoBehaviour
 
         checkpointIndicator.gameObject.SetActive(true);
         SpaceRaceUIManager.Instance.DisableIntroText();
+
+        StartGameClock();
+    }
+
+    private void StartGameClock()
+    {
+        if (gameClockCoroutine == null && updateClockCoroutine == null)
+        {
+            gameClockCoroutine = StartCoroutine(TrackGameClock());
+            updateClockCoroutine = StartCoroutine(UpdateGameClock());
+        }
+    }
+
+    private IEnumerator TrackGameClock()
+    {
+        while (IsGameActive)
+        {
+            gameClock += Time.deltaTime;
+            yield return null;
+        }
+    }
+
+    private IEnumerator UpdateGameClock()
+    {
+        while (IsGameActive)
+        {
+            yield return new WaitForSeconds(gameClockInterval);
+
+            // update UI
+            SpaceRaceUIManager.Instance.UpdateGameClock(gameClock);
+        }
     }
 
     private void UpdateCheckpointIndicator()
@@ -117,9 +159,7 @@ public class SpaceRaceGameManager : MonoBehaviour
 
                 if (!checkpoint.CheckpointSuccess && checkpoint.transform.position.z + checkpointBuffer < playerTransform.position.z)
                 {
-                    Debug.Log("Checkpoint missed!");
-                    ChangeCheckpointsToRed();
-                    EndGame();
+                    MissedCheckpoint();
                 }
             }
         }
@@ -127,13 +167,40 @@ public class SpaceRaceGameManager : MonoBehaviour
 
     public void CheckpointPassed()
     {
-        nextCheckpoint = activeCheckpoints[1]; // 2nd checkpoint in list because current one has not despawned/been removed yet
+        if (activeCheckpoints.Count > 1)
+        {
+            nextCheckpoint = activeCheckpoints[1]; // 2nd checkpoint in list because current one has not despawned/been removed yet
 
-        // checkpoint number is calculated before new checkpoint is loaded
-        int checkpointNumber = checkpointsLoaded - initialCheckpointsToLoad;
-        SpaceRaceUIManager.Instance.UpdateCheckpointStatus(checkpointNumber, 20);
+            // checkpoint number is calculated before new checkpoint is loaded
+            int checkpointNumber = checkpointsLoaded - initialCheckpointsToLoad;
 
-        SpawnNewWave();
+            // skip display message for the initial checkpoint (checkpoint number 0)
+            if (checkpointNumber > 0)
+            {
+                SpaceRaceUIManager.Instance.UpdateCheckpointStatusWindow();
+            }
+        }
+        else
+        {
+            SpaceRaceUIManager.Instance.DisplayVictoryText();
+            EndGame();
+        }
+
+        if (checkpointsLoaded < finalCheckpoint)
+        {
+            SpawnNewWave();
+        }
+    }
+
+    private void MissedCheckpoint()
+    {
+        // display checkpoint missed status update -- false turns it red and says 'missed'
+        SpaceRaceUIManager.Instance.UpdateCheckpointStatusWindow(false);
+
+        // change coloring of in game future checkpoints to red
+        ChangeCheckpointsToRed();
+
+        EndGame();
     }
 
     private void SpawnNewWave()
