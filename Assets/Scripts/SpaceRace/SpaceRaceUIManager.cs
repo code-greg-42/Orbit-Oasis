@@ -16,11 +16,16 @@ public class SpaceRaceUIManager : MonoBehaviour
     [SerializeField] private TMP_Text countdownTimerText;
     [SerializeField] private TMP_Text boostText;
     [SerializeField] private TMP_Text rocketsText;
+    [SerializeField] private TMP_Text checkpointStatusWindow;
     [SerializeField] private Color outOfResourceTextColor;
+    [SerializeField] private Color checkpointPassedColor;
+    [SerializeField] private Color checkpointMissedColor;
 
-    // sentence display variables
+    // ui setting variables
     private float wordDisplayDelay = 0.1f; // rate of words being added to the sentence
     private float sentenceDisplayDelay = 5.0f; // total time of pause after sentence is complete
+    private float statusDisplayDuration = 1.2f; // total time of the display at normal alpha
+    private float statusFadeDuration = 2.0f; // duration of the fade effect for the status window
 
     private readonly List<string> introSentences = new List<string>
     {
@@ -29,6 +34,7 @@ public class SpaceRaceUIManager : MonoBehaviour
     };
 
     private Coroutine countdownCoroutine;
+    private Coroutine statusWindowCoroutine;
 
     public bool CountdownStarted { get; private set; }
 
@@ -57,6 +63,49 @@ public class SpaceRaceUIManager : MonoBehaviour
             // pause to allow reading
             yield return new WaitForSeconds(sentenceDisplayDelay);
         }
+    }
+
+    public void UpdateCheckpointStatus(int checkpointNumber = 0, int totalCheckpoints = 0)
+    {
+        statusWindowCoroutine = StartCoroutine(UpdateCheckpointStatusWindowCoroutine(checkpointNumber, totalCheckpoints));
+    }
+
+    private IEnumerator UpdateCheckpointStatusWindowCoroutine(int checkpointNumber, int totalCheckpoints)
+    {
+        Color originalColor = checkpointStatusWindow.color;
+
+        if (checkpointNumber == 0)
+        {
+            checkpointStatusWindow.color = checkpointMissedColor;
+            checkpointStatusWindow.text = "Checkpoint Missed!";
+        }
+        else
+        {
+            checkpointStatusWindow.color = checkpointPassedColor;
+            checkpointStatusWindow.text = "Checkpoint " + checkpointNumber + "/" + totalCheckpoints + " Passed!";
+        }
+
+        // set fade alpha
+        Color statusColor = checkpointStatusWindow.color;
+        Color fadedColor = statusColor;
+        fadedColor.a = 0;
+
+        yield return new WaitForSeconds(statusDisplayDuration);
+
+        // gradually reduce alpha over time
+        float elapsedTime = 0f;
+        while (elapsedTime < statusFadeDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            checkpointStatusWindow.color = Color.Lerp(statusColor, fadedColor, elapsedTime / statusFadeDuration);
+            yield return null;
+        }
+
+        checkpointStatusWindow.color = fadedColor;
+        checkpointStatusWindow.text = "";
+
+        // reset to original color
+        checkpointStatusWindow.color = originalColor;
     }
 
     private IEnumerator DisplayCountdown()

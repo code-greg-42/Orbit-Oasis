@@ -129,6 +129,10 @@ public class SpaceRaceGameManager : MonoBehaviour
     {
         nextCheckpoint = activeCheckpoints[1]; // 2nd checkpoint in list because current one has not despawned/been removed yet
 
+        // checkpoint number is calculated before new checkpoint is loaded
+        int checkpointNumber = checkpointsLoaded - initialCheckpointsToLoad;
+        SpaceRaceUIManager.Instance.UpdateCheckpointStatus(checkpointNumber, 20);
+
         SpawnNewWave();
     }
 
