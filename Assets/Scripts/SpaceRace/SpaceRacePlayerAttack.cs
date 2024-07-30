@@ -15,7 +15,9 @@ public class SpaceRacePlayerAttack : MonoBehaviour
     [SerializeField] private Collider leftWingCollider;
     [SerializeField] private Collider rightWingCollider;
 
-    private int numRockets = 10;
+    private int numRockets = 8;
+
+    private readonly int[] rocketUpgradeAmounts = { 9, 10, 11 };
 
     private void Update()
     {
@@ -26,6 +28,17 @@ public class SpaceRacePlayerAttack : MonoBehaviour
                 Attack();
             }
         }
+    }
+
+    public void SetRocketAmount(int rocketUpgrade)
+    {
+        if (rocketUpgrade >= 1 && rocketUpgrade <= rocketUpgradeAmounts.Length)
+        {
+            numRockets = rocketUpgradeAmounts[rocketUpgrade - 1];
+        }
+
+        // update UI
+        SpaceRaceUIManager.Instance.UpdateRocketAmount(numRockets);
     }
 
     private void Attack()

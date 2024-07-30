@@ -6,7 +6,7 @@ public class SpaceRaceAsteroid : MonoBehaviour
 {
     private float moveSpeed;
 
-    private const float boundarySpeedMinimum = 20.0f;
+    private const float boundarySpeedMinimum = 20.0f; // used for moving an asteroid with a movespeed of 0
     private const float boundarySpeedModifier = 2.0f;
 
     private float movePercentage = 0.6f; // percentage of asteroids that move
@@ -14,8 +14,8 @@ public class SpaceRaceAsteroid : MonoBehaviour
     private int[] speeds = { 20, 40, 60, 100 }; // list of different asteroid speeds
     private int[] speedWeights = { 35, 35, 25, 5 }; // percentages each speed will be picked
 
-    private float[] sizes = { 0.9f, 1f, 1.05f, 1.1f, 1.15f, 1.2f, 1.3f, 1.45f, 1.6f, 2.2f };
-    private int[] sizeWeights = { 5, 5, 15, 25, 20, 10, 10, 5, 3, 2 };
+    private float[] sizes = { 0.9f, 1f, 1.05f, 1.1f, 1.15f, 1.2f, 1.3f, 1.45f, 1.6f, 2.2f }; // list of different asteroid sizes
+    private int[] sizeWeights = { 5, 5, 15, 25, 20, 10, 10, 5, 3, 2 }; // percentages each size will be picked
 
     private Rigidbody rb;
 

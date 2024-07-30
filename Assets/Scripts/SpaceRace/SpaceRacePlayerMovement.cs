@@ -21,11 +21,15 @@ public class SpaceRacePlayerMovement : MonoBehaviour
     // boost variables
     private bool boostActive;
     private float boostAvailable = 100.0f;
-    private float boostUsageRate = 5.0f; // usage % per second
-    private float boostRechargeRate = 30.0f; // recharge % per second
-    private float boostUseThreshold = 15.0f; // % of boost available necessary for initiating boost
-    private float rechargeDelayTime = 2.0f; // delay recharging if boost hits 0
+    private float boostUsageRate = 15.0f; // usage % per second
+    private float boostRechargeRate = 10.0f; // recharge % per second
+    private const float boostUseThreshold = 15.0f; // % of boost available necessary for initiating boost
+    private const float rechargeDelayTime = 2.0f; // delay recharging if boost hits 0
     private bool rechargeReady = true;
+
+    // upgrade amounts
+    private readonly float[] boostUpgradeUsageRates = { 10.0f, 5.0f, 2.5f };
+    private readonly float[] boostUpgradeRechargeRates = { 20.0f, 30.0f, 40.0f };
 
     // const variables
     private const KeyCode boostKey = KeyCode.LeftShift;
@@ -41,11 +45,6 @@ public class SpaceRacePlayerMovement : MonoBehaviour
     
     void Start()
     {
-        // set initial variables based on default forwardSpeed
-        //minForwardSpeed = forwardSpeed * minForwardSpeedMultiplier;
-        //boostSpeed = forwardSpeed * boostSpeedMultiplier;
-        //regularSpeed = forwardSpeed;
-
         // set initial speed to intro speed
         forwardSpeed = introSpeed;
 
@@ -89,6 +88,15 @@ public class SpaceRacePlayerMovement : MonoBehaviour
         minForwardSpeed = speed * minForwardSpeedMultiplier;
         boostSpeed = speed * boostSpeedMultiplier;
         regularSpeed = speed;
+    }
+
+    public void SetBoostUpgrade(int boostUpgradeLevel)
+    {
+        if (boostUpgradeLevel >= 1 && boostUpgradeLevel <= boostUpgradeUsageRates.Length)
+        {
+            boostUsageRate = boostUpgradeUsageRates[boostUpgradeLevel - 1];
+            boostRechargeRate = boostUpgradeRechargeRates[boostUpgradeLevel - 1];
+        }
     }
 
     private void GetInput()

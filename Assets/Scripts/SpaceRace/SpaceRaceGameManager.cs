@@ -16,43 +16,51 @@ public class SpaceRaceGameManager : MonoBehaviour
     [SerializeField] private SpaceRacePlayerMovement playerMovement;
 
     // checkpoint variables
-    private const int finalCheckpoint = 10; // last checkpoint to win the race
+    private float distanceBetweenCheckpoints = 300.0f;
+    private const int finalCheckpoint = 20; // last checkpoint to win the race
     private const float checkpointBoundaryX = 80.0f;
     private const float checkpointBoundaryY = 60.0f;
-    private const float distanceBetweenCheckpoints = 300.0f;
     private const int initialCheckpointsToLoad = 6;
-    private const float checkpointBuffer = 25.0f;
+    private float checkpointBuffer = 25.0f;
     private int checkpointsLoaded = 0;
     private List<SpaceRaceCheckpoint> activeCheckpoints = new List<SpaceRaceCheckpoint>();
     private SpaceRaceCheckpoint nextCheckpoint;
+    private float missedCheckpointBuffer = 35.0f;
 
     // asteroid variables
     private const float asteroidBoundaryX = 150.0f;
     private const float asteroidBoundaryY = 100.0f;
     private const float asteroidBuffer = 25.0f;
-    private const int asteroidsPerCheckpoint = 35;
+    private int asteroidsPerCheckpoint = 35;
     private List<SpaceRaceAsteroid> activeAsteroids = new List<SpaceRaceAsteroid>();
     private int[] asteroidPrefabWeights = { 15, 15, 15, 15, 40 };
-    
-    // boundary for z end of asteroid field
-    public float FinalAsteroidBoundary
-    {
-        get { return distanceBetweenCheckpoints * finalCheckpoint + checkpointBuffer; }
-    }
 
     // indicator/navigation variables
     private const float indicatorRotationSpeed = 100.0f;
 
     // game management variables
-    private const float endGameSequenceTime = 5.0f;
+    private float playerMovementSpeed = 40.0f;
     private float gameClock = 0.0f;
     private float gameClockInterval = 0.01f; // interval that gameclock changes in
+    private const float endGameSequenceTime = 5.0f;
     private Coroutine gameClockCoroutine;
     private Coroutine updateClockCoroutine;
+
+    // difficulty settings
+    private const float easySpeed = 30.0f;
+    private const float hardSpeed = 60.0f;
+    private const int easyAsteroidAmount = 25;
+    private const int hardAsteroidAmount = 50;
+    private const float easyDistanceBetweenCheckpoints = 250f;
+    private const float hardDistanceBetweenCheckpoints = 450f;
 
     // separate bool from IsGameActive that is never set to false -- used only for starting the race
     private bool hasRaceStarted;
 
+    public float FinalAsteroidBoundary
+    {
+        get { return distanceBetweenCheckpoints * finalCheckpoint + checkpointBuffer; } // boundary for z end of asteroid field
+    }
     public float AsteroidBoundaryX => asteroidBoundaryX;
     public float AsteroidBoundaryY => asteroidBoundaryY;
     public int[] AsteroidPrefabWeights => asteroidPrefabWeights;
@@ -67,6 +75,7 @@ public class SpaceRaceGameManager : MonoBehaviour
 
     private void Start()
     {
+        SetDifficulty(2);
         SpawnInitialScene();
     }
 
@@ -92,17 +101,35 @@ public class SpaceRaceGameManager : MonoBehaviour
         }
     }
 
+    private void SetDifficulty(int difficulty)
+    {
+        if (difficulty == 0)
+        {
+            playerMovementSpeed = easySpeed;
+            asteroidsPerCheckpoint = easyAsteroidAmount;
+            distanceBetweenCheckpoints = easyDistanceBetweenCheckpoints;
+        }
+        else if (difficulty == 2)
+        {
+            playerMovementSpeed = hardSpeed;
+            asteroidsPerCheckpoint = hardAsteroidAmount;
+            distanceBetweenCheckpoints = hardDistanceBetweenCheckpoints;
+            missedCheckpointBuffer *= 4.0f;
+        }
+    }
+
     private void StartRace()
     {
         IsGameActive = true;
         hasRaceStarted = true;
 
-        // update this speed with DataManager, based on difficulty selected --- later
-        playerMovement.SetRaceSpeed(40.0f);
+        playerMovement.SetRaceSpeed(playerMovementSpeed);
 
-        checkpointIndicator.gameObject.SetActive(true);
+        // disable intro UI components
         SpaceRaceUIManager.Instance.DisableIntroText();
 
+        // activate in game UI components
+        checkpointIndicator.gameObject.SetActive(true);
         StartGameClock();
     }
 
@@ -160,7 +187,7 @@ public class SpaceRaceGameManager : MonoBehaviour
             {
                 SpaceRaceCheckpoint checkpoint = activeCheckpoints[i];
 
-                if (!checkpoint.CheckpointSuccess && checkpoint.transform.position.z + checkpointBuffer < playerTransform.position.z)
+                if (checkpoint.transform.position.z + missedCheckpointBuffer < playerTransform.position.z && !checkpoint.CheckpointSuccess)
                 {
                     MissedCheckpoint();
                 }

@@ -71,7 +71,20 @@ public class SpaceRaceUIManager : MonoBehaviour
 
     public void UpdateCheckpointStatusWindow(bool checkpointCompleted = true)
     {
-        statusWindowCoroutine = StartCoroutine(UpdateCheckpointStatusWindowCoroutine(checkpointCompleted));
+        if (statusWindowCoroutine != null)
+        {
+            StopCoroutine(statusWindowCoroutine);
+            statusWindowCoroutine = null;
+        }
+
+        // set message and color passed on checkpoint status
+
+        string message = checkpointCompleted ? "Checkpoint Passed!" : "Checkpoint Missed!";
+        Color statusColor = checkpointCompleted ? checkpointPassedColor : checkpointMissedColor;
+
+        // start the coroutine to show and fade the text
+        statusWindowCoroutine = StartCoroutine(ShowAndFadeText(checkpointStatusWindow, message, statusColor,
+                statusDisplayDuration, statusFadeDuration));
     }
 
     public void UpdateGameClock(float gameTime)
@@ -81,44 +94,6 @@ public class SpaceRaceUIManager : MonoBehaviour
         int fraction = Mathf.FloorToInt((gameTime * 100) % 100);
 
         gameClockText.text = string.Format("{0:00}:{1:00}.{2:00}", minutes, seconds, fraction);
-    }
-
-    private IEnumerator UpdateCheckpointStatusWindowCoroutine(bool checkpointCompleted)
-    {
-        Color originalColor = checkpointStatusWindow.color;
-
-        if (checkpointCompleted)
-        {
-            checkpointStatusWindow.color = checkpointPassedColor;
-            checkpointStatusWindow.text = "Checkpoint Passed!";
-        }
-        else
-        {
-            checkpointStatusWindow.color = checkpointMissedColor;
-            checkpointStatusWindow.text = "Checkpoint Missed!";
-        }
-
-        // set fade alpha
-        Color statusColor = checkpointStatusWindow.color;
-        Color fadedColor = statusColor;
-        fadedColor.a = 0;
-
-        yield return new WaitForSeconds(statusDisplayDuration);
-
-        // gradually reduce alpha over time
-        float elapsedTime = 0f;
-        while (elapsedTime < statusFadeDuration)
-        {
-            elapsedTime += Time.deltaTime;
-            checkpointStatusWindow.color = Color.Lerp(statusColor, fadedColor, elapsedTime / statusFadeDuration);
-            yield return null;
-        }
-
-        checkpointStatusWindow.color = fadedColor;
-        checkpointStatusWindow.text = "";
-
-        // reset to original color
-        checkpointStatusWindow.color = originalColor;
     }
 
     public void DisplayVictoryText()
@@ -248,4 +223,44 @@ public class SpaceRaceUIManager : MonoBehaviour
         // reset original textbox color
         textBox.color = originalColor;
     }
+
+    // OLD CODE
+
+    //private IEnumerator UpdateCheckpointStatusWindowCoroutine(bool checkpointCompleted)
+    //{
+    //    Color originalColor = checkpointStatusWindow.color;
+
+    //    if (checkpointCompleted)
+    //    {
+    //        checkpointStatusWindow.color = checkpointPassedColor;
+    //        checkpointStatusWindow.text = "Checkpoint Passed!";
+    //    }
+    //    else
+    //    {
+    //        checkpointStatusWindow.color = checkpointMissedColor;
+    //        checkpointStatusWindow.text = "Checkpoint Missed!";
+    //    }
+
+    //    // set fade alpha
+    //    Color statusColor = checkpointStatusWindow.color;
+    //    Color fadedColor = statusColor;
+    //    fadedColor.a = 0;
+
+    //    yield return new WaitForSeconds(statusDisplayDuration);
+
+    //    // gradually reduce alpha over time
+    //    float elapsedTime = 0f;
+    //    while (elapsedTime < statusFadeDuration)
+    //    {
+    //        elapsedTime += Time.deltaTime;
+    //        checkpointStatusWindow.color = Color.Lerp(statusColor, fadedColor, elapsedTime / statusFadeDuration);
+    //        yield return null;
+    //    }
+
+    //    checkpointStatusWindow.color = fadedColor;
+    //    checkpointStatusWindow.text = "";
+
+    //    // reset to original color
+    //    checkpointStatusWindow.color = originalColor;
+    //}
 }
