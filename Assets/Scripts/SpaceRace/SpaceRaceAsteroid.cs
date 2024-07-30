@@ -39,13 +39,23 @@ public class SpaceRaceAsteroid : MonoBehaviour
         // add to active asteroid list
         SpaceRaceGameManager.Instance.RegisterAsteroid(this);
 
+        SetSizeAndMovement();
+    }
+
+    private void OnDisable()
+    {
+        rb.velocity = Vector3.zero;
+        SpaceRaceGameManager.Instance.UnregisterAsteroid(this);
+    }
+
+    private void SetSizeAndMovement()
+    {
         // weighted roll for size
         int weightIndex = WeightedRandom.GetWeightedRandomIndex(sizeWeights);
         float sizeAdjustment = sizes[weightIndex];
-        transform.localScale *= sizeAdjustment;
 
-        // adjust mass to scale
-        //rb.mass *= sizeAdjustment;
+        // set scale
+        transform.localScale *= sizeAdjustment;
 
         // roll for whether or not asteroid should move
         float shouldMove = Random.Range(0f, 1f);
@@ -58,16 +68,13 @@ public class SpaceRaceAsteroid : MonoBehaviour
             // get random speed index based on weights
             int speedIndex = WeightedRandom.GetWeightedRandomIndex(speedWeights);
 
-            // set to moveSpeed and set velocity
+            // set to moveSpeed and adjust for difficulty from game manager
             moveSpeed = speedWeights[speedIndex];
+            moveSpeed *= SpaceRaceGameManager.Instance.AsteroidMovementModifier;
+            
+            // set velocity
             rb.velocity = randomDirection * moveSpeed;
         }
-    }
-
-    private void OnDisable()
-    {
-        rb.velocity = Vector3.zero;
-        SpaceRaceGameManager.Instance.UnregisterAsteroid(this);
     }
 
     private Vector3 GenerateRandomDirection()

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SpaceRacePlayerAttack : MonoBehaviour
 {
-    private const float attackCooldown = 1.0f;
+    private const float attackCooldown = 0.25f;
     private const KeyCode attackKey = KeyCode.Space;
     private Vector3 bulletSpawnOffset = new(0, 0, 1);
 
@@ -30,7 +30,7 @@ public class SpaceRacePlayerAttack : MonoBehaviour
         }
     }
 
-    public void SetRocketAmount(int rocketUpgrade)
+    public void SetRocketUpgradeLevel(int rocketUpgrade)
     {
         if (rocketUpgrade >= 1 && rocketUpgrade <= rocketUpgradeAmounts.Length)
         {

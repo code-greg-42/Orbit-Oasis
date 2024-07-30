@@ -21,15 +21,15 @@ public class SpaceRacePlayerMovement : MonoBehaviour
     // boost variables
     private bool boostActive;
     private float boostAvailable = 100.0f;
-    private float boostUsageRate = 15.0f; // usage % per second
-    private float boostRechargeRate = 10.0f; // recharge % per second
+    private float boostUsageRate = 10.0f; // usage % per second
+    private float boostRechargeRate = 20.0f; // recharge % per second
     private const float boostUseThreshold = 15.0f; // % of boost available necessary for initiating boost
     private const float rechargeDelayTime = 2.0f; // delay recharging if boost hits 0
     private bool rechargeReady = true;
 
     // upgrade amounts
-    private readonly float[] boostUpgradeUsageRates = { 10.0f, 5.0f, 2.5f };
-    private readonly float[] boostUpgradeRechargeRates = { 20.0f, 30.0f, 40.0f };
+    private readonly float[] boostUpgradeUsageRates = { 7.5f, 5.0f, 2.5f };
+    private readonly float[] boostUpgradeRechargeRates = { 30.0f, 40.0f, 50.0f };
 
     // const variables
     private const KeyCode boostKey = KeyCode.LeftShift;
@@ -90,7 +90,7 @@ public class SpaceRacePlayerMovement : MonoBehaviour
         regularSpeed = speed;
     }
 
-    public void SetBoostUpgrade(int boostUpgradeLevel)
+    public void SetBoostUpgradeLevel(int boostUpgradeLevel)
     {
         if (boostUpgradeLevel >= 1 && boostUpgradeLevel <= boostUpgradeUsageRates.Length)
         {

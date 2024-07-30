@@ -8,16 +8,16 @@ using UnityEngine;
 public class SpaceRaceGameManager : MonoBehaviour
 {
     public static SpaceRaceGameManager Instance { get; private set; }
-    public bool IsGameActive { get; private set; }
 
     [SerializeField] private Transform playerTransform;
     [SerializeField] private CinemachineVirtualCamera virtualCamera;
     [SerializeField] private Transform checkpointIndicator;
     [SerializeField] private SpaceRacePlayerMovement playerMovement;
+    [SerializeField] private SpaceRacePlayerAttack playerAttack;
 
     // checkpoint variables
     private float distanceBetweenCheckpoints = 300.0f;
-    private const int finalCheckpoint = 20; // last checkpoint to win the race
+    private int finalCheckpoint = 20; // last checkpoint to win the race
     private const float checkpointBoundaryX = 80.0f;
     private const float checkpointBoundaryY = 60.0f;
     private const int initialCheckpointsToLoad = 6;
@@ -25,7 +25,7 @@ public class SpaceRaceGameManager : MonoBehaviour
     private int checkpointsLoaded = 0;
     private List<SpaceRaceCheckpoint> activeCheckpoints = new List<SpaceRaceCheckpoint>();
     private SpaceRaceCheckpoint nextCheckpoint;
-    private float missedCheckpointBuffer = 35.0f;
+    private float missedCheckpointBuffer = 25.0f;
 
     // asteroid variables
     private const float asteroidBoundaryX = 150.0f;
@@ -34,6 +34,7 @@ public class SpaceRaceGameManager : MonoBehaviour
     private int asteroidsPerCheckpoint = 35;
     private List<SpaceRaceAsteroid> activeAsteroids = new List<SpaceRaceAsteroid>();
     private int[] asteroidPrefabWeights = { 15, 15, 15, 15, 40 };
+    private float asteroidMovementModifier = 1.0f;
 
     // indicator/navigation variables
     private const float indicatorRotationSpeed = 100.0f;
@@ -47,16 +48,18 @@ public class SpaceRaceGameManager : MonoBehaviour
     private Coroutine updateClockCoroutine;
 
     // difficulty settings
-    private const float easySpeed = 30.0f;
-    private const float hardSpeed = 60.0f;
-    private const int easyAsteroidAmount = 25;
-    private const int hardAsteroidAmount = 50;
-    private const float easyDistanceBetweenCheckpoints = 250f;
-    private const float hardDistanceBetweenCheckpoints = 450f;
+    private readonly float[] difficultyMovementSpeeds = { 35f, 40f, 60f };
+    private readonly int[] difficultyAsteroidAmounts = { 20, 35, 50 };
+    private readonly float[] difficultyCheckpointDistances = { 300f, 300f, 450f };
+    private readonly float[] difficultyMissedCheckpointBuffer = { 25f, 25f, 50f };
+    private readonly float[] difficultyAsteroidSizeModifier = { 0.8f, 1.0f, 1.0f };
+    private readonly float[] difficultyAsteroidMovementModifier = { 0.8f, 1.0f, 1.2f };
+    private readonly int[] difficultyFinalCheckpointSettings = { 14, 16, 20 };
 
     // separate bool from IsGameActive that is never set to false -- used only for starting the race
     private bool hasRaceStarted;
 
+    public bool IsGameActive { get; private set; }
     public float FinalAsteroidBoundary
     {
         get { return distanceBetweenCheckpoints * finalCheckpoint + checkpointBuffer; } // boundary for z end of asteroid field
@@ -67,6 +70,7 @@ public class SpaceRaceGameManager : MonoBehaviour
     public List<SpaceRaceCheckpoint> ActiveCheckpoints => activeCheckpoints;
     public int FinalCheckpoint => finalCheckpoint;
     public int CheckpointsLoaded => checkpointsLoaded;
+    public float AsteroidMovementModifier => asteroidMovementModifier;
 
     private void Awake()
     {
@@ -75,7 +79,12 @@ public class SpaceRaceGameManager : MonoBehaviour
 
     private void Start()
     {
+        // set difficulty and upgrade levels
         SetDifficulty(2);
+        playerMovement.SetBoostUpgradeLevel(3);
+        playerAttack.SetRocketUpgradeLevel(3);
+
+        // spawn initial checkpoints and asteroids
         SpawnInitialScene();
     }
 
@@ -83,7 +92,7 @@ public class SpaceRaceGameManager : MonoBehaviour
     {
         if (!IsGameActive)
         {
-            // change this positioning number based on the SPEED of the ship on different settings
+            // positional setting set for intro speed of 20 and a 3 second countdown (20 x 4)
             if (!SpaceRaceUIManager.Instance.CountdownStarted && playerTransform.position.z >= -80)
             {
                 SpaceRaceUIManager.Instance.StartCountdown();
@@ -103,18 +112,25 @@ public class SpaceRaceGameManager : MonoBehaviour
 
     private void SetDifficulty(int difficulty)
     {
-        if (difficulty == 0)
+        if (difficulty >= 0 && difficulty <= difficultyMovementSpeeds.Length)
         {
-            playerMovementSpeed = easySpeed;
-            asteroidsPerCheckpoint = easyAsteroidAmount;
-            distanceBetweenCheckpoints = easyDistanceBetweenCheckpoints;
+            // set movement speed for passing to PlayerMovement script
+            playerMovementSpeed = difficultyMovementSpeeds[difficulty];
+
+            // set checkpoint and asteroid spawn variables
+            asteroidsPerCheckpoint = difficultyAsteroidAmounts[difficulty];
+            distanceBetweenCheckpoints = difficultyCheckpointDistances[difficulty];
+            missedCheckpointBuffer = difficultyMissedCheckpointBuffer[difficulty];
+
+            // update movement modifier for asteroid script
+            asteroidMovementModifier = difficultyAsteroidMovementModifier[difficulty];
+
+            // set finish line number
+            finalCheckpoint = difficultyFinalCheckpointSettings[difficulty];
         }
-        else if (difficulty == 2)
+        else
         {
-            playerMovementSpeed = hardSpeed;
-            asteroidsPerCheckpoint = hardAsteroidAmount;
-            distanceBetweenCheckpoints = hardDistanceBetweenCheckpoints;
-            missedCheckpointBuffer *= 4.0f;
+            Debug.LogWarning("difficulty set incorrectly in game manager script.");
         }
     }
 
@@ -187,7 +203,7 @@ public class SpaceRaceGameManager : MonoBehaviour
             {
                 SpaceRaceCheckpoint checkpoint = activeCheckpoints[i];
 
-                if (checkpoint.transform.position.z + missedCheckpointBuffer < playerTransform.position.z && !checkpoint.CheckpointSuccess)
+                if (!checkpoint.CheckpointSuccess && checkpoint.transform.position.z + missedCheckpointBuffer < playerTransform.position.z)
                 {
                     MissedCheckpoint();
                 }
