@@ -17,8 +17,8 @@ public class SpaceRaceGameManager : MonoBehaviour
 
     // checkpoint variables
     private const int finalCheckpoint = 10; // last checkpoint to win the race
-    private const float checkpointBoundaryX = 100.0f;
-    private const float checkpointBoundaryY = 75.0f;
+    private const float checkpointBoundaryX = 80.0f;
+    private const float checkpointBoundaryY = 60.0f;
     private const float distanceBetweenCheckpoints = 300.0f;
     private const int initialCheckpointsToLoad = 6;
     private const float checkpointBuffer = 25.0f;
@@ -30,14 +30,14 @@ public class SpaceRaceGameManager : MonoBehaviour
     private const float asteroidBoundaryX = 150.0f;
     private const float asteroidBoundaryY = 100.0f;
     private const float asteroidBuffer = 25.0f;
-    private const int asteroidsPerCheckpoint = 50;
+    private const int asteroidsPerCheckpoint = 35;
     private List<SpaceRaceAsteroid> activeAsteroids = new List<SpaceRaceAsteroid>();
     private int[] asteroidPrefabWeights = { 15, 15, 15, 15, 40 };
     
     // boundary for z end of asteroid field
     public float FinalAsteroidBoundary
     {
-        get { return distanceBetweenCheckpoints * finalCheckpoint; }
+        get { return distanceBetweenCheckpoints * finalCheckpoint + checkpointBuffer; }
     }
 
     // indicator/navigation variables
@@ -56,6 +56,9 @@ public class SpaceRaceGameManager : MonoBehaviour
     public float AsteroidBoundaryX => asteroidBoundaryX;
     public float AsteroidBoundaryY => asteroidBoundaryY;
     public int[] AsteroidPrefabWeights => asteroidPrefabWeights;
+    public List<SpaceRaceCheckpoint> ActiveCheckpoints => activeCheckpoints;
+    public int FinalCheckpoint => finalCheckpoint;
+    public int CheckpointsLoaded => checkpointsLoaded;
 
     private void Awake()
     {
@@ -182,7 +185,10 @@ public class SpaceRaceGameManager : MonoBehaviour
         }
         else
         {
+            // display victory message
             SpaceRaceUIManager.Instance.DisplayVictoryText();
+
+            // pause camera movement and initiate scene end sequence
             EndGame();
         }
 

@@ -21,8 +21,8 @@ public class SpaceRacePlayerMovement : MonoBehaviour
     // boost variables
     private bool boostActive;
     private float boostAvailable = 100.0f;
-    private float boostUsageRate = 15.0f; // usage % per second
-    private float boostRechargeRate = 10.0f; // recharge % per second
+    private float boostUsageRate = 5.0f; // usage % per second
+    private float boostRechargeRate = 30.0f; // recharge % per second
     private float boostUseThreshold = 15.0f; // % of boost available necessary for initiating boost
     private float rechargeDelayTime = 2.0f; // delay recharging if boost hits 0
     private bool rechargeReady = true;

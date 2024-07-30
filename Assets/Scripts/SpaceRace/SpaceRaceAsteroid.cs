@@ -11,11 +11,11 @@ public class SpaceRaceAsteroid : MonoBehaviour
 
     private float movePercentage = 0.6f; // percentage of asteroids that move
 
-    private int[] speeds = { 15, 30, 45, 80 }; // list of different asteroid speeds
+    private int[] speeds = { 20, 40, 60, 100 }; // list of different asteroid speeds
     private int[] speedWeights = { 35, 35, 25, 5 }; // percentages each speed will be picked
 
-    private float[] sizes = { 0.9f, 1.0f, 1.05f, 1.1f, 1.15f, 1.2f, 1.25f, 1.3f, 1.5f, 2.0f };
-    private int[] sizeWeights = { 5, 5, 15, 25, 20, 10, 5, 5, 5, 5 };
+    private float[] sizes = { 0.9f, 1f, 1.05f, 1.1f, 1.15f, 1.2f, 1.3f, 1.45f, 1.6f, 2.2f };
+    private int[] sizeWeights = { 5, 5, 15, 25, 20, 10, 10, 5, 3, 2 };
 
     private Rigidbody rb;
 
@@ -45,7 +45,7 @@ public class SpaceRaceAsteroid : MonoBehaviour
         transform.localScale *= sizeAdjustment;
 
         // adjust mass to scale
-        rb.mass *= sizeAdjustment;
+        //rb.mass *= sizeAdjustment;
 
         // roll for whether or not asteroid should move
         float shouldMove = Random.Range(0f, 1f);
@@ -109,10 +109,13 @@ public class SpaceRaceAsteroid : MonoBehaviour
         }
     }
 
-    public void ReverseZMovement()
+    public void PushRandomDirection()
     {
-        Vector3 newVelocity = new(rb.velocity.x, rb.velocity.y, -rb.velocity.z);
+        Vector3 randomDirection = GenerateRandomDirection();
 
-        rb.velocity = newVelocity;
+        float boundarySpeedBase = Mathf.Max(boundarySpeedMinimum, moveSpeed);
+        float boundarySpeed = boundarySpeedBase * boundarySpeedModifier;
+
+        rb.AddForce(randomDirection * boundarySpeed);
     }
 }

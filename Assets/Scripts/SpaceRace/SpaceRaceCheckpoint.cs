@@ -14,6 +14,13 @@ public class SpaceRaceCheckpoint : MonoBehaviour
     private void OnEnable()
     {
         CheckpointSuccess = false;
+
+        // if this is final checkpoint, change color
+        if (SpaceRaceGameManager.Instance.CheckpointsLoaded + 1 == SpaceRaceGameManager.Instance.FinalCheckpoint)
+        {
+            ChangeToFinishLineColor();
+        }
+
         SpaceRaceGameManager.Instance.RegisterCheckpoint(this);
     }
 
@@ -47,8 +54,7 @@ public class SpaceRaceCheckpoint : MonoBehaviour
         {
             if (other.gameObject.TryGetComponent(out SpaceRaceAsteroid asteroid))
             {
-                // move away from checkpoint
-                asteroid.ReverseZMovement();
+                asteroid.PushRandomDirection();
             }
         }
     }
@@ -57,14 +63,22 @@ public class SpaceRaceCheckpoint : MonoBehaviour
     {
         CheckpointSuccess = true;
 
-        // change color to green to show success
-        ChangeColor(true);
-
         // load future part of race (and despawn old asteroids)
         SpaceRaceGameManager.Instance.CheckpointPassed();
 
-        // deactivate after timer
-        StartCoroutine(DeactivationCoroutine());
+        if (SpaceRaceGameManager.Instance.ActiveCheckpoints.Count > 1)
+        {
+            // change color to green to show success
+            ChangeColor(true);
+
+            // deactivate after timer
+            StartCoroutine(DeactivationCoroutine());
+        }
+        else
+        {
+            // immediately deactivate last checkpoint to make visual space for victory text
+            gameObject.SetActive(false);
+        }
     }
 
     private IEnumerator DeactivationCoroutine()
@@ -80,5 +94,16 @@ public class SpaceRaceCheckpoint : MonoBehaviour
 
         // deactivate gameobject
         gameObject.SetActive(false);
+    }
+
+    private void ChangeToFinishLineColor()
+    {
+        Color finishLineColor = Color.white;
+        finishLineColor.a = 0.65f;
+
+        foreach (Renderer renderer in renderers)
+        {
+            renderer.material.color = finishLineColor;
+        }
     }
 }
