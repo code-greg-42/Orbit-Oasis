@@ -12,8 +12,8 @@ public class SpaceRacePlayerAttack : MonoBehaviour
 
     // references
     [SerializeField] private Transform spaceshipObject;
-    [SerializeField] private Collider leftWingCollider;
-    [SerializeField] private Collider rightWingCollider;
+    //[SerializeField] private Collider leftWingCollider;
+    //[SerializeField] private Collider rightWingCollider;
 
     private int numRockets = 8;
 
@@ -61,8 +61,8 @@ public class SpaceRacePlayerAttack : MonoBehaviour
             foreach (var bulletCollider in bulletColliders)
             {
                 Physics.IgnoreCollision(shipCollider, bulletCollider);
-                Physics.IgnoreCollision(leftWingCollider, bulletCollider);
-                Physics.IgnoreCollision(rightWingCollider, bulletCollider);
+                //Physics.IgnoreCollision(leftWingCollider, bulletCollider);
+                //Physics.IgnoreCollision(rightWingCollider, bulletCollider);
             }
         }
         else

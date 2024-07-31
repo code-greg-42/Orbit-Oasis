@@ -36,6 +36,8 @@ public class SpaceRacePlayerMovement : MonoBehaviour
     private const float accelMultiplier = 20.0f;
     private const float moveSpeed = 20.0f; // speed for directional movement
     private const float introSpeed = 20.0f; // forward speed for intro
+    private const float maxRotation = 45.0f;
+    private const float rotationSpeed = 7.0f;
 
     // input variables
     private float horizontalInput;
@@ -58,6 +60,7 @@ public class SpaceRacePlayerMovement : MonoBehaviour
         if (SpaceRaceGameManager.Instance.IsGameActive)
         {
             GetInput();
+            SetRotation();
             UpdateBoost();
         }
 
@@ -112,6 +115,18 @@ public class SpaceRacePlayerMovement : MonoBehaviour
         if (boostActive && Input.GetKeyUp(boostKey))
         {
             DeactivateBoost();
+        }
+    }
+
+    private void SetRotation()
+    {
+        if (!isCrashing)
+        {
+            Quaternion targetRotation = Quaternion.Euler(0, 0, -horizontalInput * maxRotation);
+            //shipObjectTransform.rotation = targetRotation;
+
+            // Interpolate between the current rotation and the target rotation
+            shipObjectTransform.rotation = Quaternion.Lerp(shipObjectTransform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
         }
     }
 
