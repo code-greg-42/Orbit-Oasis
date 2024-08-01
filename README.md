@@ -141,11 +141,12 @@ Deep into the future, humanity has taken to the stars and colonized many planets
 **Phase 4: Prototype 3D Space Race** (July 17th - July 24th)
 - Create the core gameplay for the 3D space race using primitive shapes.
 - Deadline: Wednesday, July 24th
-- UPDATE: CURRENT PHASE
+- UPDATE: COMPLETED 7.30
 
 **Phase 5: Integrate Rewards, Upgrading, Difficulties, and Dialogue** (July 24th - July 31st)
 - Finalize the rewards system, upgrading mechanics, difficulty settings, and dialogue across all prototypes.
 - Deadline: Wednesday, July 31st
+- UPDATE: CURRENT
 
 **Phase 6: Models and Animations** (July 31st - August 21st)
 - Integrate pixel art and low poly models and animations for the game.
