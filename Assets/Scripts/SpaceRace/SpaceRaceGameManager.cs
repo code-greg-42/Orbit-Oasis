@@ -220,10 +220,13 @@ public class SpaceRaceGameManager : MonoBehaviour
             // checkpoint number is calculated before new checkpoint is loaded
             int checkpointNumber = checkpointsLoaded - initialCheckpointsToLoad;
 
-            // skip display message for the initial checkpoint (checkpoint number 0)
+            // skip display message and visual effect for the initial checkpoint (checkpoint number 0)
             if (checkpointNumber > 0)
             {
                 SpaceRaceUIManager.Instance.UpdateCheckpointStatusWindow();
+
+                // display checkpoint passed visual effect
+                playerMovement.CueCheckpointPassedEffect();
             }
         }
         else

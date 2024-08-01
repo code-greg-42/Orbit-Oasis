@@ -5,7 +5,15 @@ using UnityEngine;
 public class SpaceRacePlayerMovement : MonoBehaviour
 {
     private Rigidbody rb;
+
+    [Header("References")]
     [SerializeField] private Transform shipObjectTransform;
+    [SerializeField] private ParticleSystem[] boosterEffects;
+    [SerializeField] private Color boosterEffectRegularColor;
+    [SerializeField] private Color boosterEffectBoostedColor;
+    [SerializeField] private GameObject boosterEffectHolder;
+    [SerializeField] private GameObject crashEffectHolder;
+    [SerializeField] private GameObject checkpointPassedEffectHolder;
 
     // active use speed variables
     private float forwardSpeed;
@@ -39,11 +47,17 @@ public class SpaceRacePlayerMovement : MonoBehaviour
     private const float maxRotation = 45.0f;
     private const float rotationSpeed = 7.0f;
 
+    // effect variables
+    private const float boosterEffectRegularSpeed = 6.0f;
+    private const float boosterEffectBoostedSpeed = 16.0f;
+    private const float checkpointPassedEffectDuration = 2.2f;
+
     // input variables
     private float horizontalInput;
     private float verticalInput;
 
     private bool isCrashing;
+    private Coroutine checkpointPassedEffectCoroutine;
     
     void Start()
     {
@@ -205,6 +219,7 @@ public class SpaceRacePlayerMovement : MonoBehaviour
         boostActive = true;
         forwardSpeed = boostSpeed;
         minForwardSpeed = boostSpeed * minForwardSpeedMultiplier;
+        UpdateBoosterEffects(true);
     }
 
     private void DeactivateBoost()
@@ -212,13 +227,55 @@ public class SpaceRacePlayerMovement : MonoBehaviour
         forwardSpeed = regularSpeed;
         minForwardSpeed = regularSpeed * minForwardSpeedMultiplier;
         boostActive = false;
+        UpdateBoosterEffects(false);
+    }
+
+    private void UpdateBoosterEffects(bool isBoosting)
+    {
+        foreach (ParticleSystem boosterEffect in boosterEffects)
+        {
+            // get reference to main module in particle system
+            ParticleSystem.MainModule main = boosterEffect.main;
+
+            // change start color and start speed
+            main.startColor = isBoosting ? boosterEffectBoostedColor : boosterEffectRegularColor;
+            main.startSpeed = isBoosting ? boosterEffectBoostedSpeed : boosterEffectRegularSpeed;
+        }
+    }
+
+    public void CueCheckpointPassedEffect()
+    {
+        if (checkpointPassedEffectCoroutine != null)
+        {
+            StopCoroutine(checkpointPassedEffectCoroutine);
+            checkpointPassedEffectCoroutine = null;
+        }
+
+        checkpointPassedEffectCoroutine = StartCoroutine(CheckpointPassedEffectCoroutine());
+    }
+
+    private IEnumerator CheckpointPassedEffectCoroutine()
+    {
+        checkpointPassedEffectHolder.SetActive(true);
+
+        yield return new WaitForSeconds(checkpointPassedEffectDuration);
+
+        checkpointPassedEffectHolder.SetActive(false);
     }
 
     private void Crash()
     {
         isCrashing = true;
+
+        // settings for realistic crash
         rb.useGravity = true;
         rb.drag = 1.0f;
+
+        // activate crash effects
+        crashEffectHolder.SetActive(true);
+
+        // deactivate booster effects
+        boosterEffectHolder.SetActive(false);
     }
 
     private void OnCollisionEnter(Collision collision)

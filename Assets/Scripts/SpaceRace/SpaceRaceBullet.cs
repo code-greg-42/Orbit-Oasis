@@ -9,6 +9,7 @@ public class SpaceRaceBullet : MonoBehaviour
     private Rigidbody rb;
     private Coroutine deactivationCoroutine;
 
+    [SerializeField] private GameObject explosionPrefab; // used for when a bullet hits an asteroid
 
     private void Start()
     {
@@ -55,6 +56,14 @@ public class SpaceRaceBullet : MonoBehaviour
         if (collider.gameObject.CompareTag("Asteroid"))
         {
             Debug.Log("Direct hit! Woo!");
+
+            // instantiate effect
+            GameObject explosionEffect = Instantiate(explosionPrefab, collider.transform.position, Quaternion.identity);
+
+            // immediately set scale of effect
+            explosionEffect.transform.localScale = collider.transform.localScale / 800 * 5; // adjusted for starting scales
+
+            // deactivate asteroid
             collider.gameObject.SetActive(false);
 
             // stop coroutine before deactivating
