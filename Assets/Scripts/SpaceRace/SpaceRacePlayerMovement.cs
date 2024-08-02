@@ -221,7 +221,10 @@ public class SpaceRacePlayerMovement : MonoBehaviour
         boostActive = true;
         forwardSpeed = boostSpeed;
         minForwardSpeed = boostSpeed * minForwardSpeedMultiplier;
+
+        // apply effects
         UpdateBoosterEffects(true);
+        SpaceRaceSoundManager.Instance.SetEnginePitch(true);
     }
 
     private void DeactivateBoost()
@@ -229,7 +232,10 @@ public class SpaceRacePlayerMovement : MonoBehaviour
         forwardSpeed = regularSpeed;
         minForwardSpeed = regularSpeed * minForwardSpeedMultiplier;
         boostActive = false;
+
+        // apply effects
         UpdateBoosterEffects(false);
+        SpaceRaceSoundManager.Instance.SetEnginePitch();
     }
 
     private void UpdateBoosterEffects(bool isBoosting)

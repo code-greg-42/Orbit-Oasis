@@ -147,6 +147,9 @@ public class SpaceRaceGameManager : MonoBehaviour
         // activate in game UI components
         checkpointIndicator.gameObject.SetActive(true);
         StartGameClock();
+
+        // adjust engine sound effect
+        SpaceRaceSoundManager.Instance.SetEnginePitch();
     }
 
     private void StartGameClock()
