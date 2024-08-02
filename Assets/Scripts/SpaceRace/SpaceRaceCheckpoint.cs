@@ -119,8 +119,6 @@ public class SpaceRaceCheckpoint : MonoBehaviour
             renderer.material.color = newColor;
         }
 
-        Debug.Log(newColor);
-
         // GLOW EFFECTS
         newColor.a = glowEffectAlpha;
         foreach (ParticleSystem glowEffect in glowEffects)
