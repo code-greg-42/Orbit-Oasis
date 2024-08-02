@@ -4,10 +4,13 @@ using UnityEngine;
 
 public class SpaceRaceBullet : MonoBehaviour
 {
-    private const float bulletSpeed = 200.0f;
+    private const float launchSpeed = 200.0f;
     private const float lifetime = 3.0f;
     private Rigidbody rb;
     private Coroutine deactivationCoroutine;
+
+    private const float asteroidStartingScale = 800.0f;
+    private const float desiredExplosionScale = 5.0f;
 
     [SerializeField] private GameObject explosionPrefab; // used for when a bullet hits an asteroid
 
@@ -23,12 +26,17 @@ public class SpaceRaceBullet : MonoBehaviour
             rb = GetComponent<Rigidbody>();
         }
 
-        rb.velocity = Vector3.forward * bulletSpeed;
-
-        // start deactivation coroutine
-        if (deactivationCoroutine == null)
+        if (SpaceRaceGameManager.Instance != null)
         {
-            deactivationCoroutine = StartCoroutine(DeactivateCoroutine());
+            // calc bullet speed from the current forward movement of the player/spaceship
+            float bulletSpeed = launchSpeed + SpaceRaceGameManager.Instance.GetCurrentPlayerSpeed();
+            rb.velocity = Vector3.forward * bulletSpeed;
+
+            // start deactivation coroutine
+            if (deactivationCoroutine == null)
+            {
+                deactivationCoroutine = StartCoroutine(DeactivateCoroutine());
+            }
         }
     }
 
@@ -55,13 +63,11 @@ public class SpaceRaceBullet : MonoBehaviour
     {
         if (collider.gameObject.CompareTag("Asteroid"))
         {
-            Debug.Log("Direct hit! Woo!");
-
             // instantiate effect
             GameObject explosionEffect = Instantiate(explosionPrefab, collider.transform.position, Quaternion.identity);
 
-            // immediately set scale of effect
-            explosionEffect.transform.localScale = collider.transform.localScale / 800 * 5; // adjusted for starting scales
+            // immediately set scale of effect ( adjusted for starting scales )
+            explosionEffect.transform.localScale = collider.transform.localScale / asteroidStartingScale * desiredExplosionScale;
 
             // deactivate asteroid
             collider.gameObject.SetActive(false);

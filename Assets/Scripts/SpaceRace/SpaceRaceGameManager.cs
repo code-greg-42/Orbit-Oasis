@@ -405,6 +405,11 @@ public class SpaceRaceGameManager : MonoBehaviour
         activeAsteroids.Remove(asteroid);
     }
 
+    public float GetCurrentPlayerSpeed()
+    {
+        return playerMovement.ForwardSpeed;
+    }
+
     public void EndGame()
     {
         IsGameActive = false;

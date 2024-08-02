@@ -58,6 +58,8 @@ public class SpaceRacePlayerMovement : MonoBehaviour
 
     private bool isCrashing;
     private Coroutine checkpointPassedEffectCoroutine;
+
+    public float ForwardSpeed => forwardSpeed;
     
     void Start()
     {
