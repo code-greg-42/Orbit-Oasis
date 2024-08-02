@@ -9,6 +9,8 @@ public class SpaceRaceCheckpoint : MonoBehaviour
     [SerializeField] private Color originalColor;
 
     private const float finishLineAlpha = 0.65f;
+    private const float finishLineSizeMultiplier = 1.25f;
+    private readonly Color finishLineColor = Color.white;
     private const float glowEffectAlpha = 0.5f;
     private const float deactivationTime = 2.0f;
 
@@ -30,7 +32,7 @@ public class SpaceRaceCheckpoint : MonoBehaviour
         // if this is final checkpoint, change color
         if (SpaceRaceGameManager.Instance.CheckpointsLoaded + 1 == SpaceRaceGameManager.Instance.FinalCheckpoint)
         {
-            ChangeToFinishLineColor();
+            ChangeToFinishLine();
         }
 
         SpaceRaceGameManager.Instance.RegisterCheckpoint(this);
@@ -97,11 +99,13 @@ public class SpaceRaceCheckpoint : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    private void ChangeToFinishLineColor()
+    private void ChangeToFinishLine()
     {
-        Color finishLineColor = Color.white;
-
+        // change color to finish line color
         ProcessColorChange(finishLineColor, finishLineAlpha);
+
+        // set size a little bigger for a finish line feeling
+        transform.localScale *= finishLineSizeMultiplier;
     }
 
     private void ProcessColorChange(Color newColor, float cubeAlpha)
@@ -115,6 +119,8 @@ public class SpaceRaceCheckpoint : MonoBehaviour
             renderer.material.color = newColor;
         }
 
+        Debug.Log(newColor);
+
         // GLOW EFFECTS
         newColor.a = glowEffectAlpha;
         foreach (ParticleSystem glowEffect in glowEffects)
@@ -125,6 +131,10 @@ public class SpaceRaceCheckpoint : MonoBehaviour
 
     private void ChangeGlowEffectColor(ParticleSystem glowEffect, Color newColor)
     {
+        // Set start color
+        ParticleSystem.MainModule mainModule = glowEffect.main;
+        mainModule.startColor = newColor; 
+
         ParticleSystem.ColorOverLifetimeModule colorOverLifetime = glowEffect.colorOverLifetime;
 
         // Use original alpha keys
