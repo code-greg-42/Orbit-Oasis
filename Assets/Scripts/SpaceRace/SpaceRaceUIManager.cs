@@ -111,12 +111,22 @@ public class SpaceRaceUIManager : MonoBehaviour
 
         while (countdown > 0)
         {
+            // update UI
             countdownTimerText.text = countdown.ToString();
+
+            // update local bool
             countdown--;
+
+            // play sound
+            SpaceRaceSoundManager.Instance.PlayCountdownSound();
+
             yield return new WaitForSeconds(1);
         }
 
         countdownTimerText.text = "GO!";
+
+        // play final sound
+        SpaceRaceSoundManager.Instance.PlayCountdownSound(true);
 
         // wait for 2 seconds then disable
         yield return new WaitForSeconds(2);
@@ -223,44 +233,4 @@ public class SpaceRaceUIManager : MonoBehaviour
         // reset original textbox color
         textBox.color = originalColor;
     }
-
-    // OLD CODE
-
-    //private IEnumerator UpdateCheckpointStatusWindowCoroutine(bool checkpointCompleted)
-    //{
-    //    Color originalColor = checkpointStatusWindow.color;
-
-    //    if (checkpointCompleted)
-    //    {
-    //        checkpointStatusWindow.color = checkpointPassedColor;
-    //        checkpointStatusWindow.text = "Checkpoint Passed!";
-    //    }
-    //    else
-    //    {
-    //        checkpointStatusWindow.color = checkpointMissedColor;
-    //        checkpointStatusWindow.text = "Checkpoint Missed!";
-    //    }
-
-    //    // set fade alpha
-    //    Color statusColor = checkpointStatusWindow.color;
-    //    Color fadedColor = statusColor;
-    //    fadedColor.a = 0;
-
-    //    yield return new WaitForSeconds(statusDisplayDuration);
-
-    //    // gradually reduce alpha over time
-    //    float elapsedTime = 0f;
-    //    while (elapsedTime < statusFadeDuration)
-    //    {
-    //        elapsedTime += Time.deltaTime;
-    //        checkpointStatusWindow.color = Color.Lerp(statusColor, fadedColor, elapsedTime / statusFadeDuration);
-    //        yield return null;
-    //    }
-
-    //    checkpointStatusWindow.color = fadedColor;
-    //    checkpointStatusWindow.text = "";
-
-    //    // reset to original color
-    //    checkpointStatusWindow.color = originalColor;
-    //}
 }

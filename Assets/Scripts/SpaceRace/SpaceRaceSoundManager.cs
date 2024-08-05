@@ -8,6 +8,15 @@ public class SpaceRaceSoundManager : MonoBehaviour
 
     [Header("Audio Sources")]
     [SerializeField] private AudioSource playerAudioSource;
+    [SerializeField] private AudioSource countdownAudioSource;
+
+    // countdown sound settings
+    private float countdownAudioStartTime = 0.15f;
+    private float finalCountdownAudioStartTime = 0.08f;
+    private float countdownPitch = 0.6f;
+    private float finalCountdownPitch = 0.9f;
+    private float countdownVolume = 0.15f;
+    private float finalCountdownVolume = 0.25f;
 
     // engine pitch settings
     private const float regularEnginePitch = 1.0f;
@@ -19,6 +28,27 @@ public class SpaceRaceSoundManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+    }
+
+    public void PlayCountdownSound(bool finalSound = false)
+    {
+        // if clip is playing, stop and restart it
+        if (countdownAudioSource.isPlaying)
+        {
+            countdownAudioSource.Stop();
+        }
+
+        // skips delay at beginning of audio clip --- start earlier for final sound as playback speed is faster
+        countdownAudioSource.time = finalSound ? finalCountdownAudioStartTime : countdownAudioStartTime;
+
+        // make final countdown sound a little louder
+        countdownAudioSource.volume = finalSound ? finalCountdownVolume : countdownVolume;
+
+        // set to pitch based on whether it's the last sound in the countdown
+        countdownAudioSource.pitch = finalSound ? finalCountdownPitch : countdownPitch;
+
+        // play clip
+        countdownAudioSource.Play();
     }
 
     public void SetEnginePitch(bool boost = false)
