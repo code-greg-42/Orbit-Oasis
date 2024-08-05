@@ -59,18 +59,28 @@ public class SpaceRaceBullet : MonoBehaviour
         gameObject.SetActive(false);
     }
 
+    private void ExplodeAsteroid(Collider collider)
+    {
+        // instantiate visual effect
+        GameObject explosionEffect = Instantiate(explosionPrefab, collider.transform.position, Quaternion.identity);
+
+        Vector3 asteroidScale = collider.transform.localScale / asteroidStartingScale;
+
+        // set scale of effect ( adjusted for asteroid starting scale )
+        explosionEffect.transform.localScale = asteroidScale * desiredExplosionScale;
+
+        // play sound effect
+        SpaceRaceSoundManager.Instance.PlayExplosionSound(collider.transform.position, asteroidScale);
+
+        // deactivate asteroid
+        collider.gameObject.SetActive(false);
+    }
+
     public void HandleCollision(Collider collider)
     {
         if (collider.gameObject.CompareTag("Asteroid"))
         {
-            // instantiate effect
-            GameObject explosionEffect = Instantiate(explosionPrefab, collider.transform.position, Quaternion.identity);
-
-            // immediately set scale of effect ( adjusted for starting scales )
-            explosionEffect.transform.localScale = collider.transform.localScale / asteroidStartingScale * desiredExplosionScale;
-
-            // deactivate asteroid
-            collider.gameObject.SetActive(false);
+            ExplodeAsteroid(collider);
 
             // stop coroutine before deactivating
             if (deactivationCoroutine != null)

@@ -230,12 +230,18 @@ public class SpaceRaceGameManager : MonoBehaviour
 
                 // display checkpoint passed visual effect
                 playerMovement.CueCheckpointPassedEffect();
+
+                // play checkpoint passed sound effect
+                SpaceRaceSoundManager.Instance.PlayCheckpointPassedSound();
             }
         }
         else
         {
             // display victory message
             SpaceRaceUIManager.Instance.DisplayVictoryText();
+
+            // play victory sound
+            SpaceRaceSoundManager.Instance.PlayWinSound();
 
             // pause camera movement and initiate scene end sequence
             EndGame();
