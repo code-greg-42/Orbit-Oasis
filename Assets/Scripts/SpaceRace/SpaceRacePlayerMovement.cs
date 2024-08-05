@@ -281,6 +281,7 @@ public class SpaceRacePlayerMovement : MonoBehaviour
 
         // activate crash effects
         crashEffectHolder.SetActive(true);
+        SpaceRaceSoundManager.Instance.PlayShipCrashSound();
 
         // deactivate booster effects
         boosterEffectHolder.SetActive(false);
@@ -290,8 +291,11 @@ public class SpaceRacePlayerMovement : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Asteroid"))
         {
-            Crash();
-            SpaceRaceGameManager.Instance.EndGame();
+            if (!isCrashing)
+            {
+                Crash();
+                SpaceRaceGameManager.Instance.EndGame();
+            }
         }
     }
 }

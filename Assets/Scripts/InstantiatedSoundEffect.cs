@@ -43,12 +43,9 @@ public class InstantiatedSoundEffect : MonoBehaviour
 
     public void SetPitch(float pitch)
     {
-        Debug.Log("setting pitch!");
         if (audioSource != null)
         {
             audioSource.pitch = pitch;
-
-            Debug.Log("Explosion Pitch: " + audioSource.pitch);
         }
     }
 }

@@ -258,6 +258,9 @@ public class SpaceRaceGameManager : MonoBehaviour
         // display checkpoint missed status update -- false turns it red and says 'missed'
         SpaceRaceUIManager.Instance.UpdateCheckpointStatusWindow(false);
 
+        // tell sound manager to play sound
+        SpaceRaceSoundManager.Instance.PlayCheckpointMissedSound();
+
         // change coloring of in game future checkpoints to red
         ChangeCheckpointsToRed();
 

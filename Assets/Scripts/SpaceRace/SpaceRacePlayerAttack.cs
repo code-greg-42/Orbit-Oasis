@@ -8,16 +8,12 @@ public class SpaceRacePlayerAttack : MonoBehaviour
     private const KeyCode attackKey = KeyCode.Space;
     private Vector3 bulletSpawnOffset = new(0, 0, 1);
 
-    private bool attackReady = true;
+    private readonly int[] rocketUpgradeAmounts = { 9, 10, 11 };
 
-    // references
     [SerializeField] private Transform spaceshipObject;
-    //[SerializeField] private Collider leftWingCollider;
-    //[SerializeField] private Collider rightWingCollider;
 
     private int numRockets = 8;
-
-    private readonly int[] rocketUpgradeAmounts = { 9, 10, 11 };
+    private bool attackReady = true;
 
     private void Update()
     {
@@ -61,8 +57,6 @@ public class SpaceRacePlayerAttack : MonoBehaviour
             foreach (var bulletCollider in bulletColliders)
             {
                 Physics.IgnoreCollision(shipCollider, bulletCollider);
-                //Physics.IgnoreCollision(leftWingCollider, bulletCollider);
-                //Physics.IgnoreCollision(rightWingCollider, bulletCollider);
             }
         }
         else
@@ -75,6 +69,9 @@ public class SpaceRacePlayerAttack : MonoBehaviour
 
         // set active
         bullet.SetActive(true);
+
+        // play sound effect
+        SpaceRaceSoundManager.Instance.PlayFireRocketsSound();
 
         Invoke(nameof(ResetAttack), attackCooldown);
     }

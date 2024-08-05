@@ -7,10 +7,15 @@ public class SpaceRaceSoundManager : MonoBehaviour
     public static SpaceRaceSoundManager Instance { get; private set; }
 
     [Header("Audio Sources")]
-    [SerializeField] private AudioSource playerAudioSource;
+    [SerializeField] private AudioSource shipEngineAudioSource;
     [SerializeField] private AudioSource countdownAudioSource;
     [SerializeField] private AudioSource checkpointPassedAudioSource;
+    [SerializeField] private AudioSource checkpointMissedAudioSource;
     [SerializeField] private AudioSource gameWinAudioSource;
+    [SerializeField] private AudioSource shipCrashAudioSource;
+    [SerializeField] private AudioSource fireRocketsAudioSource;
+
+    [Header("Sound Effect Prefabs")]
     [SerializeField] private GameObject asteroidExplosionSoundPrefab;
     [SerializeField] private GameObject backgroundAsteroidExplosionSoundPrefab;
 
@@ -63,9 +68,24 @@ public class SpaceRaceSoundManager : MonoBehaviour
         PlaySoundEffect(checkpointPassedAudioSource);
     }
 
+    public void PlayCheckpointMissedSound()
+    {
+        PlaySoundEffect(checkpointMissedAudioSource);
+    }
+
     public void PlayWinSound()
     {
         PlaySoundEffect(gameWinAudioSource);
+    }
+
+    public void PlayShipCrashSound()
+    {
+        PlaySoundEffect(shipCrashAudioSource);
+    }
+
+    public void PlayFireRocketsSound()
+    {
+        PlaySoundEffect(fireRocketsAudioSource);
     }
 
     public void PlayExplosionSound(Vector3 position, Vector3 adjustedScale)
@@ -76,7 +96,6 @@ public class SpaceRaceSoundManager : MonoBehaviour
         // set pitch based on size if asteroid is larger than normal
         if (soundEffect != null && adjustedScale.magnitude > 1)
         {
-            Debug.Log("hit a big guy!");
             float pitch = 1.0f - (adjustedScale.magnitude - 1.0f) * asteroidPitchRate;
 
             pitch = Mathf.Max(pitch, minimumAsteroidPitch);
@@ -110,17 +129,17 @@ public class SpaceRaceSoundManager : MonoBehaviour
 
     private IEnumerator SmoothPitchTransition(float targetPitch)
     {
-        float startPitch = playerAudioSource.pitch;
+        float startPitch = shipEngineAudioSource.pitch;
         float elapsedTime = 0.0f;
 
         while (elapsedTime < pitchTransitionTime)
         {
-            playerAudioSource.pitch = Mathf.Lerp(startPitch, targetPitch, elapsedTime / pitchTransitionTime);
+            shipEngineAudioSource.pitch = Mathf.Lerp(startPitch, targetPitch, elapsedTime / pitchTransitionTime);
             elapsedTime += Time.deltaTime;
             yield return null;
         }
 
-        playerAudioSource.pitch = targetPitch;
+        shipEngineAudioSource.pitch = targetPitch;
     }
 
     private void PlaySoundEffect(AudioSource audioSource)
