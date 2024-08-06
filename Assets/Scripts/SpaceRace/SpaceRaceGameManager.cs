@@ -430,6 +430,9 @@ public class SpaceRaceGameManager : MonoBehaviour
 
         checkpointIndicator.gameObject.SetActive(false);
 
+        // initiate music fade out
+        SpaceRaceSoundManager.Instance.FadeOutMusic();
+
         StartCoroutine(EndGameSequence());
     }
 

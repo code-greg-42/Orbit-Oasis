@@ -15,6 +15,7 @@ public class SpaceRaceSoundManager : MonoBehaviour
     [SerializeField] private AudioSource shipCrashAudioSource;
     [SerializeField] private AudioSource fireRocketsAudioSource;
     [SerializeField] private AudioSource typingKeyAudioSource;
+    [SerializeField] private AudioSource[] gameMusicAudioSources;
 
     [Header("Sound Effect Prefabs")]
     [SerializeField] private GameObject asteroidExplosionSoundPrefab;
@@ -41,11 +42,23 @@ public class SpaceRaceSoundManager : MonoBehaviour
     private const float typingMinPitch = 0.88f;
     private const float typingMaxPitch = 1.12f;
 
+    // music settings
+    private const float musicFadeInDuration = 5.0f;
+    private const float musicFadeOutDuration = 5.0f;
+    private int chosenTrackIndex;
+    private float[] musicTrackVolumes = { 0.175f, 0.075f };
+
     private Coroutine enginePitchTransitionCoroutine;
+    private Coroutine fadeMusicCoroutine;
 
     private void Awake()
     {
         Instance = this;
+    }
+
+    private void Start()
+    {
+        ChooseTrackAndStartMusic();
     }
 
     public void PlayCountdownSound(bool finalSound = false)
@@ -107,6 +120,18 @@ public class SpaceRaceSoundManager : MonoBehaviour
         typingKeyAudioSource.Play();
     }
 
+    private void FadeInMusic()
+    {
+        float targetVolume = musicTrackVolumes[chosenTrackIndex];
+
+        FadeMusic(targetVolume, musicFadeInDuration);
+    }
+
+    public void FadeOutMusic()
+    {
+        FadeMusic(0f, musicFadeOutDuration);
+    }
+
     public void PlayExplosionSound(Vector3 position, Vector3 adjustedScale)
     {
         // instantiate main sound effect
@@ -146,6 +171,20 @@ public class SpaceRaceSoundManager : MonoBehaviour
         enginePitchTransitionCoroutine = StartCoroutine(SmoothPitchTransition(targetPitch));
     }
 
+    private void ChooseTrackAndStartMusic()
+    {
+        // roll a random number to select a track to play
+        chosenTrackIndex = Random.Range(0, gameMusicAudioSources.Length);
+
+        AudioSource chosenTrack = gameMusicAudioSources[chosenTrackIndex];
+
+        // start track
+        chosenTrack.Play();
+
+        // fade volume from default of 0 to specified volume in volume settings (different for each track)
+        FadeInMusic();
+    }
+
     private IEnumerator SmoothPitchTransition(float targetPitch)
     {
         float startPitch = shipEngineAudioSource.pitch;
@@ -159,6 +198,31 @@ public class SpaceRaceSoundManager : MonoBehaviour
         }
 
         shipEngineAudioSource.pitch = targetPitch;
+    }
+
+    private void FadeMusic(float targetVolume, float fadeDuration)
+    {
+        if (fadeMusicCoroutine != null)
+        {
+            StopCoroutine(fadeMusicCoroutine);
+        }
+
+        fadeMusicCoroutine = StartCoroutine(FadeMusicCoroutine(gameMusicAudioSources[chosenTrackIndex], targetVolume, fadeDuration));
+    }
+
+    private IEnumerator FadeMusicCoroutine(AudioSource audioSource, float targetVolume, float fadeDuration)
+    {
+        float startVolume = audioSource.volume;
+        float elapsedTime = 0.0f;
+
+        while (elapsedTime < fadeDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            audioSource.volume = Mathf.Lerp(startVolume, targetVolume, elapsedTime / fadeDuration);
+            yield return null;
+        }
+
+        audioSource.volume = targetVolume;
     }
 
     private void PlaySoundEffect(AudioSource audioSource)
