@@ -44,7 +44,7 @@ public class SpaceRaceSoundManager : MonoBehaviour
 
     // music settings
     private const float musicFadeInDuration = 5.0f;
-    private const float musicFadeOutDuration = 5.0f;
+    private const float musicFadeOutDuration = 4.0f;
     private int chosenTrackIndex;
     private float[] musicTrackVolumes = { 0.175f, 0.075f };
 

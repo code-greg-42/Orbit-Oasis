@@ -56,6 +56,7 @@ public class SpaceRaceAsteroid : MonoBehaviour
 
         // set scale
         transform.localScale *= sizeAdjustment;
+        rb.mass *= sizeAdjustment;
 
         // roll for whether or not asteroid should move
         float shouldMove = Random.Range(0f, 1f);
@@ -112,7 +113,7 @@ public class SpaceRaceAsteroid : MonoBehaviour
         }
         else if (transform.position.z > SpaceRaceGameManager.Instance.FinalAsteroidBoundary)
         {
-            rb.AddForce(Vector3.back * boundarySpeed);
+            rb.AddForce(Vector3.back * (boundarySpeed / 2));
         }
     }
 

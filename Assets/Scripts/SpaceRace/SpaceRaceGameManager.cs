@@ -48,15 +48,14 @@ public class SpaceRaceGameManager : MonoBehaviour
     private Coroutine updateClockCoroutine;
 
     // difficulty settings
-    private readonly float[] difficultyMovementSpeeds = { 35f, 40f, 60f };
+    private readonly float[] difficultyMovementSpeeds = { 40f, 50f, 60f };
     private readonly int[] difficultyAsteroidAmounts = { 20, 35, 50 };
-    private readonly float[] difficultyCheckpointDistances = { 300f, 300f, 450f };
-    private readonly float[] difficultyMissedCheckpointBuffer = { 25f, 25f, 50f };
-    private readonly float[] difficultyAsteroidSizeModifier = { 0.8f, 1.0f, 1.0f };
-    private readonly float[] difficultyAsteroidMovementModifier = { 0.8f, 1.0f, 1.2f };
-    private readonly int[] difficultyFinalCheckpointSettings = { 14, 16, 20 };
+    private readonly float[] difficultyCheckpointDistances = { 300f, 350f, 450f };
+    private readonly float[] difficultyMissedCheckpointBuffer = { 25f, 35f, 50f };
+    private readonly float[] difficultyAsteroidMovementModifier = { 0.8f, 1.0f, 1.4f };
+    private readonly int[] difficultyFinalCheckpointSettings = { 12, 16, 20 };
 
-    // separate bool from IsGameActive that is never set to false -- used only for starting the race
+    // separate bool from IsGameActive that is set to true once and that's it -- used only for starting the race
     private bool hasRaceStarted;
 
     public bool IsGameActive { get; private set; }
