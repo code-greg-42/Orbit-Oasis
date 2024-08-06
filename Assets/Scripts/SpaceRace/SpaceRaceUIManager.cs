@@ -25,8 +25,9 @@ public class SpaceRaceUIManager : MonoBehaviour
     [SerializeField] private Color victoryTextColor;
 
     // ui setting variables
+    private float introWordDelay = 0.2f; // delay before the words start in the intro
     private float wordDisplayDelay = 0.1f; // rate of words being added to the sentence
-    private float sentenceDisplayDelay = 5.0f; // total time of pause after sentence is complete
+    private float sentenceDisplayDelay = 4.0f; // total time of pause after sentence is complete
     private float statusDisplayDuration = 1.2f; // total time of the display at normal alpha
     private float statusFadeDuration = 2.0f; // duration of the fade effect for the status window
 
@@ -54,6 +55,8 @@ public class SpaceRaceUIManager : MonoBehaviour
 
     private IEnumerator DisplayIntroText()
     {
+        yield return new WaitForSeconds(introWordDelay);
+
         for (int i = 0; i < introSentences.Count; i++)
         {
             introText.text = "";
@@ -62,6 +65,7 @@ public class SpaceRaceUIManager : MonoBehaviour
             foreach (string word in words)
             {
                 introText.text += word + " ";
+                SpaceRaceSoundManager.Instance.PlayTypingKeySound();
                 yield return new WaitForSeconds(wordDisplayDelay);
             }
             // pause to allow reading

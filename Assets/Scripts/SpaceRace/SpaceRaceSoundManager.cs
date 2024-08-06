@@ -14,6 +14,7 @@ public class SpaceRaceSoundManager : MonoBehaviour
     [SerializeField] private AudioSource gameWinAudioSource;
     [SerializeField] private AudioSource shipCrashAudioSource;
     [SerializeField] private AudioSource fireRocketsAudioSource;
+    [SerializeField] private AudioSource typingKeyAudioSource;
 
     [Header("Sound Effect Prefabs")]
     [SerializeField] private GameObject asteroidExplosionSoundPrefab;
@@ -35,6 +36,10 @@ public class SpaceRaceSoundManager : MonoBehaviour
     // asteroid explosion pitch settings
     private const float minimumAsteroidPitch = 0.5f; // lowest pitch that an asteroid explosion sound can be
     private const float asteroidPitchRate = 0.1f; // rate that the pitch decreases per 1 unit of asteroid scale
+
+    // typing sound settings
+    private const float typingMinPitch = 0.88f;
+    private const float typingMaxPitch = 1.12f;
 
     private Coroutine enginePitchTransitionCoroutine;
 
@@ -86,6 +91,20 @@ public class SpaceRaceSoundManager : MonoBehaviour
     public void PlayFireRocketsSound()
     {
         PlaySoundEffect(fireRocketsAudioSource);
+    }
+
+    public void PlayTypingKeySound()
+    {
+        if (typingKeyAudioSource.isPlaying)
+        {
+            typingKeyAudioSource.Stop();
+        }
+
+        // randomize and set a pitch between the min and max settings
+        float pitch = Random.Range(typingMinPitch, typingMaxPitch);
+        typingKeyAudioSource.pitch = pitch;
+
+        typingKeyAudioSource.Play();
     }
 
     public void PlayExplosionSound(Vector3 position, Vector3 adjustedScale)
