@@ -885,6 +885,50 @@ Transform:
   - {fileID: 1031378145}
   m_Father: {fileID: 1394350139}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &261711941
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 261711943}
+  - component: {fileID: 261711942}
+  m_Layer: 0
+  m_Name: DataManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &261711942
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 261711941}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b46548b5f79d7544a51e0227783b926, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &261711943
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 261711941}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &385278099
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1993,6 +2037,7 @@ MonoBehaviour:
   boostText: {fileID: 1552101571}
   rocketsText: {fileID: 1863326119}
   gameClockText: {fileID: 38830573}
+  bestTimeText: {fileID: 1877061270}
   checkpointStatusWindow: {fileID: 1567064920}
   victoryText: {fileID: 1345338956}
   outOfResourceTextColor: {r: 0.8113208, g: 0.08036668, b: 0.08036668, a: 1}
@@ -2562,8 +2607,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278229778
-  m_fontColor: {r: 0.07058824, g: 0.60784316, b: 0, a: 1}
+    rgba: 4278435352
+  m_fontColor: {r: 0.09587069, g: 0.745283, b: 0.010546438, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -4988,3 +5033,4 @@ SceneRoots:
   - {fileID: 1362260234}
   - {fileID: 1907123384}
   - {fileID: 1078641223}
+  - {fileID: 261711943}

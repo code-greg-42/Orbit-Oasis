@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -17,6 +18,7 @@ public class SpaceRaceUIManager : MonoBehaviour
     [SerializeField] private TMP_Text boostText;
     [SerializeField] private TMP_Text rocketsText;
     [SerializeField] private TMP_Text gameClockText;
+    [SerializeField] private TMP_Text bestTimeText;
     [SerializeField] private TMP_Text checkpointStatusWindow;
     [SerializeField] private TMP_Text victoryText;
     [SerializeField] private Color outOfResourceTextColor;
@@ -93,18 +95,20 @@ public class SpaceRaceUIManager : MonoBehaviour
 
     public void UpdateGameClock(float gameTime)
     {
-        int minutes = Mathf.FloorToInt(gameTime / 60F);
-        int seconds = Mathf.FloorToInt(gameTime % 60F);
-        int fraction = Mathf.FloorToInt((gameTime * 100) % 100);
-
-        gameClockText.text = string.Format("{0:00}:{1:00}.{2:00}", minutes, seconds, fraction);
+        gameClockText.text = FormatClockTime(gameTime);
     }
 
-    public void DisplayVictoryText()
+    public void UpdateBestTime(float gameTime)
+    {
+        string formattedTime = FormatClockTime(gameTime);
+        bestTimeText.text = "Best Time:\n" + formattedTime;
+    }
+
+    public void DisplayVictoryText(bool newBestTime = false)
     {
         if (victoryTextCoroutine == null)
         {
-            string victoryTextString = "Race Completed!";
+            string victoryTextString = newBestTime ? "Race Completed!\nNew Best Time!" : "Race Completed!";
             victoryTextCoroutine = StartCoroutine(ShowAndFadeText(victoryText, victoryTextString, victoryTextColor, 2.0f, 3.0f));
         }
     }
@@ -236,5 +240,16 @@ public class SpaceRaceUIManager : MonoBehaviour
 
         // reset original textbox color
         textBox.color = originalColor;
+    }
+
+    private string FormatClockTime(float time)
+    {
+        int minutes = Mathf.FloorToInt(time / 60f);
+        int seconds = Mathf.FloorToInt(time % 60f);
+        int fraction = Mathf.FloorToInt((time * 100) % 100);
+
+        string clockString = string.Format("{0:00}:{1:00}.{2:00}", minutes, seconds, fraction);
+
+        return clockString;
     }
 }

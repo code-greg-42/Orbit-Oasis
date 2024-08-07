@@ -29,6 +29,10 @@ public class SpaceRaceSoundManager : MonoBehaviour
     private const float countdownVolume = 0.15f;
     private const float finalCountdownVolume = 0.25f;
 
+    // game win pitch settings
+    private const float gameWinRegularPitch = 0.9f;
+    private const float gameWinNewBestTimePitch = 1.2f;
+
     // engine pitch settings
     private const float regularEnginePitch = 1.0f;
     private const float boostEnginePitch = 1.5f;
@@ -91,9 +95,17 @@ public class SpaceRaceSoundManager : MonoBehaviour
         PlaySoundEffect(checkpointMissedAudioSource);
     }
 
-    public void PlayWinSound()
+    public void PlayWinSound(bool newBestTime = false)
     {
-        PlaySoundEffect(gameWinAudioSource);
+        if (gameWinAudioSource.isPlaying)
+        {
+            gameWinAudioSource.Stop();
+        }
+
+        // set pitch based on whether a new best time was set by the player
+        gameWinAudioSource.pitch = newBestTime ? gameWinNewBestTimePitch : gameWinRegularPitch;
+
+        gameWinAudioSource.Play();
     }
 
     public void PlayShipCrashSound()

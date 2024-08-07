@@ -78,10 +78,10 @@ public class SpaceRaceGameManager : MonoBehaviour
 
     private void Start()
     {
-        // set difficulty and upgrade levels
-        SetDifficulty(2);
-        playerMovement.SetBoostUpgradeLevel(3);
-        playerAttack.SetRocketUpgradeLevel(3);
+        // set difficulty and upgrade levels from data manager
+        SetDifficulty(DataManager.Instance.RaceSelectedDifficulty);
+        playerMovement.SetBoostUpgradeLevel(DataManager.Instance.RaceBoostUpgradeLevel);
+        playerAttack.SetRocketUpgradeLevel(DataManager.Instance.RaceRocketUpgradeLevel);
 
         // spawn initial checkpoints and asteroids
         SpawnInitialScene();
@@ -236,14 +236,8 @@ public class SpaceRaceGameManager : MonoBehaviour
         }
         else
         {
-            // display victory message
-            SpaceRaceUIManager.Instance.DisplayVictoryText();
-
-            // play victory sound
-            SpaceRaceSoundManager.Instance.PlayWinSound();
-
-            // pause camera movement and initiate scene end sequence
-            EndGame();
+            // EndGame with bool win == true
+            EndGame(true);
         }
 
         if (checkpointsLoaded < finalCheckpoint)
@@ -421,7 +415,7 @@ public class SpaceRaceGameManager : MonoBehaviour
         return playerMovement.ForwardSpeed;
     }
 
-    public void EndGame()
+    public void EndGame(bool win = false)
     {
         IsGameActive = false;
         virtualCamera.Follow = null;
@@ -433,6 +427,32 @@ public class SpaceRaceGameManager : MonoBehaviour
         SpaceRaceSoundManager.Instance.FadeOutMusic();
 
         StartCoroutine(EndGameSequence());
+
+        if (win)
+        {
+            float currentBestTime = DataManager.Instance.RaceBestTimes[DataManager.Instance.RaceSelectedDifficulty];
+
+            if (currentBestTime == 0 || gameClock < currentBestTime)
+            {
+                // display victory text with the 'new best time' message attached
+                SpaceRaceUIManager.Instance.DisplayVictoryText(true);
+
+                // play victory sound with a different pitch to notify new best time
+                SpaceRaceSoundManager.Instance.PlayWinSound(true);
+
+                // update best time UI component
+                SpaceRaceUIManager.Instance.UpdateBestTime(gameClock);
+
+                // set best time in data manager (will always apply to the current difficulty only)
+                DataManager.Instance.SetRaceBestTime(gameClock);
+            }
+            else
+            {
+                // display regular victory text and play regular victory sound
+                SpaceRaceUIManager.Instance.DisplayVictoryText();
+                SpaceRaceSoundManager.Instance.PlayWinSound();
+            }
+        }
     }
 
     private IEnumerator EndGameSequence()

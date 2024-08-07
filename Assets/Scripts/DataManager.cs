@@ -15,6 +15,10 @@ public class DataManager : MonoBehaviour
     public List<BuildableObjectData> BuildList { get; private set; }
     public List<ItemData> InventoryItems { get; private set; }
     public List<int> CaughtFishIndex { get; private set; }
+    public int RaceSelectedDifficulty { get; private set; }
+    public int RaceBoostUpgradeLevel { get; private set; }
+    public int RaceRocketUpgradeLevel { get; private set; }
+    public float[] RaceBestTimes { get; private set; }
 
     private void Awake()
     {
@@ -27,6 +31,7 @@ public class DataManager : MonoBehaviour
             BuildList = new List<BuildableObjectData>();
             InventoryItems = new List<ItemData>();
             CaughtFishIndex = new List<int>();
+            RaceBestTimes = new float[] { 0f, 0f, 0f };
 
             LoadGameFromFile();
         }
@@ -42,6 +47,14 @@ public class DataManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Y))
         {
             SwapScenes();
+        }
+    }
+
+    public void SetRaceBestTime(float raceTime)
+    {
+        if (RaceBestTimes[RaceSelectedDifficulty] == 0f || raceTime < RaceBestTimes[RaceSelectedDifficulty])
+        {
+            RaceBestTimes[RaceSelectedDifficulty] = raceTime;
         }
     }
 
