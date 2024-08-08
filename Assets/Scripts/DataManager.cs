@@ -10,6 +10,9 @@ public class DataManager : MonoBehaviour
 {
     public static DataManager Instance { get; private set; }
 
+    private readonly string saveFolderName = "/SaveData/";
+
+    // datasets
     public PlayerData PlayerStats { get; private set; }
     public RaceData RaceStats { get; private set; }
     public SerializableList<BuildableObjectData> BuildableList { get; private set; }
@@ -29,10 +32,10 @@ public class DataManager : MonoBehaviour
     
 
     // race variables
-    public int RaceSelectedDifficulty { get; private set; }
-    public int RaceBoostUpgradeLevel { get; private set; }
-    public int RaceRocketUpgradeLevel { get; private set; }
-    public float[] RaceBestTimes { get; private set; }
+    //public int RaceSelectedDifficulty { get; private set; }
+    //public int RaceBoostUpgradeLevel { get; private set; }
+    //public int RaceRocketUpgradeLevel { get; private set; }
+    //public float[] RaceBestTimes { get; private set; }
 
 
     // unsaved variables
@@ -57,9 +60,11 @@ public class DataManager : MonoBehaviour
             BuildList = new List<BuildableObjectData>();
             InventoryItems = new List<ItemData>();
             CaughtFishIndex = new List<int>();
-            RaceBestTimes = new float[] { 0f, 0f, 0f };
+            //RaceBestTimes = new float[] { 0f, 0f, 0f };
 
-            Debug.Log("Persistent Data Path: " + Application.persistentDataPath);
+            CreateSaveDirectory();
+
+            LoadRaceStats();
 
             LoadGameFromFile();
         }
@@ -80,9 +85,10 @@ public class DataManager : MonoBehaviour
 
     public void SetRaceBestTime(float raceTime)
     {
-        if (RaceBestTimes[RaceSelectedDifficulty] == 0f || raceTime < RaceBestTimes[RaceSelectedDifficulty])
+        if (RaceStats.BestTimes[RaceStats.SelectedDifficulty] == 0f || raceTime < RaceStats.BestTimes[RaceStats.SelectedDifficulty])
         {
-            RaceBestTimes[RaceSelectedDifficulty] = raceTime;
+            RaceStats.BestTimes[RaceStats.SelectedDifficulty] = raceTime;
+            SaveRaceStats();
         }
     }
 
@@ -240,5 +246,59 @@ public class DataManager : MonoBehaviour
 
             Debug.Log("Game Loaded Successfully.");
         }
+    }
+
+    private void CreateSaveDirectory()
+    {
+        string directoryPath = Application.persistentDataPath + saveFolderName;
+        if (!Directory.Exists(directoryPath))
+        {
+            Directory.CreateDirectory(directoryPath);
+        }
+    }
+
+    private string GetSaveFilePath(string variableName)
+    {
+        string filePath = Application.persistentDataPath + saveFolderName + variableName + ".json";
+        return filePath;
+    }
+
+    private void SaveToFile(object data, string variableName)
+    {
+        string filePath = GetSaveFilePath(variableName);
+        string json = JsonUtility.ToJson(data);
+
+        File.WriteAllText(filePath, json);
+    }
+
+    private T LoadFromFile<T>(string variableName)
+    {
+        string filePath = GetSaveFilePath(variableName);
+        if (File.Exists(filePath))
+        {
+            string json = File.ReadAllText(filePath);
+            return JsonUtility.FromJson<T>(json);
+        }
+        return default;
+    }
+
+    private void SavePlayerStats()
+    {
+        SaveToFile(PlayerStats, nameof(PlayerStats));
+    }
+
+    private void LoadPlayerStats()
+    {
+        PlayerStats = LoadFromFile<PlayerData>(nameof(PlayerStats)) ?? new PlayerData();
+    }
+
+    private void SaveRaceStats()
+    {
+        SaveToFile(RaceStats, nameof(RaceStats));
+    }
+
+    private void LoadRaceStats()
+    {
+        RaceStats = LoadFromFile<RaceData>(nameof(RaceStats)) ?? new RaceData();
     }
 }

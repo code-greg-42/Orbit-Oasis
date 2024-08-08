@@ -52,6 +52,13 @@ public class SpaceRaceUIManager : MonoBehaviour
 
     private void Start()
     {
+        float bestTime = DataManager.Instance.RaceStats.BestTimes[DataManager.Instance.RaceStats.SelectedDifficulty];
+
+        if (bestTime != 0f)
+        {
+            UpdateBestTime(bestTime);
+        }
+
         StartCoroutine(DisplayIntroText());
     }
 

@@ -79,9 +79,9 @@ public class SpaceRaceGameManager : MonoBehaviour
     private void Start()
     {
         // set difficulty and upgrade levels from data manager
-        SetDifficulty(DataManager.Instance.RaceSelectedDifficulty);
-        playerMovement.SetBoostUpgradeLevel(DataManager.Instance.RaceBoostUpgradeLevel);
-        playerAttack.SetRocketUpgradeLevel(DataManager.Instance.RaceRocketUpgradeLevel);
+        SetDifficulty(DataManager.Instance.RaceStats.SelectedDifficulty);
+        playerMovement.SetBoostUpgradeLevel(DataManager.Instance.RaceStats.BoostUpgradeLevel);
+        playerAttack.SetRocketUpgradeLevel(DataManager.Instance.RaceStats.RocketUpgradeLevel);
 
         // spawn initial checkpoints and asteroids
         SpawnInitialScene();
@@ -430,7 +430,7 @@ public class SpaceRaceGameManager : MonoBehaviour
 
         if (win)
         {
-            float currentBestTime = DataManager.Instance.RaceBestTimes[DataManager.Instance.RaceSelectedDifficulty];
+            float currentBestTime = DataManager.Instance.RaceStats.BestTimes[DataManager.Instance.RaceStats.SelectedDifficulty];
 
             if (currentBestTime == 0 || gameClock < currentBestTime)
             {
