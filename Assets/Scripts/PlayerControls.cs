@@ -56,6 +56,10 @@ public class PlayerControls : MonoBehaviour
                             item.PickupItem();
                         }
                     }
+                    else if (collider.transform.parent != null && collider.transform.parent.TryGetComponent(out SpaceshipSelection selection))
+                    {
+                        selection.ActivateSpaceshipSelection();
+                    }
                 }
             }
 
