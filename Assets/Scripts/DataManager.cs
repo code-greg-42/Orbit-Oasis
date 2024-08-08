@@ -9,16 +9,36 @@ using UnityEngine.SceneManagement; // TEMPORARY FOR TESTING PURPOSES
 public class DataManager : MonoBehaviour
 {
     public static DataManager Instance { get; private set; }
+
+    public PlayerData PlayerStats { get; private set; }
+    public RaceData RaceStats { get; private set; }
+    public SerializableList<BuildableObjectData> BuildableList { get; private set; }
+    public SerializableList<ItemData> InventoryItemList { get; private set; }
+
+
+    // player variables
     public float PlayerCurrency { get; private set; }
     public float PlayerFood { get; private set; }
-    public float PlayerBuildMaterial { get; private set; }
+    public Vector3 PlayerPosition { get; private set; }
+    public Quaternion PlayerRotation { get; private set; }
+
+
+    // lists
     public List<BuildableObjectData> BuildList { get; private set; }
     public List<ItemData> InventoryItems { get; private set; }
-    public List<int> CaughtFishIndex { get; private set; }
+    
+
+    // race variables
     public int RaceSelectedDifficulty { get; private set; }
     public int RaceBoostUpgradeLevel { get; private set; }
     public int RaceRocketUpgradeLevel { get; private set; }
     public float[] RaceBestTimes { get; private set; }
+
+
+    // unsaved variables
+    public float PlayerBuildMaterial { get; private set; }
+    public List<int> CaughtFishIndex { get; private set; }
+
 
     private void Awake()
     {
@@ -27,11 +47,19 @@ public class DataManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
 
+            // initialize new list
+            PlayerStats = new PlayerData();
+            RaceStats = new RaceData();
+            BuildableList = new SerializableList<BuildableObjectData>(new List<BuildableObjectData>());
+            InventoryItemList = new SerializableList<ItemData>(new List<ItemData>());
+
             // initialize lists
             BuildList = new List<BuildableObjectData>();
             InventoryItems = new List<ItemData>();
             CaughtFishIndex = new List<int>();
             RaceBestTimes = new float[] { 0f, 0f, 0f };
+
+            Debug.Log("Persistent Data Path: " + Application.persistentDataPath);
 
             LoadGameFromFile();
         }
