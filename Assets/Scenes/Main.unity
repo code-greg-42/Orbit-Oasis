@@ -1763,8 +1763,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1432390179}
   - {fileID: 1092860911}
+  - {fileID: 1432390179}
   - {fileID: 687975734}
   - {fileID: 1705605663}
   - {fileID: 1991620011}
@@ -2468,6 +2468,7 @@ GameObject:
   - component: {fileID: 687975734}
   - component: {fileID: 687975736}
   - component: {fileID: 687975735}
+  - component: {fileID: 687975737}
   m_Layer: 5
   m_Name: EasyDifficultyPanel
   m_TagString: Untagged
@@ -2534,6 +2535,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 687975733}
   m_CullTransparentMesh: 1
+--- !u!114 &687975737
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 687975733}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db5b0bacc5e0abe4ea0b3cf9f5e45cc0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selectionHighlight: {fileID: 131489371}
+  buttonText: {fileID: 1620886537}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -2826,7 +2841,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 785105713}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.047631975, y: 0.0000000021483564, z: -1.02446746e-10, w: 0.99886495}
+  m_LocalRotation: {x: 0.047631975, y: -0.0000000021483564, z: 1.02446746e-10, w: 0.99886495}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -3753,7 +3768,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.04763198, y: 0.0000000021483566, z: -1.02446746e-10, w: 0.99886495}
+  m_LocalRotation: {x: 0.04763198, y: -0.0000000021483566, z: 1.02446746e-10, w: 0.99886495}
   m_LocalPosition: {x: 0, y: 3, z: -12}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -4352,6 +4367,7 @@ GameObject:
   - component: {fileID: 1092860911}
   - component: {fileID: 1092860913}
   - component: {fileID: 1092860912}
+  - component: {fileID: 1092860914}
   m_Layer: 5
   m_Name: DifficultyPanel
   m_TagString: Untagged
@@ -4377,7 +4393,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 700, y: -125}
+  m_AnchoredPosition: {x: 250, y: -125}
   m_SizeDelta: {x: 425, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1092860912
@@ -4418,6 +4434,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1092860910}
   m_CullTransparentMesh: 1
+--- !u!114 &1092860914
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1092860910}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db5b0bacc5e0abe4ea0b3cf9f5e45cc0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selectionHighlight: {fileID: 1710213731}
+  buttonText: {fileID: 800848112}
 --- !u!1 &1110441478
 GameObject:
   m_ObjectHideFlags: 0
@@ -4465,6 +4495,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   selectionPanel: {fileID: 846464832}
   playerTransform: {fileID: 1258815349}
+  mainMenuButtons:
+  - {fileID: 1092860914}
+  - {fileID: 1432390182}
+  difficultySettingButtons:
+  - {fileID: 687975737}
+  - {fileID: 1705605666}
+  - {fileID: 1991620014}
 --- !u!1 &1120432421
 GameObject:
   m_ObjectHideFlags: 0
@@ -5034,7 +5071,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1287715202}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.09252102, y: -0.00000001765986, z: 0.0000000016409466, w: 0.99571073}
+  m_LocalRotation: {x: 0.09252102, y: 0.000000017659854, z: -0.0000000016409462, w: 0.99571073}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -5747,6 +5784,7 @@ GameObject:
   - component: {fileID: 1432390179}
   - component: {fileID: 1432390181}
   - component: {fileID: 1432390180}
+  - component: {fileID: 1432390182}
   m_Layer: 5
   m_Name: UpgradesPanel
   m_TagString: Untagged
@@ -5772,7 +5810,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 250, y: -125}
+  m_AnchoredPosition: {x: 700, y: -125}
   m_SizeDelta: {x: 425, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1432390180
@@ -5813,6 +5851,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1432390178}
   m_CullTransparentMesh: 1
+--- !u!114 &1432390182
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1432390178}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db5b0bacc5e0abe4ea0b3cf9f5e45cc0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selectionHighlight: {fileID: 163626047}
+  buttonText: {fileID: 825182126}
 --- !u!1 &1444777866
 GameObject:
   m_ObjectHideFlags: 0
@@ -6980,6 +7032,7 @@ GameObject:
   - component: {fileID: 1705605663}
   - component: {fileID: 1705605665}
   - component: {fileID: 1705605664}
+  - component: {fileID: 1705605666}
   m_Layer: 5
   m_Name: MediumDifficultyPanel
   m_TagString: Untagged
@@ -7046,6 +7099,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1705605662}
   m_CullTransparentMesh: 1
+--- !u!114 &1705605666
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1705605662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db5b0bacc5e0abe4ea0b3cf9f5e45cc0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selectionHighlight: {fileID: 1047167132}
+  buttonText: {fileID: 237068864}
 --- !u!1 &1710213731
 GameObject:
   m_ObjectHideFlags: 0
@@ -7579,6 +7646,7 @@ GameObject:
   - component: {fileID: 1991620011}
   - component: {fileID: 1991620013}
   - component: {fileID: 1991620012}
+  - component: {fileID: 1991620014}
   m_Layer: 5
   m_Name: HardDifficultyPanel
   m_TagString: Untagged
@@ -7645,6 +7713,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1991620010}
   m_CullTransparentMesh: 1
+--- !u!114 &1991620014
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1991620010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db5b0bacc5e0abe4ea0b3cf9f5e45cc0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selectionHighlight: {fileID: 1444777866}
+  buttonText: {fileID: 1149734265}
 --- !u!1001 &2004955737
 PrefabInstance:
   m_ObjectHideFlags: 0
