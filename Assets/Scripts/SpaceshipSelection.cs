@@ -6,8 +6,8 @@ public class SpaceshipSelection : MonoBehaviour
 {
     [SerializeField] private GameObject selectionPanel;
     [SerializeField] private Transform playerTransform;
-    [SerializeField] private SelectionPanelButton[] mainMenuButtons;
-    [SerializeField] private SelectionPanelButton[] difficultySettingButtons;
+    [SerializeField] private SelectionPanelButton[] mainMenuButtons; // 2
+    [SerializeField] private SelectionPanelButton[] difficultySettingButtons; // 3
 
     private bool isSpaceshipSelectionActive;
     private Coroutine walkAwayDeactivation;
@@ -17,6 +17,9 @@ public class SpaceshipSelection : MonoBehaviour
     private float sqrDeactivationDistance;
 
     private SelectionPanelButton[][] menuStages;
+
+    private delegate void ButtonAction();
+    private ButtonAction[][] buttonActions;
 
     private int currentSelection;
     private int currentMenuStage;
@@ -30,6 +33,12 @@ public class SpaceshipSelection : MonoBehaviour
             mainMenuButtons,
             difficultySettingButtons
         };
+
+        buttonActions = new ButtonAction[][]
+        {
+            new ButtonAction[] { OnStartRacePressed, OnUpgradesPressed },
+            new ButtonAction[] { StartSpaceRace, StartSpaceRace, StartSpaceRace }
+        };
     }
 
     private void Update()
@@ -40,15 +49,59 @@ public class SpaceshipSelection : MonoBehaviour
         }
     }
 
+    public void PressSelectedButton()
+    {
+        if (AreIndicesValid(currentMenuStage, currentSelection))
+        {
+            ButtonAction action = buttonActions[currentMenuStage][currentSelection];
+            action?.Invoke();
+        }
+        else
+        {
+            Debug.LogWarning($"PressSelectedButton called with invalid indices: currentMenuStage={currentMenuStage}, currentSelection={currentSelection}");
+        }
+    }
+
     private void HandleUserInput()
     {
+        // SELECTION
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
-            ChangeSelection(currentSelection + 1);
+            int newSelection = currentSelection + 1;
+            if (AreIndicesValid(currentMenuStage, newSelection))
+            {
+                ChangeSelection(newSelection);
+            }
         }
         else if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            ChangeSelection(currentSelection - 1);
+            int newSelection = currentSelection - 1;
+            if (AreIndicesValid (currentMenuStage, newSelection))
+            {
+                ChangeSelection(newSelection);
+            }
+        }
+
+        // BUTTON PRESS
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            PressSelectedButton();
+        }
+
+        // EXIT MENU
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            int newMenuStage = currentMenuStage - 1;
+
+            // go to main menu if escape is pressed from a further menu, otherwise exit the menu altogether
+            if (AreIndicesValid(newMenuStage, 0))
+            {
+                ChangeMenuStage(0);
+            }
+            else
+            {
+                DeactivateSpaceshipSelection();
+            }
         }
     }
 
@@ -56,18 +109,16 @@ public class SpaceshipSelection : MonoBehaviour
     {
         if (AreIndicesValid(stage, 0))
         {
+            // deactivate current menu before changing menu stage variable
             DeactivateCurrentMenu();
 
-            SelectionPanelButton[] newMenu = menuStages[stage];
-
-            foreach (SelectionPanelButton button in newMenu)
-            {
-                button.ActivateButton();
-            }
-
-            // always reset currentSelection first
+            // reset selection and change menu stage variable
             currentSelection = 0;
             currentMenuStage = stage;
+
+            // activate new menu and update selection visuals
+            ActivateMenuStage(stage);
+            UpdateSelectionHighlight();
         }
         else
         {
@@ -79,19 +130,31 @@ public class SpaceshipSelection : MonoBehaviour
     {
         if (AreIndicesValid(currentMenuStage, selection))
         {
+            // call deselect before changing currentSelection
             DeselectCurrentSelection();
 
-            SelectionPanelButton button = menuStages[currentMenuStage][selection];
+            // set current selection to new value
+            currentSelection = selection;
 
-            if (button != null)
-            {
-                currentSelection = selection;
-                button.SelectButton();
-            }
+            // update selection visuals
+            UpdateSelectionHighlight();
         }
         else
         {
             Debug.LogWarning($"ChangeSelection called with an invalid selection index: {selection} for currentMenuStage: {currentMenuStage}");
+        }
+    }
+
+    private void UpdateSelectionHighlight()
+    {
+        if (AreIndicesValid(currentMenuStage, currentSelection))
+        {
+            SelectionPanelButton button = menuStages[currentMenuStage][currentSelection];
+
+            if (button != null)
+            {
+                button.SelectButton();
+            }
         }
     }
 
@@ -101,6 +164,13 @@ public class SpaceshipSelection : MonoBehaviour
         {
             isSpaceshipSelectionActive = true;
             selectionPanel.SetActive(true);
+
+            // make sure current ints are reset
+            ResetState();
+
+            // activate first menu and update selection highlight
+            ActivateMenuStage(0);
+            UpdateSelectionHighlight();
 
             if (walkAwayDeactivation != null)
             {
@@ -117,8 +187,17 @@ public class SpaceshipSelection : MonoBehaviour
         if (isSpaceshipSelectionActive)
         {
             isSpaceshipSelectionActive = false;
+
+            // deactivate current menu stage so it properly starts fresh next time
+            DeactivateCurrentMenu();
+
+            // reset bools for same reason
+            ResetState();
+
+            // deactivate main panel background
             selectionPanel.SetActive(false);
 
+            // deactivate distance check coroutine
             if (walkAwayDeactivation != null)
             {
                 StopCoroutine(walkAwayDeactivation);
@@ -159,6 +238,26 @@ public class SpaceshipSelection : MonoBehaviour
         }
     }
 
+    private void ActivateMenuStage(int stage)
+    {
+        if (stage >= 0 && stage < menuStages.Length)
+        {
+            SelectionPanelButton[] menuStage = menuStages[stage];
+
+            foreach (SelectionPanelButton button in menuStage)
+            {
+                if (button != null)
+                {
+                    button.ActivateButton();
+                }
+            }
+        }
+        else
+        {
+            Debug.LogWarning("ActivateMenuStage called with an invalid stage: " + stage);
+        }
+    }
+
     private void DeactivateCurrentMenu()
     {
         if (currentMenuStage >= 0 && currentMenuStage < menuStages.Length)
@@ -170,7 +269,10 @@ public class SpaceshipSelection : MonoBehaviour
 
             foreach (SelectionPanelButton button in menuStage)
             {
-                button.DeactivateButton();
+                if (button != null)
+                {
+                    button.DeactivateButton();
+                }
             }
         }
         else
@@ -183,5 +285,29 @@ public class SpaceshipSelection : MonoBehaviour
     {
         return menuStage >= 0 && menuStage < menuStages.Length &&
                selectionIndex >= 0 && selectionIndex < menuStages[menuStage].Length;
+    }
+
+    private void OnStartRacePressed()
+    {
+        Debug.Log("Start Race has been pressed!");
+
+        ChangeMenuStage(1);
+    }
+
+    private void OnUpgradesPressed()
+    {
+        Debug.Log("Upgrades has been pressed!");
+    }
+
+    private void StartSpaceRace()
+    {
+        Debug.Log("Space Race started with difficulty: " + currentSelection);
+    }
+
+    private void ResetState()
+    {
+        // reset selection first to comply with AreIndicesValid
+        currentSelection = 0;
+        currentMenuStage = 0;
     }
 }
