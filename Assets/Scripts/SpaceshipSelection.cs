@@ -8,6 +8,9 @@ public class SpaceshipSelection : MonoBehaviour
     [SerializeField] private Transform playerTransform;
     [SerializeField] private SelectionPanelButton[] mainMenuButtons; // 2
     [SerializeField] private SelectionPanelButton[] difficultySettingButtons; // 3
+    [SerializeField] private SelectionPanelButton[] upgradeButtons; // 2
+    [SerializeField] private GameObject upgradeButtonsPanel;
+    [SerializeField] private GameObject upgradeDisplayPanel;
 
     private bool isSpaceshipSelectionActive;
     private Coroutine walkAwayDeactivation;
@@ -17,6 +20,10 @@ public class SpaceshipSelection : MonoBehaviour
     private float sqrDeactivationDistance;
 
     private SelectionPanelButton[][] menuStages;
+    private int upgradeStage = 2; // must match index of upgrade stage in menuStages
+
+    private float[] boostUpgradeCosts = { 500, 1500, 6000 };
+    private float[] rocketUpgradeCosts = { 200, 600, 2400 };
 
     private delegate void ButtonAction();
     private ButtonAction[][] buttonActions;
@@ -31,13 +38,15 @@ public class SpaceshipSelection : MonoBehaviour
         menuStages = new SelectionPanelButton[][]
         {
             mainMenuButtons,
-            difficultySettingButtons
+            difficultySettingButtons,
+            upgradeButtons
         };
 
         buttonActions = new ButtonAction[][]
         {
             new ButtonAction[] { OnStartRacePressed, OnUpgradesPressed },
-            new ButtonAction[] { StartSpaceRace, StartSpaceRace, StartSpaceRace }
+            new ButtonAction[] { StartSpaceRace, StartSpaceRace, StartSpaceRace },
+            new ButtonAction[] { OnUpgradeBoostPressed, OnUpgradeRocketsPressed }
         };
     }
 
@@ -65,7 +74,7 @@ public class SpaceshipSelection : MonoBehaviour
     private void HandleUserInput()
     {
         // SELECTION
-        if (Input.GetKeyDown(KeyCode.RightArrow))
+        if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.DownArrow))
         {
             int newSelection = currentSelection + 1;
             if (AreIndicesValid(currentMenuStage, newSelection))
@@ -73,7 +82,7 @@ public class SpaceshipSelection : MonoBehaviour
                 ChangeSelection(newSelection);
             }
         }
-        else if (Input.GetKeyDown(KeyCode.LeftArrow))
+        else if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.UpArrow))
         {
             int newSelection = currentSelection - 1;
             if (AreIndicesValid (currentMenuStage, newSelection))
@@ -242,14 +251,23 @@ public class SpaceshipSelection : MonoBehaviour
     {
         if (stage >= 0 && stage < menuStages.Length)
         {
-            SelectionPanelButton[] menuStage = menuStages[stage];
-
-            foreach (SelectionPanelButton button in menuStage)
+            if (stage != upgradeStage)
             {
-                if (button != null)
+                SelectionPanelButton[] menuStage = menuStages[stage];
+
+                foreach (SelectionPanelButton button in menuStage)
                 {
-                    button.ActivateButton();
+                    if (button != null)
+                    {
+                        button.ActivateButton();
+                    }
                 }
+            }
+            else
+            {
+                UpdateUpgradeDisplay();
+                upgradeButtonsPanel.SetActive(true);
+                upgradeDisplayPanel.SetActive(true);
             }
         }
         else
@@ -265,19 +283,56 @@ public class SpaceshipSelection : MonoBehaviour
             // remove selection from current
             DeselectCurrentSelection();
 
-            SelectionPanelButton[] menuStage = menuStages[currentMenuStage];
-
-            foreach (SelectionPanelButton button in menuStage)
+            if (currentMenuStage != upgradeStage)
             {
-                if (button != null)
+                SelectionPanelButton[] menuStage = menuStages[currentMenuStage];
+
+                foreach (SelectionPanelButton button in menuStage)
                 {
-                    button.DeactivateButton();
+                    if (button != null)
+                    {
+                        button.DeactivateButton();
+                    }
                 }
+            }
+            else
+            {
+                upgradeButtonsPanel.SetActive(false);
+                upgradeDisplayPanel.SetActive(false);
             }
         }
         else
         {
             Debug.LogWarning("DeactivateCurrentMenu called with an invalid currentMenuStage: " + currentMenuStage);
+        }
+    }
+
+    private void UpdateUpgradeDisplay()
+    {
+        if (currentMenuStage == upgradeStage)
+        {
+            int boostUpgradeLevel = DataManager.Instance.RaceStats.BoostUpgradeLevel;
+            int rocketUpgradeLevel = DataManager.Instance.RaceStats.RocketUpgradeLevel;
+
+            if (boostUpgradeLevel < 3)
+            {
+                float boostPurchaseAmount = boostUpgradeCosts[boostUpgradeLevel];
+                upgradeButtons[0].SetCurrencyAmount(boostPurchaseAmount);
+            }
+            else
+            {
+                // add a max value indicator later. might require a child class of SelectionPanelButton
+            }
+
+            if (rocketUpgradeLevel < 3)
+            {
+                float rocketPurchaseAmount = rocketUpgradeCosts[rocketUpgradeLevel];
+                upgradeButtons[1].SetCurrencyAmount(rocketPurchaseAmount);
+            }
+            else
+            {
+                // add a max value indicator here
+            }
         }
     }
 
@@ -297,11 +352,28 @@ public class SpaceshipSelection : MonoBehaviour
     private void OnUpgradesPressed()
     {
         Debug.Log("Upgrades has been pressed!");
+
+        ChangeMenuStage(2);
     }
 
     private void StartSpaceRace()
     {
         Debug.Log("Space Race started with difficulty: " + currentSelection);
+    }
+
+    private void OnUpgradeBoostPressed()
+    {
+        Debug.Log("Upgrade boost pressed!");
+
+        DataManager.Instance.UpgradeBoost();
+        UpdateUpgradeDisplay();
+    }
+
+    private void OnUpgradeRocketsPressed()
+    {
+        Debug.Log("Upgrade rockets pressed!");
+        DataManager.Instance.UpgradeRockets();
+        UpdateUpgradeDisplay();
     }
 
     private void ResetState()

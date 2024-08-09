@@ -92,6 +92,22 @@ public class DataManager : MonoBehaviour
         }
     }
 
+    public void UpgradeBoost()
+    {
+        if (RaceStats.BoostUpgradeLevel < 3)
+        {
+            RaceStats.BoostUpgradeLevel++;
+        }
+    }
+
+    public void UpgradeRockets()
+    {
+        if (RaceStats.RocketUpgradeLevel < 3)
+        {
+            RaceStats.RocketUpgradeLevel++;
+        }
+    }
+
     public void AddBuild(BuildableObject build)
     {
         // create new build data instance with the values from the build
