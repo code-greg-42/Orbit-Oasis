@@ -10,6 +10,10 @@ public class SpaceshipSelection : MonoBehaviour
     [SerializeField] private GameObject selectionPanel;
     [SerializeField] private Transform playerTransform;
 
+    // temporary
+    [SerializeField] private Transform playerObject;
+    [SerializeField] private Transform playerOrientation;
+
     [Header("Buttons")]
     [SerializeField] private SelectionPanelButton[] mainMenuButtons; // 2
     [SerializeField] private SelectionPanelButton[] difficultySettingButtons; // 3
@@ -391,6 +395,10 @@ public class SpaceshipSelection : MonoBehaviour
 
         // set data manager's difficulty variable to carry over into new scene
         DataManager.Instance.SetRaceDifficulty(currentSelection);
+
+        // save player position
+        DataManager.Instance.SetPlayerPosition(playerTransform.position, playerObject.rotation,
+            playerOrientation.rotation, Camera.main.transform.position, Camera.main.transform.rotation);
 
         // load race scene
         SceneManager.LoadScene("SpaceRace");

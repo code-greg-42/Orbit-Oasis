@@ -13,6 +13,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("References")]
     [SerializeField] private Transform orientation;
     [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private Transform playerObject;
 
     [Header("Keybinds")]
     [SerializeField] private KeyCode jumpKey = KeyCode.Space;
@@ -33,6 +34,25 @@ public class PlayerMovement : MonoBehaviour
 
     void Start()
     {
+        Vector3 playerPos = DataManager.Instance.PlayerStats.PlayerPosition;
+        if (playerPos != Vector3.zero)
+        {
+            transform.position = playerPos;
+        }
+
+        Quaternion playerRot = DataManager.Instance.PlayerStats.PlayerRotation;
+        if (playerRot != Quaternion.identity)
+        {
+            playerObject.rotation = playerRot;
+        }
+
+        Quaternion playerOrientation = DataManager.Instance.PlayerStats.PlayerOrientation;
+        if (playerOrientation != Quaternion.identity)
+        {
+            Debug.Log("PlayerOrientation: " + playerOrientation);
+            orientation.rotation = playerOrientation;
+        }
+
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
     }

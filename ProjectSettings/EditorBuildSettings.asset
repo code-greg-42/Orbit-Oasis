@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Fishing.unity
     guid: 6f6e1de3149421549ba96335aadc7fb7
+  - enabled: 1
+    path: Assets/Scenes/SpaceRace.unity
+    guid: 5e242866bf004594bb743aeff43ee34a
   m_configObjects: {}

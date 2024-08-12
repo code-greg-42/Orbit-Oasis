@@ -4972,7 +4972,7 @@ Transform:
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
   m_LocalRotation: {x: 0.04763198, y: -0.0000000021483566, z: 1.02446746e-10, w: 0.99886495}
-  m_LocalPosition: {x: 0, y: 3, z: -12}
+  m_LocalPosition: {x: 0, y: 3, z: -7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5159,7 +5159,7 @@ Transform:
   m_GameObject: {fileID: 964580210}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 3, z: -12}
+  m_LocalPosition: {x: 0, y: 3, z: -7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5773,6 +5773,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   selectionPanel: {fileID: 846464832}
   playerTransform: {fileID: 1258815349}
+  playerObject: {fileID: 1644633452}
+  playerOrientation: {fileID: 1341371024}
   mainMenuButtons:
   - {fileID: 1092860914}
   - {fileID: 1432390182}
@@ -6422,7 +6424,7 @@ Transform:
   m_GameObject: {fileID: 1258815348}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -5}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -6474,6 +6476,7 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 5120
+  playerObject: {fileID: 1644633452}
   jumpKey: 32
   boostKey: 304
 --- !u!114 &1258815352

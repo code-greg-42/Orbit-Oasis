@@ -118,6 +118,15 @@ public class DataManager : MonoBehaviour
         }
     }
 
+    public void SetPlayerPosition(Vector3 playerPos, Quaternion playerRot, Quaternion orientation, Vector3 cameraPos, Quaternion cameraRot)
+    {
+        PlayerStats.PlayerPosition = playerPos;
+        PlayerStats.PlayerRotation = playerRot;
+        PlayerStats.PlayerOrientation = orientation;
+        PlayerStats.CameraPosition = cameraPos;
+        PlayerStats.PlayerCameraRotation = cameraRot;
+    }
+
     public void AddBuild(BuildableObject build)
     {
         // create new build data instance with the values from the build

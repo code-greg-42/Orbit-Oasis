@@ -9,4 +9,7 @@ public class PlayerData
     public float PlayerFood;
     public Vector3 PlayerPosition;
     public Quaternion PlayerRotation;
+    public Quaternion PlayerOrientation;
+    public Vector3 CameraPosition;
+    public Quaternion PlayerCameraRotation;
 }
