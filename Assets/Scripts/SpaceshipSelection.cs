@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -311,29 +312,39 @@ public class SpaceshipSelection : MonoBehaviour
     {
         if (currentMenuStage == upgradeStage)
         {
+            // set levels based on data manager stats
             int boostUpgradeLevel = DataManager.Instance.RaceStats.BoostUpgradeLevel;
             int rocketUpgradeLevel = DataManager.Instance.RaceStats.RocketUpgradeLevel;
 
-            if (boostUpgradeLevel < 3)
-            {
-                float boostPurchaseAmount = boostUpgradeCosts[boostUpgradeLevel];
-                upgradeButtons[0].SetCurrencyAmount(boostPurchaseAmount);
-            }
-            else
-            {
-                // add a max value indicator later. might require a child class of SelectionPanelButton
-            }
+            // set ordered arrays usable by the loop
+            int[] upgradeLevels = { boostUpgradeLevel, rocketUpgradeLevel };
+            float[][] upgradeCosts = { boostUpgradeCosts, rocketUpgradeCosts };
 
-            if (rocketUpgradeLevel < 3)
+            // loop through and display either the upgrade cost or a 'maxed' message
+            for (int i = 0; i < upgradeButtons.Length; i++)
             {
-                float rocketPurchaseAmount = rocketUpgradeCosts[rocketUpgradeLevel];
-                upgradeButtons[1].SetCurrencyAmount(rocketPurchaseAmount);
-            }
-            else
-            {
-                // add a max value indicator here
+                if (upgradeButtons[i] is UpgradePanelButton upgradeButton)
+                {
+                    // get upgrade cost or null
+                    float? upgradeCost = GetUpgradeCostOrNull(upgradeCosts[i], upgradeLevels[i]);
+
+                    // if a cost was found, set it, otherwise show 'maxed'
+                    if (upgradeCost.HasValue)
+                    {
+                        upgradeButton.SetCurrencyAmount(upgradeCost.Value);
+                    }
+                    else
+                    {
+                        upgradeButton.ShowMaxText();
+                    }
+                }
             }
         }
+    }
+
+    private float? GetUpgradeCostOrNull(float[] costs, int level)
+    {
+        return level < costs.Length ? costs[level] : (float?)null;
     }
 
     private bool AreIndicesValid(int menuStage, int selectionIndex)
