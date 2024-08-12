@@ -2,16 +2,27 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SpaceshipSelection : MonoBehaviour
 {
+    [Header("General")]
     [SerializeField] private GameObject selectionPanel;
     [SerializeField] private Transform playerTransform;
+
+    [Header("Buttons")]
     [SerializeField] private SelectionPanelButton[] mainMenuButtons; // 2
     [SerializeField] private SelectionPanelButton[] difficultySettingButtons; // 3
     [SerializeField] private SelectionPanelButton[] upgradeButtons; // 2
+
+    [Header("Upgrade Panels")]
     [SerializeField] private GameObject upgradeButtonsPanel;
     [SerializeField] private GameObject upgradeDisplayPanel;
+
+    [Header("Upgrade Display Objects")]
+    [SerializeField] private GameObject[] boostDisplayExtraLines; // 6
+    [SerializeField] private GameObject[] rocketDisplayExtraLines; // 6
+    private int extraLinesPerUpgradeLevel = 2;
 
     private bool isSpaceshipSelectionActive;
     private Coroutine walkAwayDeactivation;
@@ -319,6 +330,7 @@ public class SpaceshipSelection : MonoBehaviour
             // set ordered arrays usable by the loop
             int[] upgradeLevels = { boostUpgradeLevel, rocketUpgradeLevel };
             float[][] upgradeCosts = { boostUpgradeCosts, rocketUpgradeCosts };
+            GameObject[][] extraLinesDisplays = { boostDisplayExtraLines, rocketDisplayExtraLines };
 
             // loop through and display either the upgrade cost or a 'maxed' message
             for (int i = 0; i < upgradeButtons.Length; i++)
@@ -337,9 +349,76 @@ public class SpaceshipSelection : MonoBehaviour
                     {
                         upgradeButton.ShowMaxText();
                     }
+
+                    // activate extra lines in display based on upgrade level
+                    ActivateExtraDisplayLines(extraLinesDisplays[i], upgradeLevels[i]);
                 }
             }
         }
+    }
+
+    private void ActivateExtraDisplayLines(GameObject[] extraLines, int upgradeLevel)
+    {
+        // deactivate all extra lines first
+        foreach(GameObject line in extraLines)
+        {
+            line.SetActive(false);
+        }
+
+        //// activate X number of lines per upgrade level
+        int numLines = upgradeLevel * extraLinesPerUpgradeLevel;
+
+        // loop through and activate
+        for (int i = 0; i < numLines; i++)
+        {
+            extraLines[i].SetActive(true);
+        }
+    }
+
+    private void OnStartRacePressed()
+    {
+        ChangeMenuStage(1);
+    }
+
+    private void OnUpgradesPressed()
+    {
+        ChangeMenuStage(2);
+    }
+
+    private void StartSpaceRace()
+    {
+        Debug.Log("Space Race started with difficulty: " + currentSelection);
+
+        // set data manager's difficulty variable to carry over into new scene
+        DataManager.Instance.SetRaceDifficulty(currentSelection);
+
+        // load race scene
+        SceneManager.LoadScene("SpaceRace");
+    }
+
+    private void OnUpgradeBoostPressed()
+    {
+        if (DataManager.Instance.RaceStats.BoostUpgradeLevel < boostUpgradeCosts.Length)
+        {
+            DataManager.Instance.UpgradeBoost();
+            UpdateUpgradeDisplay();
+        }
+    }
+
+    private void OnUpgradeRocketsPressed()
+    {
+        if (DataManager.Instance.RaceStats.RocketUpgradeLevel < rocketUpgradeCosts.Length)
+        {
+            DataManager.Instance.UpgradeRockets();
+            UpdateUpgradeDisplay();
+        }
+    }
+
+    private void ResetState()
+    {
+        // reset selection first to comply with AreIndicesValid
+        currentSelection = 0;
+        currentMenuStage = 0;
     }
 
     private float? GetUpgradeCostOrNull(float[] costs, int level)
@@ -351,46 +430,5 @@ public class SpaceshipSelection : MonoBehaviour
     {
         return menuStage >= 0 && menuStage < menuStages.Length &&
                selectionIndex >= 0 && selectionIndex < menuStages[menuStage].Length;
-    }
-
-    private void OnStartRacePressed()
-    {
-        Debug.Log("Start Race has been pressed!");
-
-        ChangeMenuStage(1);
-    }
-
-    private void OnUpgradesPressed()
-    {
-        Debug.Log("Upgrades has been pressed!");
-
-        ChangeMenuStage(2);
-    }
-
-    private void StartSpaceRace()
-    {
-        Debug.Log("Space Race started with difficulty: " + currentSelection);
-    }
-
-    private void OnUpgradeBoostPressed()
-    {
-        Debug.Log("Upgrade boost pressed!");
-
-        DataManager.Instance.UpgradeBoost();
-        UpdateUpgradeDisplay();
-    }
-
-    private void OnUpgradeRocketsPressed()
-    {
-        Debug.Log("Upgrade rockets pressed!");
-        DataManager.Instance.UpgradeRockets();
-        UpdateUpgradeDisplay();
-    }
-
-    private void ResetState()
-    {
-        // reset selection first to comply with AreIndicesValid
-        currentSelection = 0;
-        currentMenuStage = 0;
     }
 }

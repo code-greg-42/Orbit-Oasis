@@ -2404,7 +2404,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 250, y: -125}
+  m_AnchoredPosition: {x: 475, y: -125}
   m_SizeDelta: {x: 425, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &539465119
@@ -3201,7 +3201,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 475, y: -125}
+  m_AnchoredPosition: {x: 700, y: -125}
   m_SizeDelta: {x: 425, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &682536668
@@ -5785,6 +5785,20 @@ MonoBehaviour:
   - {fileID: 156784196}
   upgradeButtonsPanel: {fileID: 539465117}
   upgradeDisplayPanel: {fileID: 682536666}
+  boostDisplayExtraLines:
+  - {fileID: 1957173211}
+  - {fileID: 1241278489}
+  - {fileID: 683215016}
+  - {fileID: 803197410}
+  - {fileID: 160866290}
+  - {fileID: 1047259639}
+  rocketDisplayExtraLines:
+  - {fileID: 1838655551}
+  - {fileID: 1357261425}
+  - {fileID: 222046823}
+  - {fileID: 235177898}
+  - {fileID: 1517089814}
+  - {fileID: 1819688503}
 --- !u!1 &1120432421
 GameObject:
   m_ObjectHideFlags: 0

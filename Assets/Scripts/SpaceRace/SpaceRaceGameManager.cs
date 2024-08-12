@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using TMPro.EditorUtilities;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SpaceRaceGameManager : MonoBehaviour
 {
@@ -463,6 +464,7 @@ public class SpaceRaceGameManager : MonoBehaviour
         // deactivate player object
         playerTransform.gameObject.SetActive(false);
 
-        Debug.Log("End game and scene here.");
+        // load the main scene
+        SceneManager.LoadScene("Main");
     }
 }

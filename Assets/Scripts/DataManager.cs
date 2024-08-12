@@ -97,6 +97,7 @@ public class DataManager : MonoBehaviour
         if (RaceStats.BoostUpgradeLevel < 3)
         {
             RaceStats.BoostUpgradeLevel++;
+            SaveRaceStats();
         }
     }
 
@@ -105,6 +106,15 @@ public class DataManager : MonoBehaviour
         if (RaceStats.RocketUpgradeLevel < 3)
         {
             RaceStats.RocketUpgradeLevel++;
+            SaveRaceStats();
+        }
+    }
+
+    public void SetRaceDifficulty(int difficulty)
+    {
+        if (difficulty >= 0 && difficulty <= 2)
+        {
+            RaceStats.SelectedDifficulty = difficulty;
         }
     }
 
