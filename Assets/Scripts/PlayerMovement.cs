@@ -32,7 +32,16 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 moveDirection;
     private Rigidbody rb;
 
+    public Vector3 PlayerPosition => transform.position;
+    public Quaternion PlayerRotation => playerObject.rotation;
+
     void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+        rb.freezeRotation = true;
+    }
+
+    public void LoadPlayerPosition()
     {
         Vector3 playerPos = DataManager.Instance.PlayerStats.PlayerPosition;
         if (playerPos != Vector3.zero)
@@ -45,16 +54,6 @@ public class PlayerMovement : MonoBehaviour
         {
             playerObject.rotation = playerRot;
         }
-
-        Quaternion playerOrientation = DataManager.Instance.PlayerStats.PlayerOrientation;
-        if (playerOrientation != Quaternion.identity)
-        {
-            Debug.Log("PlayerOrientation: " + playerOrientation);
-            orientation.rotation = playerOrientation;
-        }
-
-        rb = GetComponent<Rigidbody>();
-        rb.freezeRotation = true;
     }
 
     private void FixedUpdate()

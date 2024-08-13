@@ -8,11 +8,7 @@ public class SpaceshipSelection : MonoBehaviour
 {
     [Header("General")]
     [SerializeField] private GameObject selectionPanel;
-    [SerializeField] private Transform playerTransform;
-
-    // temporary
-    [SerializeField] private Transform playerObject;
-    [SerializeField] private Transform playerOrientation;
+    [SerializeField] private PlayerMovement playerMovement;
 
     [Header("Buttons")]
     [SerializeField] private SelectionPanelButton[] mainMenuButtons; // 2
@@ -26,7 +22,7 @@ public class SpaceshipSelection : MonoBehaviour
     [Header("Upgrade Display Objects")]
     [SerializeField] private GameObject[] boostDisplayExtraLines; // 6
     [SerializeField] private GameObject[] rocketDisplayExtraLines; // 6
-    private int extraLinesPerUpgradeLevel = 2;
+    private readonly int extraLinesPerUpgradeLevel = 2;
 
     private bool isSpaceshipSelectionActive;
     private Coroutine walkAwayDeactivation;
@@ -38,8 +34,8 @@ public class SpaceshipSelection : MonoBehaviour
     private SelectionPanelButton[][] menuStages;
     private int upgradeStage = 2; // must match index of upgrade stage in menuStages
 
-    private float[] boostUpgradeCosts = { 500, 1500, 6000 };
-    private float[] rocketUpgradeCosts = { 200, 600, 2400 };
+    private readonly float[] boostUpgradeCosts = { 500, 1500, 6000 };
+    private readonly float[] rocketUpgradeCosts = { 200, 600, 2400 };
 
     private delegate void ButtonAction();
     private ButtonAction[][] buttonActions;
@@ -237,7 +233,7 @@ public class SpaceshipSelection : MonoBehaviour
         {
             yield return new WaitForSeconds(walkAwayCheckTime);
 
-            float sqrDistance = (playerTransform.position - transform.position).sqrMagnitude;
+            float sqrDistance = (playerMovement.PlayerPosition - transform.position).sqrMagnitude;
             if (sqrDistance > sqrDeactivationDistance)
             {
                 DeactivateSpaceshipSelection();
@@ -396,9 +392,8 @@ public class SpaceshipSelection : MonoBehaviour
         // set data manager's difficulty variable to carry over into new scene
         DataManager.Instance.SetRaceDifficulty(currentSelection);
 
-        // save player position
-        DataManager.Instance.SetPlayerPosition(playerTransform.position, playerObject.rotation,
-            playerOrientation.rotation, Camera.main.transform.position, Camera.main.transform.rotation);
+        // save player and camera position
+        MainGameManager.Instance.SetPlayerAndCameraPos();
 
         // load race scene
         SceneManager.LoadScene("SpaceRace");

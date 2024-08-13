@@ -118,13 +118,16 @@ public class DataManager : MonoBehaviour
         }
     }
 
-    public void SetPlayerPosition(Vector3 playerPos, Quaternion playerRot, Quaternion orientation, Vector3 cameraPos, Quaternion cameraRot)
+    public void SetPlayerPosition(Vector3 playerPos, Quaternion playerRot)
     {
         PlayerStats.PlayerPosition = playerPos;
         PlayerStats.PlayerRotation = playerRot;
-        PlayerStats.PlayerOrientation = orientation;
-        PlayerStats.CameraPosition = cameraPos;
-        PlayerStats.PlayerCameraRotation = cameraRot;
+    }
+
+    public void SetCameraValues(float mouseX, float mouseY)
+    {
+        PlayerStats.CameraX = mouseX;
+        PlayerStats.CameraY = mouseY;
     }
 
     public void AddBuild(BuildableObject build)
