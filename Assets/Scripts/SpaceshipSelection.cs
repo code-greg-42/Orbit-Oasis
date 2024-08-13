@@ -28,7 +28,7 @@ public class SpaceshipSelection : MonoBehaviour
     private Coroutine walkAwayDeactivation;
 
     private const float walkAwayCheckTime = 1.0f;
-    private const float deactivationDistance = 5.0f;
+    private const float deactivationDistance = 10.0f;
     private float sqrDeactivationDistance;
 
     private SelectionPanelButton[][] menuStages;

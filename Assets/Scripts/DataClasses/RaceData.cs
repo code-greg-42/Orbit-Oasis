@@ -9,4 +9,9 @@ public class RaceData
     public int BoostUpgradeLevel;
     public int RocketUpgradeLevel;
     public float[] BestTimes = { 0f, 0f, 0f };
+
+    // reward variables
+    public float RewardCurrency;
+    public bool RaceCompleted;
+    public bool RaceWon;
 }

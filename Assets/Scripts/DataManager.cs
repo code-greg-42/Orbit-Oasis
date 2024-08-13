@@ -15,20 +15,18 @@ public class DataManager : MonoBehaviour
     // datasets
     public PlayerData PlayerStats { get; private set; }
     public RaceData RaceStats { get; private set; }
-    public SerializableList<BuildableObjectData> BuildableList { get; private set; }
-    public SerializableList<ItemData> InventoryItemList { get; private set; }
+    public SerializableList<BuildableObjectData> BuildList { get; private set; }
+    public SerializableList<ItemData> InventoryItems { get; private set; }
 
 
     // player variables
-    public float PlayerCurrency { get; private set; }
-    public float PlayerFood { get; private set; }
-    public Vector3 PlayerPosition { get; private set; }
-    public Quaternion PlayerRotation { get; private set; }
+    //public float PlayerCurrency { get; private set; }
+    //public float PlayerFood { get; private set; }
 
 
     // lists
-    public List<BuildableObjectData> BuildList { get; private set; }
-    public List<ItemData> InventoryItems { get; private set; }
+    //public List<BuildableObjectData> BuildList { get; private set; }
+    //public List<ItemData> InventoryItems { get; private set; }
     
 
     // race variables
@@ -50,23 +48,10 @@ public class DataManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
 
-            // initialize new list
-            PlayerStats = new PlayerData();
-            RaceStats = new RaceData();
-            BuildableList = new SerializableList<BuildableObjectData>(new List<BuildableObjectData>());
-            InventoryItemList = new SerializableList<ItemData>(new List<ItemData>());
-
-            // initialize lists
-            BuildList = new List<BuildableObjectData>();
-            InventoryItems = new List<ItemData>();
             CaughtFishIndex = new List<int>();
-            //RaceBestTimes = new float[] { 0f, 0f, 0f };
 
             CreateSaveDirectory();
-
-            LoadRaceStats();
-
-            LoadGameFromFile();
+            LoadAllData();
         }
         else
         {
@@ -81,6 +66,24 @@ public class DataManager : MonoBehaviour
         {
             SwapScenes();
         }
+    }
+
+    public void SetRaceWon(float currencyAmount)
+    {
+        RaceStats.RaceWon = true;
+        RaceStats.RewardCurrency = currencyAmount;
+    }
+
+    public void SetRaceCompleted()
+    {
+        RaceStats.RaceCompleted = true;
+    }
+
+    public void ResetRaceRewards()
+    {
+        RaceStats.RaceCompleted = false;
+        RaceStats.RaceWon = false;
+        RaceStats.RewardCurrency = 0;
     }
 
     public void SetRaceBestTime(float raceTime)
@@ -136,14 +139,20 @@ public class DataManager : MonoBehaviour
         BuildableObjectData buildData = new(build.transform.position, build.transform.rotation, build.BuildPrefabIndex);
 
         // add to list
-        BuildList.Add(buildData);
+        BuildList.ItemList.Add(buildData);
+
+        // save to file
+        SaveBuildList();
     }
 
     public void RemoveBuild(BuildableObject build)
     {
         // accounts for float point inconsistencies
-        BuildList.RemoveAll(b => (b.placementPosition - build.transform.position).sqrMagnitude < 0.0001f
+        BuildList.ItemList.RemoveAll(b => (b.placementPosition - build.transform.position).sqrMagnitude < 0.0001f
             && Quaternion.Angle(b.placementRotation, build.transform.rotation) < 0.01f);
+
+        // save to file
+        SaveBuildList();
     }
 
     public void AddItem(Item item)
@@ -152,40 +161,49 @@ public class DataManager : MonoBehaviour
         ItemData itemData = new(item.ItemName, item.PrefabIndex, item.Quantity);
 
         // add to list
-        InventoryItems.Add(itemData);
+        InventoryItems.ItemList.Add(itemData);
+
+        // save to file
+        SaveInventory();
     }
 
     public void RemoveItem(Item item)
     {
-        int index = InventoryItems.FindIndex(x => x.itemName == item.ItemName && x.quantity == item.Quantity);
+        int index = InventoryItems.ItemList.FindIndex(x => x.itemName == item.ItemName && x.quantity == item.Quantity);
 
         if (index != -1)
         {
-            InventoryItems.RemoveAt(index);
+            InventoryItems.ItemList.RemoveAt(index);
         }
         else
         {
             Debug.LogWarning("Attempted to remove item, but item not found in InventoryItems list.");
         }
+
+        // save to file
+        SaveInventory();
     }
 
     public void ChangeItemQuantity(Item item, int newQuantity)
     {
-        int index = InventoryItems.FindIndex(x => x.itemName == item.ItemName && x.quantity == item.Quantity);
+        int index = InventoryItems.ItemList.FindIndex(x => x.itemName == item.ItemName && x.quantity == item.Quantity);
 
         if (index != -1)
         {
-            InventoryItems[index].quantity = newQuantity;
+            InventoryItems.ItemList[index].quantity = newQuantity;
         }
         else
         {
             Debug.LogWarning("Attempted to change item quantity, but item was not found in InventoryItems list.");
         }
+
+        // save to file
+        SaveInventory();
     }
 
     public void AddBuildMaterial(float amount)
     {
-        PlayerBuildMaterial += amount; Debug.Log("Build Material: " + PlayerBuildMaterial);
+        PlayerBuildMaterial += amount;
     }
 
     public void AddCaughtFish(int index)
@@ -200,18 +218,18 @@ public class DataManager : MonoBehaviour
 
     public void AddCurrency(float amount)
     {
-        PlayerCurrency += amount;
+        PlayerStats.PlayerCurrency += amount;
     }
 
     public void AddFood(float amount)
     {
-        PlayerFood += amount;
+        PlayerStats.PlayerFood += amount;
     }
 
     // used only on load
     public void ClearInventoryItems()
     {
-        InventoryItems.Clear();
+        InventoryItems.ItemList.Clear();
     }
 
     // used only on load
@@ -227,12 +245,12 @@ public class DataManager : MonoBehaviour
 
     public void SubtractCurrency(float amount)
     {
-        PlayerCurrency -= amount;
+        PlayerStats.PlayerCurrency -= amount;
     }
 
     public void SubtractFood(float amount)
     {
-        PlayerFood -= amount;
+        PlayerStats.PlayerFood -= amount;
     }
 
     // TEMPORARY METHOD TO TEST DATA PERSISTENCE
@@ -246,43 +264,6 @@ public class DataManager : MonoBehaviour
         else
         {
             SceneManager.LoadScene(0);
-        }
-    }
-
-    // add places to save game periodically later
-    private void SaveGameToFile()
-    {
-        // convert DataManager values to <GameData> serializable class
-        GameData gameData = new(PlayerCurrency, PlayerFood, BuildList, InventoryItems);
-
-        // convert to json format
-        string json = JsonUtility.ToJson(gameData);
-
-        // write json to file
-        File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
-
-        Debug.Log("Game Saved Successfully.");
-    }
-
-    private void LoadGameFromFile()
-    {
-        string path = Application.persistentDataPath + "/savefile.json";
-
-        if (File.Exists(path))
-        {
-            // read json from file
-            string json = File.ReadAllText(path);
-
-            // convert json back to <GameData>
-            GameData gameData = JsonUtility.FromJson<GameData>(json);
-
-            // set DataManager values to <GameData> values
-            PlayerCurrency = gameData.playerCurrency;
-            PlayerFood = gameData.playerFood;
-            BuildList = gameData.buildList;
-            InventoryItems = gameData.inventoryItems;
-
-            Debug.Log("Game Loaded Successfully.");
         }
     }
 
@@ -338,5 +319,43 @@ public class DataManager : MonoBehaviour
     private void LoadRaceStats()
     {
         RaceStats = LoadFromFile<RaceData>(nameof(RaceStats)) ?? new RaceData();
+    }
+
+    private void SaveBuildList()
+    {
+        SaveToFile(BuildList, nameof(BuildList));
+    }
+
+    private void LoadBuildList()
+    {
+        BuildList = LoadFromFile<SerializableList<BuildableObjectData>>(nameof(BuildList))
+            ?? new SerializableList<BuildableObjectData>(new List<BuildableObjectData>());
+    }
+
+    private void SaveInventory()
+    {
+        SaveToFile(InventoryItems, nameof(InventoryItems));
+    }
+
+    private void LoadInventory()
+    {
+        InventoryItems = LoadFromFile<SerializableList<ItemData>>(nameof(InventoryItems))
+            ?? new SerializableList<ItemData>(new List<ItemData>());
+    }
+
+    private void SaveAllData()
+    {
+        SavePlayerStats();
+        SaveRaceStats();
+        SaveBuildList();
+        SaveInventory();
+    }
+
+    private void LoadAllData()
+    {
+        LoadPlayerStats();
+        LoadRaceStats();
+        LoadBuildList();
+        LoadInventory();
     }
 }

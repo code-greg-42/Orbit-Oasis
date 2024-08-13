@@ -16,6 +16,10 @@ public class SpaceRaceGameManager : MonoBehaviour
     [SerializeField] private SpaceRacePlayerMovement playerMovement;
     [SerializeField] private SpaceRacePlayerAttack playerAttack;
 
+    // rewards for winning
+    private readonly float[] currencyRewards = { 500, 1500, 6000 };
+    private const float bestTimeRewardMultiplier = 2.0f;
+
     // checkpoint variables
     private float distanceBetweenCheckpoints = 300.0f;
     private int finalCheckpoint = 20; // last checkpoint to win the race
@@ -47,6 +51,7 @@ public class SpaceRaceGameManager : MonoBehaviour
     private const float endGameSequenceTime = 5.0f;
     private Coroutine gameClockCoroutine;
     private Coroutine updateClockCoroutine;
+    private int selectedDifficulty;
 
     // difficulty settings
     private readonly float[] difficultyMovementSpeeds = { 40f, 50f, 60f };
@@ -80,7 +85,8 @@ public class SpaceRaceGameManager : MonoBehaviour
     private void Start()
     {
         // set difficulty and upgrade levels from data manager
-        SetDifficulty(DataManager.Instance.RaceStats.SelectedDifficulty);
+        selectedDifficulty = DataManager.Instance.RaceStats.SelectedDifficulty;
+        SetDifficulty(selectedDifficulty);
         playerMovement.SetBoostUpgradeLevel(DataManager.Instance.RaceStats.BoostUpgradeLevel);
         playerAttack.SetRocketUpgradeLevel(DataManager.Instance.RaceStats.RocketUpgradeLevel);
 
@@ -427,11 +433,14 @@ public class SpaceRaceGameManager : MonoBehaviour
         // initiate music fade out
         SpaceRaceSoundManager.Instance.FadeOutMusic();
 
+        DataManager.Instance.SetRaceCompleted();
+
         StartCoroutine(EndGameSequence());
 
         if (win)
         {
             float currentBestTime = DataManager.Instance.RaceStats.BestTimes[DataManager.Instance.RaceStats.SelectedDifficulty];
+            float rewardAmount = currencyRewards[selectedDifficulty];
 
             if (currentBestTime == 0 || gameClock < currentBestTime)
             {
@@ -446,12 +455,18 @@ public class SpaceRaceGameManager : MonoBehaviour
 
                 // set best time in data manager (will always apply to the current difficulty only)
                 DataManager.Instance.SetRaceBestTime(gameClock);
+
+                // set race as won and set reward amount with multiplier for achieving a best time
+                DataManager.Instance.SetRaceWon(rewardAmount * bestTimeRewardMultiplier);
             }
             else
             {
                 // display regular victory text and play regular victory sound
                 SpaceRaceUIManager.Instance.DisplayVictoryText();
                 SpaceRaceSoundManager.Instance.PlayWinSound();
+
+                // set race as won with normal reward amount
+                DataManager.Instance.SetRaceWon(rewardAmount);
             }
         }
     }

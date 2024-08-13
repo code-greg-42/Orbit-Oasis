@@ -177,10 +177,10 @@ public class BuildManager : MonoBehaviour
 
     private void LoadBuilds()
     {
-        if (DataManager.Instance.BuildList.Count > 0)
+        if (DataManager.Instance.BuildList.ItemList.Count > 0)
         {
             // copy of list
-            List<BuildableObjectData> builds = new(DataManager.Instance.BuildList);
+            List<BuildableObjectData> builds = new(DataManager.Instance.BuildList.ItemList);
 
             foreach (BuildableObjectData buildData in builds)
             {
@@ -251,8 +251,6 @@ public class BuildManager : MonoBehaviour
                 // add gameobject to build list
                 DataManager.Instance.AddBuild(buildable);
 
-                Debug.Log(DataManager.Instance.BuildList.Count);
-
                 // place build
                 buildable.PlaceObject();
 
@@ -292,8 +290,6 @@ public class BuildManager : MonoBehaviour
 
         // remove from build list
         DataManager.Instance.RemoveBuild(buildable);
-
-        Debug.Log(DataManager.Instance.BuildList.Count);
 
         // delete the object whether refund was issued or not
         buildable.DeleteObject();

@@ -54,10 +54,10 @@ public class InventoryManager : MonoBehaviour
 
     private void LoadInventory()
     {
-        if (DataManager.Instance.InventoryItems.Count > 0)
+        if (DataManager.Instance.InventoryItems.ItemList.Count > 0)
         {
             // copy of item list to iterate through
-            List<ItemData> itemDataList = new(DataManager.Instance.InventoryItems);
+            List<ItemData> itemDataList = new(DataManager.Instance.InventoryItems.ItemList);
 
             // clear build materials and item list as they will be re-added in .PickupItem()
             DataManager.Instance.ClearInventoryItems();
@@ -261,8 +261,8 @@ public class InventoryManager : MonoBehaviour
 
     public void UpdateCurrencyDisplay()
     {
-        sellSlotMoneyDisplay.text = "$" + DataManager.Instance.PlayerCurrency;
-        storeSlotAmountDisplay.text = DataManager.Instance.PlayerFood + "\nDays of Food";
+        sellSlotMoneyDisplay.text = "$" + DataManager.Instance.PlayerStats.PlayerCurrency;
+        storeSlotAmountDisplay.text = DataManager.Instance.PlayerStats.PlayerFood + "\nDays of Food";
     }
 
     public void DropDraggedItem()
