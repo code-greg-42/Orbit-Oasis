@@ -19,11 +19,11 @@ public class RewardsManager : MonoBehaviour
     {
         bool wasRaceCompleted = DataManager.Instance.RaceStats.RaceCompleted;
 
-        string dialoguePath = string.Empty;
-        dialoguePath = baseDialoguePath + raceRewardDialoguePath;
-
         if (wasRaceCompleted)
         {
+            string dialoguePath;
+            dialoguePath = baseDialoguePath + raceRewardDialoguePath;
+
             bool wasRaceWon = DataManager.Instance.RaceStats.RaceWon;
             int difficulty = DataManager.Instance.RaceStats.SelectedDifficulty;
 
@@ -56,8 +56,10 @@ public class RewardsManager : MonoBehaviour
                         // dialogue for losing with max upgrades on easiest difficulty
                         Debug.Log("Woooow, lost on the easiest difficulty AND with max upgrades?");
 
-                        dialoguePath += "easy_max_upgrades.txt";
+                        dialoguePath += "easy_max_upgrades";
                         List<string> dialogue = DialogueManager.Instance.GetDialogue(dialoguePath);
+
+                        DialogueManager.Instance.ShowDialogue(dialogue);
                     }
                     else
                     {
@@ -76,6 +78,7 @@ public class RewardsManager : MonoBehaviour
                 }
             }
 
+            // clear reward variables after use
             DataManager.Instance.ResetRaceRewards();
         }
     }

@@ -64,6 +64,7 @@ public class DataManager : MonoBehaviour
         RaceStats.RaceCompleted = false;
         RaceStats.RaceWon = false;
         RaceStats.RewardCurrency = 0;
+        SaveRaceStats();
     }
 
     public void SetRaceBestTime(float raceTime)
