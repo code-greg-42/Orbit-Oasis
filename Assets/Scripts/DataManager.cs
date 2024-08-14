@@ -9,7 +9,6 @@ using UnityEngine.SceneManagement; // TEMPORARY FOR TESTING PURPOSES
 public class DataManager : MonoBehaviour
 {
     public static DataManager Instance { get; private set; }
-
     private readonly string saveFolderName = "/SaveData/";
 
     // datasets
@@ -18,28 +17,9 @@ public class DataManager : MonoBehaviour
     public SerializableList<BuildableObjectData> BuildList { get; private set; }
     public SerializableList<ItemData> InventoryItems { get; private set; }
 
-
-    // player variables
-    //public float PlayerCurrency { get; private set; }
-    //public float PlayerFood { get; private set; }
-
-
-    // lists
-    //public List<BuildableObjectData> BuildList { get; private set; }
-    //public List<ItemData> InventoryItems { get; private set; }
-    
-
-    // race variables
-    //public int RaceSelectedDifficulty { get; private set; }
-    //public int RaceBoostUpgradeLevel { get; private set; }
-    //public int RaceRocketUpgradeLevel { get; private set; }
-    //public float[] RaceBestTimes { get; private set; }
-
-
     // unsaved variables
     public float PlayerBuildMaterial { get; private set; }
     public List<int> CaughtFishIndex { get; private set; }
-
 
     private void Awake()
     {
@@ -97,7 +77,7 @@ public class DataManager : MonoBehaviour
 
     public void UpgradeBoost()
     {
-        if (RaceStats.BoostUpgradeLevel < 3)
+        if (RaceStats.BoostUpgradeLevel < RaceStats.MaxBoostLevel)
         {
             RaceStats.BoostUpgradeLevel++;
             SaveRaceStats();
@@ -106,7 +86,7 @@ public class DataManager : MonoBehaviour
 
     public void UpgradeRockets()
     {
-        if (RaceStats.RocketUpgradeLevel < 3)
+        if (RaceStats.RocketUpgradeLevel < RaceStats.MaxRocketLevel)
         {
             RaceStats.RocketUpgradeLevel++;
             SaveRaceStats();

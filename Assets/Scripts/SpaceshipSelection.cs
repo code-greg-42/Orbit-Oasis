@@ -401,7 +401,7 @@ public class SpaceshipSelection : MonoBehaviour
 
     private void OnUpgradeBoostPressed()
     {
-        if (DataManager.Instance.RaceStats.BoostUpgradeLevel < boostUpgradeCosts.Length)
+        if (DataManager.Instance.RaceStats.BoostUpgradeLevel < DataManager.Instance.RaceStats.MaxBoostLevel)
         {
             DataManager.Instance.UpgradeBoost();
             UpdateUpgradeDisplay();
@@ -410,7 +410,7 @@ public class SpaceshipSelection : MonoBehaviour
 
     private void OnUpgradeRocketsPressed()
     {
-        if (DataManager.Instance.RaceStats.RocketUpgradeLevel < rocketUpgradeCosts.Length)
+        if (DataManager.Instance.RaceStats.RocketUpgradeLevel < DataManager.Instance.RaceStats.MaxRocketLevel)
         {
             DataManager.Instance.UpgradeRockets();
             UpdateUpgradeDisplay();

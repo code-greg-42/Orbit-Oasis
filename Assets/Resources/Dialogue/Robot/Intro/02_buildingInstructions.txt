@@ -1,0 +1,1 @@
+Build mode can be opened with the [B] key! You'll need some materials in order to build anything.
