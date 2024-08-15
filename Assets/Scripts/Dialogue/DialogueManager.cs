@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
 
@@ -18,6 +19,18 @@ public class DialogueManager : MonoBehaviour
     private const float wordDisplayDelay = 0.1f;
     private const float initialDelay = 0.3f;
 
+    public enum PlaceholderType
+    {
+        PlayerName,
+        Money,
+    }
+
+    private readonly Dictionary<PlaceholderType, string> placeholderPatterns = new()
+    {
+        { PlaceholderType.PlayerName, @"\[PLAYERNAME_PH\]" },
+        { PlaceholderType.Money, @"\[MONEY_PH\]" }
+    };
+
     public bool DialogueWindowActive { get; private set; }
 
     private void Awake()
@@ -34,7 +47,7 @@ public class DialogueManager : MonoBehaviour
         TextAsset[] textAssets = Resources.LoadAll<TextAsset>(path);
 
         // extract text from each asset and return as array of strings
-        List<string> dialogues = new List<string>();
+        List<string> dialogues = new();
 
         foreach (TextAsset textAsset in textAssets)
         {
@@ -42,6 +55,67 @@ public class DialogueManager : MonoBehaviour
         }
 
         return dialogues;
+    }
+
+    public string ReplacePlaceholder(string currentText, string replacement)
+    {
+        return ReplacePlaceholder<string>(currentText, replacement);
+    }
+
+    public string ReplacePlaceholder(string currentText, float replacement)
+    {
+        return ReplacePlaceholder<float>(currentText, replacement);
+    }
+
+    public string ReplacePlaceholder<T>(string currentText, T replacement)
+    {
+        string replacementText;
+        if (typeof(T) == typeof(string))
+        {
+            replacementText = replacement as string; // safe cast
+        }
+        else
+        {
+            replacementText = replacement.ToString(); // convert to string
+        }
+
+        // define the regex pattern to replace any []
+        string pattern = @"\[.*?\]";
+
+        // use MatchEvaluator to replace only the first match, allowing use of multiple, ordered placeholders
+        bool replaced = false;
+        string result = Regex.Replace(currentText, pattern, match =>
+        {
+            if (!replaced)
+            {
+                replaced = true;
+                return replacementText; // replace first match
+            }
+            return match.Value; // keep subsequent matches unchanged
+        });
+
+        return result;
+    }
+
+    public List<string> ReplacePlaceholders(List<string> dialogues, Dictionary<PlaceholderType, string> replacements)
+    {
+        List<string> updatedDialogues = new(dialogues);
+
+        foreach (var kvp in replacements)
+        {
+            // get corresponding regex pattern from pattern dictionary
+            if (placeholderPatterns.TryGetValue(kvp.Key, out string pattern))
+            {
+                string replacementText = kvp.Value;
+
+                for (int i = 0; i < updatedDialogues.Count; i++)
+                {
+                    updatedDialogues[i] = Regex.Replace(updatedDialogues[i], pattern, replacementText);
+                }
+            }
+        }
+
+        return updatedDialogues;
     }
 
     public void ShowDialogue(List<string> dialogues)

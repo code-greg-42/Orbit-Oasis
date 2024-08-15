@@ -30,6 +30,7 @@ public class RewardsManager : MonoBehaviour
             if (wasRaceWon)
             {
                 float rewardAmount = DataManager.Instance.RaceStats.RewardCurrency;
+                dialoguePath += winRaceDialoguePath;
 
                 // add reward amount to player currency
                 DataManager.Instance.AddCurrency(rewardAmount);
@@ -41,7 +42,24 @@ public class RewardsManager : MonoBehaviour
                 }
                 else
                 {
-                    // dialogue for winning with reward amount
+                    // set correct dialogue path
+                    dialoguePath += "space_race_win";
+
+                    // get dialogue from file system/dialogue manager
+                    List<string> dialogue = DialogueManager.Instance.GetDialogue(dialoguePath);
+
+                    // create dictionary to use for placeholder replacement
+                    Dictionary<DialogueManager.PlaceholderType, string> replacements = new()
+                    {
+                        { DialogueManager.PlaceholderType.Money, rewardAmount.ToString() }
+                    };
+
+                    // replace placeholders
+                    dialogue = DialogueManager.Instance.ReplacePlaceholders(dialogue, replacements);
+
+                    // show dialogue
+                    DialogueManager.Instance.ShowDialogue(dialogue);
+
                     Debug.Log($"Race won, rewarding {rewardAmount} currency.");
                 }
             }
