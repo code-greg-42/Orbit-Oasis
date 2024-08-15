@@ -37,30 +37,17 @@ public class RewardsManager : MonoBehaviour
 
                 if (difficulty == 2)
                 {
-                    // dialogue for winning on insane
-                    Debug.Log("Race won on insane difficulty.");
+                    // set correct dialogue path
+                    dialoguePath += "space_race_win_insane";
+
+                    ShowWinDialogue(dialoguePath, rewardAmount);
                 }
                 else
                 {
                     // set correct dialogue path
                     dialoguePath += "space_race_win";
 
-                    // get dialogue from file system/dialogue manager
-                    List<string> dialogue = DialogueManager.Instance.GetDialogue(dialoguePath);
-
-                    // create dictionary to use for placeholder replacement
-                    Dictionary<DialogueManager.PlaceholderType, string> replacements = new()
-                    {
-                        { DialogueManager.PlaceholderType.Money, rewardAmount.ToString() }
-                    };
-
-                    // replace placeholders
-                    dialogue = DialogueManager.Instance.ReplacePlaceholders(dialogue, replacements);
-
-                    // show dialogue
-                    DialogueManager.Instance.ShowDialogue(dialogue);
-
-                    Debug.Log($"Race won, rewarding {rewardAmount} currency.");
+                    ShowWinDialogue(dialoguePath, rewardAmount);
                 }
             }
             else
@@ -71,33 +58,53 @@ public class RewardsManager : MonoBehaviour
                 {
                     if (DataManager.Instance.RaceStats.AreUpgradesMaxed)
                     {
-                        // dialogue for losing with max upgrades on easiest difficulty
-                        Debug.Log("Woooow, lost on the easiest difficulty AND with max upgrades?");
-
                         dialoguePath += "easy_max_upgrades";
-                        List<string> dialogue = DialogueManager.Instance.GetDialogue(dialoguePath);
-
-                        DialogueManager.Instance.ShowDialogue(dialogue);
                     }
                     else
                     {
-                        // dialogue suggesting upgrading the ship
-                        Debug.Log("probably should upgrade the ship");
+                        dialoguePath += "not_max_upgrades";
                     }
                 }
                 else if (difficulty == 2)
                 {
-                    // dialogue for losing on insane
-                    Debug.Log("lost on insane difficulty.");
+                    dialoguePath += "insane";
                 }
                 else
                 {
-                    // normal loss dialogue
+                    if (DataManager.Instance.RaceStats.AreUpgradesMaxed)
+                    {
+                        dialoguePath += "max_upgrades";
+                    }
+                    else
+                    {
+                        dialoguePath += "not_max_upgrades";
+                    }
                 }
+                // get and show dialogue
+                List<string> dialogue = DialogueManager.Instance.GetDialogue(dialoguePath);
+                DialogueManager.Instance.ShowDialogue(dialogue);
             }
 
             // clear reward variables after use
             DataManager.Instance.ResetRaceRewards();
         }
+    }
+
+    private void ShowWinDialogue(string dialoguePath, float rewardAmount)
+    {
+        // get dialogue from file system/dialogue manager
+        List<string> dialogue = DialogueManager.Instance.GetDialogue(dialoguePath);
+
+        // create dictionary to use for placeholder replacement
+        Dictionary<DialogueManager.PlaceholderType, string> replacements = new()
+                    {
+                        { DialogueManager.PlaceholderType.Money, rewardAmount.ToString() }
+                    };
+
+        // replace placeholders
+        dialogue = DialogueManager.Instance.ReplacePlaceholders(dialogue, replacements);
+
+        // show dialogue
+        DialogueManager.Instance.ShowDialogue(dialogue);
     }
 }
