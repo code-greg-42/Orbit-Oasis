@@ -5,23 +5,23 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class InventorySlot : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IEndDragHandler, IDragHandler, IDropHandler
+public class InventorySlot : MenuItemSlot //MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IEndDragHandler, IDragHandler, IDropHandler
 {
-    public Item SlotItem { get; private set; }
-    public bool IsSelected { get; private set; }
+    //public Item SlotItem { get; private set; }
+    //public bool IsSelected { get; private set; }
 
-    [Header("References")]
-    [SerializeField] private TMP_Text quantityText;
-    [SerializeField] private Image itemImage;
-    [SerializeField] private Sprite emptySlotImage;
-    [SerializeField] private GameObject selectedBackground;
-    [SerializeField] private TMP_Text descriptionText;
+    //[Header("References")]
+    //[SerializeField] private TMP_Text quantityText;
+    //[SerializeField] private Image itemImage;
+    //[SerializeField] private Sprite emptySlotImage;
+    //[SerializeField] private GameObject selectedBackground;
+    //[SerializeField] private TMP_Text descriptionText;
 
-    public void AddItem(Item itemToAdd)
-    {
-        SlotItem = itemToAdd;
-        UpdateSlotUI();
-    }
+    //public void AddItem(Item itemToAdd)
+    //{
+    //    SlotItem = itemToAdd;
+    //    UpdateSlotUI();
+    //}
 
     public int AddAdditionalItem(int quantityToAdd)
     {
@@ -41,21 +41,21 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IBeginDragHand
         return Mathf.Max(remainder, 0);
     }
 
-    private void SelectSlot()
-    {
-        selectedBackground.SetActive(true);
-        IsSelected = true;
+    //private void SelectSlot()
+    //{
+    //    selectedBackground.SetActive(true);
+    //    IsSelected = true;
 
-        descriptionText.text = SlotItem.ItemName + ": " + SlotItem.Description;
-    }
+    //    descriptionText.text = SlotItem.ItemName + ": " + SlotItem.Description;
+    //}
 
-    public void DeselectSlot()
-    {
-        selectedBackground.SetActive(false);
-        IsSelected = false;
+    //public void DeselectSlot()
+    //{
+    //    selectedBackground.SetActive(false);
+    //    IsSelected = false;
 
-        descriptionText.text = string.Empty;
-    }
+    //    descriptionText.text = string.Empty;
+    //}
 
     public void SwapItems(InventorySlot originalSlot)
     {
@@ -72,34 +72,34 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IBeginDragHand
         }
     }
 
-    public void UpdateSlotUI()
-    {
-        if (SlotItem != null && SlotItem.Quantity > 0)
-        {
-            // update quantity text and image
-            quantityText.text = SlotItem.Quantity.ToString();
-            quantityText.enabled = true;
-            itemImage.sprite = SlotItem.Image;
-        }
-        else
-        {
-            ClearSlot();
-        }
-    }
+    //public void UpdateSlotUI()
+    //{
+    //    if (SlotItem != null && SlotItem.Quantity > 0)
+    //    {
+    //        // update quantity text and image
+    //        quantityText.text = SlotItem.Quantity.ToString();
+    //        quantityText.enabled = true;
+    //        itemImage.sprite = SlotItem.Image;
+    //    }
+    //    else
+    //    {
+    //        ClearSlot();
+    //    }
+    //}
 
-    public void ClearSlot()
-    {
-        // clear slot
-        SlotItem = null;
+    //public void ClearSlot()
+    //{
+    //    // clear slot
+    //    SlotItem = null;
 
-        // clear slot UI
-        quantityText.text = string.Empty;
-        quantityText.enabled = false;
-        itemImage.sprite = emptySlotImage;
-    }
+    //     //clear slot UI
+    //    quantityText.text = string.Empty;
+    //    quantityText.enabled = false;
+    //    itemImage.sprite = emptySlotImage;
+    //}
 
     // ------- required interface methods -------- //
-    public void OnPointerClick(PointerEventData eventData)
+    public override void OnPointerClick(PointerEventData eventData)
     {
         if (eventData.button == PointerEventData.InputButton.Left)
         {
@@ -114,7 +114,7 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IBeginDragHand
         }
     }
 
-    public void OnBeginDrag(PointerEventData eventData)
+    public override void OnBeginDrag(PointerEventData eventData)
     {
         if (SlotItem != null)
         {
@@ -124,7 +124,7 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IBeginDragHand
         }
     }
 
-    public void OnDrag(PointerEventData eventData)
+    public override void OnDrag(PointerEventData eventData)
     {
         if (InventoryManager.Instance.IsDragging)
         {
@@ -132,7 +132,7 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IBeginDragHand
         }
     }
 
-    public void OnEndDrag(PointerEventData eventData)
+    public override void OnEndDrag(PointerEventData eventData)
     {
         if (InventoryManager.Instance.IsDragging)
         {
@@ -140,7 +140,7 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IBeginDragHand
         }
     }
 
-    public void OnDrop(PointerEventData eventData)
+    public override void OnDrop(PointerEventData eventData)
     {
         if (InventoryManager.Instance.DragSlot != null)
         {
