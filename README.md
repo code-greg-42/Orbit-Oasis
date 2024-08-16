@@ -145,24 +145,25 @@ Deep into the future, humanity has taken to the stars and colonized many planets
 
 **Phase 5: Integrate Rewards, Upgrading, Difficulties, and Dialogue** (July 24th - July 31st)
 - Finalize the rewards system, upgrading mechanics, difficulty settings, and dialogue across all prototypes.
-- Deadline: Wednesday, July 31st
+- Deadline: Wednesday, August 21st
 - UPDATE: CURRENT
 
 **Phase 6: Models and Animations** (July 31st - August 21st)
 - Integrate pixel art and low poly models and animations for the game.
-- Deadline: Wednesday, August 21st
+- Deadline: Wednesday, September 4th
 
 **Phase 7: UI/UX Design and Integration** (August 21st - September 4th)
 - Design and integrate user interface elements and improve user experience.
-- Deadline: Wednesday, September 4th
+- Deadline: Wednesday, September 11th
 
 **Phase 8: Background Music, Sound Effects, and Particle Effects** (September 4th - September 11th)
 - Add and integrate background music, sound effects, and particle effects into the game.
-- Deadline: Wednesday, September 11th
+- Deadline: Monday, September 16th
 
 **Phase 9: Testing and Bug Fixing** (September 11th - September 16th)
 - Conduct thorough self-testing to ensure the game runs smoothly and is free of major bugs.
-- Deadline: Monday, September 16th
+- Left only a short amount of time for this because it is being tested as it's being built, and the major tests will be done by family and friends after release.
+- Deadline: Tuesday, September 17th
 
 **Phase 10: Release** (September 17th)
 - Prepare and release the game on Steam or itch.io.
