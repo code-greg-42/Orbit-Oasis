@@ -8,13 +8,15 @@ public class DialogueManager : MonoBehaviour
 {
     public static DialogueManager Instance;
 
+    [Header("References")]
     [SerializeField] private TMP_Text dialogueText;
     [SerializeField] private GameObject dialoguePanel;
 
-    private Coroutine dialogueCoroutine;
-
+    // keybinds
     private KeyCode nextDialogueKey = KeyCode.Return;
     private KeyCode nextDialogueKeyAlt = KeyCode.F;
+
+    // dialogue window word display
     private const float maxDelayTime = 10.0f;
     private const float wordDisplayDelay = 0.1f;
     private const float initialDelay = 0.3f;
@@ -31,6 +33,8 @@ public class DialogueManager : MonoBehaviour
         { PlaceholderType.Money, @"\[MONEY_PH\]" }
     };
 
+    private Coroutine dialogueCoroutine;
+
     public bool DialogueWindowActive { get; private set; }
 
     private void Awake()
@@ -38,7 +42,7 @@ public class DialogueManager : MonoBehaviour
         Instance = this;
     }
 
-    public List<string> GetDialogue(string path)
+    public List<string> GetDialogue(string path, Dictionary<PlaceholderType, string> replacements = null)
     {
         // prepend the "dialogue/" base path
         path = "Dialogue/" + path;
@@ -49,55 +53,22 @@ public class DialogueManager : MonoBehaviour
         // extract text from each asset and return as array of strings
         List<string> dialogues = new();
 
+        // loop through each asset and add string to list
         foreach (TextAsset textAsset in textAssets)
         {
             dialogues.Add(textAsset.text);
         }
 
+        // if replacement values were given, replace the placeholders
+        if (replacements != null && replacements.Count > 0)
+        {
+            dialogues = ReplacePlaceholders(dialogues, replacements);
+        }
+
         return dialogues;
     }
 
-    public string ReplacePlaceholder(string currentText, string replacement)
-    {
-        return ReplacePlaceholder<string>(currentText, replacement);
-    }
-
-    public string ReplacePlaceholder(string currentText, float replacement)
-    {
-        return ReplacePlaceholder<float>(currentText, replacement);
-    }
-
-    public string ReplacePlaceholder<T>(string currentText, T replacement)
-    {
-        string replacementText;
-        if (typeof(T) == typeof(string))
-        {
-            replacementText = replacement as string; // safe cast
-        }
-        else
-        {
-            replacementText = replacement.ToString(); // convert to string
-        }
-
-        // define the regex pattern to replace any []
-        string pattern = @"\[.*?\]";
-
-        // use MatchEvaluator to replace only the first match, allowing use of multiple, ordered placeholders
-        bool replaced = false;
-        string result = Regex.Replace(currentText, pattern, match =>
-        {
-            if (!replaced)
-            {
-                replaced = true;
-                return replacementText; // replace first match
-            }
-            return match.Value; // keep subsequent matches unchanged
-        });
-
-        return result;
-    }
-
-    public List<string> ReplacePlaceholders(List<string> dialogues, Dictionary<PlaceholderType, string> replacements)
+    private List<string> ReplacePlaceholders(List<string> dialogues, Dictionary<PlaceholderType, string> replacements)
     {
         List<string> updatedDialogues = new(dialogues);
 
@@ -108,13 +79,13 @@ public class DialogueManager : MonoBehaviour
             {
                 string replacementText = kvp.Value;
 
+                // loop through and replace all instances of the corresponding pattern with the replacement value
                 for (int i = 0; i < updatedDialogues.Count; i++)
                 {
                     updatedDialogues[i] = Regex.Replace(updatedDialogues[i], pattern, replacementText);
                 }
             }
         }
-
         return updatedDialogues;
     }
 

@@ -6,7 +6,7 @@ using UnityEngine;
 public class RewardsManager : MonoBehaviour
 {
     private const string baseDialoguePath = "Robot/";
-    private const string raceRewardDialoguePath = "SpaceRaceRewards/";
+    private const string raceRewardsDialoguePath = "SpaceRaceRewards/";
     private const string loseRaceDialoguePath = "Lose/";
     private const string winRaceDialoguePath = "Win/";
 
@@ -21,68 +21,72 @@ public class RewardsManager : MonoBehaviour
 
         if (wasRaceCompleted)
         {
-            string dialoguePath;
-            dialoguePath = baseDialoguePath + raceRewardDialoguePath;
+            // set dialogue path to rewards path
+            string dialoguePath = baseDialoguePath + raceRewardsDialoguePath;
 
+            // get race outcome variables from data manager
             bool wasRaceWon = DataManager.Instance.RaceStats.RaceWon;
             int difficulty = DataManager.Instance.RaceStats.SelectedDifficulty;
+            float rewardAmount = DataManager.Instance.RaceStats.RewardCurrency;
 
             if (wasRaceWon)
             {
-                float rewardAmount = DataManager.Instance.RaceStats.RewardCurrency;
-                dialoguePath += winRaceDialoguePath;
+                // ---- WON RACE ---- //
 
                 // add reward amount to player currency
                 DataManager.Instance.AddCurrency(rewardAmount);
 
+                // set correct dialogue path based on different outcomes
+                dialoguePath += winRaceDialoguePath;
                 if (difficulty == 2)
                 {
-                    // set correct dialogue path
                     dialoguePath += "space_race_win_insane";
-
-                    ShowWinDialogue(dialoguePath, rewardAmount);
                 }
                 else
                 {
-                    // set correct dialogue path
                     dialoguePath += "space_race_win";
-
-                    ShowWinDialogue(dialoguePath, rewardAmount);
                 }
+
+                // show dialogue
+                ShowRewardsDialogue(dialoguePath, rewardAmount);
             }
             else
             {
-                dialoguePath += loseRaceDialoguePath;
+                // ---- LOST RACE ---- //
 
-                if (difficulty == 0)
+                // set correct dialogue path for different outcomes
+                dialoguePath += loseRaceDialoguePath;
+                var compositeKey = (DataManager.Instance.RaceStats.AreUpgradesMaxed, difficulty);
+                switch (compositeKey)
                 {
-                    if (DataManager.Instance.RaceStats.AreUpgradesMaxed)
-                    {
-                        dialoguePath += "easy_max_upgrades";
-                    }
-                    else
-                    {
-                        dialoguePath += "not_max_upgrades";
-                    }
-                }
-                else if (difficulty == 2)
-                {
-                    dialoguePath += "insane";
-                }
-                else
-                {
-                    if (DataManager.Instance.RaceStats.AreUpgradesMaxed)
-                    {
+                    // maxed, insane
+                    case (true, 2):
+                        dialoguePath += "insane_max_upgrades";
+                        break;
+
+                    // maxed, medium
+                    case (true, 1):
                         dialoguePath += "max_upgrades";
-                    }
-                    else
-                    {
+                        break;
+
+                    // maxed, easy
+                    case (true, 0):
+                        dialoguePath += "easy_max_upgrades";
+                        break;
+
+                    // not maxed, insane
+                    case (false, 2):
+                        dialoguePath += "insane_not_max_upgrades";
+                        break;
+
+                    // not maxed, other difficulties
+                    case (false, _):
                         dialoguePath += "not_max_upgrades";
-                    }
+                        break;
                 }
-                // get and show dialogue
-                List<string> dialogue = DialogueManager.Instance.GetDialogue(dialoguePath);
-                DialogueManager.Instance.ShowDialogue(dialogue);
+
+                // show dialogue
+                ShowRewardsDialogue(dialoguePath);
             }
 
             // clear reward variables after use
@@ -90,21 +94,19 @@ public class RewardsManager : MonoBehaviour
         }
     }
 
-    private void ShowWinDialogue(string dialoguePath, float rewardAmount)
+    private void ShowRewardsDialogue(string dialoguePath, float rewardAmount = 0)
     {
-        // get dialogue from file system/dialogue manager
-        List<string> dialogue = DialogueManager.Instance.GetDialogue(dialoguePath);
+        Dictionary<DialogueManager.PlaceholderType, string> replacements = new();
 
-        // create dictionary to use for placeholder replacement
-        Dictionary<DialogueManager.PlaceholderType, string> replacements = new()
-                    {
-                        { DialogueManager.PlaceholderType.Money, rewardAmount.ToString() }
-                    };
+        if (rewardAmount != 0)
+        {
+            replacements.Add(DialogueManager.PlaceholderType.Money, rewardAmount.ToString());
+        }
 
-        // replace placeholders
-        dialogue = DialogueManager.Instance.ReplacePlaceholders(dialogue, replacements);
+        // get dialogue from file system/dialogue manager (including any placeholder replacements)
+        List<string> dialogue = DialogueManager.Instance.GetDialogue(dialoguePath, replacements);
 
-        // show dialogue
+        // show dialogue in window
         DialogueManager.Instance.ShowDialogue(dialogue);
     }
 }
