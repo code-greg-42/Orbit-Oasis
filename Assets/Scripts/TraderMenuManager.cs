@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,11 +16,16 @@ public class TraderMenuManager : MonoBehaviour
     [SerializeField] private GameObject traderInventory;
     [SerializeField] private GameObject buySlotHighlightPanel;
     [SerializeField] private GameObject[] tradeItemPrefabs; // used for knowing which items are available for purchase
+    [SerializeField] private TMP_Text refreshTimerText;
 
     private readonly int[] weightsNumberOfItems = { 30, 40, 20, 10 }; // for 5, 6, 7, 8
     private readonly int[] numberOfItemsArray = { 5, 6, 7, 8 };
-
     private readonly int[] weightsTraderItems = { 10, 10, 5, 5, 5, 5, 30, 30 }; // weights for tradeItemPrefabs array
+
+    // timer variables
+    private const float refreshInterval = 1800.0f;
+    private float refreshTimer;
+    private Coroutine refreshTimerCoroutine;
 
     public bool IsMenuActive { get; private set; }
     public bool IsDragging { get; private set; }
@@ -33,6 +39,7 @@ public class TraderMenuManager : MonoBehaviour
     private void Start()
     {
         RefreshTraderInventory();
+        StartRefreshTimer();
     }
 
     private void RefreshTraderInventory()
@@ -167,5 +174,55 @@ public class TraderMenuManager : MonoBehaviour
         {
             dragImage.transform.position = mousePos;
         }
+    }
+
+    private void StartRefreshTimer()
+    {
+        if (refreshTimerCoroutine != null)
+        {
+            StopCoroutine(refreshTimerCoroutine);
+            refreshTimerCoroutine = null;
+        }
+
+        // start new coroutine
+        refreshTimerCoroutine = StartCoroutine(RefreshTimerCoroutine());
+    }
+
+    private IEnumerator RefreshTimerCoroutine()
+    {
+        refreshTimer = refreshInterval;
+
+        while (refreshTimer >= 0)
+        {
+            // update UI
+            UpdateTimerDisplay(refreshTimer);
+
+            yield return new WaitForSeconds(1.0f);
+
+            // decrease remaining time
+            refreshTimer -= 1.0f;
+        }
+
+        // refresh trader inventory when timer reaches zero
+        RefreshTraderInventory();
+
+        // restart timer coroutine
+        refreshTimerCoroutine = StartCoroutine(RefreshTimerCoroutine());
+    }
+
+    private void UpdateTimerDisplay(float time)
+    {
+        string timerText = FormatTime(time);
+        refreshTimerText.text = "Item Refresh - " + timerText;
+    }
+
+    private string FormatTime(float timeInSeconds)
+    {
+        // calc min and seconds
+        int minutes = Mathf.FloorToInt(timeInSeconds / 60);
+        int seconds = Mathf.FloorToInt(timeInSeconds % 60);
+
+        // format as "MM:SS"
+        return string.Format("{0:00}:{1:00}", minutes, seconds);
     }
 }
