@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,6 +15,11 @@ public class TraderMenuManager : MonoBehaviour
     [SerializeField] private GameObject traderInventory;
     [SerializeField] private GameObject buySlotHighlightPanel;
     [SerializeField] private GameObject[] tradeItemPrefabs; // used for knowing which items are available for purchase
+
+    private readonly int[] weightsNumberOfItems = { 30, 40, 20, 10 }; // for 5, 6, 7, 8
+    private readonly int[] numberOfItemsArray = { 5, 6, 7, 8 };
+
+    private readonly int[] weightsTraderItems = { 10, 10, 5, 5, 5, 5, 30, 30 }; // weights for tradeItemPrefabs array
 
     public bool IsMenuActive { get; private set; }
     public bool IsDragging { get; private set; }
@@ -34,18 +40,35 @@ public class TraderMenuManager : MonoBehaviour
         // clear all current items
         ClearAllItems();
 
-        int itemsForSale = 3;
+        // roll fresh set of new random item indices (to use with item prefab array)
+        List<int> itemIndices = GenerateItemIndices();
 
-        for (int i = 0; i < itemsForSale; i++)
+        if (itemIndices.Count > 0 && itemIndices.Count <= traderSlots.Length)
         {
-            GameObject tradeItem = Instantiate(tradeItemPrefabs[i]);
-            tradeItem.SetActive(false);
-
-            if (tradeItem.TryGetComponent(out Item item))
+            for (int i = 0; i < itemIndices.Count; i++)
             {
-                tradeItem.transform.SetParent(traderInventory.transform);
-                traderSlots[i].AddItem(item);
+                AddItem(itemIndices[i], i);
             }
+        }
+        else
+        {
+            Debug.LogError("Issue with generating prefabs for trader inventory. List of indices is not within bounds.");
+        }
+    }
+
+    private void AddItem(int prefabIndex, int slotNumber)
+    {
+        GameObject tradeItem = Instantiate(tradeItemPrefabs[prefabIndex]);
+        tradeItem.SetActive(false);
+
+        if (tradeItem.TryGetComponent(out Item item))
+        {
+            tradeItem.transform.SetParent(traderInventory.transform);
+            traderSlots[slotNumber].AddItem(item);
+        }
+        else
+        {
+            Debug.LogWarning("Could not get item component of new gameobject: " + tradeItem.name);
         }
     }
 
@@ -62,6 +85,24 @@ public class TraderMenuManager : MonoBehaviour
                 slot.ClearSlot();
             }
         }
+    }
+
+    private List<int> GenerateItemIndices()
+    {
+        // weighted roll for how many items to generate
+        int numberOfItemsIndex = WeightedRandom.GetWeightedRandomIndex(weightsNumberOfItems);
+        int numberOfItems = numberOfItemsArray[numberOfItemsIndex];
+
+        List<int> indices = new();
+
+        for (int i = 0; i < numberOfItems; i++)
+        {
+            // weighted roll for which prefab to put in trader inventory
+            int prefabIndex = WeightedRandom.GetWeightedRandomIndex(weightsTraderItems);
+            indices.Add(prefabIndex);
+        }
+
+        return indices;
     }
 
     public void ToggleTraderMenu()
