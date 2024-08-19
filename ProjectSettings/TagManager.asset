@@ -12,6 +12,7 @@ TagManager:
   - RaceCheckpoint
   - RacePlayerShip
   - Asteroid
+  - Trader
   layers:
   - Default
   - TransparentFX

@@ -10,6 +10,7 @@ public class PlayerControls : MonoBehaviour
     public KeyCode inventoryKeybind = KeyCode.Tab;
     public KeyCode shootingKeybind = KeyCode.C;
     public KeyCode buildModeKeybind = KeyCode.B;
+    public KeyCode escapeKeybind = KeyCode.Escape;
 
     private readonly float pickupRange = 1.5f;
     private readonly float projectileLobHeight = 0.35f;
@@ -60,6 +61,13 @@ public class PlayerControls : MonoBehaviour
                     {
                         selection.ActivateSpaceshipSelection();
                     }
+                    else if (collider.CompareTag("Trader"))
+                    {
+                        if (!InventoryManager.Instance.IsMenuActive)
+                        {
+                            TraderMenuManager.Instance.ToggleTraderMenu();
+                        }
+                    }
                 }
             }
 
@@ -94,6 +102,25 @@ public class PlayerControls : MonoBehaviour
         if (Input.GetKeyDown(buildModeKeybind))
         {
             BuildManager.Instance.ToggleBuildMode();
+        }
+
+        // ESCAPE MENUS
+        if (Input.GetKeyDown(escapeKeybind))
+        {
+            if (InventoryManager.Instance.IsMenuActive)
+            {
+                if (!InventoryManager.Instance.IsDragging)
+                {
+                    InventoryManager.Instance.ToggleInventoryMenu();
+                }
+            }
+            else if (TraderMenuManager.Instance.IsMenuActive)
+            {
+                if (!TraderMenuManager.Instance.IsDragging)
+                {
+                    TraderMenuManager.Instance.ToggleTraderMenu();
+                }
+            }
         }
     }
 

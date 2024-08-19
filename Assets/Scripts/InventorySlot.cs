@@ -5,24 +5,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class InventorySlot : MenuItemSlot //MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IEndDragHandler, IDragHandler, IDropHandler
+public class InventorySlot : MenuItemSlot
 {
-    //public Item SlotItem { get; private set; }
-    //public bool IsSelected { get; private set; }
-
-    //[Header("References")]
-    //[SerializeField] private TMP_Text quantityText;
-    //[SerializeField] private Image itemImage;
-    //[SerializeField] private Sprite emptySlotImage;
-    //[SerializeField] private GameObject selectedBackground;
-    //[SerializeField] private TMP_Text descriptionText;
-
-    //public void AddItem(Item itemToAdd)
-    //{
-    //    SlotItem = itemToAdd;
-    //    UpdateSlotUI();
-    //}
-
     public int AddAdditionalItem(int quantityToAdd)
     {
         // calculate the remainder for if the new quantity exceeds MaxStackQuantity
@@ -41,22 +25,6 @@ public class InventorySlot : MenuItemSlot //MonoBehaviour, IPointerClickHandler,
         return Mathf.Max(remainder, 0);
     }
 
-    //private void SelectSlot()
-    //{
-    //    selectedBackground.SetActive(true);
-    //    IsSelected = true;
-
-    //    descriptionText.text = SlotItem.ItemName + ": " + SlotItem.Description;
-    //}
-
-    //public void DeselectSlot()
-    //{
-    //    selectedBackground.SetActive(false);
-    //    IsSelected = false;
-
-    //    descriptionText.text = string.Empty;
-    //}
-
     public void SwapItems(InventorySlot originalSlot)
     {
         (this.SlotItem, originalSlot.SlotItem) = (originalSlot.SlotItem, this.SlotItem);
@@ -72,33 +40,7 @@ public class InventorySlot : MenuItemSlot //MonoBehaviour, IPointerClickHandler,
         }
     }
 
-    //public void UpdateSlotUI()
-    //{
-    //    if (SlotItem != null && SlotItem.Quantity > 0)
-    //    {
-    //        // update quantity text and image
-    //        quantityText.text = SlotItem.Quantity.ToString();
-    //        quantityText.enabled = true;
-    //        itemImage.sprite = SlotItem.Image;
-    //    }
-    //    else
-    //    {
-    //        ClearSlot();
-    //    }
-    //}
-
-    //public void ClearSlot()
-    //{
-    //    // clear slot
-    //    SlotItem = null;
-
-    //     //clear slot UI
-    //    quantityText.text = string.Empty;
-    //    quantityText.enabled = false;
-    //    itemImage.sprite = emptySlotImage;
-    //}
-
-    // ------- required interface methods -------- //
+    // ------- interface methods -------- //
     public override void OnPointerClick(PointerEventData eventData)
     {
         if (eventData.button == PointerEventData.InputButton.Left)
