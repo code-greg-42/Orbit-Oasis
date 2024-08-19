@@ -23,6 +23,26 @@ public class TraderMenuManager : MonoBehaviour
         Instance = this;
     }
 
+    //private void AddItemsToSlots(List<Item> items)
+    //{
+    //    if (items.Count <= traderSlots.Length)
+    //    {
+    //        // clear slots
+
+    //        for (int i = 0; i < items.Count; i++)
+    //        {
+    //            // add item to corresponding slot
+    //            traderSlots[i].AddItem(items[i]);
+    //        }
+    //    }
+    //}
+
+    //private void AddItem(Item item, int slotNumber)
+    //{
+    //    traderSlots[slotNumber].AddItem(item);
+
+    //}
+
     public void ToggleTraderMenu()
     {
         traderMenu.SetActive(!IsMenuActive);

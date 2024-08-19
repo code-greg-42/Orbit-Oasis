@@ -373,6 +373,11 @@ public class InventoryManager : MonoBehaviour
 
                 // decrement quantity and clear slot
                 quantity -= slot.SlotItem.Quantity;
+
+                // delete the game object from player inventory
+                slot.SlotItem.DeleteItem();
+
+                // reset/clear the slot
                 slot.ClearSlot();
             }
             else
