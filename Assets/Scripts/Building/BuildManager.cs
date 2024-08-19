@@ -191,6 +191,9 @@ public class BuildManager : MonoBehaviour
                 {
                     // place object in scene and activate all attachments/components
                     newBuildable.PlaceObject();
+
+                    // deactivate any impacted attachment points
+                    CheckAttachmentPoints(newBuildable.transform.position);
                 }
                 else
                 {
