@@ -13,6 +13,7 @@ public class TraderMenuManager : MonoBehaviour
     [SerializeField] private Image dragImage; // image used for drag and drop functionality
     [SerializeField] private GameObject traderInventory;
     [SerializeField] private GameObject buySlotHighlightPanel;
+    [SerializeField] private GameObject[] tradeItemPrefabs; // used for knowing which items are available for purchase
 
     public bool IsMenuActive { get; private set; }
     public bool IsDragging { get; private set; }
@@ -23,25 +24,45 @@ public class TraderMenuManager : MonoBehaviour
         Instance = this;
     }
 
-    //private void AddItemsToSlots(List<Item> items)
-    //{
-    //    if (items.Count <= traderSlots.Length)
-    //    {
-    //        // clear slots
+    private void Start()
+    {
+        RefreshTraderInventory();
+    }
 
-    //        for (int i = 0; i < items.Count; i++)
-    //        {
-    //            // add item to corresponding slot
-    //            traderSlots[i].AddItem(items[i]);
-    //        }
-    //    }
-    //}
+    private void RefreshTraderInventory()
+    {
+        // clear all current items
+        ClearAllItems();
 
-    //private void AddItem(Item item, int slotNumber)
-    //{
-    //    traderSlots[slotNumber].AddItem(item);
+        int itemsForSale = 3;
 
-    //}
+        for (int i = 0; i < itemsForSale; i++)
+        {
+            GameObject tradeItem = Instantiate(tradeItemPrefabs[i]);
+            tradeItem.SetActive(false);
+
+            if (tradeItem.TryGetComponent(out Item item))
+            {
+                tradeItem.transform.SetParent(traderInventory.transform);
+                traderSlots[i].AddItem(item);
+            }
+        }
+    }
+
+    private void ClearAllItems()
+    {
+        foreach (TraderSlot slot in traderSlots)
+        {
+            if (slot.SlotItem != null)
+            {
+                // delete the item in the slot (includes the prefab from trader inventory)
+                slot.SlotItem.DeleteItem();
+
+                // reset/clear the slot
+                slot.ClearSlot();
+            }
+        }
+    }
 
     public void ToggleTraderMenu()
     {
