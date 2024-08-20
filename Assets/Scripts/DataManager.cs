@@ -203,7 +203,7 @@ public class DataManager : MonoBehaviour
         PlayerStats.PlayerCurrency += amount;
 
         // update in-game UI
-        MainUIManager.Instance.UpdateCurrencyDisplay(PlayerStats.PlayerCurrency);
+        MainUIManager.Instance.UpdateCurrencyDisplay(PlayerStats.PlayerCurrency, amount);
 
         // save to file
         SavePlayerStats();
@@ -239,8 +239,8 @@ public class DataManager : MonoBehaviour
     {
         PlayerStats.PlayerCurrency -= amount;
 
-        // update in-game UI
-        MainUIManager.Instance.UpdateCurrencyDisplay(PlayerStats.PlayerCurrency);
+        // update in-game UI --- use set amount to negative for correct floating text
+        MainUIManager.Instance.UpdateCurrencyDisplay(PlayerStats.PlayerCurrency, -amount);
 
         // save to file
         SavePlayerStats();

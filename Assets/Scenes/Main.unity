@@ -7747,7 +7747,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currencyText: {fileID: 1593902567}
-  floatingCurrencyText: {fileID: 0}
+  floatingTextPrefab: {fileID: 7559301379566138804, guid: d29ac5c8f92786541a69c2255265277a, type: 3}
 --- !u!114 &1154277280
 MonoBehaviour:
   m_ObjectHideFlags: 0
