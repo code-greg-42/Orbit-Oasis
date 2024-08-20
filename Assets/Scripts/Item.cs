@@ -11,7 +11,8 @@ public class Item : MonoBehaviour
     [SerializeField] private Sprite image;
     [SerializeField] private int maxStackQuantity;
     [SerializeField] private int quantity = 1;
-    [SerializeField] private float pricePerUnit;
+    [SerializeField] private float sellPricePerUnit;
+    [SerializeField] private float buyPricePerUnit;
     [SerializeField] private float buildMaterialPerUnit;
     [SerializeField] private int prefabIndex;
 
@@ -19,7 +20,8 @@ public class Item : MonoBehaviour
     public string Description => description;
     public Sprite Image => image;
     public int MaxStackQuantity => maxStackQuantity;
-    public float PricePerUnit => pricePerUnit;
+    public float SellPricePerUnit => sellPricePerUnit;
+    public float BuyPricePerUnit => buyPricePerUnit;
     public float BuildMaterialPerUnit => buildMaterialPerUnit;
     public int PrefabIndex => prefabIndex;
 

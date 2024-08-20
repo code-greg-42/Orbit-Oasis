@@ -23,7 +23,7 @@ public abstract class MenuItemSlot : MonoBehaviour, IPointerClickHandler, IBegin
         UpdateSlotUI();
     }
 
-    protected void SelectSlot()
+    protected virtual void SelectSlot()
     {
         selectedBackground.SetActive(true);
         IsSelected = true;

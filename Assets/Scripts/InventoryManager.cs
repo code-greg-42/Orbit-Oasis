@@ -405,7 +405,7 @@ public class InventoryManager : MonoBehaviour
         {
             if (DragSlot.SlotItem != null)
             {
-                dragSlotSellPrice = DragSlot.SlotItem.Quantity * DragSlot.SlotItem.PricePerUnit;
+                dragSlotSellPrice = DragSlot.SlotItem.Quantity * DragSlot.SlotItem.SellPricePerUnit;
 
                 if (DragSlot.SlotItem is Animal animal)
                 {

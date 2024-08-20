@@ -14,6 +14,7 @@ public class TraderMenuManager : MonoBehaviour
     [SerializeField] private TraderSlot[] traderSlots;
     [SerializeField] private Image dragImage; // image used for drag and drop functionality
     [SerializeField] private GameObject traderInventory;
+    [SerializeField] private TMP_Text buyPriceText;
     [SerializeField] private GameObject buySlotHighlightPanel;
     [SerializeField] private GameObject[] tradeItemPrefabs; // used for knowing which items are available for purchase
     [SerializeField] private TMP_Text refreshTimerText;
@@ -21,6 +22,7 @@ public class TraderMenuManager : MonoBehaviour
     private readonly int[] weightsNumberOfItems = { 30, 40, 20, 10 }; // for 5, 6, 7, 8
     private readonly int[] numberOfItemsArray = { 5, 6, 7, 8 };
     private readonly int[] weightsTraderItems = { 10, 10, 5, 5, 5, 5, 30, 30 }; // weights for tradeItemPrefabs array
+    private readonly int[] quantitiesTraderItems = { 20, 1, 1, 1, 1, 1, 10, 5 };
 
     // timer variables
     private const float refreshInterval = 1800.0f;
@@ -70,6 +72,11 @@ public class TraderMenuManager : MonoBehaviour
 
         if (tradeItem.TryGetComponent(out Item item))
         {
+            // get pre-assigned quantity from array and set to new item
+            int traderQuantity = quantitiesTraderItems[prefabIndex];
+            item.SetQuantity(traderQuantity);
+
+            // attach deactivated gameobject to trader inventory and add item to the item slot
             tradeItem.transform.SetParent(traderInventory.transform);
             traderSlots[slotNumber].AddItem(item);
         }
@@ -122,6 +129,9 @@ public class TraderMenuManager : MonoBehaviour
 
     public void RemoveSlotSelection()
     {
+        // clear buy price text
+        buyPriceText.text = "BUY";
+
         // loop through slots
         for (int i = 0; i < traderSlots.Length; i++)
         {
@@ -131,6 +141,16 @@ public class TraderMenuManager : MonoBehaviour
                 return;
             }
         }
+    }
+
+    // called from both SelectSlot (in TraderSlot script) and StartDrag
+    public void UpdateBuyPrice(Item item)
+    {
+        // calc buy price from given item
+        float price = CalculateBuyPrice(item);
+
+        // update UI with calculated price
+        buyPriceText.text = $"BUY (${price})";
     }
 
     public void StartDrag(TraderSlot slot, Vector3 mousePos)
@@ -224,5 +244,10 @@ public class TraderMenuManager : MonoBehaviour
 
         // format as "MM:SS"
         return string.Format("{0:00}:{1:00}", minutes, seconds);
+    }
+
+    private float CalculateBuyPrice(Item item)
+    {
+        return item.Quantity * item.BuyPricePerUnit;
     }
 }

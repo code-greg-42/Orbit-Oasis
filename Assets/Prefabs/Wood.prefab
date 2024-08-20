@@ -101,11 +101,12 @@ MonoBehaviour:
   itemName: Wood
   description: A material used for building. Can be farmed from trees.
   image: {fileID: 21300000, guid: 38e40961df0774744b975b7cd81dd624, type: 3}
-  prefab: {fileID: 7710616936816269101}
   maxStackQuantity: 50
   quantity: 1
-  pricePerUnit: 20
+  sellPricePerUnit: 20
+  buyPricePerUnit: 40
   buildMaterialPerUnit: 1
+  prefabIndex: 0
 --- !u!54 &6544196308716839980
 Rigidbody:
   m_ObjectHideFlags: 0

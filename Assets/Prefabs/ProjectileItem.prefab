@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 5184772817266006290}
   - component: {fileID: 754568571119333127}
   - component: {fileID: 9202331969974760326}
+  - component: {fileID: 3378346431115377784}
   - component: {fileID: 7134979848488228078}
   - component: {fileID: 4744447973334936884}
-  - component: {fileID: 3378346431115377784}
   m_Layer: 0
   m_Name: ProjectileItem
   m_TagString: Untagged
@@ -86,6 +86,27 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &3378346431115377784
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6281513919030633771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbb7480af2b2ec74398bd45178b27b11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemName: Projectile
+  description: Used for ammo in the capture gun
+  image: {fileID: 21300086, guid: 09e4c6a7d75923945afe43953ef58ad2, type: 3}
+  maxStackQuantity: 100
+  quantity: 1
+  sellPricePerUnit: 20
+  buyPricePerUnit: 40
+  buildMaterialPerUnit: 0
+  prefabIndex: 6
 --- !u!135 &7134979848488228078
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -134,23 +155,3 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &3378346431115377784
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6281513919030633771}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cbb7480af2b2ec74398bd45178b27b11, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  itemName: Projectile
-  description: Used for ammo in the capture gun
-  image: {fileID: 21300086, guid: 09e4c6a7d75923945afe43953ef58ad2, type: 3}
-  maxStackQuantity: 100
-  quantity: 1
-  pricePerUnit: 20
-  buildMaterialPerUnit: 0
-  prefabIndex: 6

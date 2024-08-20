@@ -7,6 +7,14 @@ using UnityEngine.UI;
 
 public class TraderSlot : MenuItemSlot
 {
+    protected override void SelectSlot()
+    {
+        // call base method to retain original behavior
+        base.SelectSlot();
+
+        // additionally call a method in TraderManager to have the buy price updated
+        TraderMenuManager.Instance.UpdateBuyPrice(SlotItem);
+    }
     public override void OnPointerClick(PointerEventData eventData)
     {
         if (eventData.button == PointerEventData.InputButton.Left)
