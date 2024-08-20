@@ -65,6 +65,11 @@ public class TraderMenuManager : MonoBehaviour
         }
     }
 
+    public void BuyItem()
+    {
+        Debug.Log("purchasing item");
+    }
+
     private void AddItem(int prefabIndex, int slotNumber)
     {
         GameObject tradeItem = Instantiate(tradeItemPrefabs[prefabIndex]);

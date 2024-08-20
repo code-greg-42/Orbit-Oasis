@@ -15,6 +15,7 @@ public class TraderSlot : MenuItemSlot
         // additionally call a method in TraderManager to have the buy price updated
         TraderMenuManager.Instance.UpdateBuyPrice(SlotItem);
     }
+
     public override void OnPointerClick(PointerEventData eventData)
     {
         if (eventData.button == PointerEventData.InputButton.Left)
@@ -50,8 +51,10 @@ public class TraderSlot : MenuItemSlot
 
     public override void OnEndDrag(PointerEventData eventData)
     {
+        Debug.Log("ending drag");
         if (TraderMenuManager.Instance.IsDragging)
         {
+            Debug.Log("ending drag with IsDragging true");
             TraderMenuManager.Instance.EndDrag();
         }
     }
