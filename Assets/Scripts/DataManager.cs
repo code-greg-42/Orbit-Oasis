@@ -11,13 +11,13 @@ public class DataManager : MonoBehaviour
     public static DataManager Instance { get; private set; }
     private readonly string saveFolderName = "/SaveData/";
 
-    // datasets
+    // data classes
     public PlayerData PlayerStats { get; private set; }
     public RaceData RaceStats { get; private set; }
     public SerializableList<BuildableObjectData> BuildList { get; private set; }
     public SerializableList<ItemData> InventoryItems { get; private set; }
 
-    // unsaved variables
+    // tracking variables --- do not need to be saved to file
     public float PlayerBuildMaterial { get; private set; }
     public List<int> CaughtFishIndex { get; private set; }
 
@@ -182,6 +182,7 @@ public class DataManager : MonoBehaviour
         SaveInventory();
     }
 
+    // build material only used as a tracker for how much material is in inventory --- no need to save
     public void AddBuildMaterial(float amount)
     {
         PlayerBuildMaterial += amount;
@@ -200,25 +201,32 @@ public class DataManager : MonoBehaviour
     public void AddCurrency(float amount)
     {
         PlayerStats.PlayerCurrency += amount;
+
+        // save to file
+        SavePlayerStats();
     }
 
     public void AddFood(float amount)
     {
         PlayerStats.PlayerFood += amount;
+
+        // save to file
+        SavePlayerStats();
     }
 
-    // used only on load
+    // used only on load --- DO NOT SAVE TO FILE
     public void ClearInventoryItems()
     {
         InventoryItems.ItemList.Clear();
     }
 
-    // used only on load
+    // used only on load --- DO NOT SAVE TO FILE
     public void ClearPlayerBuildMaterial()
     {
         PlayerBuildMaterial = 0;
     }
 
+    // build material only used as a tracker for how much material is in inventory --- no need to save
     public void SubtractBuildMaterial(float amount)
     {
         PlayerBuildMaterial -= amount;
@@ -227,11 +235,17 @@ public class DataManager : MonoBehaviour
     public void SubtractCurrency(float amount)
     {
         PlayerStats.PlayerCurrency -= amount;
+
+        // save to file
+        SavePlayerStats();
     }
 
     public void SubtractFood(float amount)
     {
         PlayerStats.PlayerFood -= amount;
+
+        // save to file
+        SavePlayerStats();
     }
 
     // TEMPORARY METHOD TO TEST DATA PERSISTENCE
