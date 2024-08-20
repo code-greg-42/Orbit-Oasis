@@ -202,6 +202,9 @@ public class DataManager : MonoBehaviour
     {
         PlayerStats.PlayerCurrency += amount;
 
+        // update in-game UI
+        MainUIManager.Instance.UpdateCurrencyDisplay(PlayerStats.PlayerCurrency);
+
         // save to file
         SavePlayerStats();
     }
@@ -235,6 +238,9 @@ public class DataManager : MonoBehaviour
     public void SubtractCurrency(float amount)
     {
         PlayerStats.PlayerCurrency -= amount;
+
+        // update in-game UI
+        MainUIManager.Instance.UpdateCurrencyDisplay(PlayerStats.PlayerCurrency);
 
         // save to file
         SavePlayerStats();

@@ -213,7 +213,7 @@ public class InventoryManager : MonoBehaviour
             IsDragging = true;
             CalculateSellPrices();
             sellSlotHighlightPanel.SetActive(true);
-            sellSlotMoneyDisplay.text = "SELL\n($" + dragSlotSellPrice + ")";
+            sellSlotMoneyDisplay.text = "SELL\n($" + dragSlotSellPrice.ToString("N0") + ")";
 
             if (DragSlot.SlotItem is Animal)
             {
@@ -261,7 +261,7 @@ public class InventoryManager : MonoBehaviour
 
     public void UpdateCurrencyDisplay()
     {
-        sellSlotMoneyDisplay.text = "$" + DataManager.Instance.PlayerStats.PlayerCurrency;
+        sellSlotMoneyDisplay.text = "$" + DataManager.Instance.PlayerStats.PlayerCurrency.ToString("N0");
         storeSlotAmountDisplay.text = DataManager.Instance.PlayerStats.PlayerFood + "\nDays of Food";
     }
 
