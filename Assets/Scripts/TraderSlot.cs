@@ -7,13 +7,15 @@ using UnityEngine.UI;
 
 public class TraderSlot : MenuItemSlot
 {
+    public float BuyPrice => SlotItem != null ? SlotItem.Quantity * SlotItem.BuyPricePerUnit : 0f;
+
     protected override void SelectSlot()
     {
         // call base method to retain original behavior
         base.SelectSlot();
 
         // additionally call a method in TraderManager to have the buy price updated
-        TraderMenuManager.Instance.UpdateBuyPrice(SlotItem);
+        TraderMenuManager.Instance.UpdateBuyPrice(this);
     }
 
     public override void OnPointerClick(PointerEventData eventData)

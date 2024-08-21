@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
 using UnityEngine.SceneManagement; // TEMPORARY FOR TESTING PURPOSES
@@ -14,8 +15,10 @@ public class DataManager : MonoBehaviour
     // data classes
     public PlayerData PlayerStats { get; private set; }
     public RaceData RaceStats { get; private set; }
+    public TraderData TraderStats { get; private set; }
     public SerializableList<BuildableObjectData> BuildList { get; private set; }
     public SerializableList<ItemData> InventoryItems { get; private set; }
+    
 
     // tracking variables --- do not need to be saved to file
     public float PlayerBuildMaterial { get; private set; }
@@ -148,6 +151,26 @@ public class DataManager : MonoBehaviour
         SaveInventory();
     }
 
+    public void AddTraderItems(List<Item> items, float timer)
+    {
+        // clear the existing list
+        TraderStats.TraderItems.ItemList.Clear();
+
+        // add each item to the serializable list
+        foreach (Item item in items)
+        {
+            ItemData itemData = new(item.ItemName, item.PrefabIndex, item.Quantity);
+            TraderStats.TraderItems.ItemList.Add(itemData);
+        }
+
+        Debug.Log("Items added to trader data. New item count: " + TraderStats.TraderItems.ItemList.Count);
+
+        // update refresh timer
+        SetTraderRefreshTimer(timer);
+
+        // save to file
+    }
+
     public void RemoveItem(Item item)
     {
         int index = InventoryItems.ItemList.FindIndex(x => x.itemName == item.ItemName && x.quantity == item.Quantity);
@@ -155,14 +178,42 @@ public class DataManager : MonoBehaviour
         if (index != -1)
         {
             InventoryItems.ItemList.RemoveAt(index);
+
+            // save to file
+            SaveInventory();
         }
         else
         {
             Debug.LogWarning("Attempted to remove item, but item not found in InventoryItems list.");
         }
 
-        // save to file
-        SaveInventory();
+        
+    }
+
+    public void RemoveSingleTraderItem(Item item, float timer)
+    {
+        int index = TraderStats.TraderItems.ItemList.FindIndex(x => x.itemName == item.ItemName && x.quantity == item.Quantity);
+
+        if (index != -1)
+        {
+            TraderStats.TraderItems.ItemList.RemoveAt(index);
+
+            Debug.Log("Item removed from trader data. New item count: " + TraderStats.TraderItems.ItemList.Count);
+            // update refresh timer
+            SetTraderRefreshTimer(timer);
+
+            // save to file
+        }
+        else
+        {
+            Debug.LogWarning("Attempted to remove item, but item not found in TraderItems list.");
+        }
+    }
+
+    public void SetTraderRefreshTimer(float timer)
+    {
+        TraderStats.RefreshTimer = timer;
+        Debug.Log("Trader Refresh Timer: " + TraderStats.RefreshTimer);
     }
 
     public void ChangeItemQuantity(Item item, int newQuantity)
@@ -344,12 +395,30 @@ public class DataManager : MonoBehaviour
             ?? new SerializableList<ItemData>(new List<ItemData>());
     }
 
+    private void SaveTraderData()
+    {
+        SaveToFile(TraderStats, nameof(TraderStats));
+    }
+
+    private void LoadTraderData()
+    {
+        TraderStats = LoadFromFile<TraderData>(nameof(TraderStats))
+                      ?? new TraderData();
+
+        // Ensure TraderItems is instantiated even if the file is not found
+        if (TraderStats.TraderItems == null)
+        {
+            TraderStats.TraderItems = new SerializableList<ItemData>(new List<ItemData>());
+        }
+    }
+
     private void SaveAllData()
     {
         SavePlayerStats();
         SaveRaceStats();
         SaveBuildList();
         SaveInventory();
+        SaveTraderData();
     }
 
     private void LoadAllData()
@@ -358,5 +427,6 @@ public class DataManager : MonoBehaviour
         LoadRaceStats();
         LoadBuildList();
         LoadInventory();
+        LoadTraderData();
     }
 }

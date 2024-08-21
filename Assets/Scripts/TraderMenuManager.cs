@@ -26,6 +26,7 @@ public class TraderMenuManager : MonoBehaviour
 
     // timer variables
     private const float refreshInterval = 1800.0f;
+    private const float refreshTimerSaveInterval = 30.0f;
     private float refreshTimer;
     private Coroutine refreshTimerCoroutine;
 
@@ -52,12 +53,39 @@ public class TraderMenuManager : MonoBehaviour
         // roll fresh set of new random item indices (to use with item prefab array)
         List<int> itemIndices = GenerateItemIndices();
 
+        // list for passing items to DataManager
+        List<Item> itemsToAdd = new();
+
         if (itemIndices.Count > 0 && itemIndices.Count <= traderSlots.Length)
         {
             for (int i = 0; i < itemIndices.Count; i++)
             {
-                AddItem(itemIndices[i], i);
+                //AddItem(itemIndices[i], i);
+
+                GameObject tradeItem = Instantiate(tradeItemPrefabs[itemIndices[i]]);
+                tradeItem.SetActive(false);
+
+                if (tradeItem.TryGetComponent(out Item item))
+                {
+                    // get pre-assigned quantity from array and set to new item
+                    int traderQuantity = quantitiesTraderItems[itemIndices[i]];
+                    item.SetQuantity(traderQuantity);
+
+                    // add item to list for DataManager
+                    itemsToAdd.Add(item);
+
+                    // attach deactivated gameobject to trader inventory and add item to the item slot
+                    tradeItem.transform.SetParent(traderInventory.transform);
+                    traderSlots[i].AddItem(item);
+                }
+                else
+                {
+                    Debug.LogWarning("Could not get item component of new gameobject: " + tradeItem.name);
+                }
             }
+
+            // pass list along to DataManager
+            DataManager.Instance.AddTraderItems(itemsToAdd, refreshTimer);
         }
         else
         {
@@ -67,53 +95,46 @@ public class TraderMenuManager : MonoBehaviour
 
     public void BuyDraggedItem()
     {
-        if (DragSlot != null)
+        if (DragSlot != null && DragSlot.BuyPrice < DataManager.Instance.PlayerStats.PlayerCurrency)
         {
-            // calculate buy price
-            float buyPrice = CalculateBuyPrice(DragSlot.SlotItem);
+            // update data manager with purchase
+            DataManager.Instance.SubtractCurrency(DragSlot.BuyPrice);
 
-            if (buyPrice < DataManager.Instance.PlayerStats.PlayerCurrency)
+            // remove item from trader inventory in DataManager
+            DataManager.Instance.RemoveSingleTraderItem(DragSlot.SlotItem, refreshTimer);
+
+            // add item to player inventory --- .PickupItem() will automatically add to inventory in data manager as well
+            DragSlot.SlotItem.PickupItem();
+
+            // clear slot selection
+            if (DragSlot.IsSelected)
             {
-                // update data manager with purchase
-                DataManager.Instance.SubtractCurrency(buyPrice);
-
-                // add item to player inventory --- .PickupItem() will automatically update data manager as well
-                DragSlot.SlotItem.PickupItem();
-
-                // clear slot selection
-                if (DragSlot.IsSelected)
-                {
-                    RemoveSlotSelection();
-                }
-                DragSlot.ClearSlot();
+                RemoveSlotSelection();
             }
-            else
-            {
-                // add logic for alerting the player they do not have enough currency to make the purchase
-            }
+            DragSlot.ClearSlot();
         }
     }
 
-    private void AddItem(int prefabIndex, int slotNumber)
-    {
-        GameObject tradeItem = Instantiate(tradeItemPrefabs[prefabIndex]);
-        tradeItem.SetActive(false);
+    //private void AddItem(int prefabIndex, int slotNumber)
+    //{
+    //    GameObject tradeItem = Instantiate(tradeItemPrefabs[prefabIndex]);
+    //    tradeItem.SetActive(false);
 
-        if (tradeItem.TryGetComponent(out Item item))
-        {
-            // get pre-assigned quantity from array and set to new item
-            int traderQuantity = quantitiesTraderItems[prefabIndex];
-            item.SetQuantity(traderQuantity);
+    //    if (tradeItem.TryGetComponent(out Item item))
+    //    {
+    //        // get pre-assigned quantity from array and set to new item
+    //        int traderQuantity = quantitiesTraderItems[prefabIndex];
+    //        item.SetQuantity(traderQuantity);
 
-            // attach deactivated gameobject to trader inventory and add item to the item slot
-            tradeItem.transform.SetParent(traderInventory.transform);
-            traderSlots[slotNumber].AddItem(item);
-        }
-        else
-        {
-            Debug.LogWarning("Could not get item component of new gameobject: " + tradeItem.name);
-        }
-    }
+    //        // attach deactivated gameobject to trader inventory and add item to the item slot
+    //        tradeItem.transform.SetParent(traderInventory.transform);
+    //        traderSlots[slotNumber].AddItem(item);
+    //    }
+    //    else
+    //    {
+    //        Debug.LogWarning("Could not get item component of new gameobject: " + tradeItem.name);
+    //    }
+    //}
 
     private void ClearAllItems()
     {
@@ -121,6 +142,8 @@ public class TraderMenuManager : MonoBehaviour
         {
             if (slot.SlotItem != null)
             {
+                // no need to clear item from data manager as it will be done in RefreshTraderInventory
+
                 // delete the item in the slot (includes the prefab from trader inventory)
                 slot.SlotItem.DeleteItem();
 
@@ -173,13 +196,10 @@ public class TraderMenuManager : MonoBehaviour
     }
 
     // called from both SelectSlot (in TraderSlot script) and StartDrag
-    public void UpdateBuyPrice(Item item)
+    public void UpdateBuyPrice(TraderSlot slot)
     {
-        // calc buy price from given item
-        float price = CalculateBuyPrice(item);
-
-        // update UI with calculated price
-        buyPriceText.text = $"BUY (${price})";
+        // update UI with price of the slots buyprice
+        buyPriceText.text = $"BUY (${slot.BuyPrice})";
     }
 
     public void StartDrag(TraderSlot slot, Vector3 mousePos)
@@ -189,7 +209,11 @@ public class TraderMenuManager : MonoBehaviour
             SetDragImage(slot.SlotItem.Image, mousePos);
             DragSlot = slot;
             IsDragging = true;
-            buySlotHighlightPanel.SetActive(true);
+            
+            if (slot.BuyPrice < DataManager.Instance.PlayerStats.PlayerCurrency)
+            {
+                buySlotHighlightPanel.SetActive(true);
+            }
         }
     }
 
@@ -252,6 +276,12 @@ public class TraderMenuManager : MonoBehaviour
 
             // decrease remaining time
             refreshTimer -= 1.0f;
+
+            if (refreshTimer % refreshTimerSaveInterval == 0)
+            {
+                // update in data manager
+                DataManager.Instance.SetTraderRefreshTimer(refreshTimer);
+            }
         }
 
         // refresh trader inventory when timer reaches zero
