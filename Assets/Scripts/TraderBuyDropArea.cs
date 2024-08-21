@@ -7,7 +7,10 @@ public class TraderBuyDropArea : DropArea
 {
     public override void OnDrop(PointerEventData eventData)
     {
-        Debug.Log("HEY! YOU DROPPED HERE!");
+        if (TraderMenuManager.Instance.IsDragging)
+        {
+            TraderMenuManager.Instance.BuyDraggedItem();
+        }
     }
 
     public override void OnPointerClick(PointerEventData eventData)

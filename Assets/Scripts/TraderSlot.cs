@@ -51,10 +51,8 @@ public class TraderSlot : MenuItemSlot
 
     public override void OnEndDrag(PointerEventData eventData)
     {
-        Debug.Log("ending drag");
         if (TraderMenuManager.Instance.IsDragging)
         {
-            Debug.Log("ending drag with IsDragging true");
             TraderMenuManager.Instance.EndDrag();
         }
     }

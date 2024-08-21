@@ -65,9 +65,33 @@ public class TraderMenuManager : MonoBehaviour
         }
     }
 
-    public void BuyItem()
+    public void BuyDraggedItem()
     {
-        Debug.Log("purchasing item");
+        if (DragSlot != null)
+        {
+            // calculate buy price
+            float buyPrice = CalculateBuyPrice(DragSlot.SlotItem);
+
+            if (buyPrice < DataManager.Instance.PlayerStats.PlayerCurrency)
+            {
+                // update data manager with purchase
+                DataManager.Instance.SubtractCurrency(buyPrice);
+
+                // add item to player inventory --- .PickupItem() will automatically update data manager as well
+                DragSlot.SlotItem.PickupItem();
+
+                // clear slot selection
+                if (DragSlot.IsSelected)
+                {
+                    RemoveSlotSelection();
+                }
+                DragSlot.ClearSlot();
+            }
+            else
+            {
+                // add logic for alerting the player they do not have enough currency to make the purchase
+            }
+        }
     }
 
     private void AddItem(int prefabIndex, int slotNumber)
@@ -165,6 +189,7 @@ public class TraderMenuManager : MonoBehaviour
             SetDragImage(slot.SlotItem.Image, mousePos);
             DragSlot = slot;
             IsDragging = true;
+            buySlotHighlightPanel.SetActive(true);
         }
     }
 
@@ -175,6 +200,7 @@ public class TraderMenuManager : MonoBehaviour
             IsDragging = false;
             DragSlot = null;
             dragImage.gameObject.SetActive(false);
+            buySlotHighlightPanel.SetActive(false);
         }
     }
 

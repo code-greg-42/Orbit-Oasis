@@ -290,7 +290,6 @@ public class InventoryManager : MonoBehaviour
 
     public void SellDraggedItem()
     {
-        Debug.Log("selling item!");
         if (DragSlot != null)
         {
             // if build material, subtract amount from data manager
