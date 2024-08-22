@@ -25,7 +25,7 @@ public class TraderMenuManager : MonoBehaviour
     private readonly int[] quantitiesTraderItems = { 20, 1, 1, 1, 1, 1, 10, 5 };
 
     // timer variables
-    private const float refreshInterval = 1800.0f;
+    private const float refreshInterval = 900.0f;
     private const float refreshTimerSaveInterval = 30.0f;
     private float refreshTimer;
     private Coroutine refreshTimerCoroutine;
@@ -41,12 +41,51 @@ public class TraderMenuManager : MonoBehaviour
 
     private void Start()
     {
-        RefreshTraderInventory();
-        StartRefreshTimer();
+        if (DataManager.Instance.TraderStats.TraderItems.ItemList.Count > 0)
+        {
+            // load existing items and resume timer at last saved point
+            LoadTraderInventory();
+            StartRefreshTimer(DataManager.Instance.TraderStats.RefreshTimer);
+        }
+        else
+        {
+            // no items exist in data manager, start new inventory/timer
+            RefreshTraderInventory();
+            StartRefreshTimer();
+        }
+    }
+
+    private void LoadTraderInventory()
+    {
+        List<ItemData> itemDataList = new(DataManager.Instance.TraderStats.TraderItems.ItemList);
+
+        for (int i = 0; i < itemDataList.Count; i++)
+        {
+            GameObject tradeItem = Instantiate(InventoryManager.Instance.ItemPrefabs[itemDataList[i].prefabIndex]);
+            tradeItem.SetActive(false);
+
+            if (tradeItem.TryGetComponent(out Item item))
+            {
+                // set quantity from item data
+                item.SetQuantity(itemDataList[i].quantity);
+
+                // attach gameobject to trader inventory and add to slot
+                tradeItem.transform.SetParent(traderInventory.transform);
+                traderSlots[i].AddItem(item);
+            }
+            else
+            {
+                Debug.LogError("Could not get item component of new gameobject: " + tradeItem.name);
+            }
+        }
     }
 
     private void RefreshTraderInventory()
     {
+        // clear any current drag/drop and any selected item
+        EndDrag();
+        RemoveSlotSelection();
+
         // clear all current items
         ClearAllItems();
 
@@ -60,8 +99,6 @@ public class TraderMenuManager : MonoBehaviour
         {
             for (int i = 0; i < itemIndices.Count; i++)
             {
-                //AddItem(itemIndices[i], i);
-
                 GameObject tradeItem = Instantiate(tradeItemPrefabs[itemIndices[i]]);
                 tradeItem.SetActive(false);
 
@@ -114,27 +151,6 @@ public class TraderMenuManager : MonoBehaviour
             DragSlot.ClearSlot();
         }
     }
-
-    //private void AddItem(int prefabIndex, int slotNumber)
-    //{
-    //    GameObject tradeItem = Instantiate(tradeItemPrefabs[prefabIndex]);
-    //    tradeItem.SetActive(false);
-
-    //    if (tradeItem.TryGetComponent(out Item item))
-    //    {
-    //        // get pre-assigned quantity from array and set to new item
-    //        int traderQuantity = quantitiesTraderItems[prefabIndex];
-    //        item.SetQuantity(traderQuantity);
-
-    //        // attach deactivated gameobject to trader inventory and add item to the item slot
-    //        tradeItem.transform.SetParent(traderInventory.transform);
-    //        traderSlots[slotNumber].AddItem(item);
-    //    }
-    //    else
-    //    {
-    //        Debug.LogWarning("Could not get item component of new gameobject: " + tradeItem.name);
-    //    }
-    //}
 
     private void ClearAllItems()
     {
@@ -251,7 +267,7 @@ public class TraderMenuManager : MonoBehaviour
         }
     }
 
-    private void StartRefreshTimer()
+    private void StartRefreshTimer(float remainingTime = refreshInterval)
     {
         if (refreshTimerCoroutine != null)
         {
@@ -259,14 +275,13 @@ public class TraderMenuManager : MonoBehaviour
             refreshTimerCoroutine = null;
         }
 
-        // start new coroutine
+        // set refreshtimer and start new coroutine
+        refreshTimer = remainingTime;
         refreshTimerCoroutine = StartCoroutine(RefreshTimerCoroutine());
     }
 
     private IEnumerator RefreshTimerCoroutine()
     {
-        refreshTimer = refreshInterval;
-
         while (refreshTimer >= 0)
         {
             // update UI
@@ -284,7 +299,10 @@ public class TraderMenuManager : MonoBehaviour
             }
         }
 
-        // refresh trader inventory when timer reaches zero
+        // reset refresh timer to the full amount
+        refreshTimer = refreshInterval;
+
+        // clear all slots and add new items to the shop
         RefreshTraderInventory();
 
         // restart timer coroutine

@@ -21,12 +21,13 @@ public class InventoryManager : MonoBehaviour
     [SerializeField] private TMP_Text storeSlotAmountDisplay;
 
     [Header("Item List")]
-    [SerializeField] private GameObject[] itemPrefabs; // used for instantiating saved items
+    [SerializeField] private GameObject[] itemPrefabs; // used for instantiating saved items (in TraderMenuManager as well)
 
     public GameObject PlayerInventory => playerInventory;
     public bool IsMenuActive { get; private set; }
     public bool IsDragging { get; private set; }
     public InventorySlot DragSlot { get; private set; }
+    public GameObject[] ItemPrefabs => itemPrefabs;
 
     private float dragSlotSellPrice;
     private float dragSlotStoreAmount;

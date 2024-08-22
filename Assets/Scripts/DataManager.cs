@@ -163,12 +163,8 @@ public class DataManager : MonoBehaviour
             TraderStats.TraderItems.ItemList.Add(itemData);
         }
 
-        Debug.Log("Items added to trader data. New item count: " + TraderStats.TraderItems.ItemList.Count);
-
-        // update refresh timer
+        // update refresh timer -- also saves all trader data to file
         SetTraderRefreshTimer(timer);
-
-        // save to file
     }
 
     public void RemoveItem(Item item)
@@ -198,11 +194,8 @@ public class DataManager : MonoBehaviour
         {
             TraderStats.TraderItems.ItemList.RemoveAt(index);
 
-            Debug.Log("Item removed from trader data. New item count: " + TraderStats.TraderItems.ItemList.Count);
-            // update refresh timer
+            // update refresh timer (also saves all trader-data to file)
             SetTraderRefreshTimer(timer);
-
-            // save to file
         }
         else
         {
@@ -213,7 +206,9 @@ public class DataManager : MonoBehaviour
     public void SetTraderRefreshTimer(float timer)
     {
         TraderStats.RefreshTimer = timer;
-        Debug.Log("Trader Refresh Timer: " + TraderStats.RefreshTimer);
+
+        // save to file
+        SaveTraderData();
     }
 
     public void ChangeItemQuantity(Item item, int newQuantity)
