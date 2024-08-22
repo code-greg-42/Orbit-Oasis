@@ -11,9 +11,14 @@ public class ItemPlacementManager : MonoBehaviour
     [SerializeField] private Material itemPreviewMaterial;
     [SerializeField] private Transform orientation;
 
+    private KeyCode placeKey = KeyCode.F;
+    private KeyCode escapeKey = KeyCode.Escape;
+
+    private Color validPreviewColor = new(166 / 255f, 166 / 255f, 166 / 255f, 40 / 255f); // gray transparent color
+    private Color invalidPreviewColor = new(255 / 255f, 0 / 255f, 0 / 255f, 65 / 255f); // red transparent color
+
     // placement settings
-    private const float placementDistance = 4.6f;
-    private const float cameraVerticalOffset = 0.25f;
+    private const float placementDistance = 6.5f;
 
     // for use references
     private Material itemOriginalMaterial;
@@ -29,6 +34,22 @@ public class ItemPlacementManager : MonoBehaviour
         if (ItemPlacementActive)
         {
             UpdateItemPlacementPos();
+            HandleInput();
+        }
+    }
+
+    private void HandleInput()
+    {
+        if (ItemPlacementActive)
+        {
+            if (Input.GetKeyDown(placeKey))
+            {
+                PlaceItem();
+            }
+            else if (Input.GetKeyDown(escapeKey))
+            {
+                ReturnItemToInventory();
+            }
         }
     }
 
@@ -42,16 +63,61 @@ public class ItemPlacementManager : MonoBehaviour
         // update start position
         UpdateItemPlacementPos();
 
+        // set to transparent preview material (true)
+        SetPreviewMaterial(true);
+
         // set active in scene
         currentItem.gameObject.SetActive(true);
     }
 
-    public void UpdateItemPlacementPos()
+    private void DeactivateItemPlacement()
     {
-        // calc target placement
-        Vector3 targetPosition = CalcTargetPosition();
+        currentItem = null;
+        ItemPlacementActive = false;
+    }
 
-        currentItem.transform.position = targetPosition;
+    public void PlaceItem()
+    {
+        if (ItemPlacementActive && currentItem != null)
+        {
+            // restore original material to currentItem
+            SetPreviewMaterial(false);
+
+            // remove from player inventory in data manager
+            DataManager.Instance.RemoveItem(currentItem);
+        }
+
+        DeactivateItemPlacement();
+    }
+
+    public void ReturnItemToInventory()
+    {
+        if (ItemPlacementActive && currentItem != null)
+        {
+            // remove from player inventory as it will be added back in .PickupItem()
+            // ----- DONE THIS WAY TO PREVENT THE OCCURRENCE OF LOSING AN ITEM FROM A GAME CRASH DURING PLACEMENT MODE ----- //
+            DataManager.Instance.RemoveItem(currentItem);
+
+            // add item back to player inventory
+            currentItem.PickupItem();
+
+            // reset material to original --- currentItem should still have its reference despite the item being in player inventory
+            // ---- done this way to prevent any split second material change on the screen --- .PickupItem() will deactivate the object
+            SetPreviewMaterial(false);
+        }
+
+        DeactivateItemPlacement();
+    }
+
+    private void UpdateItemPlacementPos()
+    {
+        if (ItemPlacementActive && currentItem != null)
+        {
+            // calc target placement
+            Vector3 targetPosition = CalcTargetPosition();
+
+            currentItem.transform.position = targetPosition;
+        }
     }
 
     private Vector3 CalcTargetPosition()
@@ -59,12 +125,44 @@ public class ItemPlacementManager : MonoBehaviour
         // get original position as the position out in front of the camera, adjusted for where the camera is looking left/right
         Vector3 targetPosition = orientation.position + orientation.forward * placementDistance;
 
-        // get camera's forward direction for up/down calculation
-        Vector3 cameraForward = Camera.main.transform.forward;
-
-        // adjust slightly to make the position slightly higher than where the camera is looking (allows for building up)
-        float verticalAdjustment = (cameraForward.y + cameraVerticalOffset) * placementDistance;
+        // adjust Y position for height of the item
+        targetPosition.y += currentItem.ItemHeight / 2;
 
         return targetPosition;
     }
+
+    private void SetPreviewMaterial(bool isPreview)
+    {
+        if (ItemPlacementActive && currentItem != null)
+        {
+            if (currentItem.TryGetComponent<Renderer>(out var renderer))
+            {
+                if (isPreview)
+                {
+                    itemOriginalMaterial = renderer.material;
+                    renderer.material = itemPreviewMaterial;
+                }
+                else
+                {
+                    renderer.material = itemOriginalMaterial;
+                }
+            }
+        }
+    }
+
+    //private void UpdatePreviewColor(bool isPlaceable)
+    //{
+    //    if (ItemPlacementActive)
+    //    {
+    //        if (currentItem.TryGetComponent(out Renderer renderer))
+    //        {
+    //            Color targetColor = isPlaceable ? validPreviewColor : invalidPreviewColor;
+
+    //            if (renderer.material.color != targetColor)
+    //            {
+    //                renderer.material.color = targetColor;
+    //            }
+    //        }
+    //    }
+    //}
 }

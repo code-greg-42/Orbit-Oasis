@@ -66,7 +66,6 @@ public class InventorySlot : MenuItemSlot
             {
                 if (IsRecentlyClicked)
                 {
-                    DataManager.Instance.RemoveItem(placeableItem);
                     ItemPlacementManager.Instance.ActivateItemPlacement(placeableItem);
                     ClearSlot();
                 }

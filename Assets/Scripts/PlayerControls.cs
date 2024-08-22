@@ -27,7 +27,7 @@ public class PlayerControls : MonoBehaviour
 
     void Update()
     {
-        if (!BuildManager.Instance.BuildModeActive && !DialogueManager.Instance.DialogueWindowActive)
+        if (!BuildManager.Instance.BuildModeActive && !DialogueManager.Instance.DialogueWindowActive && !ItemPlacementManager.Instance.ItemPlacementActive)
         {
             // FARMING
             if (Input.GetKeyDown(axeKeybind))
