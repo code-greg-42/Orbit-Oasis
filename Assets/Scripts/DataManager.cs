@@ -182,8 +182,6 @@ public class DataManager : MonoBehaviour
         {
             Debug.LogWarning("Attempted to remove item, but item not found in InventoryItems list.");
         }
-
-        
     }
 
     public void RemoveSingleTraderItem(Item item, float timer)

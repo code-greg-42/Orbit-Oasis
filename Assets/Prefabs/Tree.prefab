@@ -119,6 +119,7 @@ GameObject:
   - component: {fileID: 7710720524576148925}
   - component: {fileID: 884942934694521087}
   - component: {fileID: 8091837531599475149}
+  - component: {fileID: -420378908636916992}
   - component: {fileID: 6938465910328348573}
   m_Layer: 0
   m_Name: Tree
@@ -219,6 +220,27 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
+--- !u!114 &-420378908636916992
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6901442814216216723}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af2ec094915db2141b8bc01523c64128, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemName: Tree
+  description: It's a large tree. Double click to place it anywhere!
+  image: {fileID: 21300000, guid: 4b78cfc37ca1a4c4db295541fdc61a15, type: 3}
+  maxStackQuantity: 1
+  quantity: 1
+  sellPricePerUnit: 400
+  buyPricePerUnit: 800
+  buildMaterialPerUnit: 0
+  prefabIndex: 1
 --- !u!114 &6938465910328348573
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -231,15 +253,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a42435b2e5b16dd40ae5b41ccdf82754, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemName: Tree
-  description: It's a large tree. Drop it to place it anywhere!
-  image: {fileID: 21300000, guid: 4b78cfc37ca1a4c4db295541fdc61a15, type: 3}
-  maxStackQuantity: 1
-  quantity: 1
-  sellPricePerUnit: 300
-  buyPricePerUnit: 600
-  buildMaterialPerUnit: 0
-  prefabIndex: 1
   materialPrefab: {fileID: 7710616936816269101, guid: 6bc024b61437f244ab7ee62a090c2c14, type: 3}
   farmableMaterialCount: 6
   dropForce: 4

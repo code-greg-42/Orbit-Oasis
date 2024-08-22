@@ -7,6 +7,9 @@ using UnityEngine.UI;
 
 public class InventorySlot : MenuItemSlot
 {
+    public bool IsRecentlyClicked { get; private set; }
+    private float doubleClickWindow = 0.42f;
+
     public int AddAdditionalItem(int quantityToAdd)
     {
         // calculate the remainder for if the new quantity exceeds MaxStackQuantity
@@ -40,6 +43,11 @@ public class InventorySlot : MenuItemSlot
         }
     }
 
+    private void ResetRecentlyClicked()
+    {
+        IsRecentlyClicked = false;
+    }
+
     // ------- interface methods -------- //
     public override void OnPointerClick(PointerEventData eventData)
     {
@@ -52,6 +60,21 @@ public class InventorySlot : MenuItemSlot
             if (SlotItem != null)
             {
                 SelectSlot();
+            }
+
+            if (SlotItem is PlaceableItem placeableItem)
+            {
+                if (IsRecentlyClicked)
+                {
+                    DataManager.Instance.RemoveItem(placeableItem);
+                    ItemPlacementManager.Instance.ActivateItemPlacement(placeableItem);
+                    ClearSlot();
+                }
+                else
+                {
+                    IsRecentlyClicked = true;
+                    Invoke(nameof(ResetRecentlyClicked), doubleClickWindow);
+                }
             }
         }
     }
