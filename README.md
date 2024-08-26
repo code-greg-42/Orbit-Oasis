@@ -27,8 +27,8 @@ Deep into the future, humanity has taken to the stars and colonized many planets
 - **Farming and Building:** Collect materials, plant trees, farm, fish, build structures, or trade and sell with the nearby village.
 
 **Minigames:**
-  1. **2D Spaceship Shooter:** Fend off attacking alien spaceships. // removed
-  2. **3D Space Race:** Race your spaceship through an asteroid field, competing against other villagers' times.
+  // REMOVED **2D Spaceship Shooter:** Fend off attacking alien spaceships. // REMOVED
+  1. **3D Space Race:** Race your spaceship through an asteroid field, competing against other villagers' times.
 
 **Progression and Rewards:**
 - Grow your homestead by building additional structures.
@@ -63,7 +63,7 @@ Deep into the future, humanity has taken to the stars and colonized many planets
   
 **Minigames:**
 
-1. **2D Spaceship Shooter:** // removed
+1. // REMOVED **2D Spaceship Shooter:** // REMOVED
    - **Objective:** Destroy incoming alien ships.
    - **Controls:** WASD keys for movement, mouse for shooting.
    - **Difficulty Levels:** Easy, Medium, Hard, Insane.
@@ -84,7 +84,7 @@ Deep into the future, humanity has taken to the stars and colonized many planets
 **Upgrades:**
 
 - **Spaceship Speed:** Increase the speed of your spaceship for the race.
-- **Firepower:** Enhance the firepower of your spaceship for the shooter. // removed
+- **Firepower:** Enhance the amount of rockets for your spaceship to destroy asteroids during the space race.
 - **Animal Catching/Fishing Gun:** Improve radius of animal catching gun, and decrease difficulty of fishing by upgrading gun.
 
 ---
@@ -113,7 +113,7 @@ Deep into the future, humanity has taken to the stars and colonized many planets
 **Supporting Characters:**
 
 - **Trader:** NPC trader at the edge of the island for buying new goods, trading and selling.
-- **Enemies:** Alien attackers in the shooter minigame.
+- // REMOVED **Enemies:** Alien attackers in the shooter minigame. // REMOVED
 - **Robot Assistant:** Trusty robot assistant to act as a guide for the game.
 
 ---
