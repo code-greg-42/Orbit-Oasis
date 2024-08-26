@@ -143,36 +143,36 @@ Deep into the future, humanity has taken to the stars and colonized many planets
 - Deadline: Wednesday, July 24th
 - UPDATE: COMPLETED 7.30
 
-**Phase 5: Integrate Rewards, Upgrading, Difficulties, and Dialogue** (July 24th - July 31st)
+**Phase 5: Integrate Rewards, Upgrading, Difficulties, and Dialogue** (July 24th - August 28th)
 - Finalize the rewards system, upgrading mechanics, difficulty settings, and dialogue across all prototypes.
-- Deadline: Wednesday, August 21st
+- Deadline: Wednesday, August 28th
 - UPDATE: CURRENT
 
-**Phase 6: Models and Animations** (July 31st - August 21st)
+**Phase 6: Models and Animations** (August 28th - September 11th)
 - Integrate pixel art and low poly models and animations for the game.
-- Deadline: Wednesday, September 4th
-
-**Phase 7: UI/UX Design and Integration** (August 21st - September 4th)
-- Design and integrate user interface elements and improve user experience.
 - Deadline: Wednesday, September 11th
 
-**Phase 8: Background Music, Sound Effects, and Particle Effects** (September 4th - September 11th)
-- Add and integrate background music, sound effects, and particle effects into the game.
-- Deadline: Monday, September 16th
+**Phase 7: UI/UX Design and Integration** (September 11th - September 18th)
+- Design and integrate user interface elements and improve user experience.
+- Deadline: Wednesday, September 18th
 
-**Phase 9: Testing and Bug Fixing** (September 11th - September 16th)
+**Phase 8: Background Music, Sound Effects, and Particle Effects** (September 18th - September 23rd)
+- Add and integrate background music, sound effects, and particle effects into the game.
+- Deadline: Monday, September 23rd
+
+**Phase 9: Testing and Bug Fixing** (September 23rd - September 24th)
 - Conduct thorough self-testing to ensure the game runs smoothly and is free of major bugs.
 - Left only a short amount of time for this because it is being tested as it's being built, and the major tests will be done by family and friends after release.
-- Deadline: Tuesday, September 17th
+- Deadline: Tuesday, September 24th
 
-**Phase 10: Release** (September 17th)
+**Phase 10: Release** (September 24th)
 - Prepare and release the game on Steam or itch.io.
 - Allow friends and family to play and provide feedback.
-- Deadline: Tuesday, September 17th
+- Deadline: Tuesday, September 24th
 
 ---
 
 ## 7. Deadline
 
-- Total Project Duration: 14 weeks
-- Final Deadline: Tuesday, September 17th
+- Total Project Duration: 15 weeks
+- Final Deadline: Tuesday, September 24th
