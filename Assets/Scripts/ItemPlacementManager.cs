@@ -19,6 +19,7 @@ public class ItemPlacementManager : MonoBehaviour
 
     // placement settings
     private const float placementDistance = 6.5f;
+    private const float orientationDefaultY = 1.0f; // normal height on ground of the orientation game object -- used for adjusting spawn height of items
 
     // for use references
     private Material itemOriginalMaterial;
@@ -85,6 +86,9 @@ public class ItemPlacementManager : MonoBehaviour
 
             // remove from player inventory in data manager
             DataManager.Instance.RemoveItem(currentItem);
+
+            // update navmesh with newly placed object
+            NavMeshManager.Instance.UpdateNavMesh();
         }
 
         DeactivateItemPlacement();
@@ -125,8 +129,10 @@ public class ItemPlacementManager : MonoBehaviour
         // get original position as the position out in front of the camera, adjusted for where the camera is looking left/right
         Vector3 targetPosition = orientation.position + orientation.forward * placementDistance;
 
+        float heightAdjustment = currentItem.DefaultY - orientationDefaultY;
+
         // adjust Y position for height of the item
-        targetPosition.y += currentItem.ItemHeight / 2;
+        targetPosition.y += heightAdjustment;
 
         return targetPosition;
     }

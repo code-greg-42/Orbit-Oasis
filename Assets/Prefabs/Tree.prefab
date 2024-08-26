@@ -241,7 +241,7 @@ MonoBehaviour:
   buyPricePerUnit: 800
   buildMaterialPerUnit: 0
   prefabIndex: 1
-  itemHeight: 3
+  defaultY: 3
 --- !u!114 &6938465910328348573
 MonoBehaviour:
   m_ObjectHideFlags: 0

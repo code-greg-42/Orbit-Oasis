@@ -12,7 +12,16 @@ public class Projectile : MonoBehaviour
     {
         if (collision.gameObject.TryGetComponent(out Item item))
         {
+            // add item to player inventory
             item.PickupItem();
+
+            // update navmesh with the lack of the object if item was a placeable item such as a tree
+            if (item is PlaceableItem)
+            {
+                NavMeshManager.Instance.UpdateNavMesh();
+            }
+
+            // deactivate projectile and return to pool
             Deactivate();
         }
         else if ((collision.gameObject.CompareTag("Ground") || collision.gameObject.TryGetComponent(out BuildableObject _)) && groundSequenceCoroutine == null)
