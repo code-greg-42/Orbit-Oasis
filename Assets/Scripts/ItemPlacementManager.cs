@@ -19,6 +19,8 @@ public class ItemPlacementManager : MonoBehaviour
 
     // placement settings
     private const float placementDistance = 6.5f;
+    private const float cameraVerticalOffset = 0.25f;
+    private const float attachmentSearchRadius = 2.5f;
     private const float orientationDefaultY = 1.0f; // normal height on ground of the orientation game object -- used for adjusting spawn height of items
 
     // for use references
@@ -35,6 +37,7 @@ public class ItemPlacementManager : MonoBehaviour
         if (ItemPlacementActive)
         {
             UpdateItemPlacementPos();
+            UpdatePreviewColor();
             HandleInput();
         }
     }
@@ -129,7 +132,7 @@ public class ItemPlacementManager : MonoBehaviour
         // get original position as the position out in front of the camera, adjusted for where the camera is looking left/right
         Vector3 targetPosition = orientation.position + orientation.forward * placementDistance;
 
-        float heightAdjustment = currentItem.DefaultY - orientationDefaultY;
+        float heightAdjustment = currentItem.ItemHeight / 2 - orientationDefaultY;
 
         // adjust Y position for height of the item
         targetPosition.y += heightAdjustment;
@@ -156,19 +159,19 @@ public class ItemPlacementManager : MonoBehaviour
         }
     }
 
-    //private void UpdatePreviewColor(bool isPlaceable)
-    //{
-    //    if (ItemPlacementActive)
-    //    {
-    //        if (currentItem.TryGetComponent(out Renderer renderer))
-    //        {
-    //            Color targetColor = isPlaceable ? validPreviewColor : invalidPreviewColor;
+    private void UpdatePreviewColor()
+    {
+        if (ItemPlacementActive && currentItem != null)
+        {
+            if (currentItem.TryGetComponent(out Renderer renderer))
+            {
+                Color targetColor = currentItem.IsPlaceable() ? validPreviewColor : invalidPreviewColor;
 
-    //            if (renderer.material.color != targetColor)
-    //            {
-    //                renderer.material.color = targetColor;
-    //            }
-    //        }
-    //    }
-    //}
+                if (renderer.material.color != targetColor)
+                {
+                    renderer.material.color = targetColor;
+                }
+            }
+        }
+    }
 }
