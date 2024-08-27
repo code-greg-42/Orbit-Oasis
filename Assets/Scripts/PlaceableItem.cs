@@ -15,7 +15,9 @@ public class PlaceableItem : Item
     [SerializeField] private float frontBound;
     [SerializeField] private float backBound;
 
+    // initialize in awake
     private Vector3[] localBounds;
+    private int ignoreLayer;
 
     public float ItemHeight => itemHeight;
     public BuildEnums.BuildType AttachmentType => attachmentType;
@@ -29,6 +31,7 @@ public class PlaceableItem : Item
             new(0, 0, frontBound),
             new(0, 0, backBound)
         };
+        ignoreLayer = ~LayerMask.GetMask("BuildAttachmentPoint");
     }
 
     public bool IsPlaceable()
@@ -47,28 +50,34 @@ public class PlaceableItem : Item
             // create ray, aimed down
             Ray ray = new(worldPoint, Vector3.down);
 
-            // perform raycast
+            // draw line for debugging
+            Debug.DrawLine(worldPoint, worldPoint + Vector3.down * rayLength, Color.red);
 
-            // no hit
-            if (!Physics.Raycast(ray, out RaycastHit hit, rayLength))
+            // --- PERFORM RAYCAST ---
+
+            // --- no hit ---
+            if (!Physics.Raycast(ray, out RaycastHit hit, rayLength, ignoreLayer))
             {
                 return false;
             }
-
-            // surface is a valid build
+            
+            // --- yes hit ---
             if (hit.collider.TryGetComponent(out BuildableObject buildable))
             {
+                // surface is a valid build
                 if (buildable.BuildType == AttachmentType)
                 {
                     validHits++;
                 }
-            } // surface is ground
+            }
             else if (hit.collider.CompareTag("Ground"))
             {
+                // surface is ground
                 validHits++;
             }
             else
             {
+                // surface is something else
                 return false;
             }
         }
