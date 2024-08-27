@@ -19,6 +19,12 @@ public class PlaceableItem : Item
     private Vector3[] localBounds;
     private int ignoreLayer;
 
+    // for optimizing the IsPlaceable method
+    private bool lastIsPlaceable;
+    private Vector3 lastPosition;
+    private const float movementThreshold = 0.01f;
+    private float movementThresholdSqr;
+
     public float ItemHeight => itemHeight;
     public BuildEnums.BuildType AttachmentType => attachmentType;
 
@@ -32,10 +38,19 @@ public class PlaceableItem : Item
             new(0, 0, backBound)
         };
         ignoreLayer = ~LayerMask.GetMask("BuildAttachmentPoint");
+
+        // init last position and movement threshold
+        lastPosition = transform.position;
+        movementThresholdSqr = movementThreshold * movementThreshold;
     }
 
     public bool IsPlaceable()
     {
+        if (!HasMoved())
+        {
+            return lastIsPlaceable;
+        }
+
         // length of the ray: half item's height plus a buffer
         float rayLength = (itemHeight / 2) + 0.1f;
 
@@ -58,6 +73,7 @@ public class PlaceableItem : Item
             // --- no hit ---
             if (!Physics.Raycast(ray, out RaycastHit hit, rayLength, ignoreLayer))
             {
+                lastIsPlaceable = false;
                 return false;
             }
             
@@ -78,18 +94,25 @@ public class PlaceableItem : Item
             else
             {
                 // surface is something else
+                lastIsPlaceable = false;
                 return false;
             }
         }
 
         // return true if each bound area found a valid surface
-        if (validHits == localBounds.Length)
+        bool isPlaceable = validHits == localBounds.Length;
+        lastIsPlaceable = isPlaceable;
+        return isPlaceable;
+    }
+
+    private bool HasMoved()
+    {
+        // check distance to see if it has moved past threshold
+        if ((transform.position - lastPosition).sqrMagnitude > movementThresholdSqr)
         {
+            lastPosition = transform.position;
             return true;
         }
-        else
-        {
-            return false;
-        }
+        return false;
     }
 }
