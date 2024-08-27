@@ -27,8 +27,8 @@ Deep into the future, humanity has taken to the stars and colonized many planets
 - **Farming and Building:** Collect materials, plant trees, farm, fish, build structures, or trade and sell with the nearby village.
 
 **Minigames:**
-  // REMOVED **2D Spaceship Shooter:** Fend off attacking alien spaceships. // REMOVED
   1. **3D Space Race:** Race your spaceship through an asteroid field, competing against other villagers' times.
+  2. **Fishing:** Small 2D minigame that requires WASD keys to catch fish.
 
 **Progression and Rewards:**
 - Grow your homestead by building additional structures.
@@ -50,7 +50,6 @@ Deep into the future, humanity has taken to the stars and colonized many planets
 - **Items:**
   - **Tools:** Various tools for farming, mining, and building (e.g., shovel, axe, pickaxe).
   - **Crafting Materials:** Items used to craft structures and upgrades (e.g., stone, wood, metal).
-  - **More coming soon...**
 - **Animals:**
   - **Land Animals:** Various land animals will be scattered around the island, and can be caught and kept as pets, or used as food. Catching them uses a gun that shoots a projectile which "sucks up" the nearest animal (if within the radius)
   - **Fish and Sea Creatures:** Available to catch to use as food or sell, catching them requires a small minigame.
@@ -63,19 +62,13 @@ Deep into the future, humanity has taken to the stars and colonized many planets
   
 **Minigames:**
 
-1. // REMOVED **2D Spaceship Shooter:** // REMOVED
-   - **Objective:** Destroy incoming alien ships.
-   - **Controls:** WASD keys for movement, mouse for shooting.
-   - **Difficulty Levels:** Easy, Medium, Hard, Insane.
-   - **Access From Main Game:** Interact with spaceship (landed on the corner of the island)
-
-2. **3D Space Race:**
+1. **3D Space Race:**
    - **Objective:** Complete the race through an asteroid field.
-   - **Controls:** WASD for movement, Shift for boost, mouse-aim for direction.
-   - **Difficulty Levels:** Easy, Medium, Hard, Insane.
+   - **Controls:** WASD for movement, Shift for boost, Space for rockets.
+   - **Difficulty Levels:** Easy, Medium, Insane.
    - **Access From Main Game:** Interact with spaceship (landed on the corner of the island)
 
-3. **Fishing**
+2. **Fishing**
    - **Objective:** Get the cursor to the center of the screen, against various forces
    - **Controls:** WASD keys
    - **Difficulty Levels:** Difficulty will depend on type of fish and type of fishing gun
@@ -113,7 +106,6 @@ Deep into the future, humanity has taken to the stars and colonized many planets
 **Supporting Characters:**
 
 - **Trader:** NPC trader at the edge of the island for buying new goods, trading and selling.
-- // REMOVED **Enemies:** Alien attackers in the shooter minigame. // REMOVED
 - **Robot Assistant:** Trusty robot assistant to act as a guide for the game.
 
 ---
