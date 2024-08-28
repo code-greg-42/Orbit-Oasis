@@ -46,7 +46,7 @@ public class ItemPlacementManager : MonoBehaviour
     {
         if (ItemPlacementActive)
         {
-            if (Input.GetKeyDown(placeKey))
+            if (Input.GetKeyDown(placeKey) && currentItem != null && currentItem.IsPlaceable())
             {
                 PlaceItem();
             }
