@@ -25,13 +25,20 @@ public class PlaceableItem : Item
     private const float movementThreshold = 0.01f;
     private float movementThresholdSqr;
 
+    // raycasting settings
+    private const float raycastBuffer = 0.1f;
+    private float distanceToGround;
+    private float rayLength;
+    private float minHitLength;
+
     public float ItemHeight => itemHeight;
     public BuildEnums.BuildType AttachmentType => attachmentType;
 
     private void Awake()
     {
-        localBounds = new Vector3[4]
+        localBounds = new Vector3[5]
         {
+            new(0, 0, 0),
             new(leftBound, 0, 0),
             new(rightBound, 0, 0),
             new(0, 0, frontBound),
@@ -42,6 +49,9 @@ public class PlaceableItem : Item
         // init last position and movement threshold
         lastPosition = transform.position;
         movementThresholdSqr = movementThreshold * movementThreshold;
+        distanceToGround = itemHeight / 2;
+        rayLength = distanceToGround + raycastBuffer;
+        minHitLength = distanceToGround - raycastBuffer;
     }
 
     public bool IsPlaceable()
@@ -50,9 +60,6 @@ public class PlaceableItem : Item
         {
             return lastIsPlaceable;
         }
-
-        // length of the ray: half item's height plus a buffer
-        float rayLength = (itemHeight / 2) + 0.1f;
 
         // counter for valid hits
         int validHits = 0;
@@ -76,27 +83,41 @@ public class PlaceableItem : Item
                 lastIsPlaceable = false;
                 return false;
             }
-            
+
             // --- yes hit ---
-            if (hit.collider.TryGetComponent(out BuildableObject buildable))
+
+            // calculate whether or not the distance of the raycast hit is within the minimum range
+            bool isValidHitLength = (worldPoint.y - hit.point.y) > minHitLength;
+
+            if (isValidHitLength)
             {
-                // surface is a valid build
-                if (buildable.BuildType == AttachmentType)
+                if (hit.collider.TryGetComponent(out BuildableObject buildable))
                 {
+                    // surface is a valid build
+                    if (buildable.BuildType == AttachmentType)
+                    {
+                        validHits++;
+                    }
+                }
+                else if (hit.collider.CompareTag("Ground"))
+                {
+                    // surface is ground
                     validHits++;
                 }
-            }
-            else if (hit.collider.CompareTag("Ground"))
-            {
-                // surface is ground
-                validHits++;
+                else
+                {
+                    // surface is something else
+                    lastIsPlaceable = false;
+                    return false;
+                }
             }
             else
             {
-                // surface is something else
+                // hit was too close --- there is an obstruction 
                 lastIsPlaceable = false;
                 return false;
             }
+            
         }
 
         // return true if each bound area found a valid surface

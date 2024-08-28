@@ -18,7 +18,7 @@ public class ItemPlacementManager : MonoBehaviour
     private Color invalidPreviewColor = new(255 / 255f, 0 / 255f, 0 / 255f, 65 / 255f); // red transparent color
 
     // placement settings
-    private const float placementDistance = 6.5f;
+    private const float placementDistance = 5.0f;
     private const float cameraVerticalOffset = 0.25f;
     private const float attachmentSearchRadius = 2.5f;
     private const float orientationDefaultY = 1.0f; // normal height on ground of the orientation game object -- used for adjusting spawn height of items
