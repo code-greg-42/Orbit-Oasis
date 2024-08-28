@@ -31,6 +31,9 @@ public class PlaceableItem : Item
     private float rayLength;
     private float minHitLength;
 
+    // flag for registering collision events
+    private bool isColliding;
+
     public float ItemHeight => itemHeight;
     public BuildEnums.BuildType AttachmentType => attachmentType;
 
@@ -56,6 +59,14 @@ public class PlaceableItem : Item
 
     public bool IsPlaceable()
     {
+        // if object is colliding, it's not placeable
+        if (isColliding)
+        {
+            lastIsPlaceable = false;
+            return false;
+        }
+
+        // if object hasn't moved, return most recent result
         if (!HasMoved())
         {
             return lastIsPlaceable;
@@ -135,5 +146,37 @@ public class PlaceableItem : Item
             return true;
         }
         return false;
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        // ignore interactions with ground
+        if (other.gameObject.CompareTag("Ground"))
+        {
+            return;
+        }
+
+        // ignore interactions with floor objects
+        if (other.gameObject.TryGetComponent(out BuildableObject buildable))
+        {
+            if (buildable.BuildType == BuildEnums.BuildType.Floor)
+            {
+                return;
+            }
+        }
+
+        // ignore interactions with the BuildAttachment layer
+        if (other.gameObject.layer == LayerMask.NameToLayer("BuildAttachmentPoint"))
+        {
+            return;
+        }
+
+        isColliding = true;
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        // reset flag upon exiting the trigger
+        isColliding = false;
     }
 }

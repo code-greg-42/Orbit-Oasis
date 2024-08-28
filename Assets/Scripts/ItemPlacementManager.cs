@@ -70,12 +70,31 @@ public class ItemPlacementManager : MonoBehaviour
         // set to transparent preview material (true)
         SetPreviewMaterial(true);
 
+        // set collider to trigger --- used for determining whether it's placeable
+        if (currentItem.TryGetComponent(out Collider collider))
+        {
+            collider.isTrigger = true;
+        }
+        else
+        {
+            Debug.LogWarning("Could not find collider component on placeable item.");
+        }
+
         // set active in scene
         currentItem.gameObject.SetActive(true);
     }
 
     private void DeactivateItemPlacement()
     {
+        // reset collider
+        if (currentItem.TryGetComponent(out Collider collider))
+        {
+            collider.isTrigger = false;
+        }
+        else
+        {
+            Debug.LogWarning("Could not find collider component on placeable item.");
+        }
         currentItem = null;
         ItemPlacementActive = false;
     }
@@ -122,6 +141,15 @@ public class ItemPlacementManager : MonoBehaviour
         {
             // calc target placement
             Vector3 targetPosition = CalcTargetPosition();
+
+            //if (currentItem.TryGetComponent(out Rigidbody rb))
+            //{
+            //    rb.MovePosition(targetPosition);
+            //}
+            //else
+            //{
+            //    Debug.LogWarning("Could not find rigidbody component on placeable item.");
+            //}
 
             currentItem.transform.position = targetPosition;
         }
