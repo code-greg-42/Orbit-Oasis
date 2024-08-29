@@ -162,6 +162,7 @@ public class DataManager : MonoBehaviour
         Debug.Log("Added a placed item. Number of placed items: " + PlacedItems.ItemList.Count);
 
         // save to file
+        SavePlacedItems();
     }
 
     public void AddTraderItems(List<Item> items, float timer)

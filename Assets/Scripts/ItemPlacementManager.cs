@@ -19,8 +19,6 @@ public class ItemPlacementManager : MonoBehaviour
 
     // placement settings
     private const float placementDistance = 5.0f;
-    private const float cameraVerticalOffset = 0.25f;
-    private const float attachmentSearchRadius = 2.5f;
     private const float orientationDefaultY = 1.0f; // normal height on ground of the orientation game object -- used for adjusting spawn height of items
 
     // for use references
@@ -30,6 +28,12 @@ public class ItemPlacementManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+    }
+
+    private void Start()
+    {
+        // instantiate any existing placed items from data manager's list of PlacedItems
+        LoadPlacedItems();
     }
 
     private void Update()
@@ -54,6 +58,28 @@ public class ItemPlacementManager : MonoBehaviour
             {
                 ReturnItemToInventory();
             }
+        }
+    }
+
+    private void LoadPlacedItems()
+    {
+        if (DataManager.Instance.PlacedItems.ItemList.Count > 0)
+        {
+            // copy of list
+            List<PlaceableItemData> placedItems = new(DataManager.Instance.PlacedItems.ItemList);
+
+            // get array of item prefabs from inventory manager
+            GameObject[] itemPrefabs = InventoryManager.Instance.ItemPrefabs;
+
+            foreach (PlaceableItemData placedItemData in placedItems)
+            {
+                // instantiate new prefab at the saved position and rotation
+                Instantiate(itemPrefabs[placedItemData.prefabIndex], placedItemData.placementPosition,
+                    placedItemData.placementRotation);
+            }
+
+            // update navmesh with newly placed items
+            NavMeshManager.Instance.UpdateNavMesh();
         }
     }
 
@@ -145,15 +171,7 @@ public class ItemPlacementManager : MonoBehaviour
             // calc target placement
             Vector3 targetPosition = CalcTargetPosition();
 
-            //if (currentItem.TryGetComponent(out Rigidbody rb))
-            //{
-            //    rb.MovePosition(targetPosition);
-            //}
-            //else
-            //{
-            //    Debug.LogWarning("Could not find rigidbody component on placeable item.");
-            //}
-
+            // set position of preview to target position
             currentItem.transform.position = targetPosition;
         }
     }
