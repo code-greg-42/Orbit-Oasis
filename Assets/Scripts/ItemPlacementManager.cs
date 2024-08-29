@@ -109,6 +109,9 @@ public class ItemPlacementManager : MonoBehaviour
             // remove from player inventory in data manager
             DataManager.Instance.RemoveItem(currentItem);
 
+            // add to placeable items list in data manager
+            DataManager.Instance.AddPlacedItem(currentItem);
+
             // update navmesh with newly placed object
             NavMeshManager.Instance.UpdateNavMesh();
         }

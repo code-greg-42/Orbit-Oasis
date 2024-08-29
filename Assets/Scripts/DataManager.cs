@@ -18,7 +18,7 @@ public class DataManager : MonoBehaviour
     public TraderData TraderStats { get; private set; }
     public SerializableList<BuildableObjectData> BuildList { get; private set; }
     public SerializableList<ItemData> InventoryItems { get; private set; }
-    
+    public SerializableList<PlaceableItemData> PlacedItems { get; private set; }
 
     // tracking variables --- do not need to be saved to file
     public float PlayerBuildMaterial { get; private set; }
@@ -131,7 +131,7 @@ public class DataManager : MonoBehaviour
 
     public void RemoveBuild(BuildableObject build)
     {
-        // accounts for float point inconsistencies
+        // accounts for floating point inconsistencies
         BuildList.ItemList.RemoveAll(b => (b.placementPosition - build.transform.position).sqrMagnitude < 0.0001f
             && Quaternion.Angle(b.placementRotation, build.transform.rotation) < 0.01f);
 
@@ -149,6 +149,19 @@ public class DataManager : MonoBehaviour
 
         // save to file
         SaveInventory();
+    }
+
+    public void AddPlacedItem(PlaceableItem placeableItem)
+    {
+        // create new placeable item data instance with the values from the item
+        PlaceableItemData placeableItemData = new(placeableItem.transform.position, placeableItem.transform.rotation, placeableItem.PrefabIndex);
+
+        // add to list
+        PlacedItems.ItemList.Add(placeableItemData);
+
+        Debug.Log("Added a placed item. Number of placed items: " + PlacedItems.ItemList.Count);
+
+        // save to file
     }
 
     public void AddTraderItems(List<Item> items, float timer)
@@ -182,6 +195,17 @@ public class DataManager : MonoBehaviour
         {
             Debug.LogWarning("Attempted to remove item, but item not found in InventoryItems list.");
         }
+    }
+
+    public void RemovePlacedItem(PlaceableItem placeableItem)
+    {
+        // accounts for floating point inconsistencies
+        PlacedItems.ItemList.RemoveAll(x => (x.placementPosition - placeableItem.transform.position).sqrMagnitude < 0.0001f
+            && Quaternion.Angle(x.placementRotation, placeableItem.transform.rotation) < 0.01f);
+
+        Debug.Log("Removed a placed item. Number of placed items: " + PlacedItems.ItemList.Count);
+
+        // save to file
     }
 
     public void RemoveSingleTraderItem(Item item, float timer)
@@ -373,6 +397,7 @@ public class DataManager : MonoBehaviour
 
     private void LoadBuildList()
     {
+        // load list from file, otherwise init new list
         BuildList = LoadFromFile<SerializableList<BuildableObjectData>>(nameof(BuildList))
             ?? new SerializableList<BuildableObjectData>(new List<BuildableObjectData>());
     }
@@ -384,8 +409,23 @@ public class DataManager : MonoBehaviour
 
     private void LoadInventory()
     {
+        // load list from file, otherwise init new list
         InventoryItems = LoadFromFile<SerializableList<ItemData>>(nameof(InventoryItems))
             ?? new SerializableList<ItemData>(new List<ItemData>());
+    }
+
+    private void SavePlacedItems()
+    {
+        SaveToFile(PlacedItems, nameof(PlacedItems));
+    }
+
+    private void LoadPlacedItems()
+    {
+        // load list from file, otherwise init new list
+        PlacedItems = LoadFromFile<SerializableList<PlaceableItemData>>(nameof(PlacedItems))
+            ?? new SerializableList<PlaceableItemData>(new List<PlaceableItemData>());
+
+        Debug.Log("Loaded placed items. Number of items: " + PlacedItems.ItemList.Count);
     }
 
     private void SaveTraderData()
@@ -410,15 +450,18 @@ public class DataManager : MonoBehaviour
         SavePlayerStats();
         SaveRaceStats();
         SaveBuildList();
+        SavePlacedItems();
         SaveInventory();
         SaveTraderData();
     }
 
     private void LoadAllData()
     {
+        // load/instantiate all data components
         LoadPlayerStats();
         LoadRaceStats();
         LoadBuildList();
+        LoadPlacedItems();
         LoadInventory();
         LoadTraderData();
     }
