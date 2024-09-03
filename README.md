@@ -138,11 +138,12 @@ Deep into the future, humanity has taken to the stars and colonized many planets
 **Phase 5: Integrate Rewards, Upgrading, Difficulties, and Dialogue** (July 24th - August 28th)
 - Finalize the rewards system, upgrading mechanics, difficulty settings, and dialogue across all prototypes.
 - Deadline: Wednesday, August 28th
-- UPDATE: CURRENT
+- UPDATE: COMPLETEED 8.29
 
 **Phase 6: Models and Animations** (August 28th - September 11th)
 - Integrate pixel art and low poly models and animations for the game.
 - Deadline: Wednesday, September 11th
+- UPDATE: CURRENT
 
 **Phase 7: UI/UX Design and Integration** (September 11th - September 18th)
 - Design and integrate user interface elements and improve user experience.
