@@ -14,6 +14,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Transform orientation;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private Transform playerObject;
+    [SerializeField] private PlayerAnimation playerAnimation;
 
     [Header("Keybinds")]
     [SerializeField] private KeyCode jumpKey = KeyCode.Space;
@@ -66,6 +67,7 @@ public class PlayerMovement : MonoBehaviour
         GroundCheck();
         MyInput();
         SpeedControl();
+        UpdateRunningAnimation();
     }
 
     private void MyInput()
@@ -138,7 +140,30 @@ public class PlayerMovement : MonoBehaviour
         // reset y velocity
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
 
+        // trigger player jump animation
+        playerAnimation.TriggerPlayerJump();
+
         // add jump force
         rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+    }
+
+    private void UpdateRunningAnimation()
+    {
+        // calc player's current horizontal speed
+        Vector3 flatVelo = new(rb.velocity.x, 0f, rb.velocity.z);
+        float currentSpeed = flatVelo.magnitude;
+
+        if (currentSpeed > baseSpeed * boostMultiplier * 0.9f)
+        {
+            playerAnimation.SetPlayerSpeed(PlayerAnimation.PlayerSpeed.Sprint);
+        }
+        else if (currentSpeed > 0.1f)
+        {
+            playerAnimation.SetPlayerSpeed(PlayerAnimation.PlayerSpeed.Run);
+        }
+        else
+        {
+            playerAnimation.SetPlayerSpeed(PlayerAnimation.PlayerSpeed.Idle);
+        }
     }
 }
