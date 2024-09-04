@@ -7,6 +7,14 @@ public class PlayerAnimation : MonoBehaviour
     [Header("Animator Reference")]
     [SerializeField] Animator playerAnim;
 
+    private bool isFalling;
+    private bool isJumping;
+    private bool isLanding;
+
+    public bool IsFalling => isFalling;
+    public bool IsJumping => isJumping;
+    public bool IsLanding => isLanding;
+
     public enum PlayerSpeed
     {
         Idle,
@@ -42,8 +50,40 @@ public class PlayerAnimation : MonoBehaviour
         }
     }
 
-    public void TriggerPlayerJump()
+    public void TriggerJumpUp()
     {
-        playerAnim.SetTrigger("jump");
+        if (!isJumping)
+        {
+            isJumping = true;
+            isFalling = false;
+            isLanding = false;
+
+            playerAnim.SetTrigger("jumpUp");
+        }
+    }
+
+    public void TriggerFallingLoop()
+    {
+        if (!isFalling)
+        {
+            isJumping = false;
+            isFalling = true;
+            isLanding = false;
+
+            playerAnim.SetBool("isFalling", true);
+        }
+    }
+
+    public void TriggerLanding()
+    {
+        if (!isLanding)
+        {
+            isJumping = false;
+            isFalling = false;
+            isLanding = true;
+
+            //playerAnim.SetTrigger("jumpDown");
+            playerAnim.SetBool("isFalling", false);
+        }
     }
 }

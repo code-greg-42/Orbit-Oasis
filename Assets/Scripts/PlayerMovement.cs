@@ -28,6 +28,10 @@ public class PlayerMovement : MonoBehaviour
     private const float airMultiplier = 0.5f;
     private bool isGrounded;
 
+    // jump animation variables
+    private float airTime;
+    private const float airTimeThreshold = 0.2f;
+
     private float horizontalInput;
     private float verticalInput;
     private Vector3 moveDirection;
@@ -72,6 +76,7 @@ public class PlayerMovement : MonoBehaviour
         MyInput();
         SpeedControl();
         UpdateRunningAnimation();
+        HandleAirState();
     }
 
     private void MyInput()
@@ -174,6 +179,13 @@ public class PlayerMovement : MonoBehaviour
         if (isGrounded)
         {
             rb.drag = groundDrag;
+
+            if (airTime > 0)
+            {
+                playerAnimation.TriggerLanding();
+            }
+
+            airTime = 0f;
         }
         else
         {
@@ -187,7 +199,7 @@ public class PlayerMovement : MonoBehaviour
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
 
         // trigger player jump animation
-        playerAnimation.TriggerPlayerJump();
+        playerAnimation.TriggerJumpUp();
 
         // add jump force
         //rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
@@ -231,5 +243,20 @@ public class PlayerMovement : MonoBehaviour
             timer -= Time.deltaTime;
         }
         yield return null;
+    }
+
+    private void HandleAirState()
+    {
+        if (!isGrounded)
+        {
+            // increment air time
+            airTime += Time.deltaTime;
+
+            // trigger falling animation if threshold is reached
+            if (airTime > airTimeThreshold && !playerAnimation.IsFalling)
+            {
+                playerAnimation.TriggerFallingLoop();
+            }
+        }
     }
 }
