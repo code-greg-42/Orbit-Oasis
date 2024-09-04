@@ -8,7 +8,7 @@ public class PlayerMovement : MonoBehaviour
     private float moveSpeed = 7.0f;
     private const float baseSpeed = 7.0f;
     private const float boostMultiplier = 1.5f;
-    private const float jumpForce = 5.0f;
+    private const float jumpForce = 20.0f;
 
     [Header("References")]
     [SerializeField] private Transform orientation;
@@ -24,7 +24,7 @@ public class PlayerMovement : MonoBehaviour
     private const float playerHeight = 2.0f;
     private const float groundCheckBuffer = 0.2f;
     private const float groundDrag = 5.0f;
-    private const float airDrag = 0f;
+    private const float airDrag = 1.0f;
     private const float airMultiplier = 0.5f;
     private bool isGrounded;
 
@@ -32,6 +32,7 @@ public class PlayerMovement : MonoBehaviour
     private float verticalInput;
     private Vector3 moveDirection;
     private Rigidbody rb;
+    private Coroutine jumpCoroutine;
 
     public Vector3 PlayerPosition => transform.position;
     public Quaternion PlayerRotation => playerObject.rotation;
@@ -189,7 +190,17 @@ public class PlayerMovement : MonoBehaviour
         playerAnimation.TriggerPlayerJump();
 
         // add jump force
-        rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+        //rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+
+        // testing purposes
+        if (jumpCoroutine != null)
+        {
+            StopCoroutine(jumpCoroutine);
+            jumpCoroutine = null;
+        }
+
+        jumpCoroutine = StartCoroutine(JumpCoroutine());
+        // end testing
     }
 
     private void UpdateRunningAnimation()
@@ -209,5 +220,16 @@ public class PlayerMovement : MonoBehaviour
                 playerAnimation.SetPlayerSpeed(PlayerAnimation.PlayerSpeed.Run);
             }
         }
+    }
+
+    private IEnumerator JumpCoroutine()
+    {
+        float timer = 1.0f;
+        while (timer > 0)
+        {
+            rb.AddForce(transform.up * 3.5f, ForceMode.Acceleration);
+            timer -= Time.deltaTime;
+        }
+        yield return null;
     }
 }
