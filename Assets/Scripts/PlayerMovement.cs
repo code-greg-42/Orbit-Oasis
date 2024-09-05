@@ -8,8 +8,12 @@ public class PlayerMovement : MonoBehaviour
     private float moveSpeed = 7.0f;
     private const float baseSpeed = 7.0f;
     private const float boostMultiplier = 1.5f;
-    private const float jumpForce = 25.0f;
-    private const float jumpDuration = 1.5f;
+
+    // jump variables
+    private const float jumpForce = 12f;
+    private const float jumpDuration = 0.6f;
+    private bool jumpReady = true;
+    private bool isJumping = false;
 
     [Header("References")]
     [SerializeField] private Transform orientation;
@@ -40,7 +44,6 @@ public class PlayerMovement : MonoBehaviour
     private float verticalInput;
     private Vector3 moveDirection;
     private Rigidbody rb;
-    private Coroutine jumpCoroutine;
 
     public Vector3 PlayerPosition => transform.position;
     public Quaternion PlayerRotation => playerObject.rotation;
@@ -71,7 +74,10 @@ public class PlayerMovement : MonoBehaviour
         MovePlayer();
 
         // custom gravity
-        rb.AddForce(Vector3.down * customGravity, ForceMode.Acceleration);
+        if (!isJumping)
+        {
+            rb.AddForce(Vector3.down * customGravity, ForceMode.Acceleration);
+        }
     }
 
     private void Update()
@@ -100,8 +106,9 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // check for jump
-        if (Input.GetKeyDown(jumpKey) && isGrounded)
+        if (Input.GetKeyDown(jumpKey) && isGrounded && jumpReady)
         {
+            Debug.Log("Jump!");
             Jump();
         }
     }
@@ -199,24 +206,19 @@ public class PlayerMovement : MonoBehaviour
 
     private void Jump()
     {
-        // reset y velocity
-        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-
-        // trigger player jump animation
-        playerAnimation.TriggerJumpUp();
-
-        // add jump force
-        //rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
-
-        // testing purposes
-        if (jumpCoroutine != null)
+        if (jumpReady)
         {
-            StopCoroutine(jumpCoroutine);
-            jumpCoroutine = null;
-        }
+            jumpReady = false;
 
-        jumpCoroutine = StartCoroutine(JumpCoroutine());
-        // end testing
+            // reset y velocity
+            rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+
+            // trigger player jump animation
+            playerAnimation.TriggerJumpUp();
+            Debug.Log("Jump Animation Triggered");
+
+            StartCoroutine(JumpCoroutine());
+        }
     }
 
     private void UpdateRunningAnimation()
@@ -241,12 +243,22 @@ public class PlayerMovement : MonoBehaviour
     private IEnumerator JumpCoroutine()
     {
         float timer = jumpDuration;
+        isJumping = true;
+        rb.AddForce(jumpForce * Vector3.up, ForceMode.Impulse);
         while (timer > 0)
         {
-            rb.AddForce(transform.up * 3.5f, ForceMode.Acceleration);
+            //float logValue = Mathf.Log(timer + 1, jumpDuration + 1);
+            //float logOfLogValue = Mathf.Log(logValue + 1, 2);
+            //float smoothForce = jumpForce * Mathf.Log(logOfLogValue + 1, 2);
+
+            //rb.AddForce(smoothForce * transform.up, ForceMode.Force);
+            //rb.AddForce(3.5f * transform.up, ForceMode.Acceleration);
             timer -= Time.deltaTime;
+            yield return null;
         }
-        yield return null;
+        isJumping = false;
+        jumpReady = true;
+        Debug.Log("Jump Ready Set To: " + jumpReady);
     }
 
     private void HandleAirState()
