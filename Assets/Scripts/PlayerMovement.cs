@@ -8,7 +8,8 @@ public class PlayerMovement : MonoBehaviour
     private float moveSpeed = 7.0f;
     private const float baseSpeed = 7.0f;
     private const float boostMultiplier = 1.5f;
-    private const float jumpForce = 20.0f;
+    private const float jumpForce = 25.0f;
+    private const float jumpDuration = 1.5f;
 
     [Header("References")]
     [SerializeField] private Transform orientation;
@@ -31,6 +32,9 @@ public class PlayerMovement : MonoBehaviour
     // jump animation variables
     private float airTime;
     private const float airTimeThreshold = 0.2f;
+
+    // custom gravity
+    private float customGravity = 20.0f;
 
     private float horizontalInput;
     private float verticalInput;
@@ -67,7 +71,7 @@ public class PlayerMovement : MonoBehaviour
         MovePlayer();
 
         // custom gravity
-        rb.AddForce(Vector3.down * 20f, ForceMode.Acceleration);
+        rb.AddForce(Vector3.down * customGravity, ForceMode.Acceleration);
     }
 
     private void Update()
@@ -236,7 +240,7 @@ public class PlayerMovement : MonoBehaviour
 
     private IEnumerator JumpCoroutine()
     {
-        float timer = 1.0f;
+        float timer = jumpDuration;
         while (timer > 0)
         {
             rb.AddForce(transform.up * 3.5f, ForceMode.Acceleration);

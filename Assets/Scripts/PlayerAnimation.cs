@@ -82,7 +82,7 @@ public class PlayerAnimation : MonoBehaviour
             isFalling = false;
             isLanding = true;
 
-            //playerAnim.SetTrigger("jumpDown");
+            playerAnim.SetTrigger("jumpDown");
             playerAnim.SetBool("isFalling", false);
         }
     }
