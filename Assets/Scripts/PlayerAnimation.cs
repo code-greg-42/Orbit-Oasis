@@ -11,9 +11,10 @@ public class PlayerAnimation : MonoBehaviour
     private bool isJumping;
     private bool isLanding;
 
+    private const float jumpAnimationTime = 0.533f;
+    private const float landingAnimationTime = 0.6f;
+
     public bool IsFalling => isFalling;
-    public bool IsJumping => isJumping;
-    public bool IsLanding => isLanding;
 
     public enum PlayerSpeed
     {
@@ -59,14 +60,20 @@ public class PlayerAnimation : MonoBehaviour
             isLanding = false;
 
             playerAnim.SetTrigger("jumpUp");
+            StartCoroutine(ResetJumpUp());
         }
+    }
+
+    private IEnumerator ResetJumpUp()
+    {
+        yield return new WaitForSeconds(jumpAnimationTime);
+        isJumping = false;
     }
 
     public void TriggerFallingLoop()
     {
         if (!isFalling)
         {
-            isJumping = false;
             isFalling = true;
             isLanding = false;
 
@@ -76,14 +83,21 @@ public class PlayerAnimation : MonoBehaviour
 
     public void TriggerLanding()
     {
-        if (!isLanding)
+        if (!isLanding && !isJumping && isFalling)
         {
-            isJumping = false;
-            isFalling = false;
             isLanding = true;
-
             playerAnim.SetTrigger("jumpDown");
+
+            isFalling = false;
             playerAnim.SetBool("isFalling", false);
+
+            StartCoroutine(ResetLanding());
         }
+    }
+
+    private IEnumerator ResetLanding()
+    {
+        yield return new WaitForSeconds(landingAnimationTime);
+        isLanding = false;
     }
 }

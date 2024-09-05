@@ -14,6 +14,7 @@ public class PlayerMovement : MonoBehaviour
     private const float jumpDuration = 0.6f;
     private bool jumpReady = true;
     private bool isJumping = false;
+    private float[] jumpForceSettings = { 12f, 18f };
 
     [Header("References")]
     [SerializeField] private Transform orientation;
@@ -215,7 +216,6 @@ public class PlayerMovement : MonoBehaviour
 
             // trigger player jump animation
             playerAnimation.TriggerJumpUp();
-            Debug.Log("Jump Animation Triggered");
 
             StartCoroutine(JumpCoroutine());
         }
@@ -247,18 +247,11 @@ public class PlayerMovement : MonoBehaviour
         rb.AddForce(jumpForce * Vector3.up, ForceMode.Impulse);
         while (timer > 0)
         {
-            //float logValue = Mathf.Log(timer + 1, jumpDuration + 1);
-            //float logOfLogValue = Mathf.Log(logValue + 1, 2);
-            //float smoothForce = jumpForce * Mathf.Log(logOfLogValue + 1, 2);
-
-            //rb.AddForce(smoothForce * transform.up, ForceMode.Force);
-            //rb.AddForce(3.5f * transform.up, ForceMode.Acceleration);
             timer -= Time.deltaTime;
             yield return null;
         }
         isJumping = false;
         jumpReady = true;
-        Debug.Log("Jump Ready Set To: " + jumpReady);
     }
 
     private void HandleAirState()
@@ -268,10 +261,15 @@ public class PlayerMovement : MonoBehaviour
             // increment air time
             airTime += Time.deltaTime;
 
-            // trigger falling animation if threshold is reached
-            if (airTime > airTimeThreshold && !playerAnimation.IsFalling)
+            // raycast downward to check distance to the ground
+            float raycastDistance = playerHeight * 1.3f;
+
+            if (!Physics.Raycast(transform.position, Vector3.down, out RaycastHit _, raycastDistance, groundLayer))
             {
-                playerAnimation.TriggerFallingLoop();
+                if (airTime > airTimeThreshold && !playerAnimation.IsFalling)
+                {
+                    playerAnimation.TriggerFallingLoop();
+                }
             }
         }
     }
