@@ -18,12 +18,23 @@ public class PlayerControls : MonoBehaviour
     private readonly float maxChargeTime = 2.0f;
     private readonly float maxAdditionalForce = 20.0f;
 
+    // cooldowns
+    private const float axeSwingFinishTime = 1.008f;
+    private const float timeToMidSwing = 0.612f;
+    private bool axeSwingReady = true;
+    private bool isMidAxeSwing = false;
+    private bool axeHitRegistered = false;
+
+    public bool IsMidAxeSwing => isMidAxeSwing;
+    public bool AxeHitRegistered => axeHitRegistered;
+
     private float shootingChargeTime;
 
     [Header("References")]
     [SerializeField] private PlayerAxe axe;
     [SerializeField] private GameObject projectilePrefab;
     [SerializeField] private Transform playerObject;
+    [SerializeField] private PlayerAnimation playerAnimation;
 
     void Update()
     {
@@ -31,9 +42,13 @@ public class PlayerControls : MonoBehaviour
             && !ItemPlacementManager.Instance.ItemPlacementActive)
         {
             // FARMING
-            if (Input.GetKeyDown(axeKeybind))
+            if (Input.GetKey(axeKeybind) && axeSwingReady)
             {
-                axe.SwingAxe();
+                //axe.SwingAxe();
+                axeSwingReady = false;
+                playerAnimation.TriggerAxeSwing();
+
+                StartCoroutine(ResetAxeSwing());
             }
 
             // ITEM PICKUP
@@ -155,5 +170,23 @@ public class PlayerControls : MonoBehaviour
             rb.AddForce(direction * (baseProjectileForce + additionalForce), ForceMode.Impulse);
             Debug.Log("Projectile shot with force: " + (baseProjectileForce + additionalForce));
         }
+    }
+
+    public void RegisterAxeHit()
+    {
+        axeHitRegistered = true;
+    }
+
+    private IEnumerator ResetAxeSwing()
+    {
+        // wait for animation to reach 'hit capable' part of swing
+        yield return new WaitForSeconds(timeToMidSwing);
+        isMidAxeSwing = true;
+
+        // wait for rest of swing animation to finish
+        yield return new WaitForSeconds(axeSwingFinishTime);
+        isMidAxeSwing = false;
+        axeHitRegistered = false;
+        axeSwingReady = true;
     }
 }

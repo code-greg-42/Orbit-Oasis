@@ -4,18 +4,18 @@ using UnityEngine;
 
 public class AxeColliderForwarder : MonoBehaviour
 {
-    private PlayerAxe playerAxe;
+    //private PlayerAxe playerAxe;
 
-    void Start()
-    {
-        playerAxe = GetComponentInParent<PlayerAxe>();
-    }
+    //void Start()
+    //{
+    //    playerAxe = GetComponentInParent<PlayerAxe>();
+    //}
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (playerAxe != null)
-        {
-            playerAxe.HandleCollision(other);
-        }
-    }
+    //private void OnTriggerEnter(Collider other)
+    //{
+    //    if (playerAxe != null)
+    //    {
+    //        playerAxe.HandleCollision(other);
+    //    }
+    //}
 }

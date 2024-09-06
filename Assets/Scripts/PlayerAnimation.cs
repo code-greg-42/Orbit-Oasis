@@ -10,9 +10,11 @@ public class PlayerAnimation : MonoBehaviour
     private bool isFalling;
     private bool isJumping;
     private bool isLanding;
+    private bool isSwinging;
 
     private const float jumpAnimationTime = 0.533f;
     private const float landingAnimationTime = 0.6f;
+    private const float axeSwingAnimationTime = 1.61084f;
 
     public bool IsFalling => isFalling;
 
@@ -93,6 +95,23 @@ public class PlayerAnimation : MonoBehaviour
 
             StartCoroutine(ResetLanding());
         }
+    }
+
+    public void TriggerAxeSwing()
+    {
+        if (!isSwinging)
+        {
+            isSwinging = true;
+            playerAnim.SetTrigger("axeSwing");
+        }
+
+        StartCoroutine(ResetAxeSwing());
+    }
+
+    private IEnumerator ResetAxeSwing()
+    {
+        yield return new WaitForSeconds(axeSwingAnimationTime);
+        isSwinging = false;
     }
 
     private IEnumerator ResetLanding()
