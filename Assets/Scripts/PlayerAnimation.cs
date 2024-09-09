@@ -11,10 +11,12 @@ public class PlayerAnimation : MonoBehaviour
     private bool isJumping;
     private bool isLanding;
     private bool isSwinging;
+    private bool isMining;
 
     private const float jumpAnimationTime = 0.533f;
     private const float landingAnimationTime = 0.6f;
     private const float axeSwingAnimationTime = 1.61084f;
+    private const float miningAnimationTime = 1.58375f;
 
     public bool IsFalling => isFalling;
 
@@ -106,6 +108,24 @@ public class PlayerAnimation : MonoBehaviour
         }
 
         StartCoroutine(ResetAxeSwing());
+    }
+
+    public void StartMiningLoop()
+    {
+        if (!isMining)
+        {
+            isMining = true;
+            playerAnim.SetBool("isMining", true);
+        }
+    }
+
+    public void StopMiningLoop()
+    {
+        if (isMining)
+        {
+            isMining = false;
+            playerAnim.SetBool("isMining", false);
+        }
     }
 
     private IEnumerator ResetAxeSwing()

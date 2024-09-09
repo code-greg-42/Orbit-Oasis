@@ -23,8 +23,8 @@ public class PlayerControls : MonoBehaviour
     private const float timeToMidAxeSwing = 0.612f;
 
     // mining pick variables
-    private const float miningFinishTime = 0f;
-    private const float timeToMidMiningSwing = 0f;
+    private const float miningFinishTime = 0.855225f;
+    private const float timeToMidMiningSwing = 0.728525f;
 
     // general tool variables
     private bool toolSwingReady = true;
@@ -194,7 +194,7 @@ public class PlayerControls : MonoBehaviour
         // start animation
         playerAnimation.TriggerAxeSwing();
 
-        StartCoroutine(ResetAxeSwing());
+        StartCoroutine(ResetToolSwing(true));
     }
 
     public void RegisterToolHit()
@@ -202,17 +202,45 @@ public class PlayerControls : MonoBehaviour
         toolHitRegistered = true;
     }
 
-    private IEnumerator ResetAxeSwing()
+    private void SwingMiningPick()
     {
+        playerAnimation.StartMiningLoop();
+    }
+
+    private void SwingAxe()
+    {
+        playerAnimation.TriggerAxeSwing();
+    }
+
+    private IEnumerator ResetToolSwing(bool isAxe)
+    {
+        float timeToMid = isAxe ? timeToMidAxeSwing : timeToMidMiningSwing;
+        float timeToFinish = isAxe ? axeSwingFinishTime : miningFinishTime;
+
         // wait for animation to reach 'hit capable' part of swing
-        yield return new WaitForSeconds(timeToMidAxeSwing);
+        yield return new WaitForSeconds(timeToMid);
         isMidToolSwing = true;
 
         // wait for rest of swing animation to finish and reset bools
-        yield return new WaitForSeconds(axeSwingFinishTime);
+        yield return new WaitForSeconds(timeToFinish);
         isMidToolSwing = false;
         toolHitRegistered = false;
-        isSwinging = false;
-        toolSwingReady = true;
+
+        // reset swing ready bools only if it's an axe swing, or if the user is no longer pressing the 'farming/use tool' button
+        if (isAxe || !Input.GetKey(toolKeybind))
+        {
+            if (!isAxe)
+            {
+                playerAnimation.StopMiningLoop();
+            }
+
+            isSwinging = false;
+            toolSwingReady = true;
+        }
+        else
+        {
+            // go again with the mining loop
+            StartCoroutine(ResetToolSwing(false));
+        }
     }
 }
