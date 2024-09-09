@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerControls : MonoBehaviour
 {
     [Header("Keybinds")]
-    public KeyCode axeKeybind = KeyCode.E;
+    public KeyCode toolKeybind = KeyCode.E;
     public KeyCode pickupKeybind = KeyCode.F;
     public KeyCode inventoryKeybind = KeyCode.Tab;
     public KeyCode shootingKeybind = KeyCode.C;
@@ -20,23 +20,27 @@ public class PlayerControls : MonoBehaviour
 
     // axe swing variables
     private const float axeSwingFinishTime = 1.008f;
-    private const float timeToMidSwing = 0.612f;
-    private bool axeSwingReady = true;
-    private bool isMidAxeSwing = false;
-    private bool axeHitRegistered = false;
-    private float timeOfLastAxeSwing;
+    private const float timeToMidAxeSwing = 0.612f;
 
     // mining pick variables
+    private const float miningFinishTime = 0f;
+    private const float timeToMidMiningSwing = 0f;
+
+    // general tool variables
+    private bool toolSwingReady = true;
+    private bool isMidToolSwing = false;
+    private bool toolHitRegistered = false;
+    private float timeOfLastToolSwing;
 
     // properties used by PlayerAxe script
-    public bool IsMidAxeSwing => isMidAxeSwing;
-    public bool AxeHitRegistered => axeHitRegistered;
-    public float TimeOfLastAxeSwing => timeOfLastAxeSwing;
+    public bool IsMidToolSwing => isMidToolSwing;
+    public bool ToolHitRegistered => toolHitRegistered;
+    public float TimeOfLastToolSwing => timeOfLastToolSwing;
 
     private float shootingChargeTime;
 
     [Header("References")]
-    [SerializeField] private PlayerAxe axe;
+    [SerializeField] private FarmingTool playerAxe;
     [SerializeField] private GameObject projectilePrefab;
     [SerializeField] private Transform playerObject;
     [SerializeField] private PlayerAnimation playerAnimation;
@@ -47,9 +51,9 @@ public class PlayerControls : MonoBehaviour
             && !ItemPlacementManager.Instance.ItemPlacementActive)
         {
             // FARMING
-            if (Input.GetKey(axeKeybind) && axeSwingReady)
+            if (Input.GetKey(toolKeybind) && toolSwingReady)
             {
-                SwingAxe();
+                SwingTool();
             }
 
             // ITEM PICKUP
@@ -169,19 +173,18 @@ public class PlayerControls : MonoBehaviour
             projectile.SetActive(true);
 
             rb.AddForce(direction * (baseProjectileForce + additionalForce), ForceMode.Impulse);
-            Debug.Log("Projectile shot with force: " + (baseProjectileForce + additionalForce));
         }
     }
 
-    private void SwingAxe()
+    private void SwingTool()
     {
-        axeSwingReady = false;
+        toolSwingReady = false;
 
         // activate axe gameobject
-        axe.gameObject.SetActive(true);
+        playerAxe.gameObject.SetActive(true);
 
         // set time of initial swing for use by playerAxe despawn coroutine
-        timeOfLastAxeSwing = Time.time;
+        timeOfLastToolSwing = Time.time;
 
         // start animation
         playerAnimation.TriggerAxeSwing();
@@ -189,21 +192,21 @@ public class PlayerControls : MonoBehaviour
         StartCoroutine(ResetAxeSwing());
     }
 
-    public void RegisterAxeHit()
+    public void RegisterToolHit()
     {
-        axeHitRegistered = true;
+        toolHitRegistered = true;
     }
 
     private IEnumerator ResetAxeSwing()
     {
         // wait for animation to reach 'hit capable' part of swing
-        yield return new WaitForSeconds(timeToMidSwing);
-        isMidAxeSwing = true;
+        yield return new WaitForSeconds(timeToMidAxeSwing);
+        isMidToolSwing = true;
 
-        // wait for rest of swing animation to finish
+        // wait for rest of swing animation to finish and reset bools
         yield return new WaitForSeconds(axeSwingFinishTime);
-        isMidAxeSwing = false;
-        axeHitRegistered = false;
-        axeSwingReady = true;
+        isMidToolSwing = false;
+        toolHitRegistered = false;
+        toolSwingReady = true;
     }
 }
