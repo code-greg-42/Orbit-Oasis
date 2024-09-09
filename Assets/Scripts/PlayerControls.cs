@@ -31,11 +31,15 @@ public class PlayerControls : MonoBehaviour
     private bool isMidToolSwing = false;
     private bool toolHitRegistered = false;
     private float timeOfLastToolSwing;
+    private bool isSwinging = false;
 
     // properties used by PlayerAxe script
     public bool IsMidToolSwing => isMidToolSwing;
     public bool ToolHitRegistered => toolHitRegistered;
     public float TimeOfLastToolSwing => timeOfLastToolSwing;
+
+    // property used by movement script
+    public bool IsSwinging => isSwinging;
 
     private float shootingChargeTime;
 
@@ -179,6 +183,7 @@ public class PlayerControls : MonoBehaviour
     private void SwingTool()
     {
         toolSwingReady = false;
+        isSwinging = true;
 
         // activate axe gameobject
         playerAxe.gameObject.SetActive(true);
@@ -207,6 +212,7 @@ public class PlayerControls : MonoBehaviour
         yield return new WaitForSeconds(axeSwingFinishTime);
         isMidToolSwing = false;
         toolHitRegistered = false;
+        isSwinging = false;
         toolSwingReady = true;
     }
 }

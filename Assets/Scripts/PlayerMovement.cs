@@ -21,6 +21,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private Transform playerObject;
     [SerializeField] private PlayerAnimation playerAnimation;
+    [SerializeField] private PlayerControls playerControls;
 
     [Header("Keybinds")]
     [SerializeField] private KeyCode jumpKey = KeyCode.Space;
@@ -39,7 +40,7 @@ public class PlayerMovement : MonoBehaviour
     private const float airTimeThreshold = 0.2f;
 
     // custom gravity
-    private float customGravity = 20.0f;
+    private const float customGravity = 20.0f;
 
     private float horizontalInput;
     private float verticalInput;
@@ -72,7 +73,10 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        MovePlayer();
+        if (!playerControls.IsSwinging)
+        {
+            MovePlayer();
+        }
 
         // custom gravity
         if (!isJumping)
@@ -92,25 +96,33 @@ public class PlayerMovement : MonoBehaviour
 
     private void MyInput()
     {
-        // get user input
-        horizontalInput = Input.GetAxisRaw("Horizontal");
-        verticalInput = Input.GetAxisRaw("Vertical");
-
-        // check for speed boost
-        if (Input.GetKey(boostKey) && isGrounded)
+        if (!playerControls.IsSwinging)
         {
-            moveSpeed = baseSpeed * boostMultiplier;
+            // get user input
+            horizontalInput = Input.GetAxisRaw("Horizontal");
+            verticalInput = Input.GetAxisRaw("Vertical");
+
+            // check for speed boost
+            if (Input.GetKey(boostKey) && isGrounded)
+            {
+                moveSpeed = baseSpeed * boostMultiplier;
+            }
+            else
+            {
+                moveSpeed = baseSpeed;
+            }
+
+            // check for jump
+            if (Input.GetKeyDown(jumpKey) && isGrounded && jumpReady)
+            {
+                Debug.Log("Jump!");
+                Jump();
+            }
         }
         else
         {
-            moveSpeed = baseSpeed;
-        }
-
-        // check for jump
-        if (Input.GetKeyDown(jumpKey) && isGrounded && jumpReady)
-        {
-            Debug.Log("Jump!");
-            Jump();
+            horizontalInput = 0;
+            verticalInput = 0;
         }
     }
 

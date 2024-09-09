@@ -9486,6 +9486,7 @@ MonoBehaviour:
     m_Bits: 5120
   playerObject: {fileID: 1434234114}
   playerAnimation: {fileID: 1258815353}
+  playerControls: {fileID: 1258815352}
   jumpKey: 32
   boostKey: 304
 --- !u!114 &1258815352
@@ -9500,13 +9501,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3989eac524a9e70409bae7e031231b2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  axeKeybind: 101
+  toolKeybind: 101
   pickupKeybind: 102
   inventoryKeybind: 9
   shootingKeybind: 99
   buildModeKeybind: 98
   escapeKeybind: 27
-  axe: {fileID: 0}
+  playerAxe: {fileID: 910859674}
   projectilePrefab: {fileID: 5737325398390983765, guid: 173f303122a3a444ab857f65056347d7, type: 3}
   playerObject: {fileID: 1434234114}
   playerAnimation: {fileID: 1258815353}
