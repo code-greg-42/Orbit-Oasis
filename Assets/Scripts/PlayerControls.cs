@@ -18,15 +18,20 @@ public class PlayerControls : MonoBehaviour
     private readonly float maxChargeTime = 2.0f;
     private readonly float maxAdditionalForce = 20.0f;
 
-    // cooldowns
+    // axe swing variables
     private const float axeSwingFinishTime = 1.008f;
     private const float timeToMidSwing = 0.612f;
     private bool axeSwingReady = true;
     private bool isMidAxeSwing = false;
     private bool axeHitRegistered = false;
+    private float timeOfLastAxeSwing;
 
+    // mining pick variables
+
+    // properties used by PlayerAxe script
     public bool IsMidAxeSwing => isMidAxeSwing;
     public bool AxeHitRegistered => axeHitRegistered;
+    public float TimeOfLastAxeSwing => timeOfLastAxeSwing;
 
     private float shootingChargeTime;
 
@@ -44,11 +49,7 @@ public class PlayerControls : MonoBehaviour
             // FARMING
             if (Input.GetKey(axeKeybind) && axeSwingReady)
             {
-                //axe.SwingAxe();
-                axeSwingReady = false;
-                playerAnimation.TriggerAxeSwing();
-
-                StartCoroutine(ResetAxeSwing());
+                SwingAxe();
             }
 
             // ITEM PICKUP
@@ -170,6 +171,22 @@ public class PlayerControls : MonoBehaviour
             rb.AddForce(direction * (baseProjectileForce + additionalForce), ForceMode.Impulse);
             Debug.Log("Projectile shot with force: " + (baseProjectileForce + additionalForce));
         }
+    }
+
+    private void SwingAxe()
+    {
+        axeSwingReady = false;
+
+        // activate axe gameobject
+        axe.gameObject.SetActive(true);
+
+        // set time of initial swing for use by playerAxe despawn coroutine
+        timeOfLastAxeSwing = Time.time;
+
+        // start animation
+        playerAnimation.TriggerAxeSwing();
+
+        StartCoroutine(ResetAxeSwing());
     }
 
     public void RegisterAxeHit()
