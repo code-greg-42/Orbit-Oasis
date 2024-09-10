@@ -23,8 +23,8 @@ public class PlayerControls : MonoBehaviour
     private const float timeToMidAxeSwing = 0.612f;
 
     // mining pick variables
-    private const float miningFinishTime = 0.855225f;
-    private const float timeToMidMiningSwing = 0.728525f;
+    private const float miningFinishTime = 0.955225f;
+    private const float timeToMidMiningSwing = 0.628525f;
 
     // general tool variables
     private bool toolSwingReady = true;
@@ -45,6 +45,7 @@ public class PlayerControls : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private FarmingTool playerAxe;
+    [SerializeField] private FarmingTool playerMiningPick;
     [SerializeField] private GameObject projectilePrefab;
     [SerializeField] private Transform playerObject;
     [SerializeField] private PlayerAnimation playerAnimation;
@@ -57,7 +58,7 @@ public class PlayerControls : MonoBehaviour
             // FARMING
             if (Input.GetKey(toolKeybind) && toolSwingReady)
             {
-                SwingTool();
+                SwingTool(false);
             }
 
             // ITEM PICKUP
@@ -180,21 +181,32 @@ public class PlayerControls : MonoBehaviour
         }
     }
 
-    private void SwingTool()
+    private void SwingTool(bool isAxe)
     {
         toolSwingReady = false;
         isSwinging = true;
 
-        // activate axe gameobject
-        playerAxe.gameObject.SetActive(true);
-
         // set time of initial swing for use by playerAxe despawn coroutine
         timeOfLastToolSwing = Time.time;
 
-        // start animation
-        playerAnimation.TriggerAxeSwing();
+        if (isAxe)
+        {
+            // activate axe gameobject
+            playerAxe.gameObject.SetActive(true);
 
-        StartCoroutine(ResetToolSwing(true));
+            // start axe swing animation
+            playerAnimation.TriggerAxeSwing();
+        }
+        else
+        {
+            // activate mining pick gameobject
+            playerMiningPick.gameObject.SetActive(true);
+
+            // start mining animation
+            playerAnimation.StartMiningLoop();
+        }
+
+        StartCoroutine(ResetToolSwing(isAxe));
     }
 
     public void RegisterToolHit()
@@ -202,24 +214,17 @@ public class PlayerControls : MonoBehaviour
         toolHitRegistered = true;
     }
 
-    private void SwingMiningPick()
-    {
-        playerAnimation.StartMiningLoop();
-    }
-
-    private void SwingAxe()
-    {
-        playerAnimation.TriggerAxeSwing();
-    }
-
     private IEnumerator ResetToolSwing(bool isAxe)
     {
+        Debug.Log("Resetting tool swing.");
         float timeToMid = isAxe ? timeToMidAxeSwing : timeToMidMiningSwing;
         float timeToFinish = isAxe ? axeSwingFinishTime : miningFinishTime;
 
         // wait for animation to reach 'hit capable' part of swing
         yield return new WaitForSeconds(timeToMid);
         isMidToolSwing = true;
+
+        Debug.Log("Midswing set to true");
 
         // wait for rest of swing animation to finish and reset bools
         yield return new WaitForSeconds(timeToFinish);
@@ -239,7 +244,10 @@ public class PlayerControls : MonoBehaviour
         }
         else
         {
-            // go again with the mining loop
+            // set time of last swing to now to keep mining pick from despawning early
+            timeOfLastToolSwing = Time.time;
+
+            // start the reset process again --- makes it so it only resets if the player is not actively holding the 'farming/use tool' button
             StartCoroutine(ResetToolSwing(false));
         }
     }

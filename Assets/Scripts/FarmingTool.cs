@@ -8,7 +8,7 @@ public class FarmingTool : MonoBehaviour
     [SerializeField] private PlayerControls playerControls;
 
     private const float checkDespawnFrequency = 0.1f;
-    private const float despawnTimer = 3.5f;
+    private const float despawnTimer = 2.5f;
 
     private Coroutine checkForDespawnCoroutine;
 
@@ -27,7 +27,6 @@ public class FarmingTool : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         bool validHit = !playerControls.ToolHitRegistered && playerControls.IsMidToolSwing && other.CompareTag("FarmableObject");
-
         if (validHit)
         {
             // register the hit with the player control script to disallow multiple farms from one swing
