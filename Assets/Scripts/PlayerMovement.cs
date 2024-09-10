@@ -50,6 +50,9 @@ public class PlayerMovement : MonoBehaviour
     public Vector3 PlayerPosition => transform.position;
     public Quaternion PlayerRotation => playerObject.rotation;
 
+    // property used in playercontrols script
+    public bool IsGrounded => isGrounded;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();

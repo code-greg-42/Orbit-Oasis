@@ -10,8 +10,20 @@ public class FarmableObject : MonoBehaviour
     [SerializeField] private float dropForce;
     [SerializeField] private float dropHeight;
 
+    [Header("Type Setting")]
+    [SerializeField] private ObjectType type;
+
+    public enum ObjectType
+    {
+        Tree,
+        Rock
+    }
+
+    public ObjectType Type => type;
+
     public void FarmObject()
     {
+        Debug.Log("Farming Object");
         Vector3 dropPosition = new(transform.position.x, dropHeight, transform.position.z);
         GameObject material = Instantiate(materialPrefab, dropPosition, Quaternion.identity);
         material.transform.position = dropPosition;

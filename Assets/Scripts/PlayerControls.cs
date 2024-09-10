@@ -33,7 +33,12 @@ public class PlayerControls : MonoBehaviour
     private float timeOfLastToolSwing;
     private bool isSwinging = false;
 
-    // properties used by PlayerAxe script
+    // farming proximity check variables
+    private float farmableSearchRadius = 2.5f;
+    private float miningDistanceMin = 2f;
+    private float axeDistanceMin = 2.5f;
+
+    // properties used by FarmingTool script
     public bool IsMidToolSwing => isMidToolSwing;
     public bool ToolHitRegistered => toolHitRegistered;
     public float TimeOfLastToolSwing => timeOfLastToolSwing;
@@ -49,6 +54,7 @@ public class PlayerControls : MonoBehaviour
     [SerializeField] private GameObject projectilePrefab;
     [SerializeField] private Transform playerObject;
     [SerializeField] private PlayerAnimation playerAnimation;
+    [SerializeField] private PlayerMovement playerMovement;
 
     void Update()
     {
@@ -56,7 +62,7 @@ public class PlayerControls : MonoBehaviour
             && !ItemPlacementManager.Instance.ItemPlacementActive)
         {
             // FARMING
-            if (Input.GetKey(toolKeybind) && toolSwingReady)
+            if (Input.GetKey(toolKeybind) && toolSwingReady && playerMovement.IsGrounded)
             {
                 SwingTool(false);
             }
@@ -209,6 +215,11 @@ public class PlayerControls : MonoBehaviour
         StartCoroutine(ResetToolSwing(isAxe));
     }
 
+    public void GetClosestFarmableObject()
+    {
+
+    }
+
     public void RegisterToolHit()
     {
         toolHitRegistered = true;
@@ -216,15 +227,12 @@ public class PlayerControls : MonoBehaviour
 
     private IEnumerator ResetToolSwing(bool isAxe)
     {
-        Debug.Log("Resetting tool swing.");
         float timeToMid = isAxe ? timeToMidAxeSwing : timeToMidMiningSwing;
         float timeToFinish = isAxe ? axeSwingFinishTime : miningFinishTime;
 
         // wait for animation to reach 'hit capable' part of swing
         yield return new WaitForSeconds(timeToMid);
         isMidToolSwing = true;
-
-        Debug.Log("Midswing set to true");
 
         // wait for rest of swing animation to finish and reset bools
         yield return new WaitForSeconds(timeToFinish);
