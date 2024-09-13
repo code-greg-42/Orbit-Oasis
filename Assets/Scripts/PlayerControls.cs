@@ -35,8 +35,6 @@ public class PlayerControls : MonoBehaviour
 
     // farming proximity check variables
     private float farmableSearchRadius = 2.5f;
-    private float miningDistanceMin = 2f;
-    private float axeDistanceMin = 2.5f;
 
     // properties used by FarmingTool script
     public bool IsMidToolSwing => isMidToolSwing;
@@ -149,6 +147,12 @@ public class PlayerControls : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void CheckForNearbyFarmableObject()
+    {
+        Collider[] results = new Collider[8];
+        int size = Physics.OverlapSphereNonAlloc(transform.position, farmableSearchRadius, results, LayerMask.GetMask("FarmableObject"));
     }
 
     private void ShootProjectile(float additionalForce, bool addLob)
