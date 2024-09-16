@@ -82,7 +82,19 @@ public class PlayerControls : MonoBehaviour
                     {
                         // deactivate with success set to true for green tint
                         MainUIManager.Instance.DeactivateFarmingIndicator(true);
-                        SwingTool(false);
+
+                        if (nearbyFarmableObjectType == FarmableObject.ObjectType.Tree)
+                        {
+                            SwingTool(true);
+                        }
+                        else if (nearbyFarmableObjectType == FarmableObject.ObjectType.Rock)
+                        {
+                            SwingTool(false);
+                        }
+                        else
+                        {
+                            Debug.LogWarning("Tool swing keybind pressed, but nearby farmable object is not correctly set.");
+                        }
                     }
                 }
                 else
@@ -204,6 +216,7 @@ public class PlayerControls : MonoBehaviour
             {
                 if (hit.collider.TryGetComponent(out FarmableObject farmable))
                 {
+                    nearbyFarmableObjectType = farmable.Type;
                     return true;
                 }
             }

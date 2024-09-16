@@ -22,7 +22,9 @@ public class MainUIManager : MonoBehaviour
 
     // farming indicator settings
     private const float farmingIndicatorFadeTime = 0.25f;
-    private const float farmingSuccessFadeTime = 0.6f;
+    private const float farmingSuccessFadeTime = 0.5f;
+    private Vector3 farmingIndicatorOriginalScale;
+    private float farmingSuccessScaleAmount = 1.2f;
     private Color farmingIndicatorPanelStartColor;
     private Color farmingIndicatorTextStartColor;
     private Color successIndicatorStartColor;
@@ -43,6 +45,7 @@ public class MainUIManager : MonoBehaviour
         farmingIndicatorPanelStartColor = farmingIndicatorPanel.color;
         farmingIndicatorTextStartColor = farmingIndicatorText.color;
         successIndicatorStartColor = successIndicator.color;
+        farmingIndicatorOriginalScale = farmingIndicator.transform.localScale;
 
         UpdateCurrencyDisplay(DataManager.Instance.PlayerStats.PlayerCurrency);
     }
@@ -90,14 +93,17 @@ public class MainUIManager : MonoBehaviour
 
     private IEnumerator DeactivateFarmingIndicatorCoroutine(bool success)
     {
-        // set color and duration based on type of deactivation (successful tool swing or default fadeaway)
         float timer = 0f;
         float duration = success ? farmingSuccessFadeTime : farmingIndicatorFadeTime;
+
+        Vector3 targetScale = farmingIndicatorOriginalScale * farmingSuccessScaleAmount;
 
         if (success)
         {
             // activate highlight gameobject
             successIndicator.gameObject.SetActive(true);
+
+            
         }
 
         // while loop to perform the fade
@@ -111,6 +117,9 @@ public class MainUIManager : MonoBehaviour
             if (success)
             {
                 successIndicator.color = GetFadedColor(successIndicatorStartColor, successIndicatorStartColor.a, 0f, timer, duration);
+
+                // adjust scale of the indicator for effect
+                farmingIndicator.transform.localScale = Vector3.Lerp(farmingIndicatorOriginalScale, targetScale, timer / duration);
             }
 
             yield return null;
@@ -134,6 +143,7 @@ public class MainUIManager : MonoBehaviour
     {
         farmingIndicatorPanel.color = farmingIndicatorPanelStartColor;
         farmingIndicatorText.color = farmingIndicatorTextStartColor;
+        farmingIndicator.transform.localScale = farmingIndicatorOriginalScale;
         successIndicator.color = successIndicatorStartColor;
         successIndicator.gameObject.SetActive(false);
     }
