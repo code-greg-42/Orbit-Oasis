@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MainUIManager : MonoBehaviour
 {
@@ -12,6 +13,17 @@ public class MainUIManager : MonoBehaviour
 
     [Header("Floating Text Prefab")]
     [SerializeField] private GameObject floatingTextPrefab;
+
+    [Header("Farming Indicator")]
+    [SerializeField] private GameObject farmingIndicator;
+    [SerializeField] private Image farmingIndicatorPanel;
+    [SerializeField] private TMP_Text farmingIndicatorText;
+
+    // farming indicator settings
+    private const float farmingIndicatorFadeTime = 0.25f;
+    private Color farmingIndicatorPanelStartColor;
+    private Color farmingIndicatorTextStartColor;
+    private Coroutine deactivateFarmingIndicatorCoroutine;
 
     // floating text settings
     private Vector3 floatingTextSpawnOffset = new(0, 30, 0);
@@ -25,6 +37,9 @@ public class MainUIManager : MonoBehaviour
 
     private void Start()
     {
+        farmingIndicatorPanelStartColor = farmingIndicatorPanel.color;
+        farmingIndicatorTextStartColor = farmingIndicatorText.color;
+
         UpdateCurrencyDisplay(DataManager.Instance.PlayerStats.PlayerCurrency);
     }
 
@@ -40,6 +55,68 @@ public class MainUIManager : MonoBehaviour
         {
             CreateFloatingText(changeAmount);
         }
+    }
+
+    public void ActivateFarmingIndicator()
+    {
+        if (!farmingIndicator.activeInHierarchy)
+        {
+            farmingIndicator.SetActive(true);
+        }
+        else
+        {
+            if (deactivateFarmingIndicatorCoroutine != null)
+            {
+                StopCoroutine(deactivateFarmingIndicatorCoroutine);
+                deactivateFarmingIndicatorCoroutine = null;
+
+                SetFarmingIndicatorToOriginalColor();
+                farmingIndicator.SetActive(true);
+            }
+        }
+    }
+
+    public void DeactivateFarmingIndicator()
+    {
+        if (farmingIndicator.activeInHierarchy && deactivateFarmingIndicatorCoroutine == null)
+        {
+            deactivateFarmingIndicatorCoroutine = StartCoroutine(DeactivateFarmingIndicatorCoroutine());
+        }
+    }
+
+    private IEnumerator DeactivateFarmingIndicatorCoroutine()
+    {
+        float timer = 0f;
+
+        // while loop to perform the fade
+        while (timer < farmingIndicatorFadeTime)
+        {
+            timer += Time.deltaTime;
+
+            farmingIndicatorPanel.color = GetFadedColor(farmingIndicatorPanelStartColor, farmingIndicatorPanelStartColor.a, 0f, timer, farmingIndicatorFadeTime);
+            farmingIndicatorText.color = GetFadedColor(farmingIndicatorTextStartColor, farmingIndicatorTextStartColor.a, 0f, timer, farmingIndicatorFadeTime);
+
+            yield return null;
+        }
+
+        farmingIndicator.SetActive(false);
+        SetFarmingIndicatorToOriginalColor();
+
+        // manually set coroutine reference to null once it's done
+        deactivateFarmingIndicatorCoroutine = null;
+    }
+
+    private Color GetFadedColor(Color startColor, float startAlpha, float targetAlpha, float timer, float duration)
+    {
+        float newAlpha = Mathf.Lerp(startAlpha, targetAlpha, timer / duration);
+        Color newColor = new(startColor.r, startColor.g, startColor.b, newAlpha);
+        return newColor;
+    }
+
+    private void SetFarmingIndicatorToOriginalColor()
+    {
+        farmingIndicatorPanel.color = farmingIndicatorPanelStartColor;
+        farmingIndicatorText.color = farmingIndicatorTextStartColor;
     }
 
     private void CreateFloatingText(float changeAmount)

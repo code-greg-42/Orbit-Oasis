@@ -34,7 +34,9 @@ public class PlayerControls : MonoBehaviour
     private bool isSwinging = false;
 
     // farming proximity check variables
-    private float farmableSearchRadius = 2.5f;
+    private const float farmableSearchDistance = 2.6f;
+    private FarmableObject.ObjectType nearbyFarmableObjectType;
+    private const float raycastSideOffset = 0.3f;
 
     // properties used by FarmingTool script
     public bool IsMidToolSwing => isMidToolSwing;
@@ -54,11 +56,36 @@ public class PlayerControls : MonoBehaviour
     [SerializeField] private PlayerAnimation playerAnimation;
     [SerializeField] private PlayerMovement playerMovement;
 
+    [Header("Layer Assignments")]
+    [SerializeField] private LayerMask farmableObjectLayer;
+
     void Update()
     {
         if (!BuildManager.Instance.BuildModeActive && !DialogueManager.Instance.DialogueWindowActive
             && !ItemPlacementManager.Instance.ItemPlacementActive)
         {
+            // FARMING
+            if (toolSwingReady && playerMovement.IsGrounded)
+            {
+                // CHECK FOR NEARBY FARMABLE OBJECTS
+                bool farmableObjectIsNearby = CheckForFarmableObject();
+
+                if (farmableObjectIsNearby)
+                {
+                    MainUIManager.Instance.ActivateFarmingIndicator();
+                }
+                else
+                {
+                    MainUIManager.Instance.DeactivateFarmingIndicator();
+                }
+
+                // USER INPUT FOR FARMING
+                if (Input.GetKey(toolKeybind))
+                {
+                    SwingTool(false);
+                }
+            }
+
             // FARMING
             if (Input.GetKey(toolKeybind) && toolSwingReady && playerMovement.IsGrounded)
             {
@@ -149,10 +176,33 @@ public class PlayerControls : MonoBehaviour
         }
     }
 
-    private void CheckForNearbyFarmableObject()
+    private bool CheckForFarmableObject()
     {
-        Collider[] results = new Collider[8];
-        int size = Physics.OverlapSphereNonAlloc(transform.position, farmableSearchRadius, results, LayerMask.GetMask("FarmableObject"));
+        // set origins for 3 raycasts
+        // ordered with priority to the most middle ray, then the right ray (because the tool swings come from the right side)
+        Vector3[] rayOrigins =
+        {
+            playerObject.position,
+            playerObject.position + playerObject.right * raycastSideOffset,
+            playerObject.position - playerObject.right * raycastSideOffset,
+        };
+
+        // loop through each origin and perform raycast
+        foreach (Vector3 rayOrigin in rayOrigins)
+        {
+            Debug.DrawRay(rayOrigin, playerObject.forward * farmableSearchDistance, Color.red, 1.0f);
+
+            // cast a ray forwards from the specified position
+            if (Physics.Raycast(rayOrigin, playerObject.forward, out RaycastHit hit, farmableSearchDistance, farmableObjectLayer))
+            {
+                if (hit.collider.TryGetComponent(out FarmableObject farmable))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     private void ShootProjectile(float additionalForce, bool addLob)
