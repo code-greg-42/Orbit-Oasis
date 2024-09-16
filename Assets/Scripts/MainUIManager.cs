@@ -18,11 +18,14 @@ public class MainUIManager : MonoBehaviour
     [SerializeField] private GameObject farmingIndicator;
     [SerializeField] private Image farmingIndicatorPanel;
     [SerializeField] private TMP_Text farmingIndicatorText;
+    [SerializeField] private Image successIndicator;
 
     // farming indicator settings
     private const float farmingIndicatorFadeTime = 0.25f;
+    private const float farmingSuccessFadeTime = 0.6f;
     private Color farmingIndicatorPanelStartColor;
     private Color farmingIndicatorTextStartColor;
+    private Color successIndicatorStartColor;
     private Coroutine deactivateFarmingIndicatorCoroutine;
 
     // floating text settings
@@ -39,6 +42,7 @@ public class MainUIManager : MonoBehaviour
     {
         farmingIndicatorPanelStartColor = farmingIndicatorPanel.color;
         farmingIndicatorTextStartColor = farmingIndicatorText.color;
+        successIndicatorStartColor = successIndicator.color;
 
         UpdateCurrencyDisplay(DataManager.Instance.PlayerStats.PlayerCurrency);
     }
@@ -70,37 +74,50 @@ public class MainUIManager : MonoBehaviour
                 StopCoroutine(deactivateFarmingIndicatorCoroutine);
                 deactivateFarmingIndicatorCoroutine = null;
 
-                SetFarmingIndicatorToOriginalColor();
+                ResetFarmingIndicator();
                 farmingIndicator.SetActive(true);
             }
         }
     }
 
-    public void DeactivateFarmingIndicator()
+    public void DeactivateFarmingIndicator(bool success = false)
     {
         if (farmingIndicator.activeInHierarchy && deactivateFarmingIndicatorCoroutine == null)
         {
-            deactivateFarmingIndicatorCoroutine = StartCoroutine(DeactivateFarmingIndicatorCoroutine());
+            deactivateFarmingIndicatorCoroutine = StartCoroutine(DeactivateFarmingIndicatorCoroutine(success));
         }
     }
 
-    private IEnumerator DeactivateFarmingIndicatorCoroutine()
+    private IEnumerator DeactivateFarmingIndicatorCoroutine(bool success)
     {
+        // set color and duration based on type of deactivation (successful tool swing or default fadeaway)
         float timer = 0f;
+        float duration = success ? farmingSuccessFadeTime : farmingIndicatorFadeTime;
+
+        if (success)
+        {
+            // activate highlight gameobject
+            successIndicator.gameObject.SetActive(true);
+        }
 
         // while loop to perform the fade
-        while (timer < farmingIndicatorFadeTime)
+        while (timer < duration)
         {
             timer += Time.deltaTime;
 
-            farmingIndicatorPanel.color = GetFadedColor(farmingIndicatorPanelStartColor, farmingIndicatorPanelStartColor.a, 0f, timer, farmingIndicatorFadeTime);
-            farmingIndicatorText.color = GetFadedColor(farmingIndicatorTextStartColor, farmingIndicatorTextStartColor.a, 0f, timer, farmingIndicatorFadeTime);
+            farmingIndicatorPanel.color = GetFadedColor(farmingIndicatorPanelStartColor, farmingIndicatorPanelStartColor.a, 0f, timer, duration);
+            farmingIndicatorText.color = GetFadedColor(farmingIndicatorTextStartColor, farmingIndicatorTextStartColor.a, 0f, timer, duration);
+
+            if (success)
+            {
+                successIndicator.color = GetFadedColor(successIndicatorStartColor, successIndicatorStartColor.a, 0f, timer, duration);
+            }
 
             yield return null;
         }
 
         farmingIndicator.SetActive(false);
-        SetFarmingIndicatorToOriginalColor();
+        ResetFarmingIndicator();
 
         // manually set coroutine reference to null once it's done
         deactivateFarmingIndicatorCoroutine = null;
@@ -113,10 +130,12 @@ public class MainUIManager : MonoBehaviour
         return newColor;
     }
 
-    private void SetFarmingIndicatorToOriginalColor()
+    private void ResetFarmingIndicator()
     {
         farmingIndicatorPanel.color = farmingIndicatorPanelStartColor;
         farmingIndicatorText.color = farmingIndicatorTextStartColor;
+        successIndicator.color = successIndicatorStartColor;
+        successIndicator.gameObject.SetActive(false);
     }
 
     private void CreateFloatingText(float changeAmount)

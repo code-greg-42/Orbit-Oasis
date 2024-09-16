@@ -72,18 +72,25 @@ public class PlayerControls : MonoBehaviour
 
                 if (farmableObjectIsNearby)
                 {
-                    MainUIManager.Instance.ActivateFarmingIndicator();
+                    if (!isSwinging)
+                    {
+                        MainUIManager.Instance.ActivateFarmingIndicator();
+                    }
+
+                    // USER INPUT FOR FARMING
+                    if (Input.GetKey(toolKeybind))
+                    {
+                        // deactivate with success set to true for green tint
+                        MainUIManager.Instance.DeactivateFarmingIndicator(true);
+                        SwingTool(false);
+                    }
                 }
                 else
                 {
                     MainUIManager.Instance.DeactivateFarmingIndicator();
                 }
 
-                // USER INPUT FOR FARMING
-                if (Input.GetKey(toolKeybind))
-                {
-                    SwingTool(false);
-                }
+                
             }
 
             // FARMING
