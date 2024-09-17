@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,7 +19,13 @@ public class MainUIManager : MonoBehaviour
     [SerializeField] private GameObject farmingIndicator;
     [SerializeField] private Image farmingIndicatorPanel;
     [SerializeField] private TMP_Text farmingIndicatorText;
-    [SerializeField] private Image successIndicator;
+    [SerializeField] private Image farmingSuccessIndicator;
+
+    [Header("Item Pickup Indicator")]
+    [SerializeField] private GameObject itemPickupIndicator;
+    [SerializeField] private Image itemPickupIndicatorPanel;
+    [SerializeField] private TMP_Text itemPickupIndicatorText;
+    [SerializeField] private Image itemPickupSuccessIndicator;
 
     // farming indicator settings
     private const float farmingIndicatorFadeTime = 0.25f;
@@ -29,6 +36,14 @@ public class MainUIManager : MonoBehaviour
     private Color farmingIndicatorTextStartColor;
     private Color successIndicatorStartColor;
     private Coroutine deactivateFarmingIndicatorCoroutine;
+
+    private const float indicatorFadeTime = 0.25f;
+    private const float indicatorSuccessFadeTime = 0.5f;
+    private Vector3 indicatorOriginalScale;
+    private float successScaleAmount = 1.2f;
+    private Color indicatorPanelStartColor;
+    private Color indicatorTextStartColor;
+    private Coroutine deactivateItemPickupIndicatorCoroutine;
 
     // floating text settings
     private Vector3 floatingTextSpawnOffset = new(0, 30, 0);
@@ -44,8 +59,13 @@ public class MainUIManager : MonoBehaviour
     {
         farmingIndicatorPanelStartColor = farmingIndicatorPanel.color;
         farmingIndicatorTextStartColor = farmingIndicatorText.color;
-        successIndicatorStartColor = successIndicator.color;
+        successIndicatorStartColor = farmingSuccessIndicator.color;
         farmingIndicatorOriginalScale = farmingIndicator.transform.localScale;
+
+        indicatorPanelStartColor = farmingIndicatorPanel.color;
+        indicatorTextStartColor = farmingIndicatorText.color;
+        successIndicatorStartColor = farmingSuccessIndicator.color;
+        indicatorOriginalScale = farmingIndicator.transform.localScale;
 
         UpdateCurrencyDisplay(DataManager.Instance.PlayerStats.PlayerCurrency);
     }
@@ -83,11 +103,93 @@ public class MainUIManager : MonoBehaviour
         }
     }
 
+    public void ActivateItemPickupIndicator()
+    {
+        if (!itemPickupIndicator.activeInHierarchy)
+        {
+            itemPickupIndicator.SetActive(true);
+        }
+        else
+        {
+            if (deactivateItemPickupIndicatorCoroutine != null)
+            {
+                StopCoroutine(deactivateItemPickupIndicatorCoroutine);
+                deactivateItemPickupIndicatorCoroutine = null;
+
+                itemPickupIndicatorPanel.color = indicatorPanelStartColor;
+                itemPickupIndicatorText.color = indicatorTextStartColor;
+                itemPickupIndicator.transform.localScale = indicatorOriginalScale;
+                itemPickupSuccessIndicator.color = successIndicatorStartColor;
+                itemPickupSuccessIndicator.gameObject.SetActive(false);
+            }
+        }
+    }
+
     public void DeactivateFarmingIndicator(bool success = false)
     {
         if (farmingIndicator.activeInHierarchy && deactivateFarmingIndicatorCoroutine == null)
         {
             deactivateFarmingIndicatorCoroutine = StartCoroutine(DeactivateFarmingIndicatorCoroutine(success));
+        }
+    }
+
+    public void DeactivateItemPickupIndicator(bool success = false)
+    {
+        if (itemPickupIndicator.activeInHierarchy && deactivateItemPickupIndicatorCoroutine == null)
+        {
+            deactivateItemPickupIndicatorCoroutine = StartCoroutine(DeactivateIndicatorCoroutine(success,
+                itemPickupIndicator, itemPickupSuccessIndicator, itemPickupIndicatorPanel, itemPickupIndicatorText, false));
+        }
+    }
+
+    private IEnumerator DeactivateIndicatorCoroutine(bool success, GameObject indicator, Image successIndicator,
+        Image indicatorPanel, TMP_Text indicatorText, bool isFarming = true)
+    {
+        float timer = 0f;
+        float duration = success ? indicatorSuccessFadeTime : indicatorFadeTime;
+
+        Vector3 targetScale = indicatorOriginalScale * successScaleAmount;
+
+        if (success)
+        {
+            // activate highlight gameobject
+            successIndicator.gameObject.SetActive(true);
+        }
+
+        // while loop to perform the fade
+        while (timer < duration)
+        {
+            timer += Time.deltaTime;
+
+            indicatorPanel.color = GetFadedColor(indicatorPanelStartColor, indicatorPanelStartColor.a, 0f, timer, duration);
+            indicatorText.color = GetFadedColor(indicatorTextStartColor, indicatorTextStartColor.a, 0f, timer, duration);
+
+            if (success)
+            {
+                successIndicator.color = GetFadedColor(successIndicatorStartColor, successIndicatorStartColor.a, 0f, timer, duration);
+
+                // adjust scale of the indicator for effect
+                indicator.transform.localScale = Vector3.Lerp(farmingIndicatorOriginalScale, targetScale, timer / duration);
+            }
+
+            yield return null;
+        }
+
+        indicator.SetActive(false);
+        indicatorPanel.color = indicatorPanelStartColor;
+        indicatorText.color = indicatorTextStartColor;
+        indicator.transform.localScale = indicatorOriginalScale;
+        successIndicator.color = successIndicatorStartColor;
+        successIndicator.gameObject.SetActive(false);
+
+        // manually set coroutine reference to null once it's done
+        if (isFarming)
+        {
+            deactivateFarmingIndicatorCoroutine = null;
+        }
+        else
+        {
+            deactivateItemPickupIndicatorCoroutine = null;
         }
     }
 
@@ -101,7 +203,7 @@ public class MainUIManager : MonoBehaviour
         if (success)
         {
             // activate highlight gameobject
-            successIndicator.gameObject.SetActive(true);
+            farmingSuccessIndicator.gameObject.SetActive(true);
 
             
         }
@@ -116,7 +218,7 @@ public class MainUIManager : MonoBehaviour
 
             if (success)
             {
-                successIndicator.color = GetFadedColor(successIndicatorStartColor, successIndicatorStartColor.a, 0f, timer, duration);
+                farmingSuccessIndicator.color = GetFadedColor(successIndicatorStartColor, successIndicatorStartColor.a, 0f, timer, duration);
 
                 // adjust scale of the indicator for effect
                 farmingIndicator.transform.localScale = Vector3.Lerp(farmingIndicatorOriginalScale, targetScale, timer / duration);
@@ -144,8 +246,17 @@ public class MainUIManager : MonoBehaviour
         farmingIndicatorPanel.color = farmingIndicatorPanelStartColor;
         farmingIndicatorText.color = farmingIndicatorTextStartColor;
         farmingIndicator.transform.localScale = farmingIndicatorOriginalScale;
-        successIndicator.color = successIndicatorStartColor;
-        successIndicator.gameObject.SetActive(false);
+        farmingSuccessIndicator.color = successIndicatorStartColor;
+        farmingSuccessIndicator.gameObject.SetActive(false);
+    }
+
+    private void ResetItemPickupIndicator()
+    {
+        itemPickupIndicatorPanel.color = indicatorPanelStartColor;
+        itemPickupIndicatorText.color = indicatorTextStartColor;
+        itemPickupIndicator.transform.localScale = indicatorOriginalScale;
+        itemPickupSuccessIndicator.color = successIndicatorStartColor;
+        itemPickupSuccessIndicator.gameObject.SetActive(false);
     }
 
     private void CreateFloatingText(float changeAmount)

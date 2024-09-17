@@ -15,6 +15,10 @@ public class Item : MonoBehaviour
     [SerializeField] private float buyPricePerUnit;
     [SerializeField] private float buildMaterialPerUnit;
     [SerializeField] private int prefabIndex;
+    [SerializeField] private float pickupDelay = 0.3f;
+
+    // used for farming
+    private float timeOfRecentEnable;
 
     public string ItemName => itemName;
     public string Description => description;
@@ -24,6 +28,7 @@ public class Item : MonoBehaviour
     public float BuyPricePerUnit => buyPricePerUnit;
     public float BuildMaterialPerUnit => buildMaterialPerUnit;
     public int PrefabIndex => prefabIndex;
+    public bool IsReadyForPickup => (Time.time - timeOfRecentEnable) > pickupDelay;
 
     public int Quantity
     {
@@ -32,6 +37,11 @@ public class Item : MonoBehaviour
     }
 
     public bool IsFullStack => Quantity >= MaxStackQuantity;
+
+    private void OnEnable()
+    {
+        timeOfRecentEnable = Time.time;
+    }
 
     public void SetQuantity(int amount)
     {

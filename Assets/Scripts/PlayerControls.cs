@@ -24,6 +24,9 @@ public class PlayerControls : MonoBehaviour
     private Coroutine itemPickupCoroutine;
     private bool isPickingUpItem;
 
+    // action variables
+    private Coroutine checkForActionCoroutine;
+
     // axe swing variables
     private const float axeSwingFinishTime = 1.008f;
     private const float timeToMidAxeSwing = 0.612f;
@@ -108,6 +111,25 @@ public class PlayerControls : MonoBehaviour
                 {
                     MainUIManager.Instance.DeactivateFarmingIndicator();
                 }
+            }
+
+            if (!isSwinging && playerMovement.IsGrounded && !isPickingUpItem)
+            {
+                // PICKUP ITEM PROCESSING
+                (Collider[] _, int _, bool isAction, bool _, int _) = ScanForActions();
+
+                if (isAction)
+                {
+                    MainUIManager.Instance.ActivateItemPickupIndicator();
+                }
+                else
+                {
+                    MainUIManager.Instance.DeactivateItemPickupIndicator(false);
+                }
+            }
+            else
+            {
+                MainUIManager.Instance.DeactivateItemPickupIndicator(false);
             }
 
             // ITEM PICKUP/ACTION KEYBIND
@@ -224,6 +246,50 @@ public class PlayerControls : MonoBehaviour
                 }
             }
         }
+    }
+
+    private (Collider[], int, bool, bool, int) ScanForActions()
+    {
+        // variables to return
+        Collider[] results = new Collider[16];
+        int size = Physics.OverlapSphereNonAlloc(transform.position, pickupRange, results);
+        bool nonItemActionFound = false;
+        bool actionFound = false;
+        int nonItemActionIndex = 0;
+
+        // trader and spaceship should never be in range of each other
+        for (int i = 0; i < size; i++)
+        {
+            var collider = results[i];
+
+            // check for trader
+            if (collider.CompareTag("Trader"))
+            {
+                if (!InventoryManager.Instance.IsMenuActive)
+                {
+                    nonItemActionFound = true;
+                    actionFound = true;
+                    nonItemActionIndex = i;
+                }
+            }
+            // check for spaceship
+            else if (collider.transform.parent != null && collider.transform.parent.TryGetComponent(out SpaceshipSelection selection))
+            {
+                nonItemActionFound = true;
+                actionFound = true;
+                nonItemActionIndex = i;
+            }
+            // check for items
+            else if (collider.gameObject.TryGetComponent(out Item item))
+            {
+                if (item.IsReadyForPickup)
+                {
+                    actionFound = true;
+                }
+            }
+        }
+
+        return (results, size, actionFound, nonItemActionFound, nonItemActionIndex);
     }
 
     private IEnumerator ItemPickupCoroutine(Collider[] results, int size)
