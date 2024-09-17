@@ -18,6 +18,12 @@ public class PlayerControls : MonoBehaviour
     private readonly float maxChargeTime = 2.0f;
     private readonly float maxAdditionalForce = 20.0f;
 
+    // item pickup variables
+    private const float timeToMidItemPickup = 0.819878f;
+    private const float itemPickupFinishTime = 1.414122f;
+    private Coroutine itemPickupCoroutine;
+    private bool isPickingUpItem;
+
     // axe swing variables
     private const float axeSwingFinishTime = 1.008f;
     private const float timeToMidAxeSwing = 0.612f;
@@ -45,6 +51,7 @@ public class PlayerControls : MonoBehaviour
 
     // property used by movement script
     public bool IsSwinging => isSwinging;
+    public bool IsPickingUpItem => isPickingUpItem;
 
     private float shootingChargeTime;
 
@@ -65,7 +72,7 @@ public class PlayerControls : MonoBehaviour
             && !ItemPlacementManager.Instance.ItemPlacementActive)
         {
             // FARMING
-            if (toolSwingReady && playerMovement.IsGrounded)
+            if (toolSwingReady && playerMovement.IsGrounded && !isPickingUpItem)
             {
                 // CHECK FOR NEARBY FARMABLE OBJECTS
                 bool farmableObjectIsNearby = CheckForFarmableObject();
@@ -101,45 +108,69 @@ public class PlayerControls : MonoBehaviour
                 {
                     MainUIManager.Instance.DeactivateFarmingIndicator();
                 }
-
-                
             }
 
-            // FARMING
-            if (Input.GetKey(toolKeybind) && toolSwingReady && playerMovement.IsGrounded)
+            // ITEM PICKUP/ACTION KEYBIND
+            if (Input.GetKeyDown(pickupKeybind) && !IsPickingUpItem)
             {
-                SwingTool(false);
-            }
+                Collider[] results = new Collider[16];
+                int size = Physics.OverlapSphereNonAlloc(transform.position, pickupRange, results);
+                bool actionFound = false;
 
-            // ITEM PICKUP
-            if (Input.GetKeyDown(pickupKeybind))
-            {
-                foreach (Collider collider in Physics.OverlapSphere(transform.position, pickupRange))
+                // trader and spaceship should never be in range of each other
+                for (int i = 0; i < size; i++)
                 {
-                    if (collider.gameObject.TryGetComponent<Item>(out var item))
+                    var collider = results[i];
+
+                    // check for trader
+                    if (collider.CompareTag("Trader"))
                     {
-                        if (item is Animal)
+                        if (!InventoryManager.Instance.IsMenuActive)
                         {
-                            Debug.Log("Pet animal! Hello fren");
-                            // pet animal
-                        }
-                        else
-                        {
-                            item.PickupItem();
+                            TraderMenuManager.Instance.ToggleTraderMenu();
+                            actionFound = true;
                         }
                     }
                     else if (collider.transform.parent != null && collider.transform.parent.TryGetComponent(out SpaceshipSelection selection))
                     {
                         selection.ActivateSpaceshipSelection();
-                    }
-                    else if (collider.CompareTag("Trader"))
-                    {
-                        if (!InventoryManager.Instance.IsMenuActive)
-                        {
-                            TraderMenuManager.Instance.ToggleTraderMenu();
-                        }
+                        actionFound = true;
                     }
                 }
+
+                // if neither was found, run the item pickup coroutine to pickup all items (up to 16 at once) in the pickup range
+                if (!actionFound)
+                {
+                    if (itemPickupCoroutine != null)
+                    {
+                        StopCoroutine(itemPickupCoroutine);
+                        itemPickupCoroutine = null;
+                    }
+
+                    itemPickupCoroutine = StartCoroutine(ItemPickupCoroutine(results, size));
+                }
+
+                //foreach (Collider collider in Physics.OverlapSphere(transform.position, pickupRange))
+                //{
+                //    if (collider.gameObject.TryGetComponent<Item>(out var item))
+                //    {
+                //        if (item is not Animal)
+                //        {
+                //            item.PickupItem();
+                //        }
+                //    }
+                //    else if (collider.transform.parent != null && collider.transform.parent.TryGetComponent(out SpaceshipSelection selection))
+                //    {
+                //        selection.ActivateSpaceshipSelection();
+                //    }
+                //    else if (collider.CompareTag("Trader"))
+                //    {
+                //        if (!InventoryManager.Instance.IsMenuActive)
+                //        {
+                //            TraderMenuManager.Instance.ToggleTraderMenu();
+                //        }
+                //    }
+                //}
             }
 
             // SHOOTING
@@ -193,6 +224,41 @@ public class PlayerControls : MonoBehaviour
                 }
             }
         }
+    }
+
+    private IEnumerator ItemPickupCoroutine(Collider[] results, int size)
+    {
+        // set bool for use by movement script
+        isPickingUpItem = true;
+
+        // play pickup animation
+        playerAnimation.TriggerItemPickup();
+
+        // wait for animation to reach the ground
+        yield return new WaitForSeconds(timeToMidItemPickup);
+
+        for (int i = 0; i < size; i++)
+        {
+            Collider collider = results[i];
+
+            // get item component and pick it up if it's not an animal
+            if (collider.gameObject.TryGetComponent(out Item item))
+            {
+                if (item is not Animal)
+                {
+                    item.PickupItem();
+                }
+            }
+        }
+
+        // wait for rest of animation to finish
+        yield return new WaitForSeconds(itemPickupFinishTime);
+
+        // reset bool to enable further item pickup and other actions
+        isPickingUpItem = false;
+
+        // ensure coroutine is set back to null
+        itemPickupCoroutine = null;
     }
 
     private bool CheckForFarmableObject()

@@ -76,7 +76,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!playerControls.IsSwinging)
+        if (!playerControls.IsSwinging && !playerControls.IsPickingUpItem)
         {
             MovePlayer();
         }
@@ -99,7 +99,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void MyInput()
     {
-        if (!playerControls.IsSwinging)
+        if (!playerControls.IsSwinging && !playerControls.IsPickingUpItem)
         {
             // get user input
             horizontalInput = Input.GetAxisRaw("Horizontal");
