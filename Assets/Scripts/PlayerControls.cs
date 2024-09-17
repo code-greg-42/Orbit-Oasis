@@ -19,13 +19,10 @@ public class PlayerControls : MonoBehaviour
     private readonly float maxAdditionalForce = 20.0f;
 
     // item pickup variables
-    private const float timeToMidItemPickup = 0.819878f;
-    private const float itemPickupFinishTime = 1.414122f;
+    private const float timeToMidItemPickup = 0.819878f / 1.2f;
+    private const float itemPickupFinishTime = 1.414122f / 1.2f;
     private Coroutine itemPickupCoroutine;
     private bool isPickingUpItem;
-
-    // action variables
-    private Coroutine checkForActionCoroutine;
 
     // axe swing variables
     private const float axeSwingFinishTime = 1.008f;
@@ -55,6 +52,8 @@ public class PlayerControls : MonoBehaviour
     // property used by movement script
     public bool IsSwinging => isSwinging;
     public bool IsPickingUpItem => isPickingUpItem;
+    public bool ReadyForAction => !isSwinging && !isPickingUpItem && playerMovement.IsGrounded && !BuildManager.Instance.BuildModeActive &&
+        !DialogueManager.Instance.DialogueWindowActive && !ItemPlacementManager.Instance.ItemPlacementActive;
 
     private float shootingChargeTime;
 
@@ -113,12 +112,12 @@ public class PlayerControls : MonoBehaviour
                 }
             }
 
-            if (!isSwinging && playerMovement.IsGrounded && !isPickingUpItem)
+            if (ReadyForAction)
             {
                 // PICKUP ITEM PROCESSING
-                (Collider[] _, int _, bool isAction, bool _, int _) = ScanForActions();
+                (Collider[] _, int _, bool foundAction, bool _, int _) = ScanForActions();
 
-                if (isAction)
+                if (foundAction)
                 {
                     MainUIManager.Instance.ActivateItemPickupIndicator();
                 }

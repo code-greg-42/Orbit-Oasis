@@ -17,7 +17,7 @@ public class PlayerAnimation : MonoBehaviour
     private const float jumpAnimationTime = 0.533f;
     private const float landingAnimationTime = 0.6f;
     private const float axeSwingAnimationTime = 1.61084f;
-    private const float itemPickupAnimationTime = 2.234f;
+    private const float itemPickupAnimationTime = 2.234f / 1.2f;
 
     public bool IsFalling => isFalling;
 
