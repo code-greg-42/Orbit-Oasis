@@ -13,6 +13,7 @@ TagManager:
   - RacePlayerShip
   - Asteroid
   - Trader
+  - MainSpaceship
   layers:
   - Default
   - TransparentFX

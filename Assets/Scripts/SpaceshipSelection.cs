@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 
 public class SpaceshipSelection : MonoBehaviour
 {
+    public static SpaceshipSelection Instance { get; private set; }
+
     [Header("General")]
     [SerializeField] private GameObject selectionPanel;
     [SerializeField] private PlayerMovement playerMovement;
@@ -42,6 +44,13 @@ public class SpaceshipSelection : MonoBehaviour
 
     private int currentSelection;
     private int currentMenuStage;
+
+    public bool IsMenuActive => isSpaceshipSelectionActive;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     private void Start()
     {

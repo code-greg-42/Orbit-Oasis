@@ -53,7 +53,8 @@ public class PlayerControls : MonoBehaviour
     public bool IsSwinging => isSwinging;
     public bool IsPickingUpItem => isPickingUpItem;
     public bool ReadyForAction => !isSwinging && !isPickingUpItem && playerMovement.IsGrounded && !BuildManager.Instance.BuildModeActive &&
-        !DialogueManager.Instance.DialogueWindowActive && !ItemPlacementManager.Instance.ItemPlacementActive;
+        !DialogueManager.Instance.DialogueWindowActive && !ItemPlacementManager.Instance.ItemPlacementActive && !InventoryManager.Instance.IsMenuActive &&
+        !TraderMenuManager.Instance.IsMenuActive && !SpaceshipSelection.Instance.IsMenuActive;
 
     private float shootingChargeTime;
 
@@ -115,11 +116,19 @@ public class PlayerControls : MonoBehaviour
             if (ReadyForAction)
             {
                 // PICKUP ITEM PROCESSING
-                (Collider[] _, int _, bool foundAction, bool _, int _) = ScanForActions();
+                (Collider[] results, int size, bool foundAction, bool foundNonItemAction, int nonItemActionIndex) = ScanForActions();
 
                 if (foundAction)
                 {
                     MainUIManager.Instance.ActivateItemPickupIndicator();
+                    if (Input.GetKeyDown(pickupKeybind))
+                    {
+                        // deactivate with success = true for green glow
+                        MainUIManager.Instance.DeactivateItemPickupIndicator(true);
+
+                        // process results based on whether there is a menu action found
+                        ProcessFoundActions(results, size, foundNonItemAction, nonItemActionIndex);
+                    }
                 }
                 else
                 {
@@ -129,69 +138,6 @@ public class PlayerControls : MonoBehaviour
             else
             {
                 MainUIManager.Instance.DeactivateItemPickupIndicator(false);
-            }
-
-            // ITEM PICKUP/ACTION KEYBIND
-            if (Input.GetKeyDown(pickupKeybind) && !IsPickingUpItem)
-            {
-                Collider[] results = new Collider[16];
-                int size = Physics.OverlapSphereNonAlloc(transform.position, pickupRange, results);
-                bool actionFound = false;
-
-                // trader and spaceship should never be in range of each other
-                for (int i = 0; i < size; i++)
-                {
-                    var collider = results[i];
-
-                    // check for trader
-                    if (collider.CompareTag("Trader"))
-                    {
-                        if (!InventoryManager.Instance.IsMenuActive)
-                        {
-                            TraderMenuManager.Instance.ToggleTraderMenu();
-                            actionFound = true;
-                        }
-                    }
-                    else if (collider.transform.parent != null && collider.transform.parent.TryGetComponent(out SpaceshipSelection selection))
-                    {
-                        selection.ActivateSpaceshipSelection();
-                        actionFound = true;
-                    }
-                }
-
-                // if neither was found, run the item pickup coroutine to pickup all items (up to 16 at once) in the pickup range
-                if (!actionFound)
-                {
-                    if (itemPickupCoroutine != null)
-                    {
-                        StopCoroutine(itemPickupCoroutine);
-                        itemPickupCoroutine = null;
-                    }
-
-                    itemPickupCoroutine = StartCoroutine(ItemPickupCoroutine(results, size));
-                }
-
-                //foreach (Collider collider in Physics.OverlapSphere(transform.position, pickupRange))
-                //{
-                //    if (collider.gameObject.TryGetComponent<Item>(out var item))
-                //    {
-                //        if (item is not Animal)
-                //        {
-                //            item.PickupItem();
-                //        }
-                //    }
-                //    else if (collider.transform.parent != null && collider.transform.parent.TryGetComponent(out SpaceshipSelection selection))
-                //    {
-                //        selection.ActivateSpaceshipSelection();
-                //    }
-                //    else if (collider.CompareTag("Trader"))
-                //    {
-                //        if (!InventoryManager.Instance.IsMenuActive)
-                //        {
-                //            TraderMenuManager.Instance.ToggleTraderMenu();
-                //        }
-                //    }
-                //}
             }
 
             // SHOOTING
@@ -244,6 +190,46 @@ public class PlayerControls : MonoBehaviour
                     TraderMenuManager.Instance.ToggleTraderMenu();
                 }
             }
+        }
+    }
+
+    private void ProcessFoundActions(Collider[] results, int size, bool nonItemAction, int nonItemActionIndex)
+    {
+        // always prioritize menu actions before items. trader and spaceship should never be in range of each other, thus should never overlap
+        if (nonItemAction)
+        {
+            Collider actionCollider = results[nonItemActionIndex];
+
+            if (actionCollider != null)
+            {
+                if (actionCollider.CompareTag("Trader"))
+                {
+                    TraderMenuManager.Instance.ToggleTraderMenu();
+                }
+                else if (actionCollider.CompareTag("MainSpaceship"))
+                {
+                    SpaceshipSelection.Instance.ActivateSpaceshipSelection();
+                }
+                else
+                {
+                    Debug.LogWarning("Non item action index led to a collider where neither the trader nor the spaceship was found.");
+                }
+            }
+            else
+            {
+                Debug.LogWarning("Non item action index led to a null collider.");
+            }
+        }
+        else
+        {
+            // if no non-item actions were found, pickup items
+            if (itemPickupCoroutine != null)
+            {
+                StopCoroutine(itemPickupCoroutine);
+                itemPickupCoroutine = null;
+            }
+
+            itemPickupCoroutine = StartCoroutine(ItemPickupCoroutine(results, size));
         }
     }
 
@@ -418,11 +404,6 @@ public class PlayerControls : MonoBehaviour
         }
 
         StartCoroutine(ResetToolSwing(isAxe));
-    }
-
-    public void GetClosestFarmableObject()
-    {
-
     }
 
     public void RegisterToolHit()
