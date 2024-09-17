@@ -8,7 +8,7 @@ public class FarmingTool : MonoBehaviour
     [SerializeField] private PlayerControls playerControls;
 
     private const float checkDespawnFrequency = 0.1f;
-    private const float despawnTimer = 2.5f;
+    private const float despawnTimer = 2.1f;
 
     private Coroutine checkForDespawnCoroutine;
 
