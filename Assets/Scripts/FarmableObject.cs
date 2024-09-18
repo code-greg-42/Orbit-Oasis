@@ -5,10 +5,11 @@ using UnityEngine;
 public class FarmableObject : MonoBehaviour
 {
     [Header("Material Settings")]
-    [SerializeField] private GameObject materialPrefab;
+    [SerializeField] private GameObject[] materialPrefabs;
     [SerializeField] private int farmableMaterialCount;
     [SerializeField] private float dropForce;
     [SerializeField] private float dropHeight;
+    [SerializeField] private int[] materialWeights; // must have same number of ints as materialPrefab, and equal 100
 
     [Header("Type Setting")]
     [SerializeField] private ObjectType type;
@@ -23,17 +24,29 @@ public class FarmableObject : MonoBehaviour
 
     public void FarmObject()
     {
-        Debug.Log("Farming Object");
+        // set start position
         Vector3 dropPosition = new(transform.position.x, dropHeight, transform.position.z);
-        GameObject material = Instantiate(materialPrefab, dropPosition, Quaternion.identity);
-        material.transform.position = dropPosition;
-        material.SetActive(true);
 
-        // apply force in random direction
-        if (material.TryGetComponent<Rigidbody>(out var rb))
+        // randomize material
+        if (materialPrefabs.Length == materialWeights.Length)
         {
-            Vector3 randomDirection = new Vector3(Random.Range(-1f, 1f), 0.5f, Random.Range(-1f, 1f)).normalized;
-            rb.AddForce(randomDirection * dropForce, ForceMode.Impulse);
+            // get prefab index based on assigned weights
+            int prefabIndex = WeightedRandom.GetWeightedRandomIndex(materialWeights);
+
+            GameObject material = Instantiate(materialPrefabs[prefabIndex], dropPosition, Quaternion.identity);
+            material.transform.position = dropPosition;
+            material.SetActive(true);
+
+            // apply force in random direction
+            if (material.TryGetComponent<Rigidbody>(out var rb))
+            {
+                Vector3 randomDirection = new Vector3(Random.Range(-1f, 1f), 0.5f, Random.Range(-1f, 1f)).normalized;
+                rb.AddForce(randomDirection * dropForce, ForceMode.Impulse);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("Material prefabs/weights not set up correctly.");
         }
     }
 }
