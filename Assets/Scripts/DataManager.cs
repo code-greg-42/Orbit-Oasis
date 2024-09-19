@@ -204,9 +204,8 @@ public class DataManager : MonoBehaviour
         PlacedItems.ItemList.RemoveAll(x => (x.placementPosition - placeableItem.transform.position).sqrMagnitude < 0.0001f
             && Quaternion.Angle(x.placementRotation, placeableItem.transform.rotation) < 0.01f);
 
-        Debug.Log("Removed a placed item. Number of placed items: " + PlacedItems.ItemList.Count);
-
         // save to file
+        SavePlacedItems();
     }
 
     public void RemoveSingleTraderItem(Item item, float timer)

@@ -118,7 +118,6 @@ public class PlayerMovement : MonoBehaviour
             // check for jump
             if (Input.GetKeyDown(jumpKey) && isGrounded && jumpReady)
             {
-                Debug.Log("Jump!");
                 Jump();
             }
         }

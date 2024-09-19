@@ -16,8 +16,12 @@ public class Projectile : MonoBehaviour
             item.PickupItem();
 
             // update navmesh with the lack of the object if item was a placeable item such as a tree
-            if (item is PlaceableItem)
+            if (item is PlaceableItem placeableItem)
             {
+                // update data manager with lack of placed item
+                DataManager.Instance.RemovePlacedItem(placeableItem);
+
+                // update navmesh with lack of placed item
                 NavMeshManager.Instance.UpdateNavMesh();
             }
 
