@@ -22,8 +22,11 @@ public class ItemPlacementManager : MonoBehaviour
     private const float orientationDefaultY = 1.0f; // normal height on ground of the orientation game object -- used for adjusting spawn height of items
 
     // for use references
-    private Material itemOriginalMaterial;
+
+    private Material[][] itemOriginalMaterials;
+    //private Material itemOriginalMaterial;
     private PlaceableItem currentItem;
+    private Renderer[] currentItemRenderers;
 
     private void Awake()
     {
@@ -193,33 +196,89 @@ public class ItemPlacementManager : MonoBehaviour
     {
         if (ItemPlacementActive && currentItem != null)
         {
-            if (currentItem.TryGetComponent<Renderer>(out var renderer))
+            if (isPreview)
+            {
+                // get all renderers on current item
+                currentItemRenderers = currentItem.GetComponentsInChildren<Renderer>();
+            }
+
+            if (currentItemRenderers.Length > 0)
             {
                 if (isPreview)
                 {
-                    itemOriginalMaterial = renderer.material;
-                    renderer.material = itemPreviewMaterial;
+                    // init array of arrays to store all original materials for all renderers
+                    itemOriginalMaterials = new Material[currentItemRenderers.Length][];
+
+                    for (int i = 0; i < currentItemRenderers.Length; i++)
+                    {
+                        // get all materials from the renderer
+                        Material[] rendererMaterials = currentItemRenderers[i].materials;
+
+                        // initialize the inner array with how many materials are used
+                        itemOriginalMaterials[i] = new Material[rendererMaterials.Length];
+
+                        // store the original materials
+                        for (int j = 0; j < rendererMaterials.Length; j++)
+                        {
+                            itemOriginalMaterials[i][j] = rendererMaterials[j];
+
+                            // set the renderer's material to the preview material
+                            rendererMaterials[j] = itemPreviewMaterial;
+                        }
+
+                        // assign updated materials array back to the renderer
+                        currentItemRenderers[i].materials = rendererMaterials;
+                    }
                 }
                 else
                 {
-                    renderer.material = itemOriginalMaterial;
+                    if (currentItemRenderers.Length == itemOriginalMaterials.Length)
+                    {
+                        // revert all renderers back to original materials
+                        for (int i = 0; i < currentItemRenderers.Length; i++)
+                        {
+                            currentItemRenderers[i].materials = itemOriginalMaterials[i];
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogError("Error: Original materials array does not have the same length as the current item renderers array.");
+                    }
+
+                    // empty cached renderers and materials arrays
+                    currentItemRenderers = new Renderer[0];
+                    itemOriginalMaterials = new Material[0][];
                 }
+            }
+            else
+            {
+                Debug.LogWarning("No renderer components found on current item or its children. Item: " + currentItem.name);
             }
         }
     }
 
     private void UpdatePreviewColor()
     {
-        if (ItemPlacementActive && currentItem != null)
+        if (ItemPlacementActive && currentItem != null && currentItemRenderers.Length > 0)
         {
-            if (currentItem.TryGetComponent(out Renderer renderer))
-            {
-                Color targetColor = currentItem.IsPlaceable() ? validPreviewColor : invalidPreviewColor;
+            Color targetColor = currentItem.IsPlaceable() ? validPreviewColor : invalidPreviewColor;
 
-                if (renderer.material.color != targetColor)
+            foreach (Renderer renderer in currentItemRenderers)
+            {
+                // Get the array of materials for the current renderer
+                Material[] materials = renderer.materials;
+
+                // Iterate through each material and update the color
+                for (int i = 0; i < materials.Length; i++)
                 {
-                    renderer.material.color = targetColor;
+                    if (materials[i].color != targetColor)
+                    {
+                        materials[i].color = targetColor;
+                    }
                 }
+
+                // Assign the modified materials back to the renderer
+                renderer.materials = materials;
             }
         }
     }
