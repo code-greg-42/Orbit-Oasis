@@ -267,7 +267,7 @@ public class PlayerControls : MonoBehaviour
             // check for items
             else if (collider.gameObject.TryGetComponent(out Item item))
             {
-                if (item.IsReadyForPickup)
+                if (item is not Animal && item is not PlaceableItem && item.IsReadyForPickup)
                 {
                     actionFound = true;
                 }
@@ -295,7 +295,7 @@ public class PlayerControls : MonoBehaviour
             // get item component and pick it up if it's not an animal
             if (collider.gameObject.TryGetComponent(out Item item))
             {
-                if (item is not Animal)
+                if (item is not Animal && item is not PlaceableItem)
                 {
                     item.PickupItem();
                 }
@@ -326,8 +326,6 @@ public class PlayerControls : MonoBehaviour
         // loop through each origin and perform raycast
         foreach (Vector3 rayOrigin in rayOrigins)
         {
-            Debug.DrawRay(rayOrigin, playerObject.forward * farmableSearchDistance, Color.red, 1.0f);
-
             // cast a ray forwards from the specified position
             if (Physics.Raycast(rayOrigin, playerObject.forward, out RaycastHit hit, farmableSearchDistance, farmableObjectLayer))
             {
