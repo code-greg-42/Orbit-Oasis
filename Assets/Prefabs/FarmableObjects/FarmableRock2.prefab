@@ -152,7 +152,7 @@ MonoBehaviour:
   - {fileID: 6725493580680500739, guid: 904cca17550c30948bf4a83fe61332a4, type: 3}
   farmableMaterialCount: 8
   dropForce: 4
-  dropHeight: 2
+  dropHeight: 0.5
   materialWeights: 64000000
   type: 1
 --- !u!114 &6294702671638338589

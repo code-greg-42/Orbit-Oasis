@@ -25,7 +25,7 @@ public class FarmableObject : MonoBehaviour
     public void FarmObject()
     {
         // set start position
-        Vector3 dropPosition = new(transform.position.x, dropHeight, transform.position.z);
+        Vector3 dropPosition = new(transform.position.x, transform.position.y + dropHeight, transform.position.z);
 
         // randomize material
         if (materialPrefabs.Length == materialWeights.Length)
