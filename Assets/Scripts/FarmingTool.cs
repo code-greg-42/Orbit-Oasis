@@ -34,7 +34,6 @@ public class FarmingTool : MonoBehaviour
 
             if (other.TryGetComponent(out FarmableObject farmable))
             {
-                Debug.Log("Calling .FarmObject");
                 farmable.FarmObject();
             }
         }

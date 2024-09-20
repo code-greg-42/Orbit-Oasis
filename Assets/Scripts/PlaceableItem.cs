@@ -83,9 +83,6 @@ public class PlaceableItem : Item
             // create ray, aimed down
             Ray ray = new(worldPoint, Vector3.down);
 
-            // draw line for debugging
-            Debug.DrawLine(worldPoint, worldPoint + Vector3.down * rayLength, Color.red);
-
             // --- PERFORM RAYCAST ---
 
             // --- no hit ---

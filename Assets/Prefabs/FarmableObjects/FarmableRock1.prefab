@@ -30,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 1028973733240692}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.1, z: 0}
   m_LocalScale: {x: 3.8, y: 3.8, z: 3.8}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -160,12 +160,12 @@ MonoBehaviour:
   buildMaterialPerUnit: 0
   prefabIndex: 13
   pickupDelay: 0.3
-  itemHeight: 0
+  itemHeight: 0.2
   attachmentType: 2
-  leftBound: -1
-  rightBound: 1
-  frontBound: 1
-  backBound: -1
+  leftBound: -0.05
+  rightBound: 0.05
+  frontBound: 0.05
+  backBound: -0.1
 --- !u!1 &2856333406861609999
 GameObject:
   m_ObjectHideFlags: 0

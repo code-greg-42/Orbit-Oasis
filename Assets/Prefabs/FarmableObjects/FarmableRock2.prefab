@@ -179,7 +179,7 @@ MonoBehaviour:
   pickupDelay: 0.3
   itemHeight: 2
   attachmentType: 2
-  leftBound: -1
-  rightBound: 1
-  frontBound: 1
-  backBound: -1
+  leftBound: -0.35
+  rightBound: 0.35
+  frontBound: 0.35
+  backBound: -0.35
