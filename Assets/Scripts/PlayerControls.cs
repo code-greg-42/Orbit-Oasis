@@ -11,6 +11,7 @@ public class PlayerControls : MonoBehaviour
     public KeyCode shootingKeybind = KeyCode.C;
     public KeyCode buildModeKeybind = KeyCode.B;
     public KeyCode escapeKeybind = KeyCode.Escape;
+    public KeyCode traderMenuKeybind = KeyCode.T;
 
     private readonly float pickupRange = 1.5f;
     private readonly float projectileLobHeight = 0.35f;
@@ -165,6 +166,12 @@ public class PlayerControls : MonoBehaviour
         if (Input.GetKeyDown(inventoryKeybind) && !InventoryManager.Instance.IsDragging)
         {
             InventoryManager.Instance.ToggleInventoryMenu();
+        }
+
+        // TRADER MENU
+        if (Input.GetKeyDown(traderMenuKeybind) && !TraderMenuManager.Instance.IsDragging)
+        {
+            TraderMenuManager.Instance.ToggleTraderMenu();
         }
 
         // BUILD MODE

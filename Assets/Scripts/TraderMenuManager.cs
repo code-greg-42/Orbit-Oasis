@@ -25,7 +25,7 @@ public class TraderMenuManager : MonoBehaviour
     private readonly int[] quantitiesTraderItems = { 20, 1, 1, 1, 1, 1, 10, 5 };
 
     // timer variables
-    private const float refreshInterval = 900.0f;
+    private const float refreshInterval = 300.0f;
     private const float refreshTimerSaveInterval = 30.0f;
     private float refreshTimer;
     private Coroutine refreshTimerCoroutine;
