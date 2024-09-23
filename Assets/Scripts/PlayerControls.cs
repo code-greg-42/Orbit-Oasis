@@ -274,7 +274,7 @@ public class PlayerControls : MonoBehaviour
             // check for items
             else if (collider.gameObject.TryGetComponent(out Item item))
             {
-                if (item is not Animal && item is not PlaceableItem && item.IsReadyForPickup)
+                if (item is not Animal && item is not PlaceableItem && item is not DeadTree && item.IsReadyForPickup)
                 {
                     actionFound = true;
                 }
@@ -302,7 +302,7 @@ public class PlayerControls : MonoBehaviour
             // get item component and pick it up if it's not an animal
             if (collider.gameObject.TryGetComponent(out Item item))
             {
-                if (item is not Animal && item is not PlaceableItem)
+                if (item is not Animal && item is not PlaceableItem && item is not DeadTree)
                 {
                     item.PickupItem();
                 }
