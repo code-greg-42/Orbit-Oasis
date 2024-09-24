@@ -13,11 +13,13 @@ public class PlayerAnimation : MonoBehaviour
     private bool isSwinging;
     private bool isMining;
     private bool isPickingUpItem;
+    private bool isShooting;
 
     private const float jumpAnimationTime = 0.533f;
     private const float landingAnimationTime = 0.6f;
     private const float axeSwingAnimationTime = 1.61084f;
     private const float itemPickupAnimationTime = 2.234f / 1.2f;
+    private const float shootingAnimationTime = 0.967f;
 
     public bool IsFalling => isFalling;
 
@@ -111,6 +113,17 @@ public class PlayerAnimation : MonoBehaviour
         }
     }
 
+    public void TriggerBowShot()
+    {
+        if (!isShooting)
+        {
+            isShooting = true;
+            playerAnim.SetTrigger("shootBow");
+
+            StartCoroutine(ResetBowShot());
+        }
+    }
+
     public void TriggerItemPickup()
     {
         if (!isPickingUpItem)
@@ -156,5 +169,11 @@ public class PlayerAnimation : MonoBehaviour
     {
         yield return new WaitForSeconds(itemPickupAnimationTime);
         isPickingUpItem = false;
+    }
+
+    private IEnumerator ResetBowShot()
+    {
+        yield return new WaitForSeconds(shootingAnimationTime);
+        isShooting = false;
     }
 }

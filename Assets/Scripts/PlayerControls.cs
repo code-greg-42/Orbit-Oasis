@@ -18,6 +18,8 @@ public class PlayerControls : MonoBehaviour
     private readonly float baseProjectileForce = 10.0f;
     private readonly float maxChargeTime = 2.0f;
     private readonly float maxAdditionalForce = 20.0f;
+    private readonly float shootingCooldown = 2.0f;
+    private bool shotReady = true;
 
     // item pickup variables
     private const float timeToMidItemPickup = 0.819878f / 1.2f;
@@ -141,25 +143,34 @@ public class PlayerControls : MonoBehaviour
                 MainUIManager.Instance.DeactivateItemPickupIndicator(false);
             }
 
-            // SHOOTING
-            if (Input.GetKeyDown(shootingKeybind))
+            // shooting - new
+            if (Input.GetKeyDown(shootingKeybind) && shotReady)
             {
-                shootingChargeTime = 0.0f;
+                shotReady = false;
+                playerAnimation.TriggerBowShot();
+
+                StartCoroutine(ResetShooting());
             }
 
-            if (Input.GetKey(shootingKeybind))
-            {
-                shootingChargeTime += Time.deltaTime;
-                shootingChargeTime = Mathf.Min(shootingChargeTime, maxChargeTime); // cap at max charge time
-            }
+            //// SHOOTING --- OLD CODE
+            //if (Input.GetKeyDown(shootingKeybind))
+            //{
+            //    shootingChargeTime = 0.0f;
+            //}
 
-            if (Input.GetKeyUp(shootingKeybind))
-            {
-                // calc additional force amount
-                float additionalForce = shootingChargeTime / maxChargeTime * maxAdditionalForce;
-                // shoot with additional force and slight lob added
-                ShootProjectile(additionalForce, true);
-            }
+            //if (Input.GetKey(shootingKeybind))
+            //{
+            //    shootingChargeTime += Time.deltaTime;
+            //    shootingChargeTime = Mathf.Min(shootingChargeTime, maxChargeTime); // cap at max charge time
+            //}
+
+            //if (Input.GetKeyUp(shootingKeybind))
+            //{
+            //    // calc additional force amount
+            //    float additionalForce = shootingChargeTime / maxChargeTime * maxAdditionalForce;
+            //    // shoot with additional force and slight lob added
+            //    ShootProjectile(additionalForce, true);
+            //}
         }
 
         // INVENTORY
@@ -449,5 +460,11 @@ public class PlayerControls : MonoBehaviour
             // start the reset process again --- makes it so it only resets if the player is not actively holding the 'farming/use tool' button
             StartCoroutine(ResetToolSwing(false));
         }
+    }
+
+    private IEnumerator ResetShooting()
+    {
+        yield return new WaitForSeconds(shootingCooldown);
+        shotReady = true;
     }
 }
