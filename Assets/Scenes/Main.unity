@@ -185,7 +185,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3317823749142253822, guid: d4958227484245e4592c41ab2c02ad22, type: 3}
       propertyPath: m_Name
-      value: Bow_01
+      value: PlayerBow
+      objectReference: {fileID: 0}
+    - target: {fileID: 3317823749142253822, guid: d4958227484245e4592c41ab2c02ad22, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6366871878821540098, guid: d4958227484245e4592c41ab2c02ad22, type: 3}
       propertyPath: m_Convex
@@ -478,6 +482,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 70336079}
   m_CullTransparentMesh: 1
+--- !u!1 &77750300 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3317823749142253822, guid: d4958227484245e4592c41ab2c02ad22, type: 3}
+  m_PrefabInstance: {fileID: 23445937}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &77750301 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2684312175388576324, guid: d4958227484245e4592c41ab2c02ad22, type: 3}
@@ -9917,6 +9926,8 @@ MonoBehaviour:
   playerObject: {fileID: 1434234114}
   playerAnimation: {fileID: 1258815353}
   playerMovement: {fileID: 1258815351}
+  playerBow: {fileID: 77750300}
+  arrowPrefab: {fileID: 6457690248778474619, guid: 9af88db6aeb3b37419194b4e93935269, type: 3}
   farmableObjectLayer:
     serializedVersion: 2
     m_Bits: 65536
@@ -10105,7 +10116,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1287715202}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.09252102, y: -0.00000001765986, z: 0.0000000016409466, w: 0.99571073}
+  m_LocalRotation: {x: 0.09252102, y: 0.000000017659854, z: -0.0000000016409462, w: 0.99571073}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0

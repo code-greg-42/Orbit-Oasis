@@ -8,6 +8,8 @@ public class Projectile : MonoBehaviour
     private const float groundSequenceDelay = 1.5f;
     private Coroutine groundSequenceCoroutine;
 
+    [SerializeField] private GameObject detonationEffect;
+
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.TryGetComponent(out Item item))
@@ -65,6 +67,10 @@ public class Projectile : MonoBehaviour
             StopCoroutine(groundSequenceCoroutine);
             groundSequenceCoroutine = null;
         }
+
+        // instantiate detonation effect on position
+        GameObject detonationEffectInstance = Instantiate(detonationEffect);
+        detonationEffectInstance.transform.position = transform.position;
 
         // Deactivate the projectile game object and return to pool
         gameObject.SetActive(false);

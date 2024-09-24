@@ -68,6 +68,8 @@ public class PlayerControls : MonoBehaviour
     [SerializeField] private Transform playerObject;
     [SerializeField] private PlayerAnimation playerAnimation;
     [SerializeField] private PlayerMovement playerMovement;
+    [SerializeField] private GameObject playerBow;
+    [SerializeField] private GameObject arrowPrefab;
 
     [Header("Layer Assignments")]
     [SerializeField] private LayerMask farmableObjectLayer;
@@ -147,7 +149,10 @@ public class PlayerControls : MonoBehaviour
             if (Input.GetKeyDown(shootingKeybind) && shotReady)
             {
                 shotReady = false;
+                playerBow.SetActive(true);
                 playerAnimation.TriggerBowShot();
+
+                StartCoroutine(ShootArrow());
 
                 StartCoroutine(ResetShooting());
             }
@@ -465,6 +470,25 @@ public class PlayerControls : MonoBehaviour
     private IEnumerator ResetShooting()
     {
         yield return new WaitForSeconds(shootingCooldown);
+        playerBow.SetActive(false);
         shotReady = true;
+    }
+
+    private IEnumerator ShootArrow()
+    {
+        yield return new WaitForSeconds(0.33845f);
+
+        GameObject arrow = Instantiate(arrowPrefab);
+
+        arrow.transform.position = playerBow.transform.position;
+
+        yield return new WaitForSeconds(0.413876f - 0.33845f);
+
+        Vector3 direction = playerObject.transform.forward;
+
+        if (arrow.TryGetComponent(out Rigidbody rb))
+        {
+            rb.velocity = direction * 15f;
+        }
     }
 }
