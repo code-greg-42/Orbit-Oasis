@@ -143,11 +143,12 @@ Deep into the future, humanity has taken to the stars and colonized many planets
 **Phase 6: Models and Animations** (August 28th - September 18th)
 - Integrate pixel art and low poly models and animations for the game.
 - Deadline: Wednesday, September 18th
-- UPDATE: CURRENT
+- UPDATE: COMPLETED 9.23
 
 **Phase 7: UI/UX Design and Integration** (September 18th - September 25th)
 - Design and integrate user interface elements and improve user experience.
 - Deadline: Wednesday, September 25th
+- UPDATE: CURRENT
 
 **Phase 8: Background Music, Sound Effects, and Particle Effects** (September 25th - October 2nd)
 - Add and integrate background music, sound effects, and particle effects into the game.
