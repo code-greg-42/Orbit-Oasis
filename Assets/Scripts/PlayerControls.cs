@@ -18,8 +18,10 @@ public class PlayerControls : MonoBehaviour
     private readonly float baseProjectileForce = 10.0f;
     private readonly float maxChargeTime = 2.0f;
     private readonly float maxAdditionalForce = 20.0f;
-    private readonly float shootingCooldown = 2.0f;
-    private bool shotReady = true;
+    private readonly float bowShotAnimationTime = 0.967f;
+    private readonly float timeToBowShotRelease = 0.413876f;
+    private Coroutine bowShotCoroutine;
+    private bool isShooting = false;
 
     // item pickup variables
     private const float timeToMidItemPickup = 0.819878f / 1.2f;
@@ -55,7 +57,9 @@ public class PlayerControls : MonoBehaviour
     // property used by movement script
     public bool IsSwinging => isSwinging;
     public bool IsPickingUpItem => isPickingUpItem;
-    public bool ReadyForAction => !isSwinging && !isPickingUpItem && playerMovement.IsGrounded && !BuildManager.Instance.BuildModeActive &&
+
+    // main action property
+    public bool ReadyForAction => !isSwinging && !isShooting && !isPickingUpItem && playerMovement.IsGrounded && !BuildManager.Instance.BuildModeActive &&
         !DialogueManager.Instance.DialogueWindowActive && !ItemPlacementManager.Instance.ItemPlacementActive && !InventoryManager.Instance.IsMenuActive &&
         !TraderMenuManager.Instance.IsMenuActive && !SpaceshipSelection.Instance.IsMenuActive;
 
@@ -64,12 +68,10 @@ public class PlayerControls : MonoBehaviour
     [Header("References")]
     [SerializeField] private FarmingTool playerAxe;
     [SerializeField] private FarmingTool playerMiningPick;
-    [SerializeField] private GameObject projectilePrefab;
     [SerializeField] private Transform playerObject;
     [SerializeField] private PlayerAnimation playerAnimation;
     [SerializeField] private PlayerMovement playerMovement;
     [SerializeField] private GameObject playerBow;
-    [SerializeField] private GameObject arrowPrefab;
 
     [Header("Layer Assignments")]
     [SerializeField] private LayerMask farmableObjectLayer;
@@ -145,16 +147,10 @@ public class PlayerControls : MonoBehaviour
                 MainUIManager.Instance.DeactivateItemPickupIndicator(false);
             }
 
-            // shooting - new
-            if (Input.GetKeyDown(shootingKeybind) && shotReady)
+            // BOW SHOT -- ONLY WHILE PLAYER ISN"T MOVING
+            if (Input.GetKeyDown(shootingKeybind) && ReadyForAction && !playerMovement.IsMoving)
             {
-                shotReady = false;
-                playerBow.SetActive(true);
-                playerAnimation.TriggerBowShot();
-
-                StartCoroutine(ShootArrow());
-
-                StartCoroutine(ResetShooting());
+                ShootBow();
             }
 
             //// SHOOTING --- OLD CODE
@@ -467,28 +463,48 @@ public class PlayerControls : MonoBehaviour
         }
     }
 
-    private IEnumerator ResetShooting()
+    private void ShootBow()
     {
-        yield return new WaitForSeconds(shootingCooldown);
-        playerBow.SetActive(false);
-        shotReady = true;
+        if (bowShotCoroutine != null)
+        {
+            StopCoroutine(bowShotCoroutine);
+            bowShotCoroutine = null;
+        }
+
+        bowShotCoroutine = StartCoroutine(BowShotCoroutine());
     }
 
-    private IEnumerator ShootArrow()
+    private IEnumerator BowShotCoroutine()
     {
-        yield return new WaitForSeconds(0.33845f);
+        isShooting = true;
+        playerBow.SetActive(true);
+        playerAnimation.TriggerBowShot();
 
-        GameObject arrow = Instantiate(arrowPrefab);
+        // wait for animation to progress to the release state
+        while (!playerAnimation.GetBowShotAnimationState())
+        {
+            yield return null;
+        }
 
-        arrow.transform.position = playerBow.transform.position;
+        // get projectile from pool, set position to bow, and set active in scene
+        GameObject projectile = ProjectilePool.Instance.GetPooledObject();
+        projectile.transform.position = playerBow.transform.position;
+        projectile.SetActive(true);
 
-        yield return new WaitForSeconds(0.413876f - 0.33845f);
-
+        // set shot direction to player object's forward direction
         Vector3 direction = playerObject.transform.forward;
 
-        if (arrow.TryGetComponent(out Rigidbody rb))
+        // get rigidbody component and set velocity
+        if (projectile.TryGetComponent(out Rigidbody rb))
         {
-            rb.velocity = direction * 15f;
+            //rb.velocity = direction * 15f;
+
+            rb.AddForce(15f * direction, ForceMode.Impulse);
         }
+
+        yield return new WaitForSeconds(bowShotAnimationTime - timeToBowShotRelease);
+
+        playerBow.SetActive(false);
+        isShooting = false;
     }
 }

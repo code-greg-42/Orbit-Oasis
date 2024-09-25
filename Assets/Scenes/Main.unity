@@ -6273,7 +6273,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 785105713}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.047631975, y: -0.0000000021483564, z: 1.02446746e-10, w: 0.99886495}
+  m_LocalRotation: {x: 0.047631975, y: 0.0000000021483564, z: -1.02446746e-10, w: 0.99886495}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -7637,7 +7637,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.04763198, y: -0.0000000021483566, z: 1.02446746e-10, w: 0.99886495}
+  m_LocalRotation: {x: 0.04763198, y: 0.0000000021483566, z: -1.02446746e-10, w: 0.99886495}
   m_LocalPosition: {x: 0, y: 3, z: -7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -9922,12 +9922,10 @@ MonoBehaviour:
   traderMenuKeybind: 116
   playerAxe: {fileID: 910859674}
   playerMiningPick: {fileID: 1968290480}
-  projectilePrefab: {fileID: 5737325398390983765, guid: 173f303122a3a444ab857f65056347d7, type: 3}
   playerObject: {fileID: 1434234114}
   playerAnimation: {fileID: 1258815353}
   playerMovement: {fileID: 1258815351}
   playerBow: {fileID: 77750300}
-  arrowPrefab: {fileID: 6457690248778474619, guid: 9af88db6aeb3b37419194b4e93935269, type: 3}
   farmableObjectLayer:
     serializedVersion: 2
     m_Bits: 65536
@@ -15203,7 +15201,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   amountToPool: 10
-  objectToPool: {fileID: 5737325398390983765, guid: 173f303122a3a444ab857f65056347d7, type: 3}
+  objectToPool: {fileID: 6457690248778474619, guid: 9af88db6aeb3b37419194b4e93935269, type: 3}
 --- !u!114 &1963380236
 MonoBehaviour:
   m_ObjectHideFlags: 0

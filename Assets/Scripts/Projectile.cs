@@ -32,7 +32,10 @@ public class Projectile : MonoBehaviour
         }
         else if ((collision.gameObject.CompareTag("Ground") || collision.gameObject.TryGetComponent(out BuildableObject _)) && groundSequenceCoroutine == null)
         {
-            groundSequenceCoroutine = StartCoroutine(GroundSequence());
+            if (gameObject.activeInHierarchy)
+            {
+                groundSequenceCoroutine = StartCoroutine(GroundSequence());
+            }
         }
     }
 
@@ -71,6 +74,13 @@ public class Projectile : MonoBehaviour
         // instantiate detonation effect on position
         GameObject detonationEffectInstance = Instantiate(detonationEffect);
         detonationEffectInstance.transform.position = transform.position;
+
+        // set movement back to zero
+        if (TryGetComponent(out Rigidbody rb))
+        {
+            rb.velocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+        }
 
         // Deactivate the projectile game object and return to pool
         gameObject.SetActive(false);

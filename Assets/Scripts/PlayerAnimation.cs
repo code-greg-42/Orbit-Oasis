@@ -20,6 +20,7 @@ public class PlayerAnimation : MonoBehaviour
     private const float axeSwingAnimationTime = 1.61084f;
     private const float itemPickupAnimationTime = 2.234f / 1.2f;
     private const float shootingAnimationTime = 0.967f;
+    private const float shootingAnimationReleasePct = 0.428f;
 
     public bool IsFalling => isFalling;
 
@@ -151,6 +152,23 @@ public class PlayerAnimation : MonoBehaviour
             isMining = false;
             playerAnim.SetBool("isMining", false);
         }
+    }
+
+    public bool GetBowShotAnimationState()
+    {
+        if (isShooting)
+        {
+            if (playerAnim.GetCurrentAnimatorStateInfo(0).IsName("BowShot"))
+            {
+                AnimatorStateInfo stateInfo = playerAnim.GetCurrentAnimatorStateInfo(0);
+
+                if (stateInfo.normalizedTime >= shootingAnimationReleasePct)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private IEnumerator ResetAxeSwing()
