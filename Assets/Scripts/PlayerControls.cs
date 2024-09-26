@@ -13,17 +13,14 @@ public class PlayerControls : MonoBehaviour
     public KeyCode escapeKeybind = KeyCode.Escape;
     public KeyCode traderMenuKeybind = KeyCode.T;
 
-    private readonly float pickupRange = 1.5f;
-    private readonly float projectileLobHeight = 0.35f;
-    private readonly float baseProjectileForce = 10.0f;
-    private readonly float maxChargeTime = 2.0f;
-    private readonly float maxAdditionalForce = 20.0f;
+    // bow shot variables
     private readonly float bowShotAnimationTime = 0.967f;
     private readonly float timeToBowShotRelease = 0.413876f;
     private Coroutine bowShotCoroutine;
     private bool isShooting = false;
 
     // item pickup variables
+    private readonly float pickupRange = 1.5f;
     private const float timeToMidItemPickup = 0.819878f / 1.2f;
     private const float itemPickupFinishTime = 1.414122f / 1.2f;
     private Coroutine itemPickupCoroutine;
@@ -62,8 +59,6 @@ public class PlayerControls : MonoBehaviour
     public bool ReadyForAction => !isSwinging && !isShooting && !isPickingUpItem && playerMovement.IsGrounded && !BuildManager.Instance.BuildModeActive &&
         !DialogueManager.Instance.DialogueWindowActive && !ItemPlacementManager.Instance.ItemPlacementActive && !InventoryManager.Instance.IsMenuActive &&
         !TraderMenuManager.Instance.IsMenuActive && !SpaceshipSelection.Instance.IsMenuActive;
-
-    private float shootingChargeTime;
 
     [Header("References")]
     [SerializeField] private FarmingTool playerAxe;
@@ -152,26 +147,6 @@ public class PlayerControls : MonoBehaviour
             {
                 ShootBow();
             }
-
-            //// SHOOTING --- OLD CODE
-            //if (Input.GetKeyDown(shootingKeybind))
-            //{
-            //    shootingChargeTime = 0.0f;
-            //}
-
-            //if (Input.GetKey(shootingKeybind))
-            //{
-            //    shootingChargeTime += Time.deltaTime;
-            //    shootingChargeTime = Mathf.Min(shootingChargeTime, maxChargeTime); // cap at max charge time
-            //}
-
-            //if (Input.GetKeyUp(shootingKeybind))
-            //{
-            //    // calc additional force amount
-            //    float additionalForce = shootingChargeTime / maxChargeTime * maxAdditionalForce;
-            //    // shoot with additional force and slight lob added
-            //    ShootProjectile(additionalForce, true);
-            //}
         }
 
         // INVENTORY
@@ -357,42 +332,6 @@ public class PlayerControls : MonoBehaviour
         }
 
         return false;
-    }
-
-    private void ShootProjectile(float additionalForce, bool addLob)
-    {
-        // get projectile from pool
-        GameObject projectile = ProjectilePool.Instance.GetPooledObject();
-
-        // calc direction
-        Vector3 direction = playerObject.forward;
-
-        if (addLob)
-        {
-            // adjust y value for a slight lob
-            direction.y = projectileLobHeight;
-        }
-
-        // ignore collision with player object
-        if (playerObject.TryGetComponent(out Collider playerCollider) && projectile.TryGetComponent(out Collider projectileCollider))
-        {
-            Physics.IgnoreCollision(playerCollider, projectileCollider);
-        }
-
-        // reposition projectile to player object
-        projectile.transform.position = playerObject.position;
-
-        // apply force to projectile
-        if (projectile.TryGetComponent(out Rigidbody rb))
-        {
-            rb.velocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
-
-            // activate projectile
-            projectile.SetActive(true);
-
-            rb.AddForce(direction * (baseProjectileForce + additionalForce), ForceMode.Impulse);
-        }
     }
 
     private void SwingTool(bool isAxe)
