@@ -19,4 +19,9 @@ public class QuestManager : MonoBehaviour
         questStatus++;
         Debug.Log($"Quest updated! Completion: {questStatus}/{questTotalNeeded}");
     }
+
+    public void UpdateQuestRequirements(int requiredAmount)
+    {
+        questTotalNeeded = requiredAmount;
+    }
 }
