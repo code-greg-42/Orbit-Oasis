@@ -27,6 +27,12 @@ public class Projectile : MonoBehaviour
                 NavMeshManager.Instance.UpdateNavMesh();
             }
 
+            if (item is DeadTree)
+            {
+                // update quest manager with quest completion
+                QuestManager.Instance.UpdateCurrentQuest();
+            }
+
             // deactivate projectile and return to pool
             Deactivate();
         }
