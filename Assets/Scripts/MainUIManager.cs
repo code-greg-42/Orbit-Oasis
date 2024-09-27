@@ -85,7 +85,7 @@ public class MainUIManager : MonoBehaviour
 
         if (changeAmount != 0)
         {
-            CreateFloatingText(changeAmount);
+            CreateFloatingCurrencyText(changeAmount);
         }
     }
 
@@ -165,6 +165,12 @@ public class MainUIManager : MonoBehaviour
     public void UpdateQuestProgress(int progress, int total, int changeAmount = 1)
     {
         questProgressText.text = $"{progress}/{total}";
+
+        // format string for floating text effect
+        string floatingString = $"+{changeAmount}";
+
+        // create floating text effect
+        CreateFloatingText(questProgressText, floatingString, Color.green);
     }
 
     private IEnumerator DeactivateIndicatorCoroutine(bool success, GameObject indicator, Image successIndicator,
@@ -284,16 +290,11 @@ public class MainUIManager : MonoBehaviour
         itemPickupSuccessIndicator.gameObject.SetActive(false);
     }
 
-    private void CreateFloatingText(float changeAmount)
+    private void CreateFloatingText(TMP_Text textBoxOrigin, string text, Color color)
     {
-        // set text values and color based on whether changeAmount is positive or negative
-        string symbol = changeAmount > 0 ? "+" : "-";
-        Color color = changeAmount > 0 ? Color.green : Color.red;
-        string text = symbol + currencySymbol + Mathf.Abs(changeAmount).ToString("N0");
-
         // instantiate floating text prefab
         GameObject floatingTextInstance = Instantiate(floatingTextPrefab,
-            currencyText.transform.position + floatingTextSpawnOffset, Quaternion.identity, currencyText.transform.parent);
+            textBoxOrigin.transform.position + floatingTextSpawnOffset, Quaternion.identity, textBoxOrigin.transform.parent);
 
         if (floatingTextInstance.TryGetComponent(out FloatingText floatingText))
         {
@@ -303,6 +304,11 @@ public class MainUIManager : MonoBehaviour
 
     private void CreateFloatingCurrencyText(float changeAmount)
     {
+        // set text values and color based on whether changeAmount is positive or negative
+        string symbol = changeAmount > 0 ? "+" : "-";
+        Color color = changeAmount > 0 ? Color.green : Color.red;
+        string text = symbol + currencySymbol + Mathf.Abs(changeAmount).ToString("N0");
 
+        CreateFloatingText(currencyText, text, color);
     }
 }
