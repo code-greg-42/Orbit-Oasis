@@ -27,6 +27,11 @@ public class MainUIManager : MonoBehaviour
     [SerializeField] private TMP_Text itemPickupIndicatorText;
     [SerializeField] private Image itemPickupSuccessIndicator;
 
+    [Header("Quest Log")]
+    [SerializeField] private GameObject questPanel;
+    [SerializeField] private TMP_Text questTitleText;
+    [SerializeField] private TMP_Text questProgressText;
+
     // farming indicator settings
     private const float farmingIndicatorFadeTime = 0.25f;
     private const float farmingSuccessFadeTime = 0.5f;
@@ -140,6 +145,26 @@ public class MainUIManager : MonoBehaviour
             deactivateItemPickupIndicatorCoroutine = StartCoroutine(DeactivateIndicatorCoroutine(success,
                 itemPickupIndicator, itemPickupSuccessIndicator, itemPickupIndicatorPanel, itemPickupIndicatorText, false));
         }
+    }
+
+    public void ActivateQuestLog()
+    {
+        questPanel.gameObject.SetActive(true);
+    }
+
+    public void DeactivateQuestLog()
+    {
+        questPanel.gameObject.SetActive(false);
+    }
+
+    public void UpdateQuestTitle(string title)
+    {
+        questTitleText.text = title;
+    }
+
+    public void UpdateQuestProgress(int progress, int total, int changeAmount = 1)
+    {
+        questProgressText.text = $"{progress}/{total}";
     }
 
     private IEnumerator DeactivateIndicatorCoroutine(bool success, GameObject indicator, Image successIndicator,
@@ -274,5 +299,10 @@ public class MainUIManager : MonoBehaviour
         {
             floatingText.Init(text, color);
         }
+    }
+
+    private void CreateFloatingCurrencyText(float changeAmount)
+    {
+
     }
 }
