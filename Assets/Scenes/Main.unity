@@ -9198,8 +9198,8 @@ MonoBehaviour:
   itemPickupIndicatorText: {fileID: 1456605098}
   itemPickupSuccessIndicator: {fileID: 1065881699}
   questPanel: {fileID: 628955129}
-  questPanelImages:
-  - {fileID: 628955132}
+  mainQuestPanelImage: {fileID: 628955132}
+  extraQuestPanelImages:
   - {fileID: 571229332}
   - {fileID: 1893280575}
   questTitleText: {fileID: 1546899323}

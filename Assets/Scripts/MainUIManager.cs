@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -29,15 +30,17 @@ public class MainUIManager : MonoBehaviour
 
     [Header("Quest Log")]
     [SerializeField] private GameObject questPanel;
-    [SerializeField] private Image[] questPanelImages;
+    [SerializeField] private Image mainQuestPanelImage;
+    [SerializeField] private Image[] extraQuestPanelImages;
     [SerializeField] private TMP_Text questTitleText;
     [SerializeField] private TMP_Text questProgressText;
     [SerializeField] private Color questPanelDefaultColor;
     [SerializeField] private Color questPanelSuccessColor;
 
     // quest log settings
-    private float questSuccessFadeDuration = 2.0f;
+    private float questSuccessFadeDuration = 1.4f;
     private Coroutine showQuestSuccessCoroutine;
+    private Color questTextStartColor;
 
     // farming indicator settings
     private const float farmingIndicatorFadeTime = 0.25f;
@@ -78,6 +81,8 @@ public class MainUIManager : MonoBehaviour
         indicatorTextStartColor = farmingIndicatorText.color;
         successIndicatorStartColor = farmingSuccessIndicator.color;
         indicatorOriginalScale = farmingIndicator.transform.localScale;
+
+        questTextStartColor = questProgressText.color;
 
         UpdateCurrencyDisplay(DataManager.Instance.PlayerStats.PlayerCurrency);
     }
@@ -192,11 +197,8 @@ public class MainUIManager : MonoBehaviour
         {
             StopCoroutine(showQuestSuccessCoroutine);
             showQuestSuccessCoroutine = null;
-            
-            foreach (Image questPanelImage in questPanelImages)
-            {
-                questPanelImage.color = questPanelDefaultColor;
-            }
+
+            ReturnQuestPanelToOriginalColor();
         }
         showQuestSuccessCoroutine = StartCoroutine(ShowQuestSuccessCoroutine());
     }
@@ -205,30 +207,50 @@ public class MainUIManager : MonoBehaviour
     {
         float timer = 0f;
         float duration = questSuccessFadeDuration;
-        
-        // change the color of all quest panel backgrounds to green
-        foreach (Image questPanelImage in questPanelImages)
-        {
-            questPanelImage.color = questPanelSuccessColor;
-        }
+
+        // change the main background to green
+        mainQuestPanelImage.color = questPanelSuccessColor;
 
         while (timer < questSuccessFadeDuration)
         {
             timer += Time.deltaTime;
 
-            foreach (Image questPanelImage in questPanelImages)
+            // fade main background (with green tint)
+            mainQuestPanelImage.color = GetFadedColor(questPanelSuccessColor, questPanelSuccessColor.a, 0f, timer, duration);
+
+            // fade out other backgrounds
+            foreach (Image questPanelImage in extraQuestPanelImages)
             {
-                questPanelImage.color = GetFadedColor(questPanelSuccessColor, questPanelSuccessColor.a, 0f, timer, duration);
+                questPanelImage.color = GetFadedColor(questPanelDefaultColor, questPanelDefaultColor.a, 0f, timer, duration);
+            }
+
+            // fade out the text assets
+            foreach (TMP_Text textAsset in new[] { questTitleText, questProgressText })
+            {
+                textAsset.color = GetFadedColor(questTextStartColor, questTextStartColor.a, 0f, timer, duration);
             }
 
             yield return null;
         }
 
         questPanel.SetActive(false);
-        
-        foreach (Image questPanelImage in questPanelImages)
+        ReturnQuestPanelToOriginalColor();
+    }
+
+    private void ReturnQuestPanelToOriginalColor()
+    {
+        // loop through each type and return to original color
+
+        mainQuestPanelImage.color = questPanelDefaultColor;
+
+        foreach (Image questPanelImage in extraQuestPanelImages)
         {
             questPanelImage.color = questPanelDefaultColor;
+        }
+
+        foreach (TMP_Text textAsset in new[] { questTitleText, questProgressText })
+        {
+            textAsset.color = questTextStartColor;
         }
     }
 
