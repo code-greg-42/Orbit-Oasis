@@ -209,9 +209,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: Dead Pine Tree
-  description: Sadly, this tree is super dead. Will sell for something though!
+  description: Sadly, this pine tree is super dead.
   image: {fileID: 21300000, guid: 4b78cfc37ca1a4c4db295541fdc61a15, type: 3}
-  maxStackQuantity: 1
+  maxStackQuantity: 10
   quantity: 1
   sellPricePerUnit: 400
   buyPricePerUnit: 800
