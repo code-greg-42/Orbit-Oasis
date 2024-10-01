@@ -29,6 +29,7 @@ public class Item : MonoBehaviour
     public float BuildMaterialPerUnit => buildMaterialPerUnit;
     public int PrefabIndex => prefabIndex;
     public bool IsReadyForPickup => (Time.time - timeOfRecentEnable) > pickupDelay;
+    public virtual bool IsDroppable { get; } = true;
 
     public int Quantity
     {

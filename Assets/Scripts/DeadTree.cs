@@ -4,5 +4,5 @@ using UnityEngine;
 
 public class DeadTree : Item
 {
-    
+    public override bool IsDroppable { get; } = false;
 }

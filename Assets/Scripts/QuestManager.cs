@@ -7,8 +7,7 @@ public class QuestManager : MonoBehaviour
 {
     public static QuestManager Instance { get; private set; }
 
-    private int questCompletionAmount;
-    private int questTotalNeeded = 10;
+    private int questProgress;
     private int activeQuestIndex;
 
     public bool QuestLogActive => MainUIManager.Instance.QuestPanelActive;
@@ -18,51 +17,64 @@ public class QuestManager : MonoBehaviour
         RemoveDeadTrees,
         SellDeadTrees,
         PlantTrees,
-        PlantRocks,
-        FarmTree,
-        FarmRock,
+        PlaceRocks,
+        FarmTrees,
+        MineRocks,
         BuildObjects,
         SpaceRace,
     }
 
-    private IntroQuest[] introQuests =
-    {
-        IntroQuest.RemoveDeadTrees,
-        IntroQuest.SellDeadTrees,
-        IntroQuest.PlantTrees,
-        IntroQuest.PlantRocks,
-        IntroQuest.FarmTree,
-        IntroQuest.FarmRock,
-        IntroQuest.BuildObjects,
-        IntroQuest.SpaceRace
-    };
-
-    private Dictionary<IntroQuest, int> questTotals = new()
-    {
-        { IntroQuest.RemoveDeadTrees, 10 },
-        { IntroQuest.SellDeadTrees, 2 },
-        { IntroQuest.PlantTrees, 5 },
-        { IntroQuest.PlantRocks, 3 },
-        { IntroQuest.FarmTree, 5 },
-        { IntroQuest.FarmRock, 5 },
-        { IntroQuest.BuildObjects, 5 },
-        { IntroQuest.SpaceRace, 1 }
-    };
+    private Quest[] introQuests;
     
     private void Awake()
     {
         Instance = this;
+
+        introQuests = new Quest[]
+        {
+            new Quest("Remove Dead Trees", IntroQuest.RemoveDeadTrees, 10, "", "", RewardForRemoveDeadTrees),
+            new Quest("Sell Dead Trees", IntroQuest.SellDeadTrees, 2, "", "", RewardForSellDeadTrees),
+            new Quest("Plant New Trees", IntroQuest.PlantTrees, 5, "", "", RewardForPlantTrees),
+            new Quest("Place Rocks", IntroQuest.PlaceRocks, 3, "", "", RewardForPlaceRocks),
+            new Quest("Farm Trees", IntroQuest.FarmTrees, 3, "", "", RewardForFarmTrees),
+            new Quest("Mine Rocks", IntroQuest.MineRocks, 2, "", "", RewardForMineRocks),
+            new Quest("Build Objects", IntroQuest.BuildObjects, 5, "", "", RewardForBuildObjects),
+            new Quest("Complete the Space Race", IntroQuest.SpaceRace, 1, "", "", RewardForSpaceRace)
+        };
+    }
+
+    public IntroQuest GetCurrentQuest()
+    {
+        return introQuests[activeQuestIndex].QuestType;
     }
 
     public void StartNewQuest()
     {
+        Quest currentQuest = introQuests[activeQuestIndex];
 
+        // update UI
+        MainUIManager.Instance.UpdateQuestLogWithNewQuest(currentQuest.QuestTitle, currentQuest.TotalNeeded);
+
+        MainUIManager.Instance.ActivateQuestLog();
     }
 
     public void UpdateCurrentQuest()
     {
-        questCompletionAmount++;
-        MainUIManager.Instance.UpdateQuestProgress(questCompletionAmount, questTotalNeeded);
+        questProgress++;
+        MainUIManager.Instance.UpdateQuestProgress(questProgress, introQuests[activeQuestIndex].TotalNeeded);
+
+        if (questProgress >= introQuests[activeQuestIndex].TotalNeeded)
+        {
+            StartCoroutine(QuestCompletionCoroutine());
+        }
+    }
+
+    private IEnumerator QuestCompletionCoroutine()
+    {
+        yield return StartCoroutine(MainUIManager.Instance.ShowQuestSuccess());
+        yield return new WaitForSeconds(1.5f);
+        activeQuestIndex++;
+        StartNewQuest();
     }
 
     // QUEST REWARDS
@@ -83,17 +95,17 @@ public class QuestManager : MonoBehaviour
         // Implement reward logic for PlantTrees
     }
 
-    private void RewardForPlantRocks()
+    private void RewardForPlaceRocks()
     {
         // Implement reward logic for PlantRocks
     }
 
-    private void RewardForFarmTree()
+    private void RewardForFarmTrees()
     {
         // Implement reward logic for FarmTree
     }
 
-    private void RewardForFarmRock()
+    private void RewardForMineRocks()
     {
         // Implement reward logic for FarmRock
     }

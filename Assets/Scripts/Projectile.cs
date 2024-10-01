@@ -27,7 +27,7 @@ public class Projectile : MonoBehaviour
                 NavMeshManager.Instance.UpdateNavMesh();
             }
 
-            if (item is DeadTree)
+            if (item is DeadTree && QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.RemoveDeadTrees)
             {
                 // update quest manager with quest completion
                 QuestManager.Instance.UpdateCurrentQuest();

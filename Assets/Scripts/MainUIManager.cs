@@ -165,17 +165,18 @@ public class MainUIManager : MonoBehaviour
 
     public void ActivateQuestLog()
     {
-        questPanel.gameObject.SetActive(true);
+        if (questFadeInCoroutine != null)
+        {
+            StopCoroutine(questFadeInCoroutine);
+            questFadeInCoroutine = null;
+        }
+        StartCoroutine(FadeQuestLog(true));
     }
 
-    public void DeactivateQuestLog()
-    {
-        questPanel.gameObject.SetActive(false);
-    }
-
-    public void UpdateQuestTitle(string title)
+    public void UpdateQuestLogWithNewQuest(string title, int total)
     {
         questTitleText.text = title;
+        questProgressText.text = $"0/{total}";
     }
 
     public void UpdateQuestProgress(int progress, int total, int changeAmount = 1)
@@ -187,15 +188,9 @@ public class MainUIManager : MonoBehaviour
 
         // create floating text effect
         CreateFloatingText(questProgressText, floatingString, Color.green);
-
-        // temporary
-        if (progress >= total)
-        {
-            ShowQuestSuccess();
-        }
     }
 
-    public void ShowQuestSuccess()
+    public IEnumerator ShowQuestSuccess()
     {
         if (showQuestSuccessCoroutine != null)
         {
@@ -204,17 +199,7 @@ public class MainUIManager : MonoBehaviour
 
             ReturnQuestPanelToOriginalColor();
         }
-        showQuestSuccessCoroutine = StartCoroutine(QuestCompletionCoroutine());
-    }
-
-    private IEnumerator QuestCompletionCoroutine()
-    {
-        // fade out the quest log
-        yield return StartCoroutine(FadeQuestLog());
-
-        yield return new WaitForSeconds(1.0f);
-
-        StartCoroutine(FadeQuestLog(true));
+        yield return showQuestSuccessCoroutine = StartCoroutine(FadeQuestLog(false));
     }
 
     private IEnumerator FadeQuestLog(bool fadeIn = false)

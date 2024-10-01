@@ -290,8 +290,7 @@ public class InventoryManager : MonoBehaviour
 
     public void DropDraggedItem()
     {
-        Debug.Log("dropping item!");
-        if (DragSlot != null)
+        if (DragSlot != null && DragSlot.SlotItem.IsDroppable)
         {
             // instantiate item in game world near player
             Vector3 dropPos = playerTransform.position + playerTransform.forward * 2;
@@ -336,6 +335,12 @@ public class InventoryManager : MonoBehaviour
                 RemoveSlotSelection();
             }
             DragSlot.ClearSlot();
+
+            // update quest manager if selling quest is active
+            if (QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.SellDeadTrees)
+            {
+                QuestManager.Instance.UpdateCurrentQuest();
+            }
         }
     }
 

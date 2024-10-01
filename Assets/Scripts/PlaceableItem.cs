@@ -36,6 +36,7 @@ public class PlaceableItem : Item
 
     public float ItemHeight => itemHeight;
     public BuildEnums.BuildType AttachmentType => attachmentType;
+    public override bool IsDroppable { get; } = false;
 
     private void Awake()
     {
