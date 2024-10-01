@@ -39,6 +39,8 @@ public class MainUIManager : MonoBehaviour
 
     // quest log settings
     private float questSuccessFadeDuration = 1.4f;
+    private float questFadeInDuration = 0.8f;
+    private Coroutine questFadeInCoroutine;
     private Coroutine showQuestSuccessCoroutine;
     private Color questTextStartColor;
 
@@ -64,6 +66,8 @@ public class MainUIManager : MonoBehaviour
     private Vector3 floatingTextSpawnOffset = new(0, 30, 0);
 
     private const string currencySymbol = "$";
+
+    public bool QuestPanelActive => questPanel.activeInHierarchy;
 
     private void Awake()
     {
@@ -200,40 +204,66 @@ public class MainUIManager : MonoBehaviour
 
             ReturnQuestPanelToOriginalColor();
         }
-        showQuestSuccessCoroutine = StartCoroutine(ShowQuestSuccessCoroutine());
+        showQuestSuccessCoroutine = StartCoroutine(QuestCompletionCoroutine());
     }
 
-    private IEnumerator ShowQuestSuccessCoroutine()
+    private IEnumerator QuestCompletionCoroutine()
+    {
+        // fade out the quest log
+        yield return StartCoroutine(FadeQuestLog());
+
+        yield return new WaitForSeconds(1.0f);
+
+        StartCoroutine(FadeQuestLog(true));
+    }
+
+    private IEnumerator FadeQuestLog(bool fadeIn = false)
     {
         float timer = 0f;
-        float duration = questSuccessFadeDuration;
+        float duration = fadeIn ? questFadeInDuration : questSuccessFadeDuration;
+        float startBackgroundAlpha = fadeIn ? 0f : questPanelDefaultColor.a;
+        float targetBackgroundAlpha = fadeIn ? questPanelDefaultColor.a : 0f; 
+        float startTextAlpha = fadeIn ? 0f : questTextStartColor.a;
+        float targetTextAlpha = fadeIn ? questTextStartColor.a : 0f;
+        Color mainPanelStartColor = fadeIn ? questPanelDefaultColor : questPanelSuccessColor;
 
-        // change the main background to green
-        mainQuestPanelImage.color = questPanelSuccessColor;
+        if (!fadeIn)
+        {
+            mainQuestPanelImage.color = questPanelSuccessColor;
+        }
 
         while (timer < questSuccessFadeDuration)
         {
             timer += Time.deltaTime;
 
-            // fade main background (with green tint)
-            mainQuestPanelImage.color = GetFadedColor(questPanelSuccessColor, questPanelSuccessColor.a, 0f, timer, duration);
+            // fade main background
+            mainQuestPanelImage.color = GetFadedColor(mainPanelStartColor, startBackgroundAlpha, targetBackgroundAlpha, timer, duration);
 
             // fade out other backgrounds
             foreach (Image questPanelImage in extraQuestPanelImages)
             {
-                questPanelImage.color = GetFadedColor(questPanelDefaultColor, questPanelDefaultColor.a, 0f, timer, duration);
+                questPanelImage.color = GetFadedColor(questPanelDefaultColor, startBackgroundAlpha, targetBackgroundAlpha, timer, duration);
             }
 
             // fade out the text assets
             foreach (TMP_Text textAsset in new[] { questTitleText, questProgressText })
             {
-                textAsset.color = GetFadedColor(questTextStartColor, questTextStartColor.a, 0f, timer, duration);
+                textAsset.color = GetFadedColor(questTextStartColor, startTextAlpha, targetTextAlpha, timer, duration);
+            }
+
+            // activate panel if it has not already been activated and fade in has been called
+            if (fadeIn && !questPanel.activeInHierarchy)
+            {
+                questPanel.SetActive(true);
             }
 
             yield return null;
         }
 
-        questPanel.SetActive(false);
+        if (!fadeIn)
+        {
+            questPanel.SetActive(false);
+        }
         ReturnQuestPanelToOriginalColor();
     }
 

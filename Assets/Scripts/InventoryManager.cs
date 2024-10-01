@@ -11,6 +11,7 @@ public class InventoryManager : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private GameObject inventoryMenu;
+    [SerializeField] private RectTransform inventoryRectTransform;
     [SerializeField] private InventorySlot[] inventorySlots;
     [SerializeField] private Image dragImage; // image used for drag and drop functionality
     [SerializeField] private Transform playerTransform;
@@ -22,6 +23,8 @@ public class InventoryManager : MonoBehaviour
 
     [Header("Item List")]
     [SerializeField] private GameObject[] itemPrefabs; // used for instantiating saved items (in TraderMenuManager as well)
+
+    private Vector2 alternateMenuPosition = new(-200, 120);
 
     public GameObject PlayerInventory => playerInventory;
     public bool IsMenuActive { get; private set; }
@@ -51,6 +54,25 @@ public class InventoryManager : MonoBehaviour
 
         // update currency from data manager
         UpdateCurrencyDisplay();
+    }
+
+    private void Update()
+    {
+        // adjust inventory menu positioning based on whether or not the quest log is active, to avoid overlapping
+        if (QuestManager.Instance.QuestLogActive)
+        {
+            if (inventoryRectTransform.anchoredPosition != alternateMenuPosition)
+            {
+                inventoryRectTransform.anchoredPosition = alternateMenuPosition;
+            }
+        }
+        else
+        {
+            if (inventoryRectTransform.anchoredPosition != Vector2.zero)
+            {
+                inventoryRectTransform.anchoredPosition = Vector2.zero;
+            }
+        }
     }
 
     private void LoadInventory()
