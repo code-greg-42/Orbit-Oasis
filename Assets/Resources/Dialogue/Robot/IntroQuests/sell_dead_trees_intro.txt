@@ -1,0 +1,1 @@
+In a moment, hit [tab] to pull up your inventory. This is where all the items you have access to are stored. You should see the dead trees listed there. Click and drag them onto the SELL tab, and one of the bots in your network will pay you a fair price for them!

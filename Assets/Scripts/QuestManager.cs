@@ -32,8 +32,8 @@ public class QuestManager : MonoBehaviour
 
         introQuests = new Quest[]
         {
-            new Quest("Remove Dead Trees", IntroQuest.RemoveDeadTrees, 10, "", "", RewardForRemoveDeadTrees),
-            new Quest("Sell Dead Trees", IntroQuest.SellDeadTrees, 2, "", "", RewardForSellDeadTrees),
+            new Quest("Remove Dead Trees", IntroQuest.RemoveDeadTrees, 10, "Robot/IntroQuests/remove_dead_trees_intro", "Robot/IntroQuests/remove_dead_trees_completion", RewardForRemoveDeadTrees),
+            new Quest("Sell Dead Trees", IntroQuest.SellDeadTrees, 2, "Robot/IntroQuests/sell_dead_trees_intro", "Robot/IntroQuests/sell_dead_trees_completion", RewardForSellDeadTrees),
             new Quest("Plant New Trees", IntroQuest.PlantTrees, 5, "", "", RewardForPlantTrees),
             new Quest("Place Rocks", IntroQuest.PlaceRocks, 3, "", "", RewardForPlaceRocks),
             new Quest("Farm Trees", IntroQuest.FarmTrees, 3, "", "", RewardForFarmTrees),
@@ -71,9 +71,10 @@ public class QuestManager : MonoBehaviour
 
     private IEnumerator QuestCompletionCoroutine()
     {
-        questProgress = 0;
         yield return StartCoroutine(MainUIManager.Instance.ShowQuestSuccess());
-        yield return new WaitForSeconds(1.5f);
+        List<string> dialogues = DialogueManager.Instance.GetDialogue(introQuests[activeQuestIndex].CompletionDialoguePath);
+        DialogueManager.Instance.ShowDialogue(dialogues);
+        questProgress = 0;
         activeQuestIndex++;
         StartNewQuest();
     }
