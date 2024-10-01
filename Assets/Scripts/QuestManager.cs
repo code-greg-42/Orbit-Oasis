@@ -71,6 +71,7 @@ public class QuestManager : MonoBehaviour
 
     private IEnumerator QuestCompletionCoroutine()
     {
+        questProgress = 0;
         yield return StartCoroutine(MainUIManager.Instance.ShowQuestSuccess());
         yield return new WaitForSeconds(1.5f);
         activeQuestIndex++;
