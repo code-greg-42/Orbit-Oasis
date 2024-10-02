@@ -11,10 +11,12 @@ public class DialogueManager : MonoBehaviour
     [Header("References")]
     [SerializeField] private TMP_Text dialogueText;
     [SerializeField] private GameObject dialoguePanel;
+    [SerializeField] private GameObject goNextIndicator;
 
     // keybinds
     private KeyCode nextDialogueKey = KeyCode.Return;
     private KeyCode nextDialogueKeyAlt = KeyCode.F;
+    private KeyCode nextDialogueKeyAltTwo = KeyCode.Escape;
 
     // dialogue window word display
     private const float maxDelayTime = 10.0f;
@@ -140,18 +142,24 @@ public class DialogueManager : MonoBehaviour
                 yield return new WaitForSeconds(wordDisplayDelay);
             }
 
+            // activate go next indicator
+            goNextIndicator.SetActive(true);
+
             // start timer for dialogue to move to next sentence, with user key working as well
             float elapsedTime = 0f;
             while (elapsedTime < maxDelayTime)
             {
                 elapsedTime += Time.deltaTime;
-                if (Input.GetKeyDown(nextDialogueKey) || Input.GetKeyDown(nextDialogueKeyAlt))
+                if (Input.GetKeyDown(nextDialogueKey) || Input.GetKeyDown(nextDialogueKeyAlt) || Input.GetKeyDown(nextDialogueKeyAltTwo))
                 {
                     elapsedTime = maxDelayTime;
                 }
 
                 yield return null;
             }
+
+            // reset indicator
+            goNextIndicator.SetActive(false);
         }
 
         // reset text, deactivate and set bool back to false
