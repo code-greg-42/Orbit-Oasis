@@ -13,6 +13,8 @@ public class QuestManager : MonoBehaviour
     private Coroutine completeQuestCoroutine;
     private Coroutine startNewQuestCoroutine;
 
+    [SerializeField] private GameObject treePrefab;
+
     public bool QuestLogActive => MainUIManager.Instance.QuestPanelActive;
 
     public enum IntroQuest
@@ -128,7 +130,16 @@ public class QuestManager : MonoBehaviour
 
     private void RewardForSellDeadTrees()
     {
-        // Implement reward logic for SellDeadTrees
+        // reward trees to plant (will be used in the next quest)
+        for (int i = 0; i < introQuests[2].TotalNeeded; i++)
+        {
+            GameObject newTree = Instantiate(treePrefab);
+            
+            if (newTree.TryGetComponent(out PlaceableItem placeableTree))
+            {
+                // add this logic later
+            }
+        }
     }
 
     private void RewardForPlantTrees()
