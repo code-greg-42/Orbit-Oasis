@@ -314,10 +314,12 @@ public class InventoryManager : MonoBehaviour
     {
         if (DragSlot != null)
         {
+            int itemQuantity = DragSlot.SlotItem.Quantity;
+
             // if build material, subtract amount from data manager
             if (DragSlot.SlotItem.BuildMaterialPerUnit > 0)
             {
-                DataManager.Instance.SubtractBuildMaterial(DragSlot.SlotItem.BuildMaterialPerUnit * DragSlot.SlotItem.Quantity);
+                DataManager.Instance.SubtractBuildMaterial(DragSlot.SlotItem.BuildMaterialPerUnit * itemQuantity);
             }
 
             // update Data Manager with new currency
@@ -339,7 +341,7 @@ public class InventoryManager : MonoBehaviour
             // update quest manager if selling quest is active
             if (QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.SellDeadTrees)
             {
-                QuestManager.Instance.UpdateCurrentQuest();
+                QuestManager.Instance.UpdateCurrentQuest(itemQuantity);
             }
         }
     }

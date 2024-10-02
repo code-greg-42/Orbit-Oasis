@@ -33,7 +33,7 @@ public class QuestManager : MonoBehaviour
         introQuests = new Quest[]
         {
             new Quest("Remove Dead Trees", IntroQuest.RemoveDeadTrees, 10, "Robot/IntroQuests/remove_dead_trees_intro", "Robot/IntroQuests/remove_dead_trees_completion", RewardForRemoveDeadTrees),
-            new Quest("Sell Dead Trees", IntroQuest.SellDeadTrees, 2, "Robot/IntroQuests/sell_dead_trees_intro", "Robot/IntroQuests/sell_dead_trees_completion", RewardForSellDeadTrees),
+            new Quest("Sell Dead Trees", IntroQuest.SellDeadTrees, 10, "Robot/IntroQuests/sell_dead_trees_intro", "Robot/IntroQuests/sell_dead_trees_completion", RewardForSellDeadTrees),
             new Quest("Plant New Trees", IntroQuest.PlantTrees, 5, "", "", RewardForPlantTrees),
             new Quest("Place Rocks", IntroQuest.PlaceRocks, 3, "", "", RewardForPlaceRocks),
             new Quest("Farm Trees", IntroQuest.FarmTrees, 3, "", "", RewardForFarmTrees),
@@ -58,10 +58,10 @@ public class QuestManager : MonoBehaviour
         MainUIManager.Instance.ActivateQuestLog();
     }
 
-    public void UpdateCurrentQuest()
+    public void UpdateCurrentQuest(int changeAmount = 1)
     {
-        questProgress++;
-        MainUIManager.Instance.UpdateQuestProgress(questProgress, introQuests[activeQuestIndex].TotalNeeded);
+        questProgress += changeAmount;
+        MainUIManager.Instance.UpdateQuestProgress(questProgress, introQuests[activeQuestIndex].TotalNeeded, changeAmount);
 
         if (questProgress >= introQuests[activeQuestIndex].TotalNeeded)
         {
