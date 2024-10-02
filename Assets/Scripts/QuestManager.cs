@@ -10,6 +10,9 @@ public class QuestManager : MonoBehaviour
     private int questProgress;
     private int activeQuestIndex;
 
+    private Coroutine completeQuestCoroutine;
+    private Coroutine startNewQuestCoroutine;
+
     public bool QuestLogActive => MainUIManager.Instance.QuestPanelActive;
 
     public enum IntroQuest
@@ -34,7 +37,7 @@ public class QuestManager : MonoBehaviour
         {
             new Quest("Remove Dead Trees", IntroQuest.RemoveDeadTrees, 10, "Robot/IntroQuests/remove_dead_trees_intro", "Robot/IntroQuests/remove_dead_trees_completion", RewardForRemoveDeadTrees),
             new Quest("Sell Dead Trees", IntroQuest.SellDeadTrees, 10, "Robot/IntroQuests/sell_dead_trees_intro", "Robot/IntroQuests/sell_dead_trees_completion", RewardForSellDeadTrees),
-            new Quest("Plant New Trees", IntroQuest.PlantTrees, 5, "", "", RewardForPlantTrees),
+            new Quest("Plant New Trees", IntroQuest.PlantTrees, 5, "Robot/IntroQuests/plant_trees_intro", "", RewardForPlantTrees),
             new Quest("Place Rocks", IntroQuest.PlaceRocks, 3, "", "", RewardForPlaceRocks),
             new Quest("Farm Trees", IntroQuest.FarmTrees, 3, "", "", RewardForFarmTrees),
             new Quest("Mine Rocks", IntroQuest.MineRocks, 2, "", "", RewardForMineRocks),
@@ -48,13 +51,21 @@ public class QuestManager : MonoBehaviour
         return introQuests[activeQuestIndex].QuestType;
     }
 
-    public void StartNewQuest()
+    private IEnumerator StartNewQuestCoroutine()
     {
+        // get current quest using the index
         Quest currentQuest = introQuests[activeQuestIndex];
 
-        // update UI
+        // update questlog with new quest details
         MainUIManager.Instance.UpdateQuestLogWithNewQuest(currentQuest.QuestTitle, currentQuest.TotalNeeded);
 
+        // get intro dialogue for new quest
+        List<string> introDialogue = DialogueManager.Instance.GetDialogue(currentQuest.IntroDialoguePath);
+
+        // display dialogue and wait for the user to either press enter or for the timer to elapse
+        yield return DialogueManager.Instance.ShowDialogue(introDialogue, true);
+
+        // display UI QuestLog with new quest details
         MainUIManager.Instance.ActivateQuestLog();
     }
 
@@ -65,17 +76,45 @@ public class QuestManager : MonoBehaviour
 
         if (questProgress >= introQuests[activeQuestIndex].TotalNeeded)
         {
-            StartCoroutine(QuestCompletionCoroutine());
+            CompleteQuest();
         }
     }
 
-    private IEnumerator QuestCompletionCoroutine()
+    private void StartNewQuest()
     {
-        yield return StartCoroutine(MainUIManager.Instance.ShowQuestSuccess());
-        List<string> dialogues = DialogueManager.Instance.GetDialogue(introQuests[activeQuestIndex].CompletionDialoguePath);
-        DialogueManager.Instance.ShowDialogue(dialogues);
+        if (startNewQuestCoroutine != null)
+        {
+            StopCoroutine(startNewQuestCoroutine);
+            startNewQuestCoroutine = null;
+        }
+        startNewQuestCoroutine = StartCoroutine(StartNewQuestCoroutine());
+    }
+
+    private void CompleteQuest()
+    {
+        if (completeQuestCoroutine != null)
+        {
+            StopCoroutine(completeQuestCoroutine);
+            completeQuestCoroutine = null;
+        }
+        completeQuestCoroutine = StartCoroutine(CompleteQuestCoroutine());
+    }
+
+    private IEnumerator CompleteQuestCoroutine()
+    {
+        // update UI with a successful quest completion
+        MainUIManager.Instance.ShowQuestSuccess();
+
+        // get completion dialogue from dialogue manager (fetches .txt file)
+        List<string> completionDialogue = DialogueManager.Instance.GetDialogue(introQuests[activeQuestIndex].CompletionDialoguePath);
+
+        // display dialogue and wait for the user to either press enter or the timer to elapse
+        yield return DialogueManager.Instance.ShowDialogue(completionDialogue, true);
+
+        // reset quest progress and change the quest index to the next intro quest
         questProgress = 0;
         activeQuestIndex++;
+
         StartNewQuest();
     }
 

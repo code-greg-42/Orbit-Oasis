@@ -190,7 +190,7 @@ public class MainUIManager : MonoBehaviour
         CreateFloatingText(questProgressText, floatingString, Color.green);
     }
 
-    public IEnumerator ShowQuestSuccess()
+    public void ShowQuestSuccess()
     {
         if (showQuestSuccessCoroutine != null)
         {
@@ -199,7 +199,7 @@ public class MainUIManager : MonoBehaviour
 
             ReturnQuestPanelToOriginalColor();
         }
-        yield return showQuestSuccessCoroutine = StartCoroutine(FadeQuestLog(false));
+        showQuestSuccessCoroutine = StartCoroutine(FadeQuestLog(false));
     }
 
     private IEnumerator FadeQuestLog(bool fadeIn = false)

@@ -101,6 +101,19 @@ public class DialogueManager : MonoBehaviour
         dialogueCoroutine = StartCoroutine(ShowDialogueCoroutine(dialogues));
     }
 
+    // overloaded method for being part of a larger coroutine -- waits for dialogue coroutine to finish
+    public IEnumerator ShowDialogue(List<string> dialogues, bool await)
+    {
+        if (dialogueCoroutine != null)
+        {
+            StopCoroutine(dialogueCoroutine);
+            dialogueCoroutine = null;
+        }
+
+        // start display coroutine and wait to finish
+        yield return dialogueCoroutine = StartCoroutine(ShowDialogueCoroutine(dialogues));
+    }
+
     private IEnumerator ShowDialogueCoroutine(List<string> dialogues)
     {
         // activate dialogue window
