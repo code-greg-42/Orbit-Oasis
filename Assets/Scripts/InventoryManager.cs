@@ -139,7 +139,7 @@ public class InventoryManager : MonoBehaviour
     {
         inventoryMenu.SetActive(!IsMenuActive);
         IsMenuActive = !IsMenuActive;
-
+        EndDrag();
         RemoveSlotSelection();
     }
 

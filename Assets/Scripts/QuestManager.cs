@@ -104,11 +104,17 @@ public class QuestManager : MonoBehaviour
 
     private IEnumerator CompleteQuestCoroutine()
     {
+        // get current quest
+        Quest completedQuest = introQuests[activeQuestIndex];
+
         // update UI with a successful quest completion
         MainUIManager.Instance.ShowQuestSuccess();
 
+        // give quest rewards to player and enact any necessary post-quest-completion logic
+        completedQuest.CompleteQuest();
+
         // get completion dialogue from dialogue manager (fetches .txt file)
-        List<string> completionDialogue = DialogueManager.Instance.GetDialogue(introQuests[activeQuestIndex].CompletionDialoguePath);
+        List<string> completionDialogue = DialogueManager.Instance.GetDialogue(completedQuest.CompletionDialoguePath);
 
         // display dialogue and wait for the user to either press enter or the timer to elapse
         yield return DialogueManager.Instance.ShowDialogue(completionDialogue, true);
@@ -130,14 +136,25 @@ public class QuestManager : MonoBehaviour
 
     private void RewardForSellDeadTrees()
     {
-        // reward trees to plant (will be used in the next quest)
-        for (int i = 0; i < introQuests[2].TotalNeeded; i++)
+        // toggle off inventory menu if active
+        if (InventoryManager.Instance.IsMenuActive)
         {
+            InventoryManager.Instance.ToggleInventoryMenu();
+        }
+
+        // set amount of trees to reward -- must be higher than required planting amount for the next 'plant trees' intro quest
+        int treesToReward = 8;
+
+        // reward trees to plant
+        for (int i = 0; i < treesToReward; i++)
+        {
+            // instantiate new tree object
             GameObject newTree = Instantiate(treePrefab);
             
+            // get item component and pickup item into player inventory
             if (newTree.TryGetComponent(out PlaceableItem placeableTree))
             {
-                // add this logic later
+                placeableTree.PickupItem();
             }
         }
     }
