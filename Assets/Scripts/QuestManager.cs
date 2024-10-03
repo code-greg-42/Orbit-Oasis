@@ -14,6 +14,12 @@ public class QuestManager : MonoBehaviour
     private Coroutine startNewQuestCoroutine;
 
     [SerializeField] private GameObject treePrefab;
+    [SerializeField] private Renderer groundRenderer;
+
+    // grass color change variables
+    private Material changeableGrassMaterial;
+    private Color deadGrassColor = new(0f, 9f/255f, 1f, 1f);
+    private Color aliveGrassColor = new(1f, 1f, 1f, 1f);
 
     public bool QuestLogActive => MainUIManager.Instance.QuestPanelActive;
 
@@ -37,15 +43,30 @@ public class QuestManager : MonoBehaviour
 
         introQuests = new Quest[]
         {
-            new Quest("Remove Dead Trees", IntroQuest.RemoveDeadTrees, 10, "Robot/IntroQuests/remove_dead_trees_intro", "Robot/IntroQuests/remove_dead_trees_completion", RewardForRemoveDeadTrees),
-            new Quest("Sell Dead Trees", IntroQuest.SellDeadTrees, 10, "Robot/IntroQuests/sell_dead_trees_intro", "Robot/IntroQuests/sell_dead_trees_completion", RewardForSellDeadTrees),
-            new Quest("Plant New Trees", IntroQuest.PlantTrees, 5, "Robot/IntroQuests/plant_trees_intro", "", RewardForPlantTrees),
-            new Quest("Place Rocks", IntroQuest.PlaceRocks, 3, "", "", RewardForPlaceRocks),
-            new Quest("Farm Trees", IntroQuest.FarmTrees, 3, "", "", RewardForFarmTrees),
-            new Quest("Mine Rocks", IntroQuest.MineRocks, 2, "", "", RewardForMineRocks),
-            new Quest("Build Objects", IntroQuest.BuildObjects, 5, "", "", RewardForBuildObjects),
-            new Quest("Complete the Space Race", IntroQuest.SpaceRace, 1, "", "", RewardForSpaceRace)
+            new Quest("Remove Dead Trees", IntroQuest.RemoveDeadTrees, 10, RewardForRemoveDeadTrees),
+            new Quest("Sell Dead Trees", IntroQuest.SellDeadTrees, 10, RewardForSellDeadTrees),
+            new Quest("Plant New Trees", IntroQuest.PlantTrees, 5, RewardForPlantTrees),
+            new Quest("Place Rocks", IntroQuest.PlaceRocks, 3, RewardForPlaceRocks),
+            new Quest("Farm Trees", IntroQuest.FarmTrees, 3, RewardForFarmTrees),
+            new Quest("Mine Rocks", IntroQuest.MineRocks, 2, RewardForMineRocks),
+            new Quest("Build Objects", IntroQuest.BuildObjects, 5, RewardForBuildObjects),
+            new Quest("Complete The Space Race", IntroQuest.SpaceRace, 1, RewardForSpaceRace)
         };
+    }
+
+    private void Start()
+    {
+        // create clone of grass material
+        changeableGrassMaterial = Instantiate(groundRenderer.material);
+
+        // if player has already reached grass growing quest, set color to alive color instantly
+        if (activeQuestIndex >= 3)
+        {
+            changeableGrassMaterial.color = aliveGrassColor;
+        }
+
+        // set renderer's material to the changeableMaterial, which will either start as alive or be eligible to be changed later
+        groundRenderer.material = changeableGrassMaterial;
     }
 
     public IntroQuest GetCurrentQuest()
