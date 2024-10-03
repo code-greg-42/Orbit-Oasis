@@ -20,6 +20,8 @@ public class QuestManager : MonoBehaviour
     private Material changeableGrassMaterial;
     private Color deadGrassColor = new(0f, 9f/255f, 1f, 1f);
     private Color aliveGrassColor = new(1f, 1f, 1f, 1f);
+    private const float changeGrassFadeDuration = 5f;
+    private Coroutine changeGrassColorCoroutine;
 
     public bool QuestLogActive => MainUIManager.Instance.QuestPanelActive;
 
@@ -27,7 +29,7 @@ public class QuestManager : MonoBehaviour
     {
         RemoveDeadTrees,
         SellDeadTrees,
-        PlantTrees,
+        PlantNewTrees,
         PlaceRocks,
         FarmTrees,
         MineRocks,
@@ -45,7 +47,7 @@ public class QuestManager : MonoBehaviour
         {
             new Quest("Remove Dead Trees", IntroQuest.RemoveDeadTrees, 10, RewardForRemoveDeadTrees),
             new Quest("Sell Dead Trees", IntroQuest.SellDeadTrees, 10, RewardForSellDeadTrees),
-            new Quest("Plant New Trees", IntroQuest.PlantTrees, 5, RewardForPlantTrees),
+            new Quest("Plant New Trees", IntroQuest.PlantNewTrees, 5, RewardForPlantNewTrees, PlantNewTreesIntroAction),
             new Quest("Place Rocks", IntroQuest.PlaceRocks, 3, RewardForPlaceRocks),
             new Quest("Farm Trees", IntroQuest.FarmTrees, 3, RewardForFarmTrees),
             new Quest("Mine Rocks", IntroQuest.MineRocks, 2, RewardForMineRocks),
@@ -90,6 +92,9 @@ public class QuestManager : MonoBehaviour
 
         // display UI QuestLog with new quest details
         MainUIManager.Instance.ActivateQuestLog();
+
+        // execute intro action if available -- if null nothing occurs
+        currentQuest.InitIntroAction();
     }
 
     public void UpdateCurrentQuest(int changeAmount = 1)
@@ -147,6 +152,30 @@ public class QuestManager : MonoBehaviour
         StartNewQuest();
     }
 
+    private IEnumerator ChangeGrassColorCoroutine()
+    {
+        // warning and exit if the material is null
+        if (changeableGrassMaterial == null)
+        {
+            Debug.LogWarning("Cannot execute ChangeGrassColor as changeableGrassMaterial is null.");
+            yield break;
+        }
+
+        float elapsedTime = 0f;
+        Color initialColor = changeableGrassMaterial.color;
+
+        while (elapsedTime < changeGrassFadeDuration)
+        {
+            elapsedTime += Time.deltaTime;
+
+            // smoothly transition color towards target alive color
+            changeableGrassMaterial.color = Color.Lerp(initialColor, aliveGrassColor, elapsedTime / changeGrassFadeDuration);
+            yield return null;
+        }
+
+        changeableGrassMaterial.color = aliveGrassColor;
+    }
+
     // QUEST REWARDS
 
     // Define the reward methods
@@ -180,7 +209,7 @@ public class QuestManager : MonoBehaviour
         }
     }
 
-    private void RewardForPlantTrees()
+    private void RewardForPlantNewTrees()
     {
         // Implement reward logic for PlantTrees
     }
@@ -208,5 +237,12 @@ public class QuestManager : MonoBehaviour
     private void RewardForSpaceRace()
     {
         // Implement reward logic for SpaceRace
+    }
+
+    // INTRO ACTIONS
+
+    private void PlantNewTreesIntroAction()
+    {
+        changeGrassColorCoroutine ??= StartCoroutine(ChangeGrassColorCoroutine());
     }
 }

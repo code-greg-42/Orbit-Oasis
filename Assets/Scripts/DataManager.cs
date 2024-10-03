@@ -424,8 +424,6 @@ public class DataManager : MonoBehaviour
         // load list from file, otherwise init new list
         PlacedItems = LoadFromFile<SerializableList<PlaceableItemData>>(nameof(PlacedItems))
             ?? new SerializableList<PlaceableItemData>(new List<PlaceableItemData>());
-
-        Debug.Log("Loaded placed items. Number of items: " + PlacedItems.ItemList.Count);
     }
 
     private void SaveTraderData()
