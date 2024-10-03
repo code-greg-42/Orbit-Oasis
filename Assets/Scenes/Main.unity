@@ -16017,6 +16017,8 @@ MonoBehaviour:
   - {fileID: 5686277313172532678, guid: adab7a6ec4dec9945bc209ef517aa96f, type: 3}
   - {fileID: 8809459020296330656, guid: 888a8aa10e9ba0040bce200398e9a84c, type: 3}
   groundRenderer: {fileID: 431115091}
+  rockPrefabs:
+  - {fileID: 1028973733240692, guid: e9fb9c5db9589b24697ab7ccbb740615, type: 3}
 --- !u!4 &1968290479 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5676840300738431910, guid: 2ce7f3f60a7219d478bdc624979d8024, type: 3}
