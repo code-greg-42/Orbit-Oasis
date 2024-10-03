@@ -275,7 +275,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Bushy Tree
   description: This thing has a lot of leaves. Double click to place it anywhere!
-  image: {fileID: 21300000, guid: 4b78cfc37ca1a4c4db295541fdc61a15, type: 3}
+  image: {fileID: 21300000, guid: 9cb4e393ee364ce4183d26b55726f6bf, type: 3}
   maxStackQuantity: 1
   quantity: 1
   sellPricePerUnit: 1000

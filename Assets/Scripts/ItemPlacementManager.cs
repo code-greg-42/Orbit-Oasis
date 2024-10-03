@@ -135,6 +135,12 @@ public class ItemPlacementManager : MonoBehaviour
             // restore original material to currentItem
             SetPreviewMaterial(false);
 
+            // update quest manager if player is on the place trees quest
+            if (QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.PlantNewTrees)
+            {
+                QuestManager.Instance.UpdateCurrentQuest();
+            }
+
             // remove from player inventory in data manager
             DataManager.Instance.RemoveItem(currentItem);
 

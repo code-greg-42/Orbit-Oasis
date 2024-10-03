@@ -13,14 +13,17 @@ public class QuestManager : MonoBehaviour
     private Coroutine completeQuestCoroutine;
     private Coroutine startNewQuestCoroutine;
 
-    [SerializeField] private GameObject treePrefab;
+    [Header("Quest 2")]
+    [SerializeField] private GameObject[] treePrefabs;
+    
+    [Header("Quest 3")]
     [SerializeField] private Renderer groundRenderer;
+    [SerializeField] private GameObject[] rockPrefabs;
 
     // grass color change variables
     private Material changeableGrassMaterial;
-    private Color deadGrassColor = new(0f, 9f/255f, 1f, 1f);
     private Color aliveGrassColor = new(1f, 1f, 1f, 1f);
-    private const float changeGrassFadeDuration = 5f;
+    private const float changeGrassFadeDuration = 8f;
     private Coroutine changeGrassColorCoroutine;
 
     public bool QuestLogActive => MainUIManager.Instance.QuestPanelActive;
@@ -47,8 +50,8 @@ public class QuestManager : MonoBehaviour
         {
             new Quest("Remove Dead Trees", IntroQuest.RemoveDeadTrees, 10, RewardForRemoveDeadTrees),
             new Quest("Sell Dead Trees", IntroQuest.SellDeadTrees, 10, RewardForSellDeadTrees),
-            new Quest("Plant New Trees", IntroQuest.PlantNewTrees, 5, RewardForPlantNewTrees, PlantNewTreesIntroAction),
-            new Quest("Place Rocks", IntroQuest.PlaceRocks, 3, RewardForPlaceRocks),
+            new Quest("Plant New Trees", IntroQuest.PlantNewTrees, 6, RewardForPlantNewTrees, PlantNewTreesIntroAction),
+            new Quest("Place Rocks", IntroQuest.PlaceRocks, 2, RewardForPlaceRocks),
             new Quest("Farm Trees", IntroQuest.FarmTrees, 3, RewardForFarmTrees),
             new Quest("Mine Rocks", IntroQuest.MineRocks, 2, RewardForMineRocks),
             new Quest("Build Objects", IntroQuest.BuildObjects, 5, RewardForBuildObjects),
@@ -192,26 +195,34 @@ public class QuestManager : MonoBehaviour
             InventoryManager.Instance.ToggleInventoryMenu();
         }
 
-        // set amount of trees to reward -- must be higher than required planting amount for the next 'plant trees' intro quest
-        int treesToReward = 8;
+        // get amount from the quest object, this way if it's changed it only needs to be changed in one place
+        int treesToReward = GetTotalNeeded(IntroQuest.PlantNewTrees);
 
-        // reward trees to plant
-        for (int i = 0; i < treesToReward; i++)
-        {
-            // instantiate new tree object
-            GameObject newTree = Instantiate(treePrefab);
-            
-            // get item component and pickup item into player inventory
-            if (newTree.TryGetComponent(out PlaceableItem placeableTree))
-            {
-                placeableTree.PickupItem();
-            }
-        }
+        //// reward trees to plant
+        //for (int i = 0; i < treesToReward; i++)
+        //{
+        //    // random roll for which tree to reward
+        //    int treeIndex = UnityEngine.Random.Range(0, treePrefabs.Length);
+
+        //    // instantiate new tree object
+        //    GameObject newTree = Instantiate(treePrefabs[treeIndex]);
+
+        //    // get item component and pickup item into player inventory
+        //    if (newTree.TryGetComponent(out PlaceableItem placeableTree))
+        //    {
+        //        placeableTree.PickupItem();
+        //    }
+        //}
+
+        RewardPlaceableItems(treePrefabs, treesToReward);
     }
 
     private void RewardForPlantNewTrees()
     {
-        // Implement reward logic for PlantTrees
+        // get amount from quest object for next quest
+        int rocksToReward = GetTotalNeeded(IntroQuest.PlaceRocks);
+
+        RewardPlaceableItems(rockPrefabs, rocksToReward);
     }
 
     private void RewardForPlaceRocks()
@@ -244,5 +255,46 @@ public class QuestManager : MonoBehaviour
     private void PlantNewTreesIntroAction()
     {
         changeGrassColorCoroutine ??= StartCoroutine(ChangeGrassColorCoroutine());
+    }
+
+    // HELPER METHODS
+    private int GetTotalNeeded(IntroQuest questType)
+    {
+        foreach (Quest quest in introQuests)
+        {
+            if (quest.QuestType == questType)
+            {
+                return quest.TotalNeeded;
+            }
+        }
+
+        return -1;
+    }
+
+    private void RewardPlaceableItems(GameObject[] prefabArray, int amountToReward)
+    {
+        for (int i = 0; i < amountToReward; i++)
+        {
+            int prefabIndex;
+
+            if (prefabArray.Length > 1)
+            {
+                // random roll for which item to reward
+                prefabIndex = UnityEngine.Random.Range(0, prefabArray.Length);
+            }
+            else
+            {
+                prefabIndex = 0;
+            }
+
+            // instantiate new item
+            GameObject newItem = Instantiate(prefabArray[prefabIndex]);
+
+            // get item component and pickup item into player inventory
+            if (newItem.TryGetComponent(out PlaceableItem placeableItem))
+            {
+                placeableItem.PickupItem();
+            }
+        }
     }
 }

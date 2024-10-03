@@ -378,7 +378,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Pine Tree
   description: A large pine tree. Double click to place it anywhere!
-  image: {fileID: 21300000, guid: 4b78cfc37ca1a4c4db295541fdc61a15, type: 3}
+  image: {fileID: 21300000, guid: cffaf68a9066eeb45b90cdb22785bf1d, type: 3}
   maxStackQuantity: 1
   quantity: 1
   sellPricePerUnit: 600
