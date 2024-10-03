@@ -18,8 +18,8 @@ public class InventoryManager : MonoBehaviour
     [SerializeField] private GameObject playerInventory;
     [SerializeField] private GameObject sellSlotHighlightPanel;
     [SerializeField] private TMP_Text sellSlotMoneyDisplay;
-    [SerializeField] private GameObject storeSlotHighlightPanel;
-    [SerializeField] private TMP_Text storeSlotAmountDisplay;
+    //[SerializeField] private GameObject storeSlotHighlightPanel;
+    //[SerializeField] private TMP_Text storeSlotAmountDisplay;
 
     [Header("Item List")]
     [SerializeField] private GameObject[] itemPrefabs; // used for instantiating saved items (in TraderMenuManager as well)
@@ -33,7 +33,7 @@ public class InventoryManager : MonoBehaviour
     public GameObject[] ItemPrefabs => itemPrefabs;
 
     private float dragSlotSellPrice;
-    private float dragSlotStoreAmount;
+    //private float dragSlotStoreAmount;
 
     public enum InventoryAddStatus
     {
@@ -238,11 +238,11 @@ public class InventoryManager : MonoBehaviour
             sellSlotHighlightPanel.SetActive(true);
             sellSlotMoneyDisplay.text = "SELL\n($" + dragSlotSellPrice.ToString("N0") + ")";
 
-            if (DragSlot.SlotItem is Animal)
-            {
-                storeSlotHighlightPanel.SetActive(true);
-                storeSlotAmountDisplay.text = "STORE FOOD\n(" + dragSlotStoreAmount + " days)";
-            }
+            //if (DragSlot.SlotItem is Animal)
+            //{
+            //    storeSlotHighlightPanel.SetActive(true);
+            //    storeSlotAmountDisplay.text = "STORE FOOD\n(" + dragSlotStoreAmount + " days)";
+            //}
         }
     }
 
@@ -254,7 +254,7 @@ public class InventoryManager : MonoBehaviour
             DragSlot = null;
             dragImage.gameObject.SetActive(false);
             sellSlotHighlightPanel.SetActive(false);
-            storeSlotHighlightPanel.SetActive(false);
+            //storeSlotHighlightPanel.SetActive(false);
             UpdateCurrencyDisplay();
         }
     }
@@ -285,7 +285,7 @@ public class InventoryManager : MonoBehaviour
     public void UpdateCurrencyDisplay()
     {
         sellSlotMoneyDisplay.text = "$" + DataManager.Instance.PlayerStats.PlayerCurrency.ToString("N0");
-        storeSlotAmountDisplay.text = DataManager.Instance.PlayerStats.PlayerFood + "\nDays of Food";
+        //storeSlotAmountDisplay.text = DataManager.Instance.PlayerStats.PlayerFood + "\nDays of Food";
     }
 
     public void DropDraggedItem()
@@ -346,27 +346,27 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
-    public void StoreDraggedItem()
-    {
-        if (DragSlot != null && DragSlot.SlotItem is Animal)
-        {
-            Debug.Log("storing item as food!");
-            // update Data Manager
-            DataManager.Instance.AddFood(dragSlotStoreAmount);
+    //public void StoreDraggedItem()
+    //{
+    //    if (DragSlot != null && DragSlot.SlotItem is Animal)
+    //    {
+    //        Debug.Log("storing item as food!");
+    //        // update Data Manager
+    //        DataManager.Instance.AddFood(dragSlotStoreAmount);
 
-            DataManager.Instance.RemoveItem(DragSlot.SlotItem);
+    //        DataManager.Instance.RemoveItem(DragSlot.SlotItem);
 
-            // delete game object from player inventory
-            DragSlot.SlotItem.DeleteItem();
+    //        // delete game object from player inventory
+    //        DragSlot.SlotItem.DeleteItem();
 
-            // clear slot selection
-            if (DragSlot.IsSelected)
-            {
-                RemoveSlotSelection();
-            }
-            DragSlot.ClearSlot();
-        }
-    }
+    //        // clear slot selection
+    //        if (DragSlot.IsSelected)
+    //        {
+    //            RemoveSlotSelection();
+    //        }
+    //        DragSlot.ClearSlot();
+    //    }
+    //}
 
     public void UseItem(string itemName, float quantity, bool isBuildingMaterial = false)
     {
@@ -436,10 +436,10 @@ public class InventoryManager : MonoBehaviour
             {
                 dragSlotSellPrice = DragSlot.SlotItem.Quantity * DragSlot.SlotItem.SellPricePerUnit;
 
-                if (DragSlot.SlotItem is Animal animal)
-                {
-                    dragSlotStoreAmount = animal.Quantity * animal.FoodPerUnit;
-                }
+                //if (DragSlot.SlotItem is Animal animal)
+                //{
+                //    dragSlotStoreAmount = animal.Quantity * animal.FoodPerUnit;
+                //}
             }
             else
             {
