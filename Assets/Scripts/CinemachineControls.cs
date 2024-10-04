@@ -8,8 +8,13 @@ public class CinemachineControls : MonoBehaviour
     [Header("Cinemachine Camera")]
     [SerializeField] private CinemachineFreeLook cinemachineFreeLookCam;
 
+    [Header("Custom Cursor")]
+    [SerializeField] private Texture2D customCursorTexture;
+
     private void Start()
     {
+        // set cursor to custom cursor
+        //Cursor.SetCursor(customCursorTexture, Vector2.zero, CursorMode.Auto);
         DisableCursor();
     }
 
@@ -19,6 +24,11 @@ public class CinemachineControls : MonoBehaviour
         {
             cinemachineFreeLookCam.m_XAxis.m_InputAxisName = "";
             cinemachineFreeLookCam.m_YAxis.m_InputAxisName = "";
+
+            // Stop any ongoing movement
+            cinemachineFreeLookCam.m_XAxis.m_InputAxisValue = 0f;
+            cinemachineFreeLookCam.m_YAxis.m_InputAxisValue = 0f;
+
             EnableCursor();
         }
         else
