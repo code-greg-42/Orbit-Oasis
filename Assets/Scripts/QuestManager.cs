@@ -34,8 +34,10 @@ public class QuestManager : MonoBehaviour
         SellDeadTrees,
         PlantNewTrees,
         PlaceRocks,
+        FarmTree,
         CollectWood,
-        CollectStones,
+        CollectMoreWood,
+        CollectStone,
         BuildObjects,
         SpaceRace,
     }
@@ -52,8 +54,10 @@ public class QuestManager : MonoBehaviour
             new Quest("Sell Dead Trees", IntroQuest.SellDeadTrees, 10, RewardForSellDeadTrees),
             new Quest("Plant New Trees", IntroQuest.PlantNewTrees, 6, RewardForPlantNewTrees, PlantNewTreesIntroAction),
             new Quest("Place Rocks", IntroQuest.PlaceRocks, 2, RewardForPlaceRocks),
-            new Quest("Collect Wood", IntroQuest.CollectWood, 5, RewardForFarmTrees),
-            new Quest("Collect Stones", IntroQuest.CollectStones, 5, RewardForMineRocks),
+            new Quest("Farm Tree", IntroQuest.FarmTree, 1, RewardForFarmTree),
+            new Quest("Collect Wood", IntroQuest.CollectWood, 1, RewardForCollectWood),
+            new Quest("Collect More Wood", IntroQuest.CollectMoreWood, 10, RewardForCollectMoreWood),
+            new Quest("Collect Stone", IntroQuest.CollectStone, 5, RewardForCollectStone),
             new Quest("Build Objects", IntroQuest.BuildObjects, 5, RewardForBuildObjects),
             new Quest("Complete The Space Race", IntroQuest.SpaceRace, 1, RewardForSpaceRace)
         };
@@ -233,14 +237,24 @@ public class QuestManager : MonoBehaviour
         // Implement reward logic for PlantRocks
     }
 
-    private void RewardForFarmTrees()
+    private void RewardForFarmTree()
     {
         // Implement reward logic for FarmTree
     }
 
-    private void RewardForMineRocks()
+    private void RewardForCollectWood()
     {
-        // Implement reward logic for FarmRock
+
+    }
+
+    private void RewardForCollectMoreWood()
+    {
+
+    }
+
+    private void RewardForCollectStone()
+    {
+
     }
 
     private void RewardForBuildObjects()
