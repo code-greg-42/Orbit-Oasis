@@ -34,8 +34,8 @@ public class QuestManager : MonoBehaviour
         SellDeadTrees,
         PlantNewTrees,
         PlaceRocks,
-        FarmTrees,
-        MineRocks,
+        CollectWood,
+        CollectStones,
         BuildObjects,
         SpaceRace,
     }
@@ -52,8 +52,8 @@ public class QuestManager : MonoBehaviour
             new Quest("Sell Dead Trees", IntroQuest.SellDeadTrees, 10, RewardForSellDeadTrees),
             new Quest("Plant New Trees", IntroQuest.PlantNewTrees, 6, RewardForPlantNewTrees, PlantNewTreesIntroAction),
             new Quest("Place Rocks", IntroQuest.PlaceRocks, 2, RewardForPlaceRocks),
-            new Quest("Farm Trees", IntroQuest.FarmTrees, 3, RewardForFarmTrees),
-            new Quest("Mine Rocks", IntroQuest.MineRocks, 2, RewardForMineRocks),
+            new Quest("Collect Wood", IntroQuest.CollectWood, 5, RewardForFarmTrees),
+            new Quest("Collect Stones", IntroQuest.CollectStones, 5, RewardForMineRocks),
             new Quest("Build Objects", IntroQuest.BuildObjects, 5, RewardForBuildObjects),
             new Quest("Complete The Space Race", IntroQuest.SpaceRace, 1, RewardForSpaceRace)
         };

@@ -141,6 +141,9 @@ public class InventoryManager : MonoBehaviour
         IsMenuActive = !IsMenuActive;
         EndDrag();
         RemoveSlotSelection();
+
+        // disables camera mouse movement when menu is active, enable when menu inactive
+        CinemachineControls.Instance.ToggleMouseMovement(IsMenuActive);
     }
 
     public InventoryAddStatus AddItem(Item item)
