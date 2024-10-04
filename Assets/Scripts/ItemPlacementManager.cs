@@ -135,10 +135,23 @@ public class ItemPlacementManager : MonoBehaviour
             // restore original material to currentItem
             SetPreviewMaterial(false);
 
-            // update quest manager if player is on the place trees quest
+            // update quest manager if player is on the place trees quest -- no placeable items other than trees available at this point in game
             if (QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.PlantNewTrees)
             {
                 QuestManager.Instance.UpdateCurrentQuest();
+            }
+
+            // update quest manager if player is on the place rocks quest
+            if (QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.PlaceRocks)
+            {
+                // make sure item placed is a rock, as it's possible for a user to pickup and replace a tree
+                if (currentItem.TryGetComponent(out FarmableObject farmable))
+                {
+                    if (farmable.Type == FarmableObject.ObjectType.Rock)
+                    {
+                        QuestManager.Instance.UpdateCurrentQuest();
+                    }
+                }
             }
 
             // remove from player inventory in data manager
