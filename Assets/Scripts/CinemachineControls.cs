@@ -10,11 +10,12 @@ public class CinemachineControls : MonoBehaviour
 
     [Header("Custom Cursor")]
     [SerializeField] private Texture2D customCursorTexture;
+    private Vector2 cursorHotspot = new(10, 4);
 
     private void Start()
     {
         // set cursor to custom cursor
-        //Cursor.SetCursor(customCursorTexture, Vector2.zero, CursorMode.Auto);
+        Cursor.SetCursor(customCursorTexture, cursorHotspot, CursorMode.Auto);
         DisableCursor();
     }
 
