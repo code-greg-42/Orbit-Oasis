@@ -23,7 +23,7 @@ public class QuestManager : MonoBehaviour
     // grass color change variables
     private Material changeableGrassMaterial;
     private Color aliveGrassColor = new(1f, 1f, 1f, 1f);
-    private const float changeGrassFadeDuration = 8f;
+    private const float changeGrassFadeDuration = 5f;
     private Coroutine changeGrassColorCoroutine;
 
     public bool QuestLogActive => MainUIManager.Instance.QuestPanelActive;
@@ -138,6 +138,9 @@ public class QuestManager : MonoBehaviour
 
         // update UI with a successful quest completion
         MainUIManager.Instance.ShowQuestSuccess();
+
+        // update UI with overall tutorial progress
+        MainUIManager.Instance.UpdateTutorialProgressBar(activeQuestIndex + 1, introQuests.Length);
 
         // give quest rewards to player and enact any necessary post-quest-completion logic
         completedQuest.CompleteQuest();

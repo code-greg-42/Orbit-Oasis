@@ -37,6 +37,13 @@ public class MainUIManager : MonoBehaviour
     [SerializeField] private Color questPanelDefaultColor;
     [SerializeField] private Color questPanelSuccessColor;
 
+    [Header("Tutorial Progress")]
+    [SerializeField] private Image tutorialProgressBar;
+
+    // tutorial progress settings
+    private float tutorialProgressFadeDuration = 0.3f;
+    private Coroutine tutorialProgressBarCoroutine;
+
     // quest log settings
     private float questSuccessFadeDuration = 1.4f;
     private float questFadeInDuration = 0.8f;
@@ -161,6 +168,23 @@ public class MainUIManager : MonoBehaviour
             deactivateItemPickupIndicatorCoroutine = StartCoroutine(DeactivateIndicatorCoroutine(success,
                 itemPickupIndicator, itemPickupSuccessIndicator, itemPickupIndicatorPanel, itemPickupIndicatorText, false));
         }
+    }
+
+    public void UpdateTutorialProgressBar(int questsCompleted, int totalTutorialQuests)
+    {
+        if (tutorialProgressBarCoroutine != null)
+        {
+            StopCoroutine(tutorialProgressBarCoroutine);
+            tutorialProgressBarCoroutine = null;
+        }
+
+        // get target fill by calculating how many quests have been completed out of the total amount
+        float targetFill = (float)questsCompleted / totalTutorialQuests;
+
+        // start the coroutine
+        tutorialProgressBarCoroutine = StartCoroutine(TutorialProgressBarCoroutine(targetFill));
+
+        // --- this should cover all cases. if a 2nd quest is completed back to back it will simply fill the bar faster ---
     }
 
     public void ActivateQuestLog()
@@ -359,6 +383,27 @@ public class MainUIManager : MonoBehaviour
 
         // manually set coroutine reference to null once it's done
         deactivateFarmingIndicatorCoroutine = null;
+    }
+
+    private IEnumerator TutorialProgressBarCoroutine(float targetFill)
+    {
+        float timer = 0f;
+        float startFill = tutorialProgressBar.fillAmount;
+
+        while (timer < tutorialProgressFadeDuration)
+        {
+            timer += Time.deltaTime;
+
+            // smoothly get new fill amount based on length of time passed
+            float newFill = Mathf.Lerp(startFill, targetFill, timer / tutorialProgressFadeDuration);
+
+            // set progress bar fill amount to desired fill
+            tutorialProgressBar.fillAmount = newFill;
+
+            yield return null;
+        }
+
+        tutorialProgressBar.fillAmount = targetFill;
     }
 
     private Color GetFadedColor(Color startColor, float startAlpha, float targetAlpha, float timer, float duration)
