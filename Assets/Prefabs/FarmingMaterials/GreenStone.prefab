@@ -122,7 +122,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Green Gemstone
   description: An uncommon gem. Sells for a decent amount!
-  image: {fileID: 21300000, guid: 4cf5a8dbf7b856f43ad085f8695b3a0f, type: 3}
+  image: {fileID: 21300000, guid: 2eab8d998a7f6d348ac1d32be7a65f08, type: 3}
   maxStackQuantity: 10
   quantity: 1
   sellPricePerUnit: 200

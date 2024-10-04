@@ -149,7 +149,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Blue Gemstone
   description: The most common gemstone, but still quite pretty!
-  image: {fileID: 21300000, guid: 4cf5a8dbf7b856f43ad085f8695b3a0f, type: 3}
+  image: {fileID: 21300000, guid: 9f71ba23acb56db4b8a831579bd18404, type: 3}
   maxStackQuantity: 10
   quantity: 1
   sellPricePerUnit: 100

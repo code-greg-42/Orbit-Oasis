@@ -122,7 +122,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Gold Gemstone
   description: A VERY rare find, this is gonna sell for buckets!
-  image: {fileID: 21300000, guid: 4cf5a8dbf7b856f43ad085f8695b3a0f, type: 3}
+  image: {fileID: 21300000, guid: 99922cb291e73724195936b3edfeace1, type: 3}
   maxStackQuantity: 5
   quantity: 1
   sellPricePerUnit: 2000

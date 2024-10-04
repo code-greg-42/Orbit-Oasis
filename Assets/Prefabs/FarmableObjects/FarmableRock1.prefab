@@ -152,7 +152,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Ore Rock
   description: A big rock. Rumored to have gemstones hidden inside!
-  image: {fileID: 21300000, guid: d3490e81ce1537047b54d7859b708d7a, type: 3}
+  image: {fileID: 21300000, guid: 6b25d93131a9a1c4baf486128c374c29, type: 3}
   maxStackQuantity: 1
   quantity: 1
   sellPricePerUnit: 1000
