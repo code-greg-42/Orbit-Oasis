@@ -18,6 +18,7 @@ public class TraderMenuManager : MonoBehaviour
     [SerializeField] private GameObject buySlotHighlightPanel;
     [SerializeField] private GameObject[] tradeItemPrefabs; // used for knowing which items are available for purchase
     [SerializeField] private TMP_Text refreshTimerText;
+    [SerializeField] private CinemachineControls camControls;
 
     private readonly int[] weightsNumberOfItems = { 30, 40, 20, 10 }; // for 5, 6, 7, 8
     private readonly int[] numberOfItemsArray = { 5, 6, 7, 8 };
@@ -196,7 +197,7 @@ public class TraderMenuManager : MonoBehaviour
         RemoveSlotSelection();
 
         // disables camera mouse movement when menu is active, enable when menu inactive
-        CinemachineControls.Instance.ToggleMouseMovement(IsMenuActive);
+        camControls.ToggleMouseMovement(IsMenuActive);
     }
 
     public void RemoveSlotSelection()

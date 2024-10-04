@@ -5,14 +5,12 @@ using UnityEngine;
 
 public class CinemachineControls : MonoBehaviour
 {
-    public static CinemachineControls Instance;
-
     [Header("Cinemachine Camera")]
     [SerializeField] private CinemachineFreeLook cinemachineFreeLookCam;
 
-    private void Awake()
+    private void Start()
     {
-        Instance = this;
+        DisableCursor();
     }
 
     public void ToggleMouseMovement(bool disable)
@@ -21,11 +19,25 @@ public class CinemachineControls : MonoBehaviour
         {
             cinemachineFreeLookCam.m_XAxis.m_InputAxisName = "";
             cinemachineFreeLookCam.m_YAxis.m_InputAxisName = "";
+            EnableCursor();
         }
         else
         {
             cinemachineFreeLookCam.m_XAxis.m_InputAxisName = "Mouse X";
             cinemachineFreeLookCam.m_YAxis.m_InputAxisName = "Mouse Y";
+            DisableCursor();
         }
+    }
+
+    private void EnableCursor()
+    {
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+    }
+
+    private void DisableCursor()
+    {
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 }

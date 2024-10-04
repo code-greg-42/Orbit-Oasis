@@ -18,6 +18,7 @@ public class InventoryManager : MonoBehaviour
     [SerializeField] private GameObject playerInventory;
     [SerializeField] private GameObject sellSlotHighlightPanel;
     [SerializeField] private TMP_Text sellSlotMoneyDisplay;
+    [SerializeField] private CinemachineControls camControls;
     //[SerializeField] private GameObject storeSlotHighlightPanel;
     //[SerializeField] private TMP_Text storeSlotAmountDisplay;
 
@@ -143,7 +144,7 @@ public class InventoryManager : MonoBehaviour
         RemoveSlotSelection();
 
         // disables camera mouse movement when menu is active, enable when menu inactive
-        CinemachineControls.Instance.ToggleMouseMovement(IsMenuActive);
+        camControls.ToggleMouseMovement(IsMenuActive);
     }
 
     public InventoryAddStatus AddItem(Item item)

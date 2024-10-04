@@ -3679,6 +3679,7 @@ MonoBehaviour:
   - {fileID: 6281513919030633771, guid: 77d77bd4021a4094ea8d93b139a1d160, type: 3}
   - {fileID: 4069490710833689526, guid: 8df186ca235b9e24ab425c151ac3ffd1, type: 3}
   refreshTimerText: {fileID: 1294603851}
+  camControls: {fileID: 964580213}
 --- !u!224 &499751905 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7613964281272875471, guid: d632e9979cba88a4eaa10f5cf1a068d0, type: 3}
@@ -6697,7 +6698,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 785105713}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.047631975, y: -0.0000000021483564, z: 1.02446746e-10, w: 0.99886495}
+  m_LocalRotation: {x: 0.047631975, y: 0.0000000021483564, z: -1.02446746e-10, w: 0.99886495}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -8209,7 +8210,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.04763198, y: -0.0000000021483566, z: 1.02446746e-10, w: 0.99886495}
+  m_LocalRotation: {x: 0.04763198, y: 0.0000000021483566, z: -1.02446746e-10, w: 0.99886495}
   m_LocalPosition: {x: 0, y: 3, z: -7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -14154,6 +14155,7 @@ MonoBehaviour:
   playerInventory: {fileID: 1073776705}
   sellSlotHighlightPanel: {fileID: 1373380592}
   sellSlotMoneyDisplay: {fileID: 374406127}
+  camControls: {fileID: 964580213}
   itemPrefabs:
   - {fileID: 8305301080065572057, guid: b34cfeb3e26dd7e4bbca0b5ac0809730, type: 3}
   - {fileID: 5686277313172532678, guid: adab7a6ec4dec9945bc209ef517aa96f, type: 3}
