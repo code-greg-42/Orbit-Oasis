@@ -1,0 +1,1 @@
+Pretty simple, right! Any time you pickup an item, it'll go right into your inventory.

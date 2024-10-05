@@ -67,6 +67,13 @@ public class Item : MonoBehaviour
                 DropItem(InventoryManager.Instance.PlayerInventory.transform.position);
                 break;
         }
+
+        // update quest manager if on collect wood quest
+        if (QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.CollectWood)
+        {
+            QuestManager.Instance.UpdateCurrentQuest();
+            // there is no risk of a full inventory at this point in the tutorial
+        }
     }
 
     public void DropItem(Vector3 dropPosition)

@@ -205,22 +205,6 @@ public class QuestManager : MonoBehaviour
         // get amount from the quest object, this way if it's changed it only needs to be changed in one place
         int treesToReward = GetTotalNeeded(IntroQuest.PlantNewTrees);
 
-        //// reward trees to plant
-        //for (int i = 0; i < treesToReward; i++)
-        //{
-        //    // random roll for which tree to reward
-        //    int treeIndex = UnityEngine.Random.Range(0, treePrefabs.Length);
-
-        //    // instantiate new tree object
-        //    GameObject newTree = Instantiate(treePrefabs[treeIndex]);
-
-        //    // get item component and pickup item into player inventory
-        //    if (newTree.TryGetComponent(out PlaceableItem placeableTree))
-        //    {
-        //        placeableTree.PickupItem();
-        //    }
-        //}
-
         RewardPlaceableItems(treePrefabs, treesToReward);
     }
 

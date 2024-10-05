@@ -43,6 +43,12 @@ public class FarmableObject : MonoBehaviour
                 Vector3 randomDirection = new Vector3(Random.Range(-1f, 1f), 0.5f, Random.Range(-1f, 1f)).normalized;
                 rb.AddForce(randomDirection * dropForce, ForceMode.Impulse);
             }
+
+            // update quest manager if on the farm tree quest and object is of tree type
+            if (QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.FarmTree && type == ObjectType.Tree)
+            {
+                QuestManager.Instance.UpdateCurrentQuest();
+            }
         }
         else
         {
