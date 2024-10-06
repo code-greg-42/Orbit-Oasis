@@ -37,7 +37,7 @@ public class QuestManager : MonoBehaviour
         FarmTree,
         CollectWood,
         CollectMoreWood,
-        CollectStone,
+        CollectStones,
         BuildObjects,
         SpaceRace,
     }
@@ -57,7 +57,7 @@ public class QuestManager : MonoBehaviour
             new Quest("Farm Tree", IntroQuest.FarmTree, 1, RewardForFarmTree),
             new Quest("Collect Wood", IntroQuest.CollectWood, 1, RewardForCollectWood),
             new Quest("Collect More Wood", IntroQuest.CollectMoreWood, 10, RewardForCollectMoreWood),
-            new Quest("Collect Stone", IntroQuest.CollectStone, 5, RewardForCollectStone),
+            new Quest("Collect Stones", IntroQuest.CollectStones, 5, RewardForCollectStones),
             new Quest("Build Objects", IntroQuest.BuildObjects, 5, RewardForBuildObjects),
             new Quest("Complete The Space Race", IntroQuest.SpaceRace, 1, RewardForSpaceRace)
         };
@@ -236,7 +236,7 @@ public class QuestManager : MonoBehaviour
 
     }
 
-    private void RewardForCollectStone()
+    private void RewardForCollectStones()
     {
 
     }

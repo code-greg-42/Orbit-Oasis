@@ -74,6 +74,13 @@ public class Item : MonoBehaviour
             QuestManager.Instance.UpdateCurrentQuest();
             // there is no risk of a full inventory at this point in the tutorial
         }
+
+        // update quest manager if on collect more wood quest
+        if (QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.CollectMoreWood)
+        {
+            QuestManager.Instance.UpdateCurrentQuest();
+            // similarly still no risk of full inventory
+        }
     }
 
     public void DropItem(Vector3 dropPosition)
