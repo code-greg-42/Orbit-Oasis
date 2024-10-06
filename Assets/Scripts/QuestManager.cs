@@ -13,12 +13,15 @@ public class QuestManager : MonoBehaviour
     private Coroutine completeQuestCoroutine;
     private Coroutine startNewQuestCoroutine;
 
-    [Header("Quest 2")]
+    [Header("Sell Dead Trees Quest Rewards")]
     [SerializeField] private GameObject[] treePrefabs;
     
-    [Header("Quest 3")]
+    [Header("Plant New Trees Quest Rewards")]
     [SerializeField] private Renderer groundRenderer;
     [SerializeField] private GameObject[] rockPrefabs;
+
+    [Header("Collect Stones Quest Rewards")]
+    [SerializeField] private GameObject woodMaterial;
 
     // grass color change variables
     private Material changeableGrassMaterial;
