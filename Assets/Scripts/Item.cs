@@ -69,17 +69,11 @@ public class Item : MonoBehaviour
         }
 
         // update quest manager if on collect wood quest
-        if (QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.CollectWood)
+        if (QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.CollectWood && ItemName == "Wood")
         {
             QuestManager.Instance.UpdateCurrentQuest();
             // there is no risk of a full inventory at this point in the tutorial
-        }
-
-        // update quest manager if on collect more wood quest
-        if (QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.CollectMoreWood)
-        {
-            QuestManager.Instance.UpdateCurrentQuest();
-            // similarly still no risk of full inventory
+            // done here instead of batched in player controls as only 1 is needed and this keeps the UI floating text at +1
         }
     }
 

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class PlayerControls : MonoBehaviour
@@ -282,6 +283,9 @@ public class PlayerControls : MonoBehaviour
         // wait for animation to reach the ground
         yield return new WaitForSeconds(timeToMidItemPickup);
 
+        int numberOfQuestItems = 0;
+
+        // loop through collider results and pickup all items
         for (int i = 0; i < size; i++)
         {
             Collider collider = results[i];
@@ -292,8 +296,28 @@ public class PlayerControls : MonoBehaviour
                 if (item is not Animal && item is not PlaceableItem && item is not DeadTree)
                 {
                     item.PickupItem();
+                    
+                    if (QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.CollectMoreWood && item.ItemName == "Wood")
+                    {
+                        numberOfQuestItems++;
+                    }
+                    else if (QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.CollectStones &&
+                        QuestManager.Instance.GemstoneNames.Contains(item.ItemName))
+                    {
+                        numberOfQuestItems++;
+                    }
                 }
             }
+        }
+
+        // if player is on one of the collecting quests and at least 1 quest item was collected
+        if (QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.CollectMoreWood ||
+            QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.CollectStones &&
+            numberOfQuestItems > 0)
+        {
+            // update quest manager with amount
+            // this is done as a batch so that the UI floating text component properly updates +2, +3 etc instead of spawning multiple overlapping +1s
+            QuestManager.Instance.UpdateCurrentQuest(numberOfQuestItems);
         }
 
         // wait for rest of animation to finish

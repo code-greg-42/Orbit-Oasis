@@ -22,6 +22,7 @@ public class QuestManager : MonoBehaviour
 
     [Header("Collect Stones Quest Rewards")]
     [SerializeField] private GameObject woodMaterial;
+    private readonly string[] gemstoneNames = { "Blue Gemstone", "Green Gemstone", "Red Gemstone", "Gold Gemstone" };
 
     // grass color change variables
     private Material changeableGrassMaterial;
@@ -30,6 +31,7 @@ public class QuestManager : MonoBehaviour
     private Coroutine changeGrassColorCoroutine;
 
     public bool QuestLogActive => MainUIManager.Instance.QuestPanelActive;
+    public string[] GemstoneNames => gemstoneNames;
 
     public enum IntroQuest
     {
