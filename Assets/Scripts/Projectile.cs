@@ -1,14 +1,39 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
+    private const float maxLifetime = 10.0f;
     private const float captureRadius = 3.0f;
     private const float groundSequenceDelay = 1.5f;
     private Coroutine groundSequenceCoroutine;
 
     [SerializeField] private GameObject detonationEffect;
+
+    private float lifetimeTimer = 0.0f;
+
+    private void OnEnable()
+    {
+        lifetimeTimer = 0.0f;
+    }
+
+    private void OnDisable()
+    {
+        lifetimeTimer = 0.0f;
+    }
+
+    private void Update()
+    {
+        lifetimeTimer += Time.deltaTime;
+
+        // deactivate without explosion if timer exceeds the lifetime
+        if (lifetimeTimer >= maxLifetime)
+        {
+            gameObject.SetActive(false);
+        }
+    }
 
     private void OnCollisionEnter(Collision collision)
     {
