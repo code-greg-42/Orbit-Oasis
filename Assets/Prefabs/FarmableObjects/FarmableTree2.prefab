@@ -304,8 +304,10 @@ MonoBehaviour:
   materialPrefabs:
   - {fileID: 8305301080065572057, guid: b34cfeb3e26dd7e4bbca0b5ac0809730, type: 3}
   farmableMaterialCount: 6
-  dropForce: 4
+  dropForce: 3
   dropHeight: 1.5
+  offsetLength: 0.5
+  dropTorqueAmount: 5
   materialWeights: 64000000
   type: 0
 --- !u!65 &599301573105120682

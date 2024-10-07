@@ -5,7 +5,7 @@ using UnityEngine;
 public class DeadTreeSpawner : MonoBehaviour
 {
     [SerializeField] private GameObject[] deadTreePrefabs;
-    private const int treesToSpawn = 10;
+    private const int treesToSpawn = 2; // TEMPORARY: normal setting 10
     private const float boundary = 30.0f;
     private const float xAvoid = -10.0f;
     private const float zAvoid = -17.0f;

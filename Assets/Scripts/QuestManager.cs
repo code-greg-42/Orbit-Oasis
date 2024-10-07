@@ -55,8 +55,8 @@ public class QuestManager : MonoBehaviour
 
         introQuests = new Quest[]
         {
-            new Quest("Remove Dead Trees", IntroQuest.RemoveDeadTrees, 10, RewardForRemoveDeadTrees),
-            new Quest("Sell Dead Trees", IntroQuest.SellDeadTrees, 10, RewardForSellDeadTrees),
+            new Quest("Remove Dead Trees", IntroQuest.RemoveDeadTrees, 2, RewardForRemoveDeadTrees), // temporary 2 setting, normally 10
+            new Quest("Sell Dead Trees", IntroQuest.SellDeadTrees, 2, RewardForSellDeadTrees), // temporary 2 setting, normally 10
             new Quest("Plant New Trees", IntroQuest.PlantNewTrees, 6, RewardForPlantNewTrees, PlantNewTreesIntroAction),
             new Quest("Place Rocks", IntroQuest.PlaceRocks, 2, RewardForPlaceRocks),
             new Quest("Farm Tree", IntroQuest.FarmTree, 1, RewardForFarmTree),
