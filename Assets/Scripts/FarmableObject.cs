@@ -13,6 +13,13 @@ public class FarmableObject : MonoBehaviour
     [SerializeField] private float dropTorqueAmount;
     [SerializeField] private int[] materialWeights; // must have same number of ints as materialPrefab, and equal 100
 
+    [Header("Farming Limits")]
+    [SerializeField] private int maxFarms = 8; // maximum number of farms before the object becomes unavailable to get more materials from
+    [SerializeField] private float regenInterval = 60.0f; // time in seconds to regenerate 1 available farm
+
+    private int availableFarms;
+    private Coroutine regenCoroutine;
+
     [Header("Type Setting")]
     [SerializeField] private ObjectType type;
 
@@ -24,7 +31,40 @@ public class FarmableObject : MonoBehaviour
 
     public ObjectType Type => type;
 
+    private void Start()
+    {
+        // intentionally resetting all farming between scene and session changes
+        availableFarms = maxFarms;
+    }
+
+    private void OnEnable()
+    {
+        // handling case where an object is picked up into inventory and re-placed
+        RegenerateFarms();
+
+        // intentionally not stopping the coroutine on disable, as this way the availableFarms continue to regenerate even when a tree is in inventory
+    }
+
     public void FarmObject()
+    {
+        if (availableFarms > 0)
+        {
+            availableFarms--;
+            SpawnMaterial();
+        }
+
+        RegenerateFarms();
+    }
+
+    private void RegenerateFarms()
+    {
+        if (availableFarms < maxFarms && regenCoroutine == null)
+        {
+            regenCoroutine = StartCoroutine(FarmingRegenerationCoroutine());
+        }
+    }
+
+    private void SpawnMaterial()
     {
         // randomize material
         if (materialPrefabs.Length == materialWeights.Length)
@@ -61,6 +101,19 @@ public class FarmableObject : MonoBehaviour
         {
             Debug.LogWarning("Material prefabs/weights not set up correctly.");
         }
+    }
+
+    private IEnumerator FarmingRegenerationCoroutine()
+    {
+        while (availableFarms < maxFarms)
+        {
+            yield return new WaitForSeconds(regenInterval);
+
+            availableFarms++;
+        }
+
+        // set to null to indicate it's no longer running
+        regenCoroutine = null;
     }
 
     private (Vector3, Vector3, Vector3) GetDropVectors()
