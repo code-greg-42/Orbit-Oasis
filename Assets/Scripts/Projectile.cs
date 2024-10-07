@@ -28,7 +28,7 @@ public class Projectile : MonoBehaviour
     {
         lifetimeTimer += Time.deltaTime;
 
-        // deactivate without explosion if timer exceeds the lifetime
+        // deactivate without explosion effects if timer exceeds the set max lifetime
         if (lifetimeTimer >= maxLifetime)
         {
             gameObject.SetActive(false);
@@ -78,18 +78,28 @@ public class Projectile : MonoBehaviour
         // check for nearby items
         Collider[] colliders = Physics.OverlapSphere(transform.position, captureRadius);
 
+        int deadTreesPickedUp = 0;
+
         // find any items in collider array
         foreach (var collider in colliders)
         {
             if (collider.TryGetComponent(out Item item))
             {
                 item.PickupItem();
-                Deactivate();
-                yield break;
+                
+                // increment counter if picked up item was a dead tree (added check for remove dead trees quest)
+                if (item is DeadTree && QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.RemoveDeadTrees)
+                {
+                    deadTreesPickedUp++;
+                }
             }
         }
 
-        // deactivate if no items captured
+        if (deadTreesPickedUp > 0)
+        {
+            QuestManager.Instance.UpdateCurrentQuest(deadTreesPickedUp);
+        }
+
         Deactivate();
     }
 
