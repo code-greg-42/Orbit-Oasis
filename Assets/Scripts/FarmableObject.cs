@@ -75,7 +75,10 @@ public class FarmableObject : MonoBehaviour
         dropPosition += randomDirection * offsetLength;
 
         // randomize torque
-        Vector3 torque = new(Random.Range(-1, 1f), Random.Range(-1, 1f), Random.Range(-1, 1f) * dropTorqueAmount);
+        float randomX = Random.Range(-1, 1f);
+        float randomY = Random.Range(-1, 1f);
+        float randomZ = Random.Range(-1, 1f);
+        Vector3 torque = new Vector3(randomX, randomY, randomZ) * dropTorqueAmount;
 
         return (dropPosition, randomDirection, torque);
     }
