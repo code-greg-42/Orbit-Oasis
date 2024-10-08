@@ -117,6 +117,16 @@ public class BuildManager : MonoBehaviour
             }
         }
         BuildModeActive = !BuildModeActive;
+
+        // update UI with current state of build mode
+        if (BuildModeActive)
+        {
+            MainUIManager.Instance.ActivateBuildModeIndicator();
+        }
+        else
+        {
+            MainUIManager.Instance.DeactivateBuildModeIndicator();
+        }
     }
 
     public void ToggleDeleteMode()
@@ -138,6 +148,20 @@ public class BuildManager : MonoBehaviour
             }
             // swap bool
             DeleteModeActive = !DeleteModeActive;
+
+            // update UI with current state of delete mode
+            if (DeleteModeActive)
+            {
+                // deactivate build mode indicator and activate delete mode indicator
+                MainUIManager.Instance.DeactivateBuildModeIndicator();
+                MainUIManager.Instance.ActivateDeleteModeIndicator();
+            }
+            else
+            {
+                // deactivate delete mode indicator and re-activate build mode indicator
+                MainUIManager.Instance.DeactivateDeleteModeIndicator();
+                MainUIManager.Instance.ActivateBuildModeIndicator();
+            }
         }
     }
 

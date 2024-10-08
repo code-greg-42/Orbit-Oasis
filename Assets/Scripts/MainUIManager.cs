@@ -40,6 +40,10 @@ public class MainUIManager : MonoBehaviour
     [Header("Tutorial Progress")]
     [SerializeField] private Image tutorialProgressBar;
 
+    [Header("Build Mode Indicators")]
+    [SerializeField] private GameObject buildModeIndicator;
+    [SerializeField] private GameObject deleteModeIndicator;
+
     // tutorial progress settings
     private float tutorialProgressFadeDuration = 0.3f;
     private Coroutine tutorialProgressBarCoroutine;
@@ -224,6 +228,26 @@ public class MainUIManager : MonoBehaviour
             ReturnQuestPanelToOriginalColor();
         }
         showQuestSuccessCoroutine = StartCoroutine(FadeQuestLog(false));
+    }
+
+    public void ActivateBuildModeIndicator()
+    {
+        buildModeIndicator.SetActive(true);
+    }
+
+    public void DeactivateBuildModeIndicator()
+    {
+        buildModeIndicator.SetActive(false);
+    }
+
+    public void ActivateDeleteModeIndicator()
+    {
+        deleteModeIndicator.SetActive(true);
+    }
+
+    public void DeactivateDeleteModeIndicator()
+    {
+        deleteModeIndicator.SetActive(false);
     }
 
     private IEnumerator FadeQuestLog(bool fadeIn = false)
