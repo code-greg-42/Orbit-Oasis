@@ -13,6 +13,7 @@ public class ItemPlacementManager : MonoBehaviour
 
     private KeyCode placeKey = KeyCode.F;
     private KeyCode escapeKey = KeyCode.Escape;
+    private KeyCode backToInventoryKey = KeyCode.Tab;
 
     private Color validPreviewColor = new(166 / 255f, 166 / 255f, 166 / 255f, 40 / 255f); // gray transparent color
     private Color invalidPreviewColor = new(255 / 255f, 0 / 255f, 0 / 255f, 65 / 255f); // red transparent color
@@ -60,6 +61,15 @@ public class ItemPlacementManager : MonoBehaviour
             else if (Input.GetKeyDown(escapeKey))
             {
                 ReturnItemToInventory();
+            }
+            else if (Input.GetKeyDown(backToInventoryKey))
+            {
+                ReturnItemToInventory();
+
+                if (!InventoryManager.Instance.IsMenuActive)
+                {
+                    InventoryManager.Instance.ToggleInventoryMenu();
+                }
             }
         }
     }

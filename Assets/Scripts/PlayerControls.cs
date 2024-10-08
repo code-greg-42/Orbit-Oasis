@@ -150,41 +150,74 @@ public class PlayerControls : MonoBehaviour
             }
         }
 
-        // INVENTORY
-        if (Input.GetKeyDown(inventoryKeybind) && !InventoryManager.Instance.IsDragging)
+        // TOGGLE MENUS AND MODES
+        if (!DialogueManager.Instance.DialogueWindowActive && !ItemPlacementManager.Instance.ItemPlacementActive)
         {
-            InventoryManager.Instance.ToggleInventoryMenu();
-        }
-
-        // TRADER MENU
-        if (Input.GetKeyDown(traderMenuKeybind) && !TraderMenuManager.Instance.IsDragging)
-        {
-            TraderMenuManager.Instance.ToggleTraderMenu();
-        }
-
-        // BUILD MODE
-        if (Input.GetKeyDown(buildModeKeybind))
-        {
-            BuildManager.Instance.ToggleBuildMode();
-        }
-
-        // ESCAPE MENUS
-        if (Input.GetKeyDown(escapeKeybind))
-        {
-            if (InventoryManager.Instance.IsMenuActive)
+            // INVENTORY
+            if (Input.GetKeyDown(inventoryKeybind) && !InventoryManager.Instance.IsDragging && !TraderMenuManager.Instance.IsDragging)
             {
-                if (!InventoryManager.Instance.IsDragging)
+                // deactivate other menus if active
+                if (BuildManager.Instance.BuildModeActive)
                 {
-                    InventoryManager.Instance.ToggleInventoryMenu();
+                    BuildManager.Instance.ToggleBuildMode();
                 }
-            }
-            else if (TraderMenuManager.Instance.IsMenuActive)
-            {
-                if (!TraderMenuManager.Instance.IsDragging)
+                if (TraderMenuManager.Instance.IsMenuActive)
                 {
                     TraderMenuManager.Instance.ToggleTraderMenu();
                 }
+
+                InventoryManager.Instance.ToggleInventoryMenu();
             }
+
+            // TRADER MENU
+            else if (Input.GetKeyDown(traderMenuKeybind) && !TraderMenuManager.Instance.IsDragging && !InventoryManager.Instance.IsDragging)
+            {
+                // deactivate other menus if active
+                if (BuildManager.Instance.BuildModeActive)
+                {
+                    BuildManager.Instance.ToggleBuildMode();
+                }
+                if (InventoryManager.Instance.IsMenuActive)
+                {
+                    InventoryManager.Instance.ToggleInventoryMenu();
+                }
+
+                TraderMenuManager.Instance.ToggleTraderMenu();
+            }
+
+            // BUILD MODE -- only allow if no menus active
+            else if (Input.GetKeyDown(buildModeKeybind) && !InventoryManager.Instance.IsMenuActive && !TraderMenuManager.Instance.IsMenuActive)
+            {
+                BuildManager.Instance.ToggleBuildMode();
+            }
+        }
+
+        // ALTERNATE ESCAPE OF MENUS AND MODES
+        if (Input.GetKeyDown(escapeKeybind))
+        {
+            EscapeMenusAndBuildMode();
+        }
+    }
+
+    private void EscapeMenusAndBuildMode()
+    {
+        if (InventoryManager.Instance.IsMenuActive)
+        {
+            if (!InventoryManager.Instance.IsDragging)
+            {
+                InventoryManager.Instance.ToggleInventoryMenu();
+            }
+        }
+        else if (TraderMenuManager.Instance.IsMenuActive)
+        {
+            if (!TraderMenuManager.Instance.IsDragging)
+            {
+                TraderMenuManager.Instance.ToggleTraderMenu();
+            }
+        }
+        else if (BuildManager.Instance.BuildModeActive)
+        {
+            BuildManager.Instance.ToggleBuildMode();
         }
     }
 

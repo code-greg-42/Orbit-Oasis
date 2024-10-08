@@ -54,6 +54,9 @@ public class PlayerMovement : MonoBehaviour
     public bool IsGrounded => isGrounded;
     public bool IsMoving => verticalInput != 0 || horizontalInput != 0;
 
+    // private properties
+    private bool IsReadyToMove => !playerControls.IsSwinging && !playerControls.IsPickingUpItem;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -77,7 +80,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!playerControls.IsSwinging && !playerControls.IsPickingUpItem)
+        if (IsReadyToMove)
         {
             MovePlayer();
         }
@@ -100,7 +103,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void MyInput()
     {
-        if (!playerControls.IsSwinging && !playerControls.IsPickingUpItem)
+        if (IsReadyToMove)
         {
             // get user input
             horizontalInput = Input.GetAxisRaw("Horizontal");
