@@ -38,6 +38,8 @@ public class BuildManager : MonoBehaviour
     private Material originalMaterial;
     private int currentPrefabIndex = 0; // index to track build object type selection
     private bool previewIsPlaceable; // bool to track whether preview is in a placeable position
+    private float lastPlacedTime = 0.0f; // used to see if build cooldown has surpassed
+    private float buildCooldown = 0.25f;
 
     private void Awake()
     {
@@ -65,6 +67,13 @@ public class BuildManager : MonoBehaviour
             }
             else
             {
+                // skip if build was recently placed
+                if (Time.time - lastPlacedTime < buildCooldown)
+                {
+                    return;
+                }
+
+                // otherwise create new preview
                 if (currentPreview == null)
                 {
                     // instantiate new preview
@@ -280,6 +289,7 @@ public class BuildManager : MonoBehaviour
                 SetPreviewMaterial(false);
 
                 lastPlacedBuild = buildable;
+                lastPlacedTime = Time.time;
 
                 // add gameobject to build list
                 DataManager.Instance.AddBuild(buildable);
