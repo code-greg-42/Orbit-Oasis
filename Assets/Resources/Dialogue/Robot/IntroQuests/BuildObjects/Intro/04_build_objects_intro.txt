@@ -1,1 +1,0 @@
-You can cycle through the different types of buildable objects by pressing [1][2][3]. To place a build, press [F]. Try it out!

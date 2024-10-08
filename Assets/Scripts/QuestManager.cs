@@ -43,6 +43,9 @@ public class QuestManager : MonoBehaviour
         CollectWood,
         CollectMoreWood,
         CollectStones,
+        OpenBuildMode,
+        PlaceAnObject,
+        UndoLastBuild,
         BuildObjects,
         SpaceRace,
     }
@@ -63,6 +66,9 @@ public class QuestManager : MonoBehaviour
             new Quest("Collect Wood", IntroQuest.CollectWood, 1, RewardForCollectWood),
             new Quest("Collect More Wood", IntroQuest.CollectMoreWood, 10, RewardForCollectMoreWood),
             new Quest("Collect Stones", IntroQuest.CollectStones, 5, RewardForCollectStones),
+            new Quest("Open Build Mode", IntroQuest.OpenBuildMode, 1, null),
+            new Quest("Place An Object", IntroQuest.PlaceAnObject, 1, null),
+            new Quest("Undo Last Build", IntroQuest.UndoLastBuild, 1, null),
             new Quest("Build Objects", IntroQuest.BuildObjects, 5, RewardForBuildObjects),
             new Quest("Complete The Space Race", IntroQuest.SpaceRace, 1, RewardForSpaceRace)
         };
@@ -86,6 +92,18 @@ public class QuestManager : MonoBehaviour
     public IntroQuest GetCurrentQuest()
     {
         return introQuests[activeQuestIndex].QuestType;
+    }
+
+    public int GetQuestIndex(IntroQuest quest)
+    {
+        for (int i = 0; i < introQuests.Length; i++)
+        {
+            if (introQuests[i].QuestType == quest)
+            {
+                return i;
+            }
+        }
+        return -1;
     }
 
     private IEnumerator StartNewQuestCoroutine()

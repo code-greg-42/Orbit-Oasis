@@ -58,7 +58,7 @@ public class BuildManager : MonoBehaviour
             {
                 UpdateDeleteModeHighlight();
 
-                if (Input.GetKeyDown(placeBuildKey) && currentDeleteModeHighlightedBuild != null)
+                if (Input.GetKeyDown(placeBuildKey) && currentDeleteModeHighlightedBuild != null && !DialogueManager.Instance.DialogueWindowActive)
                 {
                     DeleteBuild(currentDeleteModeHighlightedBuild);
                 }
@@ -77,20 +77,26 @@ public class BuildManager : MonoBehaviour
 
                 UpdatePreviewColor(previewIsPlaceable);
 
-                if (Input.GetKeyDown(placeBuildKey) && currentPreview != null && previewIsPlaceable)
+                if (Input.GetKeyDown(placeBuildKey) && currentPreview != null && previewIsPlaceable && !DialogueManager.Instance.DialogueWindowActive)
                 {
                     PlaceBuild();
                 }
 
-                if (Input.GetKeyDown(undoBuildKey) && lastPlacedBuild != null)
+                if (Input.GetKeyDown(undoBuildKey) && lastPlacedBuild != null && !DialogueManager.Instance.DialogueWindowActive)
                 {
                     DeleteBuild(lastPlacedBuild);
+
+                    // update QuestManager if on Undo Last Build quest
+                    if (QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.UndoLastBuild)
+                    {
+                        QuestManager.Instance.UpdateCurrentQuest();
+                    }
                 }
 
                 HandleUserPrefabChange();
             }
             
-            if (Input.GetKeyDown(deleteModeKey))
+            if (Input.GetKeyDown(deleteModeKey) && !DialogueManager.Instance.DialogueWindowActive)
             {
                 ToggleDeleteMode();
             }
@@ -280,6 +286,13 @@ public class BuildManager : MonoBehaviour
 
                 // place build
                 buildable.PlaceObject();
+
+                // update quest manager if on a PlaceBuild quest
+                if (QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.PlaceAnObject ||
+                    QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.BuildObjects)
+                {
+                    QuestManager.Instance.UpdateCurrentQuest();
+                }
 
                 // update inventory with building cost
                 InventoryManager.Instance.UseItem(buildable.BuildMaterialName, buildable.BuildCost, true);

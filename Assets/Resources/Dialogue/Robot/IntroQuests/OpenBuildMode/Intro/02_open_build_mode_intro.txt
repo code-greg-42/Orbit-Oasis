@@ -1,0 +1,1 @@
+For starters, press [B] to toggle on build mode. You'll see a preview of a build pop up.

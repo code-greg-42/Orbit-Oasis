@@ -1,0 +1,1 @@
+Don't worry, it's not a big deal if you don't like where you placed something. Simply hit [Q] while in build mode and it'll delete your most recently placed build. Try it out!
