@@ -395,9 +395,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildType: 0
+  buildPrefabIndex: 0
   buildCost: 1
   buildMaterialName: Wood
-  buildMaterialPrefab: {fileID: 7710616936816269101, guid: 6bc024b61437f244ab7ee62a090c2c14, type: 3}
+  buildMaterialPrefab: {fileID: 8305301080065572057, guid: b34cfeb3e26dd7e4bbca0b5ac0809730, type: 3}
   attachmentSlots:
   - {fileID: 6695116416713366303}
   - {fileID: 261292412322621088}

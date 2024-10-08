@@ -44,9 +44,9 @@ public class QuestManager : MonoBehaviour
         CollectMoreWood,
         CollectStones,
         OpenBuildMode,
-        PlaceAnObject,
+        PlaceABuild,
         UndoLastBuild,
-        BuildObjects,
+        PlaceMoreBuilds,
         SpaceRace,
     }
 
@@ -66,10 +66,9 @@ public class QuestManager : MonoBehaviour
             new Quest("Collect Wood", IntroQuest.CollectWood, 1, RewardForCollectWood),
             new Quest("Collect More Wood", IntroQuest.CollectMoreWood, 10, RewardForCollectMoreWood),
             new Quest("Collect Stones", IntroQuest.CollectStones, 5, RewardForCollectStones),
-            new Quest("Open Build Mode", IntroQuest.OpenBuildMode, 1, null),
-            new Quest("Place An Object", IntroQuest.PlaceAnObject, 1, null),
+            new Quest("Place A Build", IntroQuest.PlaceABuild, 1, null),
             new Quest("Undo Last Build", IntroQuest.UndoLastBuild, 1, null),
-            new Quest("Build Objects", IntroQuest.BuildObjects, 5, RewardForBuildObjects),
+            new Quest("Place More Builds", IntroQuest.PlaceMoreBuilds, 5, RewardForPlaceMoreBuilds),
             new Quest("Complete The Space Race", IntroQuest.SpaceRace, 1, RewardForSpaceRace)
         };
     }
@@ -264,7 +263,7 @@ public class QuestManager : MonoBehaviour
 
     }
 
-    private void RewardForBuildObjects()
+    private void RewardForPlaceMoreBuilds()
     {
         // Implement reward logic for BuildObjects
     }

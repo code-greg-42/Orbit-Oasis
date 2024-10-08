@@ -288,8 +288,8 @@ public class BuildManager : MonoBehaviour
                 buildable.PlaceObject();
 
                 // update quest manager if on a PlaceBuild quest
-                if (QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.PlaceAnObject ||
-                    QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.BuildObjects)
+                if (QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.PlaceABuild ||
+                    QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.PlaceMoreBuilds)
                 {
                     QuestManager.Instance.UpdateCurrentQuest();
                 }
