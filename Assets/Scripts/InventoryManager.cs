@@ -300,14 +300,13 @@ public class InventoryManager : MonoBehaviour
             Vector3 dropPos = playerTransform.position + playerTransform.forward * 2;
             DragSlot.SlotItem.DropItem(dropPos);
 
+            // item removed from data manager in .DropItem()
+
             // clear slot selection
             if (DragSlot.IsSelected)
             {
                 RemoveSlotSelection();
             }
-
-            // remove item from data manager
-            DataManager.Instance.RemoveItem(DragSlot.SlotItem);
 
             // clear slot from inventory
             DragSlot.ClearSlot();

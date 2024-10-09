@@ -85,6 +85,9 @@ public class Item : MonoBehaviour
             DataManager.Instance.SubtractBuildMaterial(Quantity * BuildMaterialPerUnit);
         }
 
+        // remove from DataManager
+        DataManager.Instance.RemoveItem(this);
+
         // remove object as child of player inventory
         transform.SetParent(null);
 

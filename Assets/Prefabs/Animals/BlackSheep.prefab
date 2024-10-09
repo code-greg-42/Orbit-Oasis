@@ -3180,7 +3180,7 @@ MonoBehaviour:
   sellPricePerUnit: 4000
   buyPricePerUnit: 8000
   buildMaterialPerUnit: 0
-  prefabIndex: 0
+  prefabIndex: 17
   pickupDelay: 0.3
   roamRadius: 30
   minIdleTime: 1

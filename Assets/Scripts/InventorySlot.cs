@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class InventorySlot : MenuItemSlot
 {
     public bool IsRecentlyClicked { get; private set; }
-    private float doubleClickWindow = 0.42f;
+    private const float doubleClickWindow = 0.42f;
 
     public int AddAdditionalItem(int quantityToAdd)
     {
@@ -68,6 +68,31 @@ public class InventorySlot : MenuItemSlot
                 {
                     ItemPlacementManager.Instance.ActivateItemPlacement(placeableItem);
                     ClearSlot();
+                }
+                else
+                {
+                    IsRecentlyClicked = true;
+                    Invoke(nameof(ResetRecentlyClicked), doubleClickWindow);
+                }
+            }
+            else if (SlotItem is Animal animal)
+            {
+                if (IsRecentlyClicked)
+                {
+                    Transform playerTransform = GameObject.Find("PlayerModel").transform;
+
+                    if (playerTransform != null)
+                    {
+                        // calculate drop position based on player
+                        Vector3 dropPos = playerTransform.position + playerTransform.forward * 2;
+
+                        // drop item out of inventory and into scene
+                        animal.DropItem(dropPos);
+
+                        // deselect and clear slot
+                        DeselectSlot();
+                        ClearSlot();
+                    }
                 }
                 else
                 {
