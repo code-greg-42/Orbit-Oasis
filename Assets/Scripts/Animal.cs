@@ -5,22 +5,25 @@ using UnityEngine.AI;
 
 public class Animal : Item
 {
-    [SerializeField] private float foodPerUnit;
+    [Header("Grazing Settings")]
     [SerializeField] private float roamRadius;
+
+    private float minIdleTime = 3.0f;
+    private float maxIdleTime = 30.0f;
 
     // anti stuck variables
     private float stuckThresholdSqr = 0.01f;
-    private float stuckTime = 30.0f; // keeping this high because it's cute when they get stuck for a bit, just not forever.
+    private float stuckTime = 120.0f; // keeping this high because it's cute when they get stuck for a bit, just not forever.
     private float stuckTimer = 0.0f;
     private Vector3 lastPosition;
 
-    public float FoodPerUnit => foodPerUnit;
-
     private NavMeshAgent agent;
+    private Animator animalAnim;
 
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
+        animalAnim = GetComponent<Animator>();
     }
 
     private void OnEnable()
@@ -33,12 +36,22 @@ public class Animal : Item
         StopAllCoroutines();
     }
 
+    private void Update()
+    {
+        animalAnim.SetFloat("speed", agent.velocity.magnitude);
+    }
+
     private IEnumerator RoamCoroutine()
     {
         while (true)
         {
             if (!agent.pathPending && agent.remainingDistance < 0.5f)
             {
+                // randomize idle time
+                float idleTime = Random.Range(minIdleTime, maxIdleTime);
+
+                yield return new WaitForSeconds(idleTime);
+
                 SetRandomDestination();
                 stuckTimer = 0.0f; // reset timer when setting new destination
             }
@@ -59,6 +72,7 @@ public class Animal : Item
             }
 
             lastPosition = transform.position; // update recent position
+
             yield return new WaitForSeconds(0.5f);
         }
     }
