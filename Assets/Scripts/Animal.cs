@@ -7,13 +7,13 @@ public class Animal : Item
 {
     [Header("Grazing Settings")]
     [SerializeField] private float roamRadius;
-
-    private float minIdleTime = 3.0f;
-    private float maxIdleTime = 30.0f;
+    [SerializeField] private float minIdleTime = 3.0f;
+    [SerializeField] private float maxIdleTime = 30.0f;
+    private const float grazingTimeMin = 12.0f; // minimum idle time to set the eating/grazing animation
 
     // anti stuck variables
-    private float stuckThresholdSqr = 0.01f;
-    private float stuckTime = 120.0f; // keeping this high because it's cute when they get stuck for a bit, just not forever.
+    private const float stuckThresholdSqr = 0.01f;
+    private const float stuckTime = 90.0f; // keeping this high because it's cute when they get stuck for a bit, just not forever.
     private float stuckTimer = 0.0f;
     private Vector3 lastPosition;
 
@@ -43,14 +43,33 @@ public class Animal : Item
 
     private IEnumerator RoamCoroutine()
     {
+        bool isInitial = true;
+
         while (true)
         {
             if (!agent.pathPending && agent.remainingDistance < 0.5f)
             {
-                // randomize idle time
-                float idleTime = Random.Range(minIdleTime, maxIdleTime);
+                // skip the wait time on the first roam after enabling
+                if (!isInitial)
+                {
+                    // randomize idle time
+                    float idleTime = Random.Range(minIdleTime, maxIdleTime);
 
-                yield return new WaitForSeconds(idleTime);
+                    // set eating animation --- potential to set this only if animal is on the grass level, as opposed to on a buildable object
+                    if (idleTime > grazingTimeMin)
+                    {
+                        animalAnim.SetBool("isEating", true);
+                    }
+
+                    yield return new WaitForSeconds(idleTime);
+
+                    // reset eating animation after idle time concludes
+                    animalAnim.SetBool("isEating", false);
+                }
+                else
+                {
+                    isInitial = false;
+                }
 
                 SetRandomDestination();
                 stuckTimer = 0.0f; // reset timer when setting new destination
