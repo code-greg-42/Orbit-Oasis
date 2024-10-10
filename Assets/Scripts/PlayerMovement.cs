@@ -22,6 +22,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Transform playerObject;
     [SerializeField] private PlayerAnimation playerAnimation;
     [SerializeField] private PlayerControls playerControls;
+    [SerializeField] private CinemachineControls camControls;
 
     [Header("Keybinds")]
     [SerializeField] private KeyCode jumpKey = KeyCode.Space;
@@ -34,6 +35,12 @@ public class PlayerMovement : MonoBehaviour
     private const float airDrag = 1.0f;
     private const float airMultiplier = 0.5f;
     private bool isGrounded;
+
+    // custom position/rotation set variables
+    private bool queuedMove;
+    private bool queuedRotation;
+    private Vector3 moveTarget;
+    private Quaternion rotationTarget;
 
     // fell off edge check variables
     private const float fallOffEdgeY = -50.0f;
@@ -66,31 +73,6 @@ public class PlayerMovement : MonoBehaviour
         rb.freezeRotation = true;
     }
 
-    public void LoadPlayerPosition()
-    {
-        Vector3 playerPos = DataManager.Instance.PlayerStats.PlayerPosition;
-        if (playerPos != Vector3.zero)
-        {
-            transform.position = playerPos;
-        }
-
-        Quaternion playerRot = DataManager.Instance.PlayerStats.PlayerRotation;
-        if (playerRot != Quaternion.identity)
-        {
-            playerObject.rotation = playerRot;
-        }
-    }
-
-    public void SetPlayerPosition(Vector3 playerPos)
-    {
-        transform.position = playerPos;
-    }
-
-    public bool HasFallenOffEdge(float yBoundary)
-    {
-        return transform.position.y < yBoundary;
-    }
-
     private void FixedUpdate()
     {
         if (IsReadyToMove)
@@ -103,6 +85,12 @@ public class PlayerMovement : MonoBehaviour
         {
             rb.AddForce(Vector3.down * customGravity, ForceMode.Acceleration);
         }
+
+        if (queuedMove)
+        {
+            queuedMove = false;
+            rb.MovePosition(moveTarget);
+        }
     }
 
     private void Update()
@@ -112,6 +100,47 @@ public class PlayerMovement : MonoBehaviour
         SpeedControl();
         UpdateRunningAnimation();
         HandleAirState();
+    }
+
+    private void LateUpdate()
+    {
+        if (queuedRotation)
+        {
+            queuedRotation = false;
+            playerObject.rotation = rotationTarget;
+        }
+    }
+
+    public void LoadPlayerPosition()
+    {
+        Vector3 playerPos = DataManager.Instance.PlayerStats.PlayerPosition;
+        if (playerPos != Vector3.zero)
+        {
+            SetPlayerPosition(playerPos);
+        }
+
+        Quaternion playerRot = DataManager.Instance.PlayerStats.PlayerRotation;
+        if (playerRot != Quaternion.identity)
+        {
+            SetPlayerRotation(playerRot);
+        }
+    }
+
+    public void SetPlayerPosition(Vector3 playerPos)
+    {
+        moveTarget = playerPos;
+        queuedMove = true;
+    }
+
+    public bool HasFallenOffEdge(float yBoundary)
+    {
+        return transform.position.y < yBoundary;
+    }
+
+    private void SetPlayerRotation(Quaternion playerRot)
+    {
+        rotationTarget = playerRot;
+        queuedRotation = true;
     }
 
     private void MyInput()

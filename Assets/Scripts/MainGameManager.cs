@@ -22,6 +22,9 @@ public class MainGameManager : MonoBehaviour
     private const int altDialogueThreshold = 3;
     private const float fallYBoundary = -50;
 
+    // scene start variables
+    private const float startSceneLoadDelay = 1.0f;
+
     private void Awake()
     {
         Instance = this;
@@ -75,6 +78,9 @@ public class MainGameManager : MonoBehaviour
         // reset player position to reset location
         playerMovement.SetPlayerPosition(playerResetLocation);
 
+        // wait short amount before turning cam back on
+        yield return new WaitForSeconds(0.5f);
+
         // turn cam back on
         cinemachineCam.enabled = true;
 
@@ -93,6 +99,9 @@ public class MainGameManager : MonoBehaviour
         // display dialogue
         DialogueManager.Instance.ShowDialogue(dialogue);
 
+        // small delay before resetting bool
+        yield return new WaitForSeconds(0.5f);
+
         playerResetInProgress = false;
     }
 
@@ -108,5 +117,11 @@ public class MainGameManager : MonoBehaviour
         }
     }
 
-    
+    private IEnumerator StartSceneCoroutine()
+    {
+        yield return new WaitForSeconds(startSceneLoadDelay);
+
+        playerMovement.LoadPlayerPosition();
+        LoadCameraPos();
+    }
 }

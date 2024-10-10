@@ -40,6 +40,16 @@ public class CinemachineControls : MonoBehaviour
         }
     }
 
+    public void DisableCam()
+    {
+        cinemachineFreeLookCam.enabled = false;
+    }
+
+    public void EnableCam()
+    {
+        cinemachineFreeLookCam.enabled = true;
+    }
+
     private void EnableCursor()
     {
         Cursor.visible = true;
