@@ -35,6 +35,9 @@ public class PlayerMovement : MonoBehaviour
     private const float airMultiplier = 0.5f;
     private bool isGrounded;
 
+    // fell off edge check variables
+    private const float fallOffEdgeY = -50.0f;
+
     // jump animation variables
     private float airTime;
     private const float airTimeThreshold = 0.2f;
@@ -76,6 +79,16 @@ public class PlayerMovement : MonoBehaviour
         {
             playerObject.rotation = playerRot;
         }
+    }
+
+    public void SetPlayerPosition(Vector3 playerPos)
+    {
+        transform.position = playerPos;
+    }
+
+    public bool HasFallenOffEdge(float yBoundary)
+    {
+        return transform.position.y < yBoundary;
     }
 
     private void FixedUpdate()

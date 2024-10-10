@@ -11,6 +11,16 @@ public class MainGameManager : MonoBehaviour
     [SerializeField] CinemachineFreeLook cinemachineCam;
     [SerializeField] PlayerMovement playerMovement;
 
+    // variables for handling player falling off edge
+    private int numberOfFalls;
+    private bool playerResetInProgress;
+    private Vector3 playerResetLocation = new(0, 300, 0);
+    private const string fallOffDialoguePath = "Robot/FallOffEdge/Regular";
+    private const string fallOffDialoguePathAlt = "Robot/FallOffEdge/Repetitive";
+    private const float resetDelayTime = 2.0f;
+    private const int altDialogueThreshold = 3;
+    private const float fallYBoundary = -50;
+
     private void Awake()
     {
         Instance = this;
@@ -22,10 +32,57 @@ public class MainGameManager : MonoBehaviour
         LoadCameraPos();
     }
 
+    private void Update()
+    {
+        CheckForFallOffEdge();
+    }
+
     public void SetPlayerAndCameraPos()
     {
         DataManager.Instance.SetPlayerPosition(playerMovement.PlayerPosition, playerMovement.PlayerRotation);
         DataManager.Instance.SetCameraValues(cinemachineCam.m_XAxis.Value, cinemachineCam.m_YAxis.Value);
+    }
+
+    private void CheckForFallOffEdge()
+    {
+        if (playerMovement.HasFallenOffEdge(fallYBoundary) && !playerResetInProgress)
+        {
+            playerResetInProgress = true;
+            numberOfFalls++;
+            StartCoroutine(FallOffEdgeCoroutine());
+        }
+    }
+
+    private IEnumerator FallOffEdgeCoroutine()
+    {
+        // turn off camera for falling effect
+        cinemachineCam.enabled = false;
+
+        // wait for reset delay time
+        yield return new WaitForSeconds(resetDelayTime);
+
+        // reset player position to reset location
+        playerMovement.SetPlayerPosition(playerResetLocation);
+
+        // turn cam back on
+        cinemachineCam.enabled = true;
+
+        // get dialogue path
+        string dialoguePath = fallOffDialoguePath;
+
+        // if player has fallen off repetitively, get alt dialogue path
+        if (numberOfFalls >= altDialogueThreshold)
+        {
+            dialoguePath = fallOffDialoguePathAlt;
+        }
+
+        // get dialogue
+        List<string> dialogue = DialogueManager.Instance.GetDialogue(dialoguePath);
+
+        // display dialogue
+        DialogueManager.Instance.ShowDialogue(dialogue);
+
+        playerResetInProgress = false;
     }
 
     private void LoadCameraPos()
@@ -39,4 +96,6 @@ public class MainGameManager : MonoBehaviour
             cinemachineCam.m_YAxis.Value = camY;
         }
     }
+
+    
 }

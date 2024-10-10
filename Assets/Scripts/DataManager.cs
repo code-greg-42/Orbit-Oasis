@@ -4,7 +4,6 @@ using System.IO;
 using System.Threading;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
-using UnityEngine.SceneManagement; // TEMPORARY FOR TESTING PURPOSES
 
 // script execution time of -100 to run before other scripts
 public class DataManager : MonoBehaviour
@@ -23,6 +22,7 @@ public class DataManager : MonoBehaviour
     // tracking variables --- do not need to be saved to file
     public float PlayerBuildMaterial { get; private set; }
     public List<int> CaughtFishIndex { get; private set; }
+    public List<Animal> ActiveAnimals { get; private set; }
 
     private void Awake()
     {
@@ -39,15 +39,6 @@ public class DataManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
-        }
-    }
-
-    // TEMPORARY FOR TESTING PURPOSES
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Y))
-        {
-            SwapScenes();
         }
     }
 
@@ -256,30 +247,12 @@ public class DataManager : MonoBehaviour
         PlayerBuildMaterial += amount;
     }
 
-    public void AddCaughtFish(int index)
-    {
-        CaughtFishIndex.Add(index);
-    }
-
-    public void ClearCaughtFish()
-    {
-        CaughtFishIndex.Clear();
-    }
-
     public void AddCurrency(float amount)
     {
         PlayerStats.PlayerCurrency += amount;
 
         // update in-game UI
         MainUIManager.Instance.UpdateCurrencyDisplay(PlayerStats.PlayerCurrency, amount);
-
-        // save to file
-        SavePlayerStats();
-    }
-
-    public void AddFood(float amount)
-    {
-        PlayerStats.PlayerFood += amount;
 
         // save to file
         SavePlayerStats();
@@ -312,28 +285,6 @@ public class DataManager : MonoBehaviour
 
         // save to file
         SavePlayerStats();
-    }
-
-    public void SubtractFood(float amount)
-    {
-        PlayerStats.PlayerFood -= amount;
-
-        // save to file
-        SavePlayerStats();
-    }
-
-    // TEMPORARY METHOD TO TEST DATA PERSISTENCE
-    private void SwapScenes()
-    {
-        Scene currentScene = SceneManager.GetActiveScene();
-        if (currentScene.buildIndex == 0)
-        {
-            SceneManager.LoadScene(1);
-        }
-        else
-        {
-            SceneManager.LoadScene(0);
-        }
     }
 
     private void CreateSaveDirectory()
@@ -463,4 +414,41 @@ public class DataManager : MonoBehaviour
         LoadInventory();
         LoadTraderData();
     }
+
+
+
+
+
+
+
+
+    // FISHING --- IMPLEMENT LATER
+
+    public void AddCaughtFish(int index)
+    {
+        CaughtFishIndex.Add(index);
+    }
+
+    public void ClearCaughtFish()
+    {
+        CaughtFishIndex.Clear();
+    }
+
+    // FOOD MANAGEMENT SYSTEM --- CURRENTLY UNUSED
+
+    //public void SubtractFood(float amount)
+    //{
+    //    PlayerStats.PlayerFood -= amount;
+
+    //    // save to file
+    //    SavePlayerStats();
+    //}
+
+    //public void AddFood(float amount)
+    //{
+    //    PlayerStats.PlayerFood += amount;
+
+    //    // save to file
+    //    SavePlayerStats();
+    //}
 }
