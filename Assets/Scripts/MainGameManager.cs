@@ -17,6 +17,7 @@ public class MainGameManager : MonoBehaviour
     private Vector3 playerResetLocation = new(0, 300, 0);
     private const string fallOffDialoguePath = "Robot/FallOffEdge/Regular";
     private const string fallOffDialoguePathAlt = "Robot/FallOffEdge/Repetitive";
+    private const string stuckDialoguePath = "Robot/PlayerStuck";
     private const float resetDelayTime = 2.0f;
     private const int altDialogueThreshold = 3;
     private const float fallYBoundary = -50;
@@ -41,6 +42,16 @@ public class MainGameManager : MonoBehaviour
     {
         DataManager.Instance.SetPlayerPosition(playerMovement.PlayerPosition, playerMovement.PlayerRotation);
         DataManager.Instance.SetCameraValues(cinemachineCam.m_XAxis.Value, cinemachineCam.m_YAxis.Value);
+    }
+
+    public void UnstuckPlayer()
+    {
+        playerMovement.SetPlayerPosition(playerResetLocation);
+
+        // get dialogue
+        List<string> dialogue = DialogueManager.Instance.GetDialogue(stuckDialoguePath);
+        // show dialogue
+        DialogueManager.Instance.ShowDialogue(dialogue);
     }
 
     private void CheckForFallOffEdge()

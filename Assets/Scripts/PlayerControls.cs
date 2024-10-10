@@ -42,6 +42,10 @@ public class PlayerControls : MonoBehaviour
     private float timeOfLastToolSwing;
     private bool isSwinging = false;
 
+    // unstuck variables
+    private const float unstuckHoldLength = 3.0f;
+    private float unstuckTimer = 0.0f;
+
     // farming proximity check variables
     private const float farmableSearchDistance = 2.6f;
     private FarmableObject.ObjectType nearbyFarmableObjectType;
@@ -197,6 +201,23 @@ public class PlayerControls : MonoBehaviour
         {
             EscapeMenusAndBuildMode();
         }
+
+        // UNSTUCK PLAYER
+        if (Input.GetKey(escapeKeybind))
+        {
+            unstuckTimer += Time.deltaTime;
+
+            if (unstuckTimer >= unstuckHoldLength)
+            {
+                unstuckTimer = 0.0f;
+                MainGameManager.Instance.UnstuckPlayer();
+            }
+        }
+
+        if (Input.GetKeyUp(escapeKeybind))
+        {
+            unstuckTimer = 0.0f;
+        }
     }
 
     private void EscapeMenusAndBuildMode()
@@ -208,14 +229,16 @@ public class PlayerControls : MonoBehaviour
                 InventoryManager.Instance.ToggleInventoryMenu();
             }
         }
-        else if (TraderMenuManager.Instance.IsMenuActive)
+
+        if (TraderMenuManager.Instance.IsMenuActive)
         {
             if (!TraderMenuManager.Instance.IsDragging)
             {
                 TraderMenuManager.Instance.ToggleTraderMenu();
             }
         }
-        else if (BuildManager.Instance.BuildModeActive)
+        
+        if (BuildManager.Instance.BuildModeActive)
         {
             BuildManager.Instance.ToggleBuildMode();
         }
