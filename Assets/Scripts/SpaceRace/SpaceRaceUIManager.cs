@@ -26,6 +26,12 @@ public class SpaceRaceUIManager : MonoBehaviour
     [SerializeField] private Color checkpointMissedColor;
     [SerializeField] private Color victoryTextColor;
 
+    [Header("Loading Screen References")]
+    [SerializeField] private Image loadingScreenPanel;
+    [SerializeField] private TMP_Text loadingText;
+
+    private const float loadingScreenFadeInDuration = 0.5f;
+
     // ui setting variables
     private float introWordDelay = 0.2f; // delay before the words start in the intro
     private float wordDisplayDelay = 0.1f; // rate of words being added to the sentence
@@ -258,5 +264,16 @@ public class SpaceRaceUIManager : MonoBehaviour
         string clockString = string.Format("{0:00}:{1:00}.{2:00}", minutes, seconds, fraction);
 
         return clockString;
+    }
+
+    public void FadeInScene()
+    {
+        StartCoroutine(FadeUI.Fade(loadingScreenPanel, 0f, loadingScreenFadeInDuration));
+        StartCoroutine(FadeUI.Fade(loadingText, 0f, loadingScreenFadeInDuration));
+    }
+
+    public void FadeOutScene(float fadeDuration)
+    {
+        StartCoroutine(FadeUI.Fade(loadingScreenPanel, 1f, fadeDuration));
     }
 }

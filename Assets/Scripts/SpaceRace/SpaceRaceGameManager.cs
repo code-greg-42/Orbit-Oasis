@@ -20,6 +20,9 @@ public class SpaceRaceGameManager : MonoBehaviour
     private readonly float[] currencyRewards = { 500, 1500, 6000 };
     private const float bestTimeRewardMultiplier = 2.0f;
 
+    // loading screen fadeout time
+    private const float loadScreenFadeOutDuration = 2.0f;
+
     // checkpoint variables
     private float distanceBetweenCheckpoints = 300.0f;
     private int finalCheckpoint = 20; // last checkpoint to win the race
@@ -92,6 +95,9 @@ public class SpaceRaceGameManager : MonoBehaviour
 
         // spawn initial checkpoints and asteroids
         SpawnInitialScene();
+
+        // fade in UI loading screen
+        SpaceRaceUIManager.Instance.FadeInScene();
     }
 
     private void Update()
@@ -474,7 +480,12 @@ public class SpaceRaceGameManager : MonoBehaviour
     private IEnumerator EndGameSequence()
     {
         // wait for alloted amount of time (for crash scene or exit scene)
-        yield return new WaitForSeconds(endGameSequenceTime);
+        yield return new WaitForSeconds(endGameSequenceTime - loadScreenFadeOutDuration);
+
+        // fade to black
+        SpaceRaceUIManager.Instance.FadeOutScene(loadScreenFadeOutDuration);
+
+        yield return new WaitForSeconds(loadScreenFadeOutDuration);
 
         // deactivate player object
         playerTransform.gameObject.SetActive(false);
