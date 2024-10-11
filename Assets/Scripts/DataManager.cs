@@ -35,6 +35,8 @@ public class DataManager : MonoBehaviour
 
             CreateSaveDirectory();
             LoadAllData();
+
+            Debug.Log("Player Currency: " + PlayerStats.PlayerCurrency);
         }
         else
         {
