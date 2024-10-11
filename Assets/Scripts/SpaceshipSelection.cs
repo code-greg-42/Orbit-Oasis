@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class SpaceshipSelection : MonoBehaviour
 {
@@ -397,15 +396,8 @@ public class SpaceshipSelection : MonoBehaviour
     private void StartSpaceRace()
     {
         Debug.Log("Space Race started with difficulty: " + currentSelection);
-
-        // set data manager's difficulty variable to carry over into new scene
-        DataManager.Instance.SetRaceDifficulty(currentSelection);
-
-        // save player and camera position
-        MainGameManager.Instance.SetPlayerAndCameraPos();
-
-        // load race scene
-        SceneManager.LoadScene("SpaceRace");
+        MainGameManager.Instance.StartSpaceRaceScene(currentSelection);
+        DeactivateSpaceshipSelection();
     }
 
     private void OnUpgradeBoostPressed()

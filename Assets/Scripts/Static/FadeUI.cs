@@ -6,22 +6,29 @@ using UnityEngine.UI;
 
 public static class FadeUI
 {
-    public static IEnumerator Fade(Image image, float targetAlpha, float duration)
+    public static IEnumerator Fade(Graphic graphic, float targetAlpha, float duration)
     {
         float elapsed = 0f;
-        Color color = image.color;
+        Color color = graphic.color;
         float startAlpha = color.a;
+
+        graphic.gameObject.SetActive(true);
 
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
             float newAlpha = Mathf.Lerp(startAlpha, targetAlpha, elapsed / duration);
             color.a = newAlpha;
-            image.color = color;
+            graphic.color = color;
             yield return null;
         }
 
         color.a = targetAlpha;
-        image.color = color;
+        graphic.color = color;
+
+        if (targetAlpha == 0f)
+        {
+            graphic.gameObject.SetActive(false);
+        }
     }
 }

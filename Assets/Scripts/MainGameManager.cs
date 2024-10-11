@@ -1,20 +1,28 @@
 using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class MainGameManager : MonoBehaviour
 {
     public static MainGameManager Instance;
 
     // centralized references
-    [SerializeField] CinemachineFreeLook cinemachineCam;
-    [SerializeField] PlayerMovement playerMovement;
+    [Header("Script References")]
+    [SerializeField] private CinemachineFreeLook cinemachineCam;
+    [SerializeField] private PlayerMovement playerMovement;
+
+    [Header("Loading Screen References")]
+    [SerializeField] private Image loadingScreenPanel;
+    [SerializeField] private TMP_Text loadingText;
 
     // variables for handling player falling off edge
     private int numberOfFalls;
     private bool playerResetInProgress;
-    private Vector3 playerResetLocation = new(0, 300, 0);
+    private Vector3 playerResetLocation = new(0, 250, 0);
     private const string fallOffDialoguePath = "Robot/FallOffEdge/Regular";
     private const string fallOffDialoguePathAlt = "Robot/FallOffEdge/Repetitive";
     private const string stuckDialoguePath = "Robot/PlayerStuck";
@@ -22,8 +30,20 @@ public class MainGameManager : MonoBehaviour
     private const int altDialogueThreshold = 3;
     private const float fallYBoundary = -50;
 
-    // scene start variables
-    private const float startSceneLoadDelay = 1.0f;
+    // load screen variables
+    private const string introLoadingString = "loading in";
+    private const string spaceRaceLoadingString = "initiating race";
+    private const string loadingTextEnding = "...";
+    private const float initialLoadingDelay = 0.15f;
+    private const float charDelayOne = 0.08f;
+    private const float charDelayTwo = 0.42f;
+    private const float loadingTextEndDelay = 1.0f;
+    private const float loadingTextFadeDuration = 0.8f;
+    private const float loadingScreenFadeDuration = 2.0f;
+    private const float spaceRaceFadeDuration = 2.46f;
+    private const float spaceRaceTextFadeDuration = 0.2f;
+
+    private Coroutine startSpaceRaceCoroutine;
 
     private void Awake()
     {
@@ -32,19 +52,12 @@ public class MainGameManager : MonoBehaviour
 
     private void Start()
     {
-        playerMovement.LoadPlayerPosition();
-        LoadCameraPos();
+        StartCoroutine(StartSceneCoroutine());
     }
 
     private void Update()
     {
         CheckForFallOffEdge();
-    }
-
-    public void SetPlayerAndCameraPos()
-    {
-        DataManager.Instance.SetPlayerPosition(playerMovement.PlayerPosition, playerMovement.PlayerRotation);
-        DataManager.Instance.SetCameraValues(cinemachineCam.m_XAxis.Value, cinemachineCam.m_YAxis.Value);
     }
 
     public void UnstuckPlayer()
@@ -55,6 +68,14 @@ public class MainGameManager : MonoBehaviour
         List<string> dialogue = DialogueManager.Instance.GetDialogue(stuckDialoguePath);
         // show dialogue
         DialogueManager.Instance.ShowDialogue(dialogue);
+    }
+
+    public void StartSpaceRaceScene(int difficulty)
+    {
+        // set data manager's difficulty variable to carry over into new scene
+        DataManager.Instance.SetRaceDifficulty(difficulty);
+
+        startSpaceRaceCoroutine ??= StartCoroutine(StartSpaceRaceSceneCoroutine());
     }
 
     private void CheckForFallOffEdge()
@@ -119,9 +140,71 @@ public class MainGameManager : MonoBehaviour
 
     private IEnumerator StartSceneCoroutine()
     {
-        yield return new WaitForSeconds(startSceneLoadDelay);
+        // slight initial delay
+        yield return new WaitForSeconds(initialLoadingDelay);
 
+        // load in player and camera positioning from data manager
         playerMovement.LoadPlayerPosition();
         LoadCameraPos();
+
+        // show and wait for loading text
+        yield return StartCoroutine(ShowLoadingText(introLoadingString));
+
+        // fade out text
+        StartCoroutine(FadeUI.Fade(loadingText, 0f, loadingTextFadeDuration));
+
+        // fade in scene by fading out loading panel
+        StartCoroutine(FadeUI.Fade(loadingScreenPanel, 0f, loadingScreenFadeDuration));
+    }
+
+    private IEnumerator StartSpaceRaceSceneCoroutine()
+    {
+        // fade to black
+        StartCoroutine(FadeUI.Fade(loadingScreenPanel, 1f, spaceRaceFadeDuration));
+
+        // fade in loading text
+        StartCoroutine(FadeUI.Fade(loadingText, 1f, spaceRaceTextFadeDuration));
+
+        // show space race loading text
+        yield return ShowLoadingText(spaceRaceLoadingString);
+
+        // save player and camera positioning
+        SetPlayerAndCameraPos();
+
+        yield return new WaitForSeconds(0.2f);
+
+        // load space race scene
+        SceneManager.LoadScene("SpaceRace");
+    }
+
+    private void SetPlayerAndCameraPos()
+    {
+        DataManager.Instance.SetPlayerPosition(playerMovement.PlayerPosition, playerMovement.PlayerRotation);
+        DataManager.Instance.SetCameraValues(cinemachineCam.m_XAxis.Value, cinemachineCam.m_YAxis.Value);
+    }
+
+    private IEnumerator ShowLoadingText(string text)
+    {
+        // clear existing text
+        loadingText.text = "";
+
+        // split string into chars
+        char[] chars = text.ToCharArray();
+
+        foreach (char c in chars)
+        {
+            loadingText.text += c;
+            yield return new WaitForSeconds(charDelayOne);
+        }
+
+        char[] periods = loadingTextEnding.ToCharArray();
+
+        foreach (char p in periods)
+        {
+            loadingText.text += p;
+            yield return new WaitForSeconds(charDelayTwo);
+        }
+
+        yield return new WaitForSeconds(loadingTextEndDelay);
     }
 }
