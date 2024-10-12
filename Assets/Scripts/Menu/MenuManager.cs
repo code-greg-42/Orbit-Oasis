@@ -22,10 +22,9 @@ public class MenuManager : MonoBehaviour
 
     // button fade settings
     private const float otherButtonFadeDuration = 0.3f;
-    private const float clickedButtonFadeDelay = 0.5f;
-    private const float clickedButtonFadeDuration = 1.0f;
+    private const float clickedButtonFadeDuration = 1.5f;
 
-    private Coroutine buttonWasClickedCoroutine;
+    private Coroutine buttonClickCoroutine;
 
     private void Awake()
     {
@@ -37,21 +36,17 @@ public class MenuManager : MonoBehaviour
         StartCoroutine(StartSceneCoroutine());
     }
 
-    public void TestClick()
-    {
-        buttonWasClickedCoroutine ??= StartCoroutine(TestClickCoroutine());
-    }
-
     public void OnButtonClick(MenuButton clickedButton)
     {
-        
+        Debug.Log("Button Clicked: " + clickedButton.gameObject.name);
+        buttonClickCoroutine ??= StartCoroutine(ButtonClickCoroutine(clickedButton));
     }
 
     private IEnumerator ButtonClickCoroutine(MenuButton clickedButton)
     {
         foreach (MenuButton menuButton in menuButtons)
         {
-            menuButton.DisableInteractivity();
+            menuButton.DisableButton();
 
             if (menuButton != clickedButton)
             {
@@ -59,28 +54,11 @@ public class MenuManager : MonoBehaviour
             }
         }
 
-        yield return new WaitForSeconds(clickedButtonFadeDelay);
-
         // fade clicked button
         clickedButton.FadeOut(clickedButtonFadeDuration);
 
-        yield return new WaitForSeconds(clickedButtonFadeDuration);
-
         // fade to black
-
         yield return FadeUI.Fade(loadingScreenPanel, 1.0f, 1.5f);
-    }
-
-    private IEnumerator TestClickCoroutine()
-    {
-        yield return new WaitForSeconds(0.3f);
-
-        foreach (MenuButton menuButton in menuButtons)
-        {
-            menuButton.DisableInteractivity();
-            menuButton.FadeOut(1.0f);
-        }
-        StartCoroutine(FadeUI.Fade(loadingScreenPanel, 1.0f, 2.0f));
     }
 
     private IEnumerator StartSceneCoroutine()
@@ -92,6 +70,25 @@ public class MenuManager : MonoBehaviour
         yield return FadeUI.Fade(introText, 0f, 1.0f);
 
         StartCoroutine(FadeUI.Fade(loadingScreenPanel, 0f, 1.5f));
+
+        // brief wait before enabling buttons
+        yield return new WaitForSeconds(0.1f);
+
+        EnableButtons();
+    }
+
+    private void EnableButtons()
+    {
+        foreach (MenuButton menuButton in menuButtons)
+        {
+            // TEMPORARY --- ONLY TO TEST --- ACTUAL WILL BE BASED ON ACTIVE QUEST INDEX / LACK OF A SAVED GAME
+            if (menuButton.gameObject.name == "ContinueButton" && DataManager.Instance.PlayerStats.PlayerCurrency > 0)
+            {
+                menuButton.DisableInteractivity();
+            }
+
+            menuButton.EnableButton();
+        }
     }
 
     private IEnumerator ShowIntroText()

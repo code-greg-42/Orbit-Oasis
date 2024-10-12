@@ -52,14 +52,19 @@ public class MenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         }
     }
 
-    public void DisableVisuals()
+    public void DisableInteractivity()
     {
         button.interactable = false;
     }
 
-    public void DisableInteractivity()
+    public void DisableButton()
     {
         button.enabled = false;
+    }
+
+    public void EnableButton()
+    {
+        button.enabled = true;
     }
 
     public void FadeOut(float duration)
