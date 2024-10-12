@@ -46,6 +46,9 @@ public class MenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         {
             isPressed = true;
             buttonText.color = textColorPressed;
+
+            // send click to MenuManager for processing
+            MenuManager.Instance.OnButtonClick(this);
         }
     }
 
