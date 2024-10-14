@@ -79,7 +79,7 @@ public class PlayerControls : MonoBehaviour
     void Update()
     {
         if (!BuildManager.Instance.BuildModeActive && !DialogueManager.Instance.DialogueWindowActive
-            && !ItemPlacementManager.Instance.ItemPlacementActive)
+            && !ItemPlacementManager.Instance.ItemPlacementActive && !MainGameManager.Instance.IsSwappingScenes)
         {
             // FARMING
             if (toolSwingReady && playerMovement.IsGrounded && !isPickingUpItem)
@@ -155,7 +155,7 @@ public class PlayerControls : MonoBehaviour
         }
 
         // TOGGLE MENUS AND MODES
-        if (!DialogueManager.Instance.DialogueWindowActive && !ItemPlacementManager.Instance.ItemPlacementActive)
+        if (!DialogueManager.Instance.DialogueWindowActive && !ItemPlacementManager.Instance.ItemPlacementActive && !MainGameManager.Instance.IsSwappingScenes)
         {
             // INVENTORY
             if (Input.GetKeyDown(inventoryKeybind) && !InventoryManager.Instance.IsDragging && !TraderMenuManager.Instance.IsDragging)
@@ -197,13 +197,13 @@ public class PlayerControls : MonoBehaviour
         }
 
         // ALTERNATE ESCAPE OF MENUS AND MODES
-        if (Input.GetKeyDown(escapeKeybind))
+        if (Input.GetKeyDown(escapeKeybind) && !MainGameManager.Instance.IsSwappingScenes)
         {
             EscapeMenusAndBuildMode();
         }
 
         // UNSTUCK PLAYER
-        if (Input.GetKey(escapeKeybind))
+        if (Input.GetKey(escapeKeybind) && !MainGameManager.Instance.IsSwappingScenes)
         {
             unstuckTimer += Time.deltaTime;
 
@@ -220,7 +220,7 @@ public class PlayerControls : MonoBehaviour
         }
     }
 
-    private void EscapeMenusAndBuildMode()
+    public void EscapeMenusAndBuildMode()
     {
         if (InventoryManager.Instance.IsMenuActive)
         {

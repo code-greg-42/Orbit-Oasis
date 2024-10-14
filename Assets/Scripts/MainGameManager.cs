@@ -14,6 +14,7 @@ public class MainGameManager : MonoBehaviour
     [Header("Script References")]
     [SerializeField] private CinemachineFreeLook cinemachineCam;
     [SerializeField] private PlayerMovement playerMovement;
+    [SerializeField] private PlayerControls playerControls;
 
     [Header("Loading Screen References")]
     [SerializeField] private Image loadingScreenPanel;
@@ -33,6 +34,7 @@ public class MainGameManager : MonoBehaviour
     // load screen variables
     private const string introLoadingString = "loading in";
     private const string spaceRaceLoadingString = "initiating race";
+    private const string menuLoadingString = "exiting oasis";
     private const string loadingTextEnding = "...";
     private const float initialLoadingDelay = 0.15f;
     private const float charDelayOne = 0.08f;
@@ -43,7 +45,9 @@ public class MainGameManager : MonoBehaviour
     private const float spaceRaceFadeDuration = 2.46f;
     private const float spaceRaceTextFadeDuration = 0.2f;
 
-    private Coroutine startSpaceRaceCoroutine;
+    private Coroutine startNewSceneCoroutine;
+
+    public bool IsSwappingScenes { get; private set; }
 
     private void Awake()
     {
@@ -75,7 +79,15 @@ public class MainGameManager : MonoBehaviour
         // set data manager's difficulty variable to carry over into new scene
         DataManager.Instance.SetRaceDifficulty(difficulty);
 
-        startSpaceRaceCoroutine ??= StartCoroutine(StartSpaceRaceSceneCoroutine());
+        startNewSceneCoroutine ??= StartCoroutine(StartNewSceneCoroutine(true));
+    }
+
+    public void ReturnToMenu()
+    {
+        // close all open menus
+        playerControls.EscapeMenusAndBuildMode();
+
+        startNewSceneCoroutine ??= StartCoroutine(StartNewSceneCoroutine(false));
     }
 
     private void CheckForFallOffEdge()
@@ -157,24 +169,58 @@ public class MainGameManager : MonoBehaviour
         StartCoroutine(FadeUI.Fade(loadingScreenPanel, 0f, loadingScreenFadeDuration));
     }
 
-    private IEnumerator StartSpaceRaceSceneCoroutine()
+    //private IEnumerator StartSpaceRaceSceneCoroutine()
+    //{
+    //    // fade to black
+    //    StartCoroutine(FadeUI.Fade(loadingScreenPanel, 1f, spaceRaceFadeDuration));
+
+    //    // fade in loading text
+    //    StartCoroutine(FadeUI.Fade(loadingText, 1f, spaceRaceTextFadeDuration));
+
+    //    // show space race loading text
+    //    yield return ShowLoadingText(spaceRaceLoadingString);
+
+    //    // save player and camera positioning
+    //    SetPlayerAndCameraPos();
+
+    //    yield return new WaitForSeconds(0.2f);
+
+    //    // load space race scene
+    //    SceneManager.LoadScene("SpaceRace");
+    //}
+
+    private IEnumerator StartNewSceneCoroutine(bool isSpaceRace)
     {
+        IsSwappingScenes = true;
+
+        string loadScreenString = isSpaceRace ? spaceRaceLoadingString : menuLoadingString;
+
         // fade to black
         StartCoroutine(FadeUI.Fade(loadingScreenPanel, 1f, spaceRaceFadeDuration));
 
         // fade in loading text
         StartCoroutine(FadeUI.Fade(loadingText, 1f, spaceRaceTextFadeDuration));
 
-        // show space race loading text
-        yield return ShowLoadingText(spaceRaceLoadingString);
+        // --- save any animals in scene to file here ---
+
+        // show loading text
+        yield return ShowLoadingText(loadScreenString);
 
         // save player and camera positioning
         SetPlayerAndCameraPos();
 
         yield return new WaitForSeconds(0.2f);
 
-        // load space race scene
-        SceneManager.LoadScene("SpaceRace");
+        if (isSpaceRace)
+        {
+            // load space race scene
+            SceneManager.LoadScene("SpaceRace");
+        }
+        else
+        {
+            // load menu
+            SceneManager.LoadScene("Menu");
+        }
     }
 
     private void SetPlayerAndCameraPos()
