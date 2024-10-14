@@ -24,6 +24,7 @@ public class DataManager : MonoBehaviour
     public List<int> CaughtFishIndex { get; private set; }
     public List<Animal> ActiveAnimals { get; private set; }
     public bool NewGameStarted { get; private set; }
+    public bool IntroLoadingTextShown { get; private set; }
 
     private void Awake()
     {
@@ -56,6 +57,11 @@ public class DataManager : MonoBehaviour
     public void ResetNewGameStarted()
     {
         NewGameStarted = false;
+    }
+
+    public void SetIntroLoadingTextShown()
+    {
+        IntroLoadingTextShown = true;
     }
 
     public void SetRaceWon(float currencyAmount)

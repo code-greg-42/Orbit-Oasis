@@ -6,12 +6,15 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/Menu.unity
+    guid: f5afe23eec3c9994f904b4787ac0e8ed
+  - enabled: 1
     path: Assets/Scenes/Main.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 1
-    path: Assets/Scenes/Fishing.unity
-    guid: 6f6e1de3149421549ba96335aadc7fb7
-  - enabled: 1
     path: Assets/Scenes/SpaceRace.unity
     guid: 5e242866bf004594bb743aeff43ee34a
+  - enabled: 1
+    path: Assets/Scenes/Story.unity
+    guid: 890fece474701e84ca36d61905d22fcb
   m_configObjects: {}

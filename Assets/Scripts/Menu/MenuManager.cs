@@ -115,9 +115,13 @@ public class MenuManager : MonoBehaviour
     {
         yield return new WaitForSeconds(introDelay);
 
-        yield return ShowIntroText();
-
-        yield return FadeUI.Fade(introText, 0f, 1.0f);
+        // show opening credits if beginning of a new session
+        if (!DataManager.Instance.IntroLoadingTextShown)
+        {
+            DataManager.Instance.SetIntroLoadingTextShown();
+            yield return ShowIntroText();
+            yield return FadeUI.Fade(introText, 0f, 1.0f);
+        }
 
         fadeLoadingScreenCoroutine ??= StartCoroutine(FadeUI.Fade(loadingScreenPanel, 0f, 1.5f));
 
