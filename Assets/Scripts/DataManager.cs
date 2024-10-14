@@ -23,6 +23,7 @@ public class DataManager : MonoBehaviour
     public float PlayerBuildMaterial { get; private set; }
     public List<int> CaughtFishIndex { get; private set; }
     public List<Animal> ActiveAnimals { get; private set; }
+    public bool NewGameStarted { get; private set; }
 
     private void Awake()
     {
@@ -42,6 +43,14 @@ public class DataManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    public void StartNewGame()
+    {
+        // set bool for story scene's manager
+        NewGameStarted = true;
+
+        // ADD THIS LATER --- WIPE ALL EXISTING FILE DATA
     }
 
     public void SetRaceWon(float currencyAmount)

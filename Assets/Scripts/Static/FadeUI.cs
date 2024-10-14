@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public static class FadeUI
 {
-    public static IEnumerator Fade(Graphic graphic, float targetAlpha, float duration)
+    public static IEnumerator Fade(Graphic graphic, float targetAlpha, float duration, bool deactivateAtZero = true)
     {
         float elapsed = 0f;
         Color color = graphic.color;
@@ -26,7 +26,7 @@ public static class FadeUI
         color.a = targetAlpha;
         graphic.color = color;
 
-        if (targetAlpha == 0f)
+        if (targetAlpha == 0f && deactivateAtZero)
         {
             graphic.gameObject.SetActive(false);
         }
