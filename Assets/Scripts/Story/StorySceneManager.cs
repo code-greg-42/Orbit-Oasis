@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class StorySceneManager : MonoBehaviour
 {
@@ -51,6 +52,18 @@ public class StorySceneManager : MonoBehaviour
         yield return PlayStoryScenes();
 
         yield return StoryUIManager.Instance.FadeOutScene();
+
+        // go to main game if a new game click initiated the story scene, otherwise go back to main menu
+        if (DataManager.Instance.NewGameStarted)
+        {
+            // reset bool in data manager first
+            DataManager.Instance.ResetNewGameStarted();
+            SceneManager.LoadScene("Main");
+        }
+        else
+        {
+            SceneManager.LoadScene("Menu");
+        }
     }
 
     private IEnumerator StartProgressBar()

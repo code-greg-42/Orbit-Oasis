@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class MenuManager : MonoBehaviour
 {
@@ -73,8 +74,13 @@ public class MenuManager : MonoBehaviour
             }
         }
 
-        // fade to black
+        // update Data Manager if new game was started, with enough time for data to reset before scene swap
+        if (clickedButton.gameObject.name == "NewGameButton")
+        {
+            DataManager.Instance.StartNewGame();
+        }
 
+        // fade to black
         // if loading screen is still fading in, stop the coroutine and fade it out from the current alpha
         if (fadeLoadingScreenCoroutine != null)
         {
@@ -82,6 +88,27 @@ public class MenuManager : MonoBehaviour
             fadeLoadingScreenCoroutine = null;
         }
         yield return fadeLoadingScreenCoroutine = StartCoroutine(FadeUI.Fade(loadingScreenPanel, 1.0f, 2.0f));
+
+        // process scene swap based on which button is clicked
+        SwapScene(clickedButton);
+    }
+
+    private void SwapScene(MenuButton menuButton)
+    {
+        if (menuButton.gameObject.name == "NewGameButton" || menuButton.gameObject.name == "StoryButton")
+        {
+            // load story scene
+            SceneManager.LoadScene("Story");
+        }
+        else if (menuButton.gameObject.name == "ContinueButton")
+        {
+            // load main game
+            SceneManager.LoadScene("Main");
+        }
+        else if (menuButton.gameObject.name == "ExitButton")
+        {
+            Application.Quit();
+        }
     }
 
     private IEnumerator StartSceneCoroutine()

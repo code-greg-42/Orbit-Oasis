@@ -53,6 +53,11 @@ public class DataManager : MonoBehaviour
         // ADD THIS LATER --- WIPE ALL EXISTING FILE DATA
     }
 
+    public void ResetNewGameStarted()
+    {
+        NewGameStarted = false;
+    }
+
     public void SetRaceWon(float currencyAmount)
     {
         RaceStats.RaceWon = true;
