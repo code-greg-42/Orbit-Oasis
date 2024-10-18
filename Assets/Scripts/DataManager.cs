@@ -337,9 +337,14 @@ public class DataManager : MonoBehaviour
     private void SaveToFile(object data, string variableName)
     {
         string filePath = GetSaveFilePath(variableName);
-        string json = JsonUtility.ToJson(data);
+        string tempFilePath = filePath + ".tmp";
 
-        File.WriteAllText(filePath, json);
+        // convert to json and write to temp file
+        string json = JsonUtility.ToJson(data);
+        File.WriteAllText(tempFilePath, json);
+
+        // once write is successful, replace the original file
+        File.Replace(tempFilePath, filePath, null);
     }
 
     private T LoadFromFile<T>(string variableName)
