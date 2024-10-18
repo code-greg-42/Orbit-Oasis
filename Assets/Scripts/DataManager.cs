@@ -18,13 +18,15 @@ public class DataManager : MonoBehaviour
     public SerializableList<BuildableObjectData> BuildList { get; private set; }
     public SerializableList<ItemData> InventoryItems { get; private set; }
     public SerializableList<PlaceableItemData> PlacedItems { get; private set; }
+    public SerializableList<AnimalData> SavedAnimals { get; private set; }
 
     // tracking variables --- do not need to be saved to file
     public float PlayerBuildMaterial { get; private set; }
     public List<int> CaughtFishIndex { get; private set; }
-    public List<Animal> ActiveAnimals { get; private set; }
     public bool NewGameStarted { get; private set; }
     public bool IntroLoadingTextShown { get; private set; }
+
+    private List<Animal> activeAnimals = new();
 
     private void Awake()
     {
@@ -416,6 +418,30 @@ public class DataManager : MonoBehaviour
         }
     }
 
+    private void SaveAnimals()
+    {
+        // step 1: create new animal data list
+        List<AnimalData> newSavedAnimals = new();
+
+        // step 2: loop through active animals list, and create a new <AnimalData> for each entry
+        foreach (Animal animal in activeAnimals)
+        {
+            AnimalData animalData = new(animal.transform.position, animal.transform.rotation, animal.PrefabIndex);
+            newSavedAnimals.Add(animalData);
+        }
+
+        // step 3: update SavedAnimals and save to file
+        SavedAnimals.ItemList = newSavedAnimals;
+        SaveToFile(SavedAnimals, nameof(SavedAnimals));
+    }
+
+    private void LoadAnimals()
+    {
+        // load list from file, otherwise init new list
+        SavedAnimals = LoadFromFile<SerializableList<AnimalData>>(nameof(SavedAnimals))
+            ?? new SerializableList<AnimalData>(new List<AnimalData>());
+    }
+
     private void SaveAllData()
     {
         SavePlayerStats();
@@ -424,6 +450,7 @@ public class DataManager : MonoBehaviour
         SavePlacedItems();
         SaveInventory();
         SaveTraderData();
+        SaveAnimals();
     }
 
     private void LoadAllData()
@@ -435,6 +462,7 @@ public class DataManager : MonoBehaviour
         LoadPlacedItems();
         LoadInventory();
         LoadTraderData();
+        LoadAnimals();
     }
 
 
@@ -444,7 +472,7 @@ public class DataManager : MonoBehaviour
 
 
 
-    // FISHING --- IMPLEMENT LATER
+    // FISHING --- CURRENTLY UNUSED --- POSSIBLY IMPLEMENT LATER
 
     public void AddCaughtFish(int index)
     {
@@ -456,7 +484,7 @@ public class DataManager : MonoBehaviour
         CaughtFishIndex.Clear();
     }
 
-    // FOOD MANAGEMENT SYSTEM --- CURRENTLY UNUSED
+    // FOOD MANAGEMENT SYSTEM --- CURRENTLY UNUSED --- GAME DESIGN DECISION
 
     //public void SubtractFood(float amount)
     //{
