@@ -39,18 +39,7 @@ public class Projectile : MonoBehaviour
     {
         if (collision.gameObject.TryGetComponent(out Item item))
         {
-            // add item to player inventory
-            item.PickupItem();
-
-            // update navmesh with the lack of the object if item was a placeable item such as a tree
-            if (item is PlaceableItem placeableItem)
-            {
-                // update data manager with lack of placed item
-                DataManager.Instance.RemovePlacedItem(placeableItem);
-
-                // update navmesh with lack of placed item
-                NavMeshManager.Instance.UpdateNavMesh();
-            }
+            SendToInventory(item);
 
             if (item is DeadTree && QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.RemoveDeadTrees)
             {
@@ -85,7 +74,7 @@ public class Projectile : MonoBehaviour
         {
             if (collider.TryGetComponent(out Item item))
             {
-                item.PickupItem();
+                SendToInventory(item);
                 
                 // increment counter if picked up item was a dead tree (added check for remove dead trees quest)
                 if (item is DeadTree && QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.RemoveDeadTrees)
@@ -125,5 +114,21 @@ public class Projectile : MonoBehaviour
 
         // Deactivate the projectile game object and return to pool
         gameObject.SetActive(false);
+    }
+
+    private void SendToInventory(Item item)
+    {
+        // add item to player inventory
+        item.PickupItem();
+
+        // update navmesh with the lack of the object if item was a placeable item such as a tree
+        if (item is PlaceableItem placeableItem)
+        {
+            // update data manager with lack of placed item
+            DataManager.Instance.RemovePlacedItem(placeableItem);
+
+            // update navmesh with lack of placed item
+            NavMeshManager.Instance.UpdateNavMesh();
+        }
     }
 }

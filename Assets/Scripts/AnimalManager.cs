@@ -17,12 +17,16 @@ public class AnimalManager : MonoBehaviour
     public void AddActiveAnimal(Animal animal)
     {
         ActiveAnimals.Add(animal);
+        Debug.Log("Animal added to active animals list.");
+        Debug.Log("Active Animal Count: " + ActiveAnimals.Count);
         UpdateDataManager();
     }
 
     public void RemoveActiveAnimal(Animal animal)
     {
         ActiveAnimals.Remove(animal);
+        Debug.Log("Animal removed from active animals list.");
+        Debug.Log("Active Animal Count: " + ActiveAnimals.Count);
         UpdateDataManager();
     }
 
