@@ -24,10 +24,17 @@ public class AnimalManager : MonoBehaviour
 
     public void RemoveActiveAnimal(Animal animal)
     {
-        ActiveAnimals.Remove(animal);
-        Debug.Log("Animal removed from active animals list.");
-        Debug.Log("Active Animal Count: " + ActiveAnimals.Count);
-        UpdateDataManager();
+        if (ActiveAnimals.Contains(animal))
+        {
+            ActiveAnimals.Remove(animal);
+            Debug.Log("Animal removed from active animals list.");
+            Debug.Log("Active Animal Count: " + ActiveAnimals.Count);
+            UpdateDataManager();
+        }
+        else
+        {
+            Debug.LogWarning("Attempted to remove an animal that was not in the active animals list.");
+        }
     }
 
     private void UpdateDataManager()

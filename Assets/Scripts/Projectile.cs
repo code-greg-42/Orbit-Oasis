@@ -121,8 +121,13 @@ public class Projectile : MonoBehaviour
         // add item to player inventory
         item.PickupItem();
 
+        // update active animals list if the item is an animal, to reflect the removal from the scene
+        if (item is Animal animal)
+        {
+            AnimalManager.Instance.RemoveActiveAnimal(animal);
+        }
         // update navmesh with the lack of the object if item was a placeable item such as a tree
-        if (item is PlaceableItem placeableItem)
+        else if (item is PlaceableItem placeableItem)
         {
             // update data manager with lack of placed item
             DataManager.Instance.RemovePlacedItem(placeableItem);

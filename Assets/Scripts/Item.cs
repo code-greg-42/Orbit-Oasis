@@ -96,6 +96,12 @@ public class Item : MonoBehaviour
 
         // activate object in hierarchy
         gameObject.SetActive(true);
+
+        // if item is animal, add to the active animals list as it will now be active in the scene
+        if (this is Animal animal)
+        {
+            AnimalManager.Instance.AddActiveAnimal(animal);
+        }
     }
 
     public void DeleteItem()
