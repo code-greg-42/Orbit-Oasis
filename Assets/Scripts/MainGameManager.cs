@@ -82,6 +82,7 @@ public class MainGameManager : MonoBehaviour
         startNewSceneCoroutine ??= StartCoroutine(StartNewSceneCoroutine(true));
     }
 
+    // added to OnClick of button in the inspector
     public void ReturnToMenu()
     {
         // close all open menus
@@ -169,26 +170,6 @@ public class MainGameManager : MonoBehaviour
         StartCoroutine(FadeUI.Fade(loadingScreenPanel, 0f, loadingScreenFadeDuration));
     }
 
-    //private IEnumerator StartSpaceRaceSceneCoroutine()
-    //{
-    //    // fade to black
-    //    StartCoroutine(FadeUI.Fade(loadingScreenPanel, 1f, spaceRaceFadeDuration));
-
-    //    // fade in loading text
-    //    StartCoroutine(FadeUI.Fade(loadingText, 1f, spaceRaceTextFadeDuration));
-
-    //    // show space race loading text
-    //    yield return ShowLoadingText(spaceRaceLoadingString);
-
-    //    // save player and camera positioning
-    //    SetPlayerAndCameraPos();
-
-    //    yield return new WaitForSeconds(0.2f);
-
-    //    // load space race scene
-    //    SceneManager.LoadScene("SpaceRace");
-    //}
-
     private IEnumerator StartNewSceneCoroutine(bool isSpaceRace)
     {
         IsSwappingScenes = true;
@@ -201,14 +182,11 @@ public class MainGameManager : MonoBehaviour
         // fade in loading text
         StartCoroutine(FadeUI.Fade(loadingText, 1f, spaceRaceTextFadeDuration));
 
-        // --- save any animals in scene to file here ---
+        // update DataManager with player and animal positioning
+        SaveDynamicData();
 
         // show loading text
         yield return ShowLoadingText(loadScreenString);
-
-        // save player and camera positioning
-        SetPlayerAndCameraPos();
-
         yield return new WaitForSeconds(0.2f);
 
         if (isSpaceRace)
@@ -223,12 +201,10 @@ public class MainGameManager : MonoBehaviour
         }
     }
 
-    private void SetPlayerAndCameraPos()
+    private void SaveDynamicData()
     {
-        DataManager.Instance.SetPlayerAndCamera(playerMovement.PlayerPosition, playerMovement.PlayerRotation, cinemachineCam);
-
-        //DataManager.Instance.SetPlayerPosition(playerMovement.PlayerPosition, playerMovement.PlayerRotation);
-        //DataManager.Instance.SetCameraValues(cinemachineCam.m_XAxis.Value, cinemachineCam.m_YAxis.Value);
+        DataManager.Instance.SaveDynamicData(playerMovement.PlayerPosition, playerMovement.PlayerRotation,
+            cinemachineCam, AnimalManager.Instance.ActiveAnimals);
     }
 
     private IEnumerator ShowLoadingText(string text)
