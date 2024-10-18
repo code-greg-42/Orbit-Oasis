@@ -1,3 +1,4 @@
+using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -18,15 +19,13 @@ public class DataManager : MonoBehaviour
     public SerializableList<BuildableObjectData> BuildList { get; private set; }
     public SerializableList<ItemData> InventoryItems { get; private set; }
     public SerializableList<PlaceableItemData> PlacedItems { get; private set; }
-    public SerializableList<AnimalData> SavedAnimals { get; private set; }
+    public SerializableList<AnimalData> SavedActiveAnimals { get; private set; }
 
     // tracking variables --- do not need to be saved to file
     public float PlayerBuildMaterial { get; private set; }
     public List<int> CaughtFishIndex { get; private set; }
     public bool NewGameStarted { get; private set; }
     public bool IntroLoadingTextShown { get; private set; }
-
-    private List<Animal> activeAnimals = new();
 
     private void Awake()
     {
@@ -120,16 +119,25 @@ public class DataManager : MonoBehaviour
         }
     }
 
-    public void SetPlayerPosition(Vector3 playerPos, Quaternion playerRot)
+    //public void SetPlayerPosition(Vector3 playerPos, Quaternion playerRot)
+    //{
+    //    PlayerStats.PlayerPosition = playerPos;
+    //    PlayerStats.PlayerRotation = playerRot;
+    //}
+
+    //public void SetCameraValues(float mouseX, float mouseY)
+    //{
+    //    PlayerStats.CameraX = mouseX;
+    //    PlayerStats.CameraY = mouseY;
+    //}
+
+    public void SetPlayerAndCamera(Vector3 playerPos, Quaternion playerRot, CinemachineFreeLook cinemachineCam)
     {
         PlayerStats.PlayerPosition = playerPos;
         PlayerStats.PlayerRotation = playerRot;
-    }
 
-    public void SetCameraValues(float mouseX, float mouseY)
-    {
-        PlayerStats.CameraX = mouseX;
-        PlayerStats.CameraY = mouseY;
+        PlayerStats.CameraX = cinemachineCam.m_XAxis.Value;
+        PlayerStats.CameraY = cinemachineCam.m_YAxis.Value;
     }
 
     public void AddBuild(BuildableObject build)
@@ -345,8 +353,13 @@ public class DataManager : MonoBehaviour
         return default;
     }
 
-    private void SavePlayerStats()
+    private void SavePlayerStats(Vector3? playerPos = null, Quaternion? playerRot = null, CinemachineFreeLook cam = null)
     {
+        if (playerPos.HasValue && playerRot.HasValue && cam != null)
+        {
+            SetPlayerAndCamera(playerPos.Value, playerRot.Value, cam);
+        }
+
         SaveToFile(PlayerStats, nameof(PlayerStats));
     }
 
@@ -418,39 +431,38 @@ public class DataManager : MonoBehaviour
         }
     }
 
-    private void SaveAnimals()
+    public void SaveActiveAnimals(List<Animal> activeAnimals = null)
     {
-        // step 1: create new animal data list
-        List<AnimalData> newSavedAnimals = new();
-
-        // step 2: loop through active animals list, and create a new <AnimalData> for each entry
-        foreach (Animal animal in activeAnimals)
+        if (activeAnimals != null)
         {
-            AnimalData animalData = new(animal.transform.position, animal.transform.rotation, animal.PrefabIndex);
-            newSavedAnimals.Add(animalData);
-        }
+            // step 1: create new animal data list
+            List<AnimalData> newSavedActiveAnimals = new();
 
-        // step 3: update SavedAnimals and save to file
-        SavedAnimals.ItemList = newSavedAnimals;
-        SaveToFile(SavedAnimals, nameof(SavedAnimals));
+            // step 2: loop through active animals list, and create a new <AnimalData> for each entry
+            foreach (Animal animal in activeAnimals)
+            {
+                AnimalData animalData = new(animal.transform.position, animal.transform.rotation, animal.PrefabIndex);
+                newSavedActiveAnimals.Add(animalData);
+            }
+
+            // step 3: update SavedAnimals and save to file
+            SavedActiveAnimals.ItemList = newSavedActiveAnimals;
+        }
+        
+        SaveToFile(SavedActiveAnimals, nameof(SavedActiveAnimals));
     }
 
-    private void LoadAnimals()
+    private void LoadActiveAnimals()
     {
         // load list from file, otherwise init new list
-        SavedAnimals = LoadFromFile<SerializableList<AnimalData>>(nameof(SavedAnimals))
+        SavedActiveAnimals = LoadFromFile<SerializableList<AnimalData>>(nameof(SavedActiveAnimals))
             ?? new SerializableList<AnimalData>(new List<AnimalData>());
     }
 
-    private void SaveAllData()
+    public void SaveDynamicData(Vector3 playerPos, Quaternion playerRot, CinemachineFreeLook cam, List<Animal> activeAnimals)
     {
-        SavePlayerStats();
-        SaveRaceStats();
-        SaveBuildList();
-        SavePlacedItems();
-        SaveInventory();
-        SaveTraderData();
-        SaveAnimals();
+        SavePlayerStats(playerPos, playerRot, cam);
+        SaveActiveAnimals(activeAnimals);
     }
 
     private void LoadAllData()
@@ -462,7 +474,7 @@ public class DataManager : MonoBehaviour
         LoadPlacedItems();
         LoadInventory();
         LoadTraderData();
-        LoadAnimals();
+        LoadActiveAnimals();
     }
 
 

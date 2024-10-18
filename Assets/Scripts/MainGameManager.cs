@@ -225,8 +225,10 @@ public class MainGameManager : MonoBehaviour
 
     private void SetPlayerAndCameraPos()
     {
-        DataManager.Instance.SetPlayerPosition(playerMovement.PlayerPosition, playerMovement.PlayerRotation);
-        DataManager.Instance.SetCameraValues(cinemachineCam.m_XAxis.Value, cinemachineCam.m_YAxis.Value);
+        DataManager.Instance.SetPlayerAndCamera(playerMovement.PlayerPosition, playerMovement.PlayerRotation, cinemachineCam);
+
+        //DataManager.Instance.SetPlayerPosition(playerMovement.PlayerPosition, playerMovement.PlayerRotation);
+        //DataManager.Instance.SetCameraValues(cinemachineCam.m_XAxis.Value, cinemachineCam.m_YAxis.Value);
     }
 
     private IEnumerator ShowLoadingText(string text)
