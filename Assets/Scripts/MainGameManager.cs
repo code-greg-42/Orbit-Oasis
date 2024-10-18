@@ -46,6 +46,8 @@ public class MainGameManager : MonoBehaviour
     private const float spaceRaceTextFadeDuration = 0.2f;
 
     private Coroutine startNewSceneCoroutine;
+    private float saveTimer = 0.0f;
+    private const float saveInterval = 180.0f;
 
     public bool IsSwappingScenes { get; private set; }
 
@@ -62,6 +64,7 @@ public class MainGameManager : MonoBehaviour
     private void Update()
     {
         CheckForFallOffEdge();
+        AutoSaveDynamicData();
     }
 
     public void UnstuckPlayer()
@@ -205,6 +208,20 @@ public class MainGameManager : MonoBehaviour
     {
         DataManager.Instance.SaveDynamicData(playerMovement.PlayerPosition, playerMovement.PlayerRotation,
             cinemachineCam, AnimalManager.Instance.ActiveAnimals);
+    }
+
+    private void AutoSaveDynamicData()
+    {
+        saveTimer += Time.deltaTime;
+
+        if (saveTimer >= saveInterval)
+        {
+            if (playerMovement.IsGrounded)
+            {
+                SaveDynamicData();
+                saveTimer = 0.0f;
+            }
+        }
     }
 
     private IEnumerator ShowLoadingText(string text)

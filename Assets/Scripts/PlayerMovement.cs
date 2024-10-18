@@ -14,7 +14,6 @@ public class PlayerMovement : MonoBehaviour
     private const float jumpDuration = 0.6f;
     private bool jumpReady = true;
     private bool isJumping = false;
-    private float[] jumpForceSettings = { 12f, 18f };
 
     [Header("References")]
     [SerializeField] private Transform orientation;
@@ -41,9 +40,6 @@ public class PlayerMovement : MonoBehaviour
     private bool queuedRotation;
     private Vector3 moveTarget;
     private Quaternion rotationTarget;
-
-    // fell off edge check variables
-    private const float fallOffEdgeY = -50.0f;
 
     // jump animation variables
     private float airTime;
