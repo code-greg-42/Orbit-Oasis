@@ -66,10 +66,12 @@ public class Item : MonoBehaviour
             case InventoryManager.InventoryAddStatus.InventoryFull:
                 if (this is PlaceableItem)
                 {
+                    MainUIManager.Instance.ShowAlertText("inventory full, deleting item...", 2.5f);
                     DeleteItem();
                 }
                 else
                 {
+                    MainUIManager.Instance.ShowAlertText("inventory full, dropping item...", 2.5f);
                     DropItem(InventoryManager.Instance.PlayerInventory.transform.position);
                 }
                 break;

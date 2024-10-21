@@ -13,6 +13,11 @@ public class MainUIManager : MonoBehaviour
     [Header("Static Text Field")]
     [SerializeField] private TMP_Text currencyText;
 
+    [Header("Alert Text Field")]
+    [SerializeField] private TMP_Text alertText;
+    private Coroutine alertTextCoroutine;
+    private float alertFadeDuration = 0.5f;
+
     [Header("Floating Text Prefab")]
     [SerializeField] private GameObject floatingTextPrefab;
 
@@ -248,6 +253,32 @@ public class MainUIManager : MonoBehaviour
     public void DeactivateDeleteModeIndicator()
     {
         deleteModeIndicator.SetActive(false);
+    }
+
+    public void ShowAlertText(string text, float duration)
+    {
+        // if called subsequently, will overwrite the old text with new text, but fade from the existing alpha rather than resetting
+        if (alertTextCoroutine != null)
+        {
+            StopCoroutine(alertTextCoroutine);
+            alertTextCoroutine = null;
+        }
+        alertTextCoroutine = StartCoroutine(ShowAlertTextCoroutine(text, duration));
+    }
+
+    private IEnumerator ShowAlertTextCoroutine(string text, float duration)
+    {
+        // set text and fade in
+        alertText.text = text;
+        yield return FadeUI.Fade(alertText, 1.0f, alertFadeDuration);
+
+        // wait for allotted duration
+        yield return new WaitForSeconds(duration);
+
+        // fade out
+        yield return FadeUI.Fade(alertText, 0.0f, alertFadeDuration);
+
+        alertTextCoroutine = null;
     }
 
     private IEnumerator FadeQuestLog(bool fadeIn = false)
