@@ -203,8 +203,13 @@ public class ItemPlacementManager : MonoBehaviour
             // calc target placement
             Vector3 targetPosition = CalcTargetPosition();
 
-            // set position of preview to target position
-            currentItem.transform.position = targetPosition;
+            // calc target rotation
+            Quaternion targetRotation = Quaternion.LookRotation(orientation.forward);
+
+            // set position of and rotation of preview
+            currentItem.transform.SetPositionAndRotation(targetPosition, targetRotation);
+
+            //currentItem.transform.position = targetPosition;
         }
     }
 

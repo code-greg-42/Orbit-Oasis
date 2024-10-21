@@ -64,7 +64,14 @@ public class Item : MonoBehaviour
                 DeleteItem();
                 break;
             case InventoryManager.InventoryAddStatus.InventoryFull:
-                DropItem(InventoryManager.Instance.PlayerInventory.transform.position);
+                if (this is PlaceableItem)
+                {
+                    DeleteItem();
+                }
+                else
+                {
+                    DropItem(InventoryManager.Instance.PlayerInventory.transform.position);
+                }
                 break;
         }
 
