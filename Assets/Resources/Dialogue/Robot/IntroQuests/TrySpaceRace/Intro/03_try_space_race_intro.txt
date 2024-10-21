@@ -1,0 +1,1 @@
+We've set up an asteroid field for you to race through. All you've got to do is walk up to your spaceship and activate the race from the menu. It's a retro ship, so you'll have to use the arrow keys.

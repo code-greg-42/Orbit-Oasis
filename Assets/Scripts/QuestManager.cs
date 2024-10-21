@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class QuestManager : MonoBehaviour
@@ -69,7 +70,7 @@ public class QuestManager : MonoBehaviour
             new Quest("Place A Build", IntroQuest.PlaceABuild, 1, null),
             new Quest("Undo Last Build", IntroQuest.UndoLastBuild, 1, null),
             new Quest("Place More Builds", IntroQuest.PlaceMoreBuilds, 5, RewardForPlaceMoreBuilds),
-            new Quest("Complete The Space Race", IntroQuest.SpaceRace, 1, RewardForSpaceRace)
+            new Quest("Try Space Race", IntroQuest.SpaceRace, 1, RewardForSpaceRace)
         };
     }
 
@@ -88,9 +89,16 @@ public class QuestManager : MonoBehaviour
         groundRenderer.material = changeableGrassMaterial;
     }
 
-    public IntroQuest GetCurrentQuest()
+    public IntroQuest? GetCurrentQuest()
     {
-        return introQuests[activeQuestIndex].QuestType;
+        if (activeQuestIndex >= 0 && activeQuestIndex < introQuests.Length)
+        {
+            return introQuests[activeQuestIndex].QuestType;
+        }
+        else
+        {
+            return null;
+        }
     }
 
     public int GetQuestIndex(IntroQuest quest)
@@ -180,6 +188,9 @@ public class QuestManager : MonoBehaviour
         // reset quest progress and change the quest index to the next intro quest
         questProgress = 0;
         activeQuestIndex++;
+
+        // update data manager
+        DataManager.Instance.IncreaseQuestIndex();
 
         StartNewQuest();
     }

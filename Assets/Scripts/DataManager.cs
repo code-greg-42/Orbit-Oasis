@@ -111,6 +111,16 @@ public class DataManager : MonoBehaviour
         }
     }
 
+    public void IncreaseQuestIndex()
+    {
+        // never needs to go down
+        PlayerStats.QuestIndex++;
+
+        Debug.Log("Quest Index: " + PlayerStats.QuestIndex);
+
+        SavePlayerStats();
+    }
+
     public void SetRaceDifficulty(int difficulty)
     {
         if (difficulty >= 0 && difficulty <= 2)
@@ -118,18 +128,6 @@ public class DataManager : MonoBehaviour
             RaceStats.SelectedDifficulty = difficulty;
         }
     }
-
-    //public void SetPlayerPosition(Vector3 playerPos, Quaternion playerRot)
-    //{
-    //    PlayerStats.PlayerPosition = playerPos;
-    //    PlayerStats.PlayerRotation = playerRot;
-    //}
-
-    //public void SetCameraValues(float mouseX, float mouseY)
-    //{
-    //    PlayerStats.CameraX = mouseX;
-    //    PlayerStats.CameraY = mouseY;
-    //}
 
     public void SetPlayerAndCamera(Vector3 playerPos, Quaternion playerRot, CinemachineFreeLook cinemachineCam)
     {
@@ -283,9 +281,11 @@ public class DataManager : MonoBehaviour
     {
         PlayerStats.PlayerCurrency += amount;
 
-        // update in-game UI
-        MainUIManager.Instance.UpdateCurrencyDisplay(PlayerStats.PlayerCurrency, amount);
-
+        if (MainUIManager.Instance != null)
+        {
+            // update in-game UI
+            MainUIManager.Instance.UpdateCurrencyDisplay(PlayerStats.PlayerCurrency, amount);
+        }
         // save to file
         SavePlayerStats();
     }
@@ -312,8 +312,11 @@ public class DataManager : MonoBehaviour
     {
         PlayerStats.PlayerCurrency -= amount;
 
-        // update in-game UI --- use set amount to negative for correct floating text
-        MainUIManager.Instance.UpdateCurrencyDisplay(PlayerStats.PlayerCurrency, -amount);
+        if (MainUIManager.Instance != null)
+        {
+            // update in-game UI --- use set amount to negative for correct floating text
+            MainUIManager.Instance.UpdateCurrencyDisplay(PlayerStats.PlayerCurrency, -amount);
+        }
 
         // save to file
         SavePlayerStats();

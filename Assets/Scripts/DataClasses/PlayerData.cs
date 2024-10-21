@@ -11,4 +11,5 @@ public class PlayerData
     public float CameraY;
     public Vector3 PlayerPosition = Vector3.zero;
     public Quaternion PlayerRotation = Quaternion.identity;
+    public int QuestIndex;
 }
