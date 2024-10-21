@@ -100,7 +100,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Giant Mushroom
   description: Woah, this thing's huge!
-  image: {fileID: 21300000, guid: 9be429838ccdc674daff1a5890e64da3, type: 3}
+  image: {fileID: 21300000, guid: b4d5f7ad055167543a7c14e51a806d7b, type: 3}
   maxStackQuantity: 1
   quantity: 1
   sellPricePerUnit: 300

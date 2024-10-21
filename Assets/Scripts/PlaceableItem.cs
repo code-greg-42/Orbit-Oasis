@@ -35,6 +35,7 @@ public class PlaceableItem : Item
     private bool isColliding;
 
     public float ItemHeight => itemHeight;
+    
     public BuildEnums.BuildType AttachmentType => attachmentType;
     public override bool IsDroppable { get; } = false;
 

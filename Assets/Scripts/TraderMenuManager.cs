@@ -20,10 +20,10 @@ public class TraderMenuManager : MonoBehaviour
     [SerializeField] private TMP_Text refreshTimerText;
     [SerializeField] private CinemachineControls camControls;
 
-    private readonly int[] weightsNumberOfItems = { 30, 40, 20, 10 }; // for 5, 6, 7, 8
+    private readonly int[] weightsNumberOfItems = { 50, 40, 9, 1 }; // for 5, 6, 7, 8
     private readonly int[] numberOfItemsArray = { 5, 6, 7, 8 };
-    private readonly int[] weightsTraderItems = { 5, 5, 5, 5, 5, 5, 70 }; // weights for tradeItemPrefabs array
-    private readonly int[] quantitiesTraderItems = { 20, 1, 1, 1, 1, 1, 1 };
+    private readonly int[] weightsTraderItems = { 5, 5, 5, 5, 5, 5, 35, 35 }; // weights for tradeItemPrefabs array
+    private readonly int[] quantitiesTraderItems = { 20, 1, 1, 1, 1, 1, 1, 1 };
 
     // timer variables
     private const float refreshInterval = 300.0f;
