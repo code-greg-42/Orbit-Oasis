@@ -12,7 +12,7 @@ public class RewardsManager : MonoBehaviour
 
     private void Start()
     {
-        CheckForRaceRewards();
+        StartCoroutine(WaitThenCheckRewards());
     }
 
     public void CheckForRaceRewards()
@@ -145,5 +145,13 @@ public class RewardsManager : MonoBehaviour
         {
             QuestManager.Instance.UpdateCurrentQuest();
         }
+    }
+
+    private IEnumerator WaitThenCheckRewards()
+    {
+        // wait for scene to load in
+        yield return new WaitForSeconds(MainGameManager.Instance.WaitTimeForRaceRewards);
+
+        CheckForRaceRewards();
     }
 }

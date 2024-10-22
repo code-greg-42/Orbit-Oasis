@@ -50,6 +50,11 @@ public class MainGameManager : MonoBehaviour
     private const float saveInterval = 180.0f;
 
     public bool IsSwappingScenes { get; private set; }
+    public bool IsLoadingIn { get; private set; } = true;
+
+    // start race rewards once scene is 50% through the fade in
+    public float WaitTimeForRaceRewards => initialLoadingDelay + (introLoadingString.Length * charDelayOne) +
+        (loadingTextEnding.Length * charDelayTwo) + loadingTextEndDelay + (loadingScreenFadeDuration * 0.5f);
 
     private void Awake()
     {
@@ -170,7 +175,9 @@ public class MainGameManager : MonoBehaviour
         StartCoroutine(FadeUI.Fade(loadingText, 0f, loadingTextFadeDuration));
 
         // fade in scene by fading out loading panel
-        StartCoroutine(FadeUI.Fade(loadingScreenPanel, 0f, loadingScreenFadeDuration));
+        yield return FadeUI.Fade(loadingScreenPanel, 0f, loadingScreenFadeDuration);
+
+        IsLoadingIn = false;
     }
 
     private IEnumerator StartNewSceneCoroutine(bool isSpaceRace)
