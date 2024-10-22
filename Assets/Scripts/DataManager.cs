@@ -39,7 +39,8 @@ public class DataManager : MonoBehaviour
             CreateSaveDirectory();
             LoadAllData();
 
-            Debug.Log("Player Currency: " + PlayerStats.PlayerCurrency);
+            // TEMPORARY/TESTING
+            ResetQuestStatus();
         }
         else
         {
@@ -111,14 +112,31 @@ public class DataManager : MonoBehaviour
         }
     }
 
-    public void IncreaseQuestIndex()
-    {
-        // never needs to go down
-        PlayerStats.QuestIndex++;
+    //public void IncreaseQuestIndex()
+    //{
+    //    // never needs to go down
+    //    PlayerStats.QuestIndex++;
 
-        Debug.Log("Quest Index: " + PlayerStats.QuestIndex);
+    //    Debug.Log("Quest Index: " + PlayerStats.QuestIndex);
+
+    //    SavePlayerStats();
+    //}
+
+    public void UpdateQuestStatus(int questIndex, int questProgress)
+    {
+        PlayerStats.QuestIndex = questIndex;
+        PlayerStats.QuestProgress = questProgress;
 
         SavePlayerStats();
+    }
+
+    // TEMPORARY/TESTING ONLY
+    private void ResetQuestStatus()
+    {
+        PlayerStats.QuestIndex = 0;
+        PlayerStats.QuestProgress = 0;
+
+        Debug.Log("Quest Status Reset to 0.");
     }
 
     public void SetRaceDifficulty(int difficulty)

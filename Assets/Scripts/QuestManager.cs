@@ -72,6 +72,10 @@ public class QuestManager : MonoBehaviour
             new Quest("Place More Builds", IntroQuest.PlaceMoreBuilds, 5, RewardForPlaceMoreBuilds),
             new Quest("Try Space Race", IntroQuest.SpaceRace, 1, RewardForSpaceRace)
         };
+
+        // get quest index and progress from data manager
+        activeQuestIndex = DataManager.Instance.PlayerStats.QuestIndex;
+        questProgress = DataManager.Instance.PlayerStats.QuestProgress;
     }
 
     private void Start()
@@ -80,13 +84,25 @@ public class QuestManager : MonoBehaviour
         changeableGrassMaterial = Instantiate(groundRenderer.material);
 
         // if player has already reached grass growing quest, set color to alive color instantly
-        if (activeQuestIndex >= 3)
+        if (activeQuestIndex > GetQuestIndex(IntroQuest.PlantNewTrees))
         {
             changeableGrassMaterial.color = aliveGrassColor;
         }
 
         // set renderer's material to the changeableMaterial, which will either start as alive or be eligible to be changed later
         groundRenderer.material = changeableGrassMaterial;
+
+        if (activeQuestIndex < introQuests.Length)
+        {
+            // activate and update tutorial progress bar
+            MainUIManager.Instance.ActivateTutorialProgressPanel();
+            MainUIManager.Instance.UpdateTutorialProgressBar(activeQuestIndex, introQuests.Length);
+
+            // show dialogue when starting from menu, when loading from race skip it
+            bool showDialogue = !DataManager.Instance.RaceStats.RaceCompleted;
+
+            StartNewQuest(showDialogue);
+        }
     }
 
     public IntroQuest? GetCurrentQuest()
@@ -101,42 +117,38 @@ public class QuestManager : MonoBehaviour
         }
     }
 
-    public int GetQuestIndex(IntroQuest quest)
-    {
-        for (int i = 0; i < introQuests.Length; i++)
-        {
-            if (introQuests[i].QuestType == quest)
-            {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    private IEnumerator StartNewQuestCoroutine()
+    private IEnumerator StartNewQuestCoroutine(bool showDialogue)
     {
         // get current quest using the index
         Quest currentQuest = introQuests[activeQuestIndex];
 
         // update questlog with new quest details
-        MainUIManager.Instance.UpdateQuestLogWithNewQuest(currentQuest.QuestTitle, currentQuest.TotalNeeded);
+        MainUIManager.Instance.UpdateQuestLogWithNewQuest(currentQuest.QuestTitle, questProgress, currentQuest.TotalNeeded);
 
-        // get intro dialogue for new quest
-        List<string> introDialogue = DialogueManager.Instance.GetDialogue(currentQuest.IntroDialoguePath);
+        if (showDialogue)
+        {
+            // get intro dialogue for new quest
+            List<string> introDialogue = DialogueManager.Instance.GetDialogue(currentQuest.IntroDialoguePath);
 
-        // display dialogue and wait for the user to either press enter or for the timer to elapse
-        yield return DialogueManager.Instance.ShowDialogue(introDialogue, true);
+            // display dialogue and wait for the user to either press enter or for the timer to elapse
+            yield return DialogueManager.Instance.ShowDialogue(introDialogue, true);
+
+            // execute intro action if available -- if null nothing occurs
+            currentQuest.InitIntroAction();
+        }
 
         // display UI QuestLog with new quest details
         MainUIManager.Instance.ActivateQuestLog();
-
-        // execute intro action if available -- if null nothing occurs
-        currentQuest.InitIntroAction();
     }
 
     public void UpdateCurrentQuest(int changeAmount = 1)
     {
         questProgress += changeAmount;
+
+        // update data manager
+        DataManager.Instance.UpdateQuestStatus(activeQuestIndex, questProgress);
+
+        // update UI
         MainUIManager.Instance.UpdateQuestProgress(questProgress, introQuests[activeQuestIndex].TotalNeeded, changeAmount);
 
         if (questProgress >= introQuests[activeQuestIndex].TotalNeeded)
@@ -145,14 +157,14 @@ public class QuestManager : MonoBehaviour
         }
     }
 
-    private void StartNewQuest()
+    private void StartNewQuest(bool showDialogue = true)
     {
         if (startNewQuestCoroutine != null)
         {
             StopCoroutine(startNewQuestCoroutine);
             startNewQuestCoroutine = null;
         }
-        startNewQuestCoroutine = StartCoroutine(StartNewQuestCoroutine());
+        startNewQuestCoroutine = StartCoroutine(StartNewQuestCoroutine(showDialogue));
     }
 
     private void CompleteQuest()
@@ -190,9 +202,17 @@ public class QuestManager : MonoBehaviour
         activeQuestIndex++;
 
         // update data manager
-        DataManager.Instance.IncreaseQuestIndex();
+        DataManager.Instance.UpdateQuestStatus(activeQuestIndex, questProgress);
 
-        StartNewQuest();
+        if (activeQuestIndex < introQuests.Length)
+        {
+            StartNewQuest();
+        }
+        else
+        {
+            // deactivate tutorial progress bar with success shown
+            MainUIManager.Instance.ShowTutorialSuccess();
+        }
     }
 
     private IEnumerator ChangeGrassColorCoroutine()
@@ -302,6 +322,18 @@ public class QuestManager : MonoBehaviour
             }
         }
 
+        return -1;
+    }
+
+    private int GetQuestIndex(IntroQuest quest)
+    {
+        for (int i = 0; i < introQuests.Length; i++)
+        {
+            if (introQuests[i].QuestType == quest)
+            {
+                return i;
+            }
+        }
         return -1;
     }
 

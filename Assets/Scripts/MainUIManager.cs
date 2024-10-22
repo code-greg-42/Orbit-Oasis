@@ -44,6 +44,9 @@ public class MainUIManager : MonoBehaviour
 
     [Header("Tutorial Progress")]
     [SerializeField] private Image tutorialProgressBar;
+    [SerializeField] private Image tutorialProgressBarBackground;
+    [SerializeField] private Image tutorialProgressPanel;
+    [SerializeField] private TMP_Text tutorialProgressText;
 
     [Header("Build Mode Indicators")]
     [SerializeField] private GameObject buildModeIndicator;
@@ -119,6 +122,21 @@ public class MainUIManager : MonoBehaviour
         {
             CreateFloatingCurrencyText(changeAmount);
         }
+    }
+
+    public void ActivateTutorialProgressPanel()
+    {
+        tutorialProgressPanel.gameObject.SetActive(true);
+    }
+
+    public void ShowTutorialSuccess()
+    {
+        Color newColor = new(0, 1, 0, tutorialProgressPanel.color.a);
+        tutorialProgressPanel.color = newColor;
+        StartCoroutine(FadeUI.Fade(tutorialProgressText, 0f, 2f));
+        StartCoroutine(FadeUI.Fade(tutorialProgressBarBackground, 0f, 2f));
+        StartCoroutine(FadeUI.Fade(tutorialProgressBar, 0f, 2f));
+        StartCoroutine(FadeUI.Fade(tutorialProgressPanel, 0f, 2f));
     }
 
     public void ActivateFarmingIndicator()
@@ -206,10 +224,10 @@ public class MainUIManager : MonoBehaviour
         StartCoroutine(FadeQuestLog(true));
     }
 
-    public void UpdateQuestLogWithNewQuest(string title, int total)
+    public void UpdateQuestLogWithNewQuest(string title, int progress, int total)
     {
         questTitleText.text = title;
-        questProgressText.text = $"0/{total}";
+        questProgressText.text = $"{progress}/{total}";
     }
 
     public void UpdateQuestProgress(int progress, int total, int changeAmount = 1)
@@ -477,14 +495,14 @@ public class MainUIManager : MonoBehaviour
         farmingSuccessIndicator.gameObject.SetActive(false);
     }
 
-    private void ResetItemPickupIndicator()
-    {
-        itemPickupIndicatorPanel.color = indicatorPanelStartColor;
-        itemPickupIndicatorText.color = indicatorTextStartColor;
-        itemPickupIndicator.transform.localScale = indicatorOriginalScale;
-        itemPickupSuccessIndicator.color = successIndicatorStartColor;
-        itemPickupSuccessIndicator.gameObject.SetActive(false);
-    }
+    //private void ResetItemPickupIndicator()
+    //{
+    //    itemPickupIndicatorPanel.color = indicatorPanelStartColor;
+    //    itemPickupIndicatorText.color = indicatorTextStartColor;
+    //    itemPickupIndicator.transform.localScale = indicatorOriginalScale;
+    //    itemPickupSuccessIndicator.color = successIndicatorStartColor;
+    //    itemPickupSuccessIndicator.gameObject.SetActive(false);
+    //}
 
     private void CreateFloatingText(TMP_Text textBoxOrigin, string text, Color color)
     {

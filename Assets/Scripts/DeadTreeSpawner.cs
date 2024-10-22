@@ -21,7 +21,10 @@ public class DeadTreeSpawner : MonoBehaviour
 
     private void Start()
     {
-        SpawnDeadTrees();
+        if (QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.RemoveDeadTrees)
+        {
+            SpawnDeadTrees();
+        }
     }
 
     private Vector2 GenerateRandomSpawnPosition(int stopCounter = 0)

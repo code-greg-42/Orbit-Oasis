@@ -12,4 +12,5 @@ public class PlayerData
     public Vector3 PlayerPosition = Vector3.zero;
     public Quaternion PlayerRotation = Quaternion.identity;
     public int QuestIndex;
+    public int QuestProgress;
 }
