@@ -15,10 +15,37 @@ public class RewardsManager : MonoBehaviour
         StartCoroutine(WaitThenCheckRewards());
     }
 
-    public void CheckForRaceRewards()
+    public void CheckForRaceResult()
     {
         bool wasRaceCompleted = DataManager.Instance.RaceStats.RaceCompleted;
 
+        if (wasRaceCompleted)
+        {
+            bool questCompleted = QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.SpaceRace;
+
+            if (questCompleted)
+            {
+                // skip over dialogue portion of race rewards, but still give out currency
+
+                // add reward amount to player currency
+                DataManager.Instance.AddCurrency(DataManager.Instance.RaceStats.RewardCurrency);
+
+                // complete quest
+                QuestManager.Instance.UpdateCurrentQuest();
+
+                // reset race rewards
+                DataManager.Instance.ResetRaceRewards();
+            }
+            else
+            {
+                // normal dialogue tree
+                CheckForRaceRewards(wasRaceCompleted);
+            }
+        }
+    }
+
+    public void CheckForRaceRewards(bool wasRaceCompleted)
+    {
         if (wasRaceCompleted)
         {
             // set dialogue path to rewards path
@@ -47,15 +74,18 @@ public class RewardsManager : MonoBehaviour
                     dialoguePath += "space_race_win";
                 }
 
-                if (QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.SpaceRace)
-                {
-                    StartCoroutine(ShowDialogueAndCompleteQuest(dialoguePath, rewardAmount));
-                }
-                else
-                {
-                    // show dialogue
-                    ShowRewardsDialogue(dialoguePath, rewardAmount);
-                }
+                //if (QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.SpaceRace)
+                //{
+                //    StartCoroutine(ShowDialogueAndCompleteQuest(dialoguePath, rewardAmount));
+                //}
+                //else
+                //{
+                //    // show dialogue
+                //    ShowRewardsDialogue(dialoguePath, rewardAmount);
+                //}
+
+                // show dialogue
+                ShowRewardsDialogue(dialoguePath, rewardAmount);
             }
             else
             {
@@ -92,15 +122,18 @@ public class RewardsManager : MonoBehaviour
                         break;
                 }
 
-                if (QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.SpaceRace)
-                {
-                    StartCoroutine(ShowDialogueAndCompleteQuest(dialoguePath));
-                }
-                else
-                {
-                    // show dialogue
-                    ShowRewardsDialogue(dialoguePath);
-                }
+                //if (QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.SpaceRace)
+                //{
+                //    StartCoroutine(ShowDialogueAndCompleteQuest(dialoguePath));
+                //}
+                //else
+                //{
+                //    // show dialogue
+                //    ShowRewardsDialogue(dialoguePath);
+                //}
+
+                // show dialogue
+                ShowRewardsDialogue(dialoguePath);
             }
 
             // clear reward variables after use
@@ -125,33 +158,34 @@ public class RewardsManager : MonoBehaviour
     }
 
     // coroutine for when intro quest is active --- quest completes upon completion of dialogue
-    private IEnumerator ShowDialogueAndCompleteQuest(string dialoguePath, float rewardAmount = 0)
-    {
-        Dictionary<DialogueManager.PlaceholderType, string> replacements = new();
+    //private IEnumerator ShowDialogueAndCompleteQuest(string dialoguePath, float rewardAmount = 0)
+    //{
+    //    Dictionary<DialogueManager.PlaceholderType, string> replacements = new();
 
-        if (rewardAmount != 0)
-        {
-            replacements.Add(DialogueManager.PlaceholderType.Money, rewardAmount.ToString());
-        }
+    //    if (rewardAmount != 0)
+    //    {
+    //        replacements.Add(DialogueManager.PlaceholderType.Money, rewardAmount.ToString());
+    //    }
 
-        // get dialogue from file system/dialogue manager (including any placeholder replacements)
-        List<string> dialogue = DialogueManager.Instance.GetDialogue(dialoguePath, replacements);
+    //    // get dialogue from file system/dialogue manager (including any placeholder replacements)
+    //    List<string> dialogue = DialogueManager.Instance.GetDialogue(dialoguePath, replacements);
 
-        // await parameter set to true for waiting until dialogue is shown/moved on from
-        yield return DialogueManager.Instance.ShowDialogue(dialogue, true);
+    //    // await parameter set to true for waiting until dialogue is shown/moved on from
+    //    yield return DialogueManager.Instance.ShowDialogue(dialogue, true);
 
-        // double check if on space race quest, complete the quest if so
-        if (QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.SpaceRace)
-        {
-            QuestManager.Instance.UpdateCurrentQuest();
-        }
-    }
+    //    // double check if on space race quest, complete the quest if so
+    //    if (QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.SpaceRace)
+    //    {
+    //        QuestManager.Instance.UpdateCurrentQuest();
+    //    }
+    //}
 
+    // wait for load screen
     private IEnumerator WaitThenCheckRewards()
     {
         // wait for scene to load in
-        yield return new WaitForSeconds(MainGameManager.Instance.WaitTimeForRaceRewards);
+        yield return new WaitForSeconds(MainGameManager.Instance.LoadingWaitTime);
 
-        CheckForRaceRewards();
+        CheckForRaceResult();
     }
 }

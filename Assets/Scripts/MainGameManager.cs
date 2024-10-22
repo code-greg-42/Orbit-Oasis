@@ -52,8 +52,8 @@ public class MainGameManager : MonoBehaviour
     public bool IsSwappingScenes { get; private set; }
     public bool IsLoadingIn { get; private set; } = true;
 
-    // start race rewards once scene is 50% through the fade in
-    public float WaitTimeForRaceRewards => initialLoadingDelay + (introLoadingString.Length * charDelayOne) +
+    // start dialogue once scene is 50% through the fade in
+    public float LoadingWaitTime => initialLoadingDelay + (introLoadingString.Length * charDelayOne) +
         (loadingTextEnding.Length * charDelayTwo) + loadingTextEndDelay + (loadingScreenFadeDuration * 0.5f);
 
     private void Awake()

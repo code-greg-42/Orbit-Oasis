@@ -80,29 +80,8 @@ public class QuestManager : MonoBehaviour
 
     private void Start()
     {
-        // create clone of grass material
-        changeableGrassMaterial = Instantiate(groundRenderer.material);
-
-        // if player has already reached grass growing quest, set color to alive color instantly
-        if (activeQuestIndex > GetQuestIndex(IntroQuest.PlantNewTrees))
-        {
-            changeableGrassMaterial.color = aliveGrassColor;
-        }
-
-        // set renderer's material to the changeableMaterial, which will either start as alive or be eligible to be changed later
-        groundRenderer.material = changeableGrassMaterial;
-
-        if (activeQuestIndex < introQuests.Length)
-        {
-            // activate and update tutorial progress bar
-            MainUIManager.Instance.ActivateTutorialProgressPanel();
-            MainUIManager.Instance.UpdateTutorialProgressBar(activeQuestIndex, introQuests.Length);
-
-            // show dialogue when starting from menu, when loading from race skip it
-            bool showDialogue = !DataManager.Instance.RaceStats.RaceCompleted;
-
-            StartNewQuest(showDialogue);
-        }
+        HandleInitialGrassColor();
+        StartCoroutine(LoadQuest());
     }
 
     public IntroQuest? GetCurrentQuest()
@@ -114,6 +93,44 @@ public class QuestManager : MonoBehaviour
         else
         {
             return null;
+        }
+    }
+
+    private void HandleInitialGrassColor()
+    {
+        // create clone of grass material
+        changeableGrassMaterial = Instantiate(groundRenderer.material);
+
+        int plantTreesIndex = GetQuestIndex(IntroQuest.PlantNewTrees);
+        // if player has already reached grass growing quest, set color to alive color instantly
+        if (activeQuestIndex > plantTreesIndex || (activeQuestIndex == plantTreesIndex && questProgress > 0))
+        {
+            changeableGrassMaterial.color = aliveGrassColor;
+        }
+
+        // set renderer's material to the changeableMaterial, which will either start as alive or be eligible to be changed later
+        groundRenderer.material = changeableGrassMaterial;
+    }
+
+    private IEnumerator LoadQuest()
+    {
+        if (activeQuestIndex < introQuests.Length)
+        {
+            // activate and update tutorial progress bar
+            MainUIManager.Instance.ActivateTutorialProgressPanel();
+            MainUIManager.Instance.UpdateTutorialProgressBar(activeQuestIndex, introQuests.Length);
+
+            if (questProgress > 0 || DataManager.Instance.RaceStats.RaceCompleted)
+            {
+                // activate and update quest log while load screen is still active
+                StartNewQuest(false);
+            }
+            else
+            {
+                // wait for load screen to mostly finish then start dialogue of new quest
+                yield return new WaitForSeconds(MainGameManager.Instance.LoadingWaitTime);
+                StartNewQuest();
+            }
         }
     }
 
@@ -188,6 +205,13 @@ public class QuestManager : MonoBehaviour
         // update UI with overall tutorial progress
         MainUIManager.Instance.UpdateTutorialProgressBar(activeQuestIndex + 1, introQuests.Length);
 
+        // if this will be the last quest completion, show tutorial bar success animation
+        if (activeQuestIndex + 1 >= introQuests.Length)
+        {
+            // deactivate tutorial progress bar with success shown
+            MainUIManager.Instance.ShowTutorialSuccess();
+        }
+
         // give quest rewards to player and enact any necessary post-quest-completion logic
         completedQuest.CompleteQuest();
 
@@ -207,11 +231,6 @@ public class QuestManager : MonoBehaviour
         if (activeQuestIndex < introQuests.Length)
         {
             StartNewQuest();
-        }
-        else
-        {
-            // deactivate tutorial progress bar with success shown
-            MainUIManager.Instance.ShowTutorialSuccess();
         }
     }
 

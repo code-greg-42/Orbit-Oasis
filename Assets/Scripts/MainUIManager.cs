@@ -133,10 +133,10 @@ public class MainUIManager : MonoBehaviour
     {
         Color newColor = new(0, 1, 0, tutorialProgressPanel.color.a);
         tutorialProgressPanel.color = newColor;
-        StartCoroutine(FadeUI.Fade(tutorialProgressText, 0f, 2f));
-        StartCoroutine(FadeUI.Fade(tutorialProgressBarBackground, 0f, 2f));
-        StartCoroutine(FadeUI.Fade(tutorialProgressBar, 0f, 2f));
-        StartCoroutine(FadeUI.Fade(tutorialProgressPanel, 0f, 2f));
+        StartCoroutine(FadeUI.Fade(tutorialProgressText, 0f, questSuccessFadeDuration));
+        StartCoroutine(FadeUI.Fade(tutorialProgressBarBackground, 0f, questSuccessFadeDuration));
+        StartCoroutine(FadeUI.Fade(tutorialProgressBar, 0f, questSuccessFadeDuration));
+        StartCoroutine(FadeUI.Fade(tutorialProgressPanel, 0f, questSuccessFadeDuration));
     }
 
     public void ActivateFarmingIndicator()
