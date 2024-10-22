@@ -263,7 +263,7 @@ public class QuestManager : MonoBehaviour
     // Define the reward methods
     private void RewardForRemoveDeadTrees()
     {
-        // Implement reward logic for RemoveDeadTrees
+        
     }
 
     private void RewardForSellDeadTrees()
@@ -290,12 +290,12 @@ public class QuestManager : MonoBehaviour
 
     private void RewardForPlaceRocks()
     {
-        // Implement reward logic for PlantRocks
+        
     }
 
     private void RewardForFarmTree()
     {
-        // Implement reward logic for FarmTree
+        
     }
 
     private void RewardForCollectWood()
@@ -315,12 +315,16 @@ public class QuestManager : MonoBehaviour
 
     private void RewardForPlaceMoreBuilds()
     {
-        // Implement reward logic for BuildObjects
+        // close out of build mode
+        if (BuildManager.Instance.BuildModeActive)
+        {
+            BuildManager.Instance.ToggleBuildMode();
+        }
     }
 
     private void RewardForSpaceRace()
     {
-        // Implement reward logic for SpaceRace
+        
     }
 
     // INTRO ACTIONS
