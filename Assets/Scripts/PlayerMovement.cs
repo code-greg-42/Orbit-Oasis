@@ -10,10 +10,12 @@ public class PlayerMovement : MonoBehaviour
     private const float boostMultiplier = 1.5f;
 
     // jump variables
-    private const float jumpForce = 12f;
+    private float jumpForce = 12f;
     private const float jumpDuration = 0.6f;
     private bool jumpReady = true;
     private bool isJumping = false;
+    private const float originalJumpForce = 12f;
+    private const float upgradedJumpForce = 18f;
 
     [Header("References")]
     [SerializeField] private Transform orientation;
@@ -47,6 +49,9 @@ public class PlayerMovement : MonoBehaviour
 
     // custom gravity
     private const float customGravity = 20.0f;
+    private bool gravityHacksActive;
+    private float gravityHacksRecentToggleTime;
+    private const float gravityHacksToggleCooldown = 0.25f;
 
     private float horizontalInput;
     private float verticalInput;
@@ -59,7 +64,7 @@ public class PlayerMovement : MonoBehaviour
     // properties used in playercontrols script
     public bool IsGrounded => isGrounded;
     public bool IsMoving => verticalInput != 0 || horizontalInput != 0;
-
+    public bool GravityHacksActive => gravityHacksActive;
     // private properties
     private bool IsReadyToMove => !playerControls.IsSwinging && !playerControls.IsPickingUpItem;
 
@@ -77,7 +82,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // custom gravity
-        if (!isJumping)
+        if (!isJumping && !gravityHacksActive)
         {
             rb.AddForce(Vector3.down * customGravity, ForceMode.Acceleration);
         }
@@ -104,6 +109,16 @@ public class PlayerMovement : MonoBehaviour
         {
             queuedRotation = false;
             playerObject.rotation = rotationTarget;
+        }
+    }
+
+    public void ToggleGravityHacks()
+    {
+        if (Time.time - gravityHacksRecentToggleTime > gravityHacksToggleCooldown)
+        {
+            gravityHacksActive = !gravityHacksActive;
+            jumpForce = gravityHacksActive ? upgradedJumpForce : originalJumpForce;
+            gravityHacksRecentToggleTime = Time.time;
         }
     }
 

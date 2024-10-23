@@ -100,6 +100,19 @@ public class InventorySlot : MenuItemSlot
                     Invoke(nameof(ResetRecentlyClicked), doubleClickWindow);
                 }
             }
+            else if (SlotItem is ToggleItem toggleItem)
+            {
+                if (IsRecentlyClicked)
+                {
+                    // toggle items ability and show alert message, without getting rid of the item or clearing the slot
+                    toggleItem.ToggleAbility();
+                }
+                else
+                {
+                    IsRecentlyClicked = true;
+                    Invoke(nameof(ResetRecentlyClicked), doubleClickWindow);
+                }
+            }
         }
     }
 

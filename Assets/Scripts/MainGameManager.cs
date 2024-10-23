@@ -99,6 +99,12 @@ public class MainGameManager : MonoBehaviour
         startNewSceneCoroutine ??= StartCoroutine(StartNewSceneCoroutine(false));
     }
 
+    // used by double clicking item in inventory slot
+    public void ToggleGravityHacks()
+    {
+        playerMovement.ToggleGravityHacks();
+    }
+
     private void CheckForFallOffEdge()
     {
         if (playerMovement.HasFallenOffEdge(fallYBoundary) && !playerResetInProgress)
