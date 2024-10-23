@@ -317,6 +317,37 @@ public class InventoryManager : MonoBehaviour
     {
         if (DragSlot != null)
         {
+            // prevent selling of trees and rocks during intro quests where they are needed (done this way to allow trees to still be sold during rock quest)
+            if (QuestManager.Instance.GetCurrentQuest() != null)
+            {
+                if (QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.PlantNewTrees)
+                {
+                    if (DragSlot.SlotItem.TryGetComponent(out FarmableObject farmableObject))
+                    {
+                        if (farmableObject.Type == FarmableObject.ObjectType.Tree)
+                        {
+                            // send UI message
+                            MainUIManager.Instance.ShowAlertText("You need that!", 2.5f);
+                            // prevent selling trees during the plant trees intro quest
+                            return;
+                        }
+                    }
+                }
+                else if (QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.PlaceRocks)
+                {
+                    if (DragSlot.SlotItem.TryGetComponent(out FarmableObject farmableObject))
+                    {
+                        if (farmableObject.Type == FarmableObject.ObjectType.Rock)
+                        {
+                            // send UI message
+                            MainUIManager.Instance.ShowAlertText("You can't sell that right now...", 2.5f);
+                            // prevent selling rocks during the place rocks intro quest
+                            return;
+                        }
+                    }
+                }
+            }
+
             int itemQuantity = DragSlot.SlotItem.Quantity;
 
             // if build material, subtract amount from data manager
