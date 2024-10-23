@@ -31,6 +31,16 @@ public class QuestManager : MonoBehaviour
     private const float changeGrassFadeDuration = 5f;
     private Coroutine changeGrassColorCoroutine;
 
+    // quest indices and corresponding flags for disallowing certain actions before the quest has introduced it
+    private int inventoryQuestIndex;
+    private int farmingQuestIndex;
+    private int buildingQuestIndex;
+    private int spaceRaceQuestIndex;
+    public bool InventoryQuestReached => activeQuestIndex >= inventoryQuestIndex;
+    public bool FarmingQuestReached => activeQuestIndex >= farmingQuestIndex;
+    public bool BuildingQuestReached => activeQuestIndex >= buildingQuestIndex;
+    public bool SpaceRaceQuestReached => activeQuestIndex >= spaceRaceQuestIndex;
+
     public bool QuestLogActive => MainUIManager.Instance.QuestPanelActive;
     public string[] GemstoneNames => gemstoneNames;
 
@@ -76,6 +86,12 @@ public class QuestManager : MonoBehaviour
         // get quest index and progress from data manager
         activeQuestIndex = DataManager.Instance.PlayerStats.QuestIndex;
         questProgress = DataManager.Instance.PlayerStats.QuestProgress;
+
+        // set indices here so the get quest index loop only has to run one time per quest index
+        inventoryQuestIndex = GetQuestIndex(IntroQuest.SellDeadTrees);
+        farmingQuestIndex = GetQuestIndex(IntroQuest.FarmTree);
+        buildingQuestIndex = GetQuestIndex(IntroQuest.PlaceABuild);
+        spaceRaceQuestIndex = GetQuestIndex(IntroQuest.SpaceRace);
     }
 
     private void Start()

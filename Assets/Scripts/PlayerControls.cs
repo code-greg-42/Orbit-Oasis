@@ -83,7 +83,7 @@ public class PlayerControls : MonoBehaviour
             && !MainGameManager.Instance.IsLoadingIn)
         {
             // FARMING
-            if (toolSwingReady && playerMovement.IsGrounded && !isPickingUpItem)
+            if (QuestManager.Instance.FarmingQuestReached && toolSwingReady && playerMovement.IsGrounded && !isPickingUpItem)
             {
                 // CHECK FOR NEARBY FARMABLE OBJECTS
                 bool farmableObjectIsNearby = CheckForFarmableObject();
@@ -160,7 +160,8 @@ public class PlayerControls : MonoBehaviour
             !MainGameManager.Instance.IsSwappingScenes && !MainGameManager.Instance.IsLoadingIn)
         {
             // INVENTORY
-            if (Input.GetKeyDown(inventoryKeybind) && !InventoryManager.Instance.IsDragging && !TraderMenuManager.Instance.IsDragging)
+            if (Input.GetKeyDown(inventoryKeybind) && QuestManager.Instance.InventoryQuestReached && !InventoryManager.Instance.IsDragging &&
+                !TraderMenuManager.Instance.IsDragging)
             {
                 // deactivate other menus if active
                 if (BuildManager.Instance.BuildModeActive)
@@ -176,7 +177,8 @@ public class PlayerControls : MonoBehaviour
             }
 
             // TRADER MENU
-            else if (Input.GetKeyDown(traderMenuKeybind) && !TraderMenuManager.Instance.IsDragging && !InventoryManager.Instance.IsDragging)
+            else if (Input.GetKeyDown(traderMenuKeybind) && !TraderMenuManager.Instance.IsDragging && !InventoryManager.Instance.IsDragging &&
+                QuestManager.Instance.GetCurrentQuest() == null)
             {
                 // deactivate other menus if active
                 if (BuildManager.Instance.BuildModeActive)
@@ -192,7 +194,8 @@ public class PlayerControls : MonoBehaviour
             }
 
             // BUILD MODE -- only allow if no menus active
-            else if (Input.GetKeyDown(buildModeKeybind) && !InventoryManager.Instance.IsMenuActive && !TraderMenuManager.Instance.IsMenuActive)
+            else if (Input.GetKeyDown(buildModeKeybind) && !InventoryManager.Instance.IsMenuActive && !TraderMenuManager.Instance.IsMenuActive &&
+                QuestManager.Instance.BuildingQuestReached)
             {
                 BuildManager.Instance.ToggleBuildMode();
             }
