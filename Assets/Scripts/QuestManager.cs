@@ -40,6 +40,8 @@ public class QuestManager : MonoBehaviour
     public bool FarmingQuestReached => activeQuestIndex >= farmingQuestIndex;
     public bool BuildingQuestReached => activeQuestIndex >= buildingQuestIndex;
     public bool SpaceRaceQuestReached => activeQuestIndex >= spaceRaceQuestIndex;
+    public bool AllowSellFarmables => activeQuestIndex >= buildingQuestIndex; // quest completion point where farmables are no longer required
+    public bool AllowSellBuildMaterial => activeQuestIndex >= spaceRaceQuestIndex; // quest completion point where building is no longer required
 
     public bool QuestLogActive => MainUIManager.Instance.QuestPanelActive;
     public string[] GemstoneNames => gemstoneNames;
@@ -331,11 +333,8 @@ public class QuestManager : MonoBehaviour
 
     private void RewardForPlaceMoreBuilds()
     {
-        // close out of build mode
-        if (BuildManager.Instance.BuildModeActive)
-        {
-            BuildManager.Instance.ToggleBuildMode();
-        }
+        // close out of build mode, with small delay to leave time for build to 100% finish building
+        BuildManager.Instance.ToggleOffBuildMode(0.25f);
     }
 
     private void RewardForSpaceRace()

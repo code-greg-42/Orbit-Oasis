@@ -258,11 +258,14 @@ public class PlayerControls : MonoBehaviour
 
             if (actionCollider != null)
             {
-                if (actionCollider.CompareTag("Trader"))
-                {
-                    TraderMenuManager.Instance.ToggleTraderMenu();
-                }
-                else if (actionCollider.CompareTag("MainSpaceship"))
+                // changed for game design reasons
+                //if (actionCollider.CompareTag("Trader"))
+                //{
+                //    TraderMenuManager.Instance.ToggleTraderMenu();
+                //}
+                // end changed code
+
+                if (actionCollider.CompareTag("MainSpaceship"))
                 {
                     SpaceshipSelection.Instance.ActivateSpaceshipSelection();
                 }
@@ -303,18 +306,22 @@ public class PlayerControls : MonoBehaviour
         {
             var collider = results[i];
 
+            // --- CHANGED FOR GAME DESIGN REASONS
             // check for trader
-            if (collider.CompareTag("Trader"))
-            {
-                if (!InventoryManager.Instance.IsMenuActive)
-                {
-                    nonItemActionFound = true;
-                    actionFound = true;
-                    nonItemActionIndex = i;
-                }
-            }
+            //if (collider.CompareTag("Trader"))
+            //{
+            //    if (!InventoryManager.Instance.IsMenuActive)
+            //    {
+            //        nonItemActionFound = true;
+            //        actionFound = true;
+            //        nonItemActionIndex = i;
+            //    }
+            //}
+            // --- END CHANGED CODE
+
             // check for spaceship
-            else if (collider.transform.parent != null && collider.transform.parent.TryGetComponent(out SpaceshipSelection selection))
+            if (collider.transform.parent != null && collider.transform.parent.TryGetComponent(out SpaceshipSelection _) &&
+                QuestManager.Instance.SpaceRaceQuestReached)
             {
                 nonItemActionFound = true;
                 actionFound = true;

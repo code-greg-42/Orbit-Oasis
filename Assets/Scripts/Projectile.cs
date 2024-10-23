@@ -50,7 +50,15 @@ public class Projectile : MonoBehaviour
             // deactivate projectile and return to pool
             Deactivate();
         }
-        else if ((collision.gameObject.CompareTag("Ground") || collision.gameObject.TryGetComponent(out BuildableObject _)) && groundSequenceCoroutine == null)
+        else if (collision.gameObject.TryGetComponent(out BuildableObject buildable))
+        {
+            BuildManager.Instance.DeleteBuild(buildable);
+
+            // return to pool
+            Deactivate();
+        }
+        else if (collision.gameObject.CompareTag("Ground")// || collision.gameObject.TryGetComponent(out BuildableObject _))
+            && groundSequenceCoroutine == null)
         {
             if (gameObject.activeInHierarchy)
             {

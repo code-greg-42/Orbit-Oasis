@@ -144,6 +144,21 @@ public class BuildManager : MonoBehaviour
         }
     }
 
+    public void ToggleOffBuildMode(float delay = 0.0f)
+    {
+        StartCoroutine(ToggleOffBuildModeCoroutine(delay));
+    }
+
+    private IEnumerator ToggleOffBuildModeCoroutine(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        if (BuildModeActive)
+        {
+            ToggleBuildMode();
+        }
+    }
+
     public void ToggleDeleteMode()
     {
         if (BuildModeActive)
@@ -321,7 +336,7 @@ public class BuildManager : MonoBehaviour
         }
     }
 
-    private void DeleteBuild(BuildableObject buildable)
+    public void DeleteBuild(BuildableObject buildable)
     {
         // instantiate material object
         GameObject materialPrefabObj = Instantiate(buildable.BuildMaterialPrefab, orientation.position, Quaternion.identity, null);
