@@ -21,9 +21,11 @@ public class QuestManager : MonoBehaviour
     [SerializeField] private Renderer groundRenderer;
     [SerializeField] private GameObject[] rockPrefabs;
 
-    [Header("Collect Stones Quest Rewards")]
-    [SerializeField] private GameObject woodMaterial;
+    // gemstone collection quest
     private readonly string[] gemstoneNames = { "Blue Gemstone", "Green Gemstone", "Red Gemstone", "Gold Gemstone" };
+
+    [Header("Tutorial Completion Rewards")]
+    [SerializeField] private GameObject[] tutorialRewardPrefabs;
 
     // grass color change variables
     private Material changeableGrassMaterial;
@@ -75,17 +77,17 @@ public class QuestManager : MonoBehaviour
 
         introQuests = new Quest[]
         {
-            new Quest("Remove Dead Trees", IntroQuest.RemoveDeadTrees, 2, RewardForRemoveDeadTrees), // temporary 2 setting, normally 10
-            new Quest("Sell Dead Trees", IntroQuest.SellDeadTrees, 2, RewardForSellDeadTrees), // temporary 2 setting, normally 10
+            new Quest("Remove Dead Trees", IntroQuest.RemoveDeadTrees, 10, null),
+            new Quest("Sell Dead Trees", IntroQuest.SellDeadTrees, 10, RewardForSellDeadTrees),
             new Quest("Plant New Trees", IntroQuest.PlantNewTrees, 6, RewardForPlantNewTrees, PlantNewTreesIntroAction),
-            new Quest("Place Rocks", IntroQuest.PlaceRocks, 2, RewardForPlaceRocks),
-            new Quest("Farm Tree", IntroQuest.FarmTree, 1, RewardForFarmTree),
-            new Quest("Collect Wood", IntroQuest.CollectWood, 1, RewardForCollectWood),
-            new Quest("Collect More Wood", IntroQuest.CollectMoreWood, 10, RewardForCollectMoreWood),
-            new Quest("Collect Stones", IntroQuest.CollectStones, 5, RewardForCollectStones),
+            new Quest("Place Rocks", IntroQuest.PlaceRocks, 2, null),
+            new Quest("Farm Tree", IntroQuest.FarmTree, 1, null),
+            new Quest("Collect Wood", IntroQuest.CollectWood, 1, null),
+            new Quest("Collect More Wood", IntroQuest.CollectMoreWood, 10, null),
+            new Quest("Collect Stones", IntroQuest.CollectStones, 5, null),
             new Quest("Place A Build", IntroQuest.PlaceABuild, 1, null),
             new Quest("Undo Last Build", IntroQuest.UndoLastBuild, 1, null),
-            new Quest("Place More Builds", IntroQuest.PlaceMoreBuilds, 5, RewardForPlaceMoreBuilds),
+            new Quest("Place More Builds", IntroQuest.PlaceMoreBuilds, 20, RewardForPlaceMoreBuilds),
             new Quest("Try Space Race", IntroQuest.SpaceRace, 1, RewardForSpaceRace)
         };
 
@@ -292,12 +294,6 @@ public class QuestManager : MonoBehaviour
 
     // QUEST REWARDS
 
-    // Define the reward methods
-    private void RewardForRemoveDeadTrees()
-    {
-        
-    }
-
     private void RewardForSellDeadTrees()
     {
         // toggle off inventory menu if active
@@ -320,31 +316,6 @@ public class QuestManager : MonoBehaviour
         RewardPlaceableItems(rockPrefabs, rocksToReward);
     }
 
-    private void RewardForPlaceRocks()
-    {
-        
-    }
-
-    private void RewardForFarmTree()
-    {
-        
-    }
-
-    private void RewardForCollectWood()
-    {
-
-    }
-
-    private void RewardForCollectMoreWood()
-    {
-
-    }
-
-    private void RewardForCollectStones()
-    {
-
-    }
-
     private void RewardForPlaceMoreBuilds()
     {
         // close out of build mode, with small delay to leave time for build to 100% finish building
@@ -353,7 +324,7 @@ public class QuestManager : MonoBehaviour
 
     private void RewardForSpaceRace()
     {
-        
+        RewardItems(tutorialRewardPrefabs);
     }
 
     // INTRO ACTIONS
@@ -412,6 +383,28 @@ public class QuestManager : MonoBehaviour
             if (newItem.TryGetComponent(out PlaceableItem placeableItem))
             {
                 placeableItem.PickupItem();
+            }
+        }
+    }
+
+    private void RewardItems(GameObject[] prefabArray)
+    {
+        foreach (GameObject prefab in prefabArray)
+        {
+            // instantiate new item
+            GameObject newObject = Instantiate(prefab);
+
+            // get item component and pickup item into player inventory
+            if (newObject.TryGetComponent(out Item newItem))
+            {
+                // set quantity to max stack
+                if (newItem.MaxStackQuantity > 1)
+                {
+                    newItem.SetQuantity(newItem.MaxStackQuantity);
+                }
+                
+                // add to inventory
+                newItem.PickupItem();
             }
         }
     }

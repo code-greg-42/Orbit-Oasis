@@ -18250,7 +18250,17 @@ MonoBehaviour:
   groundRenderer: {fileID: 431115091}
   rockPrefabs:
   - {fileID: 1028973733240692, guid: e9fb9c5db9589b24697ab7ccbb740615, type: 3}
-  woodMaterial: {fileID: 0}
+  tutorialRewardPrefabs:
+  - {fileID: 8305301080065572057, guid: b34cfeb3e26dd7e4bbca0b5ac0809730, type: 3}
+  - {fileID: 6050032793862745385, guid: 957c961385d8cec468c59b949f040ffa, type: 3}
+  - {fileID: 8167518894961825939, guid: e14b700e76b2659489b9b85f15f09950, type: 3}
+  - {fileID: 5686277313172532678, guid: adab7a6ec4dec9945bc209ef517aa96f, type: 3}
+  - {fileID: 8809459020296330656, guid: 888a8aa10e9ba0040bce200398e9a84c, type: 3}
+  - {fileID: 8809459020296330656, guid: 888a8aa10e9ba0040bce200398e9a84c, type: 3}
+  - {fileID: 5245423167719715413, guid: e49df8e4530253143b8e2c7ec9605987, type: 3}
+  - {fileID: 7412789984930121457, guid: b94d999a14aa6d64b8aa4f181f982566, type: 3}
+  - {fileID: 5686277313172532678, guid: adab7a6ec4dec9945bc209ef517aa96f, type: 3}
+  - {fileID: 8809459020296330656, guid: 888a8aa10e9ba0040bce200398e9a84c, type: 3}
 --- !u!114 &1963380244
 MonoBehaviour:
   m_ObjectHideFlags: 0
