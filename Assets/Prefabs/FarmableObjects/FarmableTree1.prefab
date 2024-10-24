@@ -365,6 +365,8 @@ MonoBehaviour:
   offsetLength: 0.2
   dropTorqueAmount: 5
   materialWeights: 64000000
+  maxFarms: 8
+  regenInterval: 60
   type: 0
 --- !u!114 &8835993554606452162
 MonoBehaviour:
@@ -413,5 +415,5 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.5, y: 8, z: 0.5}
+  m_Size: {x: 1, y: 8, z: 1}
   m_Center: {x: 0, y: 3.5, z: 0}

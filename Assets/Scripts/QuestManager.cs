@@ -21,6 +21,9 @@ public class QuestManager : MonoBehaviour
     [SerializeField] private Renderer groundRenderer;
     [SerializeField] private GameObject[] rockPrefabs;
 
+    [Header("Undo Last Build Quest Rewards")]
+    [SerializeField] private GameObject[] buildMaterialPrefabs;
+
     // gemstone collection quest
     private readonly string[] gemstoneNames = { "Blue Gemstone", "Green Gemstone", "Red Gemstone", "Gold Gemstone" };
 
@@ -85,9 +88,9 @@ public class QuestManager : MonoBehaviour
             new Quest("Collect Wood", IntroQuest.CollectWood, 1, null),
             new Quest("Collect More Wood", IntroQuest.CollectMoreWood, 10, null),
             new Quest("Collect Stones", IntroQuest.CollectStones, 5, null),
-            new Quest("Place A Build", IntroQuest.PlaceABuild, 1, null),
-            new Quest("Undo Last Build", IntroQuest.UndoLastBuild, 1, null),
-            new Quest("Place More Builds", IntroQuest.PlaceMoreBuilds, 20, RewardForPlaceMoreBuilds),
+            new Quest("Place A Build", IntroQuest.PlaceABuild, 1, RewardForPlaceABuild),
+            new Quest("Undo Last Build", IntroQuest.UndoLastBuild, 1, RewardForUndoLastBuild, UndoLastBuildIntroAction),
+            new Quest("Place More Builds", IntroQuest.PlaceMoreBuilds, 20, RewardForPlaceMoreBuilds, PlaceMoreBuildsIntroAction),
             new Quest("Try Space Race", IntroQuest.SpaceRace, 1, RewardForSpaceRace)
         };
 
@@ -316,15 +319,27 @@ public class QuestManager : MonoBehaviour
         RewardPlaceableItems(rockPrefabs, rocksToReward);
     }
 
-    private void RewardForPlaceMoreBuilds()
+    private void RewardForPlaceABuild()
     {
         // close out of build mode, with small delay to leave time for build to 100% finish building
-        BuildManager.Instance.ToggleOffBuildMode(0.25f);
+        BuildManager.Instance.ToggleOffBuildMode();
+    }
+
+    private void RewardForUndoLastBuild()
+    {
+        // give build material reward to insure player has enough for next quest, and close out of build mode for aesthetics
+        RewardItems(buildMaterialPrefabs, 0.4f);
+        BuildManager.Instance.ToggleOffBuildMode();
+    }
+
+    private void RewardForPlaceMoreBuilds()
+    {
+        BuildManager.Instance.ToggleOffBuildMode();
     }
 
     private void RewardForSpaceRace()
     {
-        RewardItems(tutorialRewardPrefabs);
+        RewardItems(tutorialRewardPrefabs, 0.3f);
     }
 
     // INTRO ACTIONS
@@ -332,6 +347,16 @@ public class QuestManager : MonoBehaviour
     private void PlantNewTreesIntroAction()
     {
         changeGrassColorCoroutine ??= StartCoroutine(ChangeGrassColorCoroutine());
+    }
+
+    private void UndoLastBuildIntroAction()
+    {
+        BuildManager.Instance.ToggleOnBuildMode(0.05f);
+    }
+
+    private void PlaceMoreBuildsIntroAction()
+    {
+        BuildManager.Instance.ToggleOnBuildMode(0.05f);
     }
 
     // HELPER METHODS
@@ -387,8 +412,10 @@ public class QuestManager : MonoBehaviour
         }
     }
 
-    private void RewardItems(GameObject[] prefabArray)
+    private void RewardItems(GameObject[] prefabArray, float percentageOfMaxStack = 1.0f)
     {
+        if (prefabArray == null || prefabArray.Length == 0) return;
+
         foreach (GameObject prefab in prefabArray)
         {
             // instantiate new item
@@ -398,9 +425,12 @@ public class QuestManager : MonoBehaviour
             if (newObject.TryGetComponent(out Item newItem))
             {
                 // set quantity to max stack
-                if (newItem.MaxStackQuantity > 1)
+                if (newItem.MaxStackQuantity > 1 && percentageOfMaxStack > 0)
                 {
-                    newItem.SetQuantity(newItem.MaxStackQuantity);
+                    int newQuantity = Mathf.CeilToInt(newItem.MaxStackQuantity * percentageOfMaxStack);
+                    int newQuantitySafe = Mathf.Min(newQuantity, newItem.MaxStackQuantity);
+
+                    newItem.SetQuantity(newQuantitySafe);
                 }
                 
                 // add to inventory

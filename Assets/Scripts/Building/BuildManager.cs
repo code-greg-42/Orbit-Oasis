@@ -39,7 +39,7 @@ public class BuildManager : MonoBehaviour
     private int currentPrefabIndex = 0; // index to track build object type selection
     private bool previewIsPlaceable; // bool to track whether preview is in a placeable position
     private float lastPlacedTime = 0.0f; // used to see if build cooldown has surpassed
-    private float buildCooldown = 0.25f;
+    private const float buildCooldown = 0.3f;
 
     private void Awake()
     {
@@ -94,12 +94,6 @@ public class BuildManager : MonoBehaviour
                 if (Input.GetKeyDown(undoBuildKey) && lastPlacedBuild != null && !DialogueManager.Instance.DialogueWindowActive)
                 {
                     DeleteBuild(lastPlacedBuild);
-
-                    // update QuestManager if on Undo Last Build quest
-                    if (QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.UndoLastBuild)
-                    {
-                        QuestManager.Instance.UpdateCurrentQuest();
-                    }
                 }
 
                 HandleUserPrefabChange();
@@ -144,9 +138,24 @@ public class BuildManager : MonoBehaviour
         }
     }
 
-    public void ToggleOffBuildMode(float delay = 0.0f)
+    public void ToggleOffBuildMode(float delay = 0.25f)
     {
         StartCoroutine(ToggleOffBuildModeCoroutine(delay));
+    }
+
+    public void ToggleOnBuildMode(float delay = 0.25f)
+    {
+        StartCoroutine(ToggleOnBuildModeCoroutine(delay));
+    }
+
+    private IEnumerator ToggleOnBuildModeCoroutine(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        
+        if (!BuildModeActive)
+        {
+            ToggleBuildMode();
+        }
     }
 
     private IEnumerator ToggleOffBuildModeCoroutine(float delay)
@@ -361,6 +370,12 @@ public class BuildManager : MonoBehaviour
 
         // update navmesh surface
         NavMeshManager.Instance.UpdateNavMesh();
+
+        // update QuestManager if on Undo Last Build quest
+        if (QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.UndoLastBuild)
+        {
+            QuestManager.Instance.UpdateCurrentQuest();
+        }
     }
 
     private void UpdatePreviewColor(bool isPlaceable)
