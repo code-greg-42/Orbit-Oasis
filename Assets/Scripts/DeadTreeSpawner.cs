@@ -5,12 +5,13 @@ using UnityEngine;
 public class DeadTreeSpawner : MonoBehaviour
 {
     [SerializeField] private GameObject[] deadTreePrefabs;
-    private const int treesToSpawn = 2; // TEMPORARY: normal setting 10
     private const float boundary = 30.0f;
     private const float xAvoid = -10.0f;
     private const float zAvoid = -17.0f;
+    private const float middleAvoid = 5.0f;
 
     private const float distanceCheck = 3.0f;
+    private const int loopCheck = 10;
 
     private List<Vector2> treePositions;
 
@@ -23,22 +24,26 @@ public class DeadTreeSpawner : MonoBehaviour
     {
         if (QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.RemoveDeadTrees)
         {
-            SpawnDeadTrees();
+            SpawnDeadTrees(QuestManager.Instance.DeadTreesToSpawn);
         }
     }
 
     private Vector2 GenerateRandomSpawnPosition(int stopCounter = 0)
     {
         // prevents infinite loop
-        if (stopCounter >= treesToSpawn)
+        if (stopCounter >= loopCheck)
         {
-            Debug.LogWarning($"GenerateRandomSpawnPosition called {treesToSpawn} times but was unable to find an uncontested spawn position.");
-            return Vector2.zero;
+            // place just outside boundary --- incredibly unlikely this would even happen once, let alone more than once
+            Debug.LogWarning($"GenerateRandomSpawnPosition called {stopCounter} times but was unable to find an uncontested spawn position. " +
+                "Placing just outside boundary");
+            Vector2 justOutsideBoundary = new(boundary + 1.5f, boundary + 1.5f);
+            return justOutsideBoundary;
         }
 
-        // randomize x and z values, excluding the corner where the spaceship is
+        // randomize x and z values, explicitly excluding the corner where the spaceship is and the middle where the player is
+        // this avoids additional recursive calls
         float randomX = Random.Range(-boundary, boundary);
-        float randomZ = randomX < xAvoid ? Random.Range(zAvoid, boundary) : Random.Range(-boundary, boundary);
+        float randomZ = RandomizeZBasedOnX(randomX);
 
         Vector2 randomSpawn = new(randomX, randomZ);
 
@@ -54,7 +59,7 @@ public class DeadTreeSpawner : MonoBehaviour
         return randomSpawn;
     }
 
-    private void SpawnDeadTrees()
+    private void SpawnDeadTrees(int treesToSpawn)
     {
         for (int i = 0; i < treesToSpawn; i++)
         {
@@ -64,12 +69,6 @@ public class DeadTreeSpawner : MonoBehaviour
 
             // generate random XZ (excluding avoid zone)
             Vector2 randomSpawn = GenerateRandomSpawnPosition();
-
-            if (randomSpawn == Vector2.zero)
-            {
-                Debug.LogWarning("Unable to find valid random spawn.");
-                continue;
-            }
 
             // add random spawn to list of current positions (to avoid trees spawning on top of each other)
             treePositions.Add(randomSpawn);
@@ -82,6 +81,32 @@ public class DeadTreeSpawner : MonoBehaviour
 
             // set position to randomized spawn position
             deadTree.transform.position = spawnPos;
+        }
+    }
+
+    private float RandomizeZBasedOnX(float xValue)
+    {
+        if (xValue <= xAvoid)
+        {
+            // avoid bottom left quadrant by spaceship
+            return Random.Range(zAvoid, boundary);
+        }
+        else if (xValue >= -middleAvoid && xValue <= middleAvoid)
+        {
+            // avoid middle by player
+            if (Random.value < 0.5f)
+            {
+                return Random.Range(-boundary, -middleAvoid);
+            }
+            else
+            {
+                return Random.Range(middleAvoid, boundary);
+            }
+        }
+        else
+        {
+            // allow full range
+            return Random.Range(-boundary, boundary);
         }
     }
 }

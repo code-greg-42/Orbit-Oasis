@@ -43,6 +43,10 @@ public class QuestManager : MonoBehaviour
     public bool AllowSellFarmables => activeQuestIndex >= buildingQuestIndex; // quest completion point where farmables are no longer required
     public bool AllowSellBuildMaterial => activeQuestIndex >= spaceRaceQuestIndex; // quest completion point where building is no longer required
 
+    // quest info for other scripts
+    private int deadTreesToSpawn;
+    public int DeadTreesToSpawn => deadTreesToSpawn;
+
     public bool QuestLogActive => MainUIManager.Instance.QuestPanelActive;
     public string[] GemstoneNames => gemstoneNames;
 
@@ -94,6 +98,16 @@ public class QuestManager : MonoBehaviour
         farmingQuestIndex = GetQuestIndex(IntroQuest.FarmTree);
         buildingQuestIndex = GetQuestIndex(IntroQuest.PlaceABuild);
         spaceRaceQuestIndex = GetQuestIndex(IntroQuest.SpaceRace);
+
+        // if on the remove dead trees quest, set the number for use by the DeadTreeSpawner script
+        if (GetCurrentQuest() == IntroQuest.RemoveDeadTrees)
+        {
+            int deadTreesQuestIndex = GetQuestIndex(IntroQuest.RemoveDeadTrees);
+            Quest deadTreesQuest = introQuests[deadTreesQuestIndex];
+
+            // set amount accounting for any previously completed removed trees
+            deadTreesToSpawn = deadTreesQuest.TotalNeeded - questProgress;
+        }
     }
 
     private void Start()

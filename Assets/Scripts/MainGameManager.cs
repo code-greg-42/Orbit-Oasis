@@ -49,6 +49,10 @@ public class MainGameManager : MonoBehaviour
     private float saveTimer = 0.0f;
     private const float saveInterval = 180.0f;
 
+    // start cam settings
+    private float startCamX = 0.5f;
+    private float startCamY = 0.5f;
+
     public bool IsSwappingScenes { get; private set; }
     public bool IsLoadingIn { get; private set; } = true;
 
@@ -153,10 +157,10 @@ public class MainGameManager : MonoBehaviour
         playerResetInProgress = false;
     }
 
-    private void LoadCameraPos()
+    private void LoadCameraPos(float camX, float camY)
     {
-        float camX = DataManager.Instance.PlayerStats.CameraX;
-        float camY = DataManager.Instance.PlayerStats.CameraY;
+        //float camX = DataManager.Instance.PlayerStats.CameraX;
+        //float camY = DataManager.Instance.PlayerStats.CameraY;
 
         if (camX != 0 || camY != 0)
         {
@@ -170,9 +174,18 @@ public class MainGameManager : MonoBehaviour
         // slight initial delay
         yield return new WaitForSeconds(initialLoadingDelay);
 
-        // load in player and camera positioning from data manager
-        playerMovement.LoadPlayerPosition();
-        LoadCameraPos();
+        // only load player position if done the first intro quest
+        if (DataManager.Instance.PlayerStats.QuestIndex > 0)
+        {
+            // load in player and camera positioning from data manager
+            playerMovement.LoadPlayerPosition();
+            LoadCameraPos(DataManager.Instance.PlayerStats.CameraX, DataManager.Instance.PlayerStats.CameraY);
+        }
+        else
+        {
+            // adjust start cam for a better first look
+            LoadCameraPos(startCamX, startCamY);
+        }
 
         // show and wait for loading text
         yield return StartCoroutine(ShowLoadingText(introLoadingString));
