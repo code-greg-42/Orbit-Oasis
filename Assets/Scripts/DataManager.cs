@@ -304,6 +304,13 @@ public class DataManager : MonoBehaviour
             // update in-game UI
             MainUIManager.Instance.UpdateCurrencyDisplay(PlayerStats.PlayerCurrency, amount);
         }
+
+        if (MainSoundManager.Instance != null)
+        {
+            // play sound money sound effect
+            MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.Money);
+        }
+
         // save to file
         SavePlayerStats();
     }
