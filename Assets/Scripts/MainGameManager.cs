@@ -12,9 +12,10 @@ public class MainGameManager : MonoBehaviour
 
     // centralized references
     [Header("Script References")]
-    [SerializeField] private CinemachineFreeLook cinemachineCam;
+    //[SerializeField] private CinemachineFreeLook cinemachineCam;
     [SerializeField] private PlayerMovement playerMovement;
     [SerializeField] private PlayerControls playerControls;
+    [SerializeField] private CinemachineControls cameraControls;
 
     [Header("Loading Screen References")]
     [SerializeField] private Image loadingScreenPanel;
@@ -50,8 +51,8 @@ public class MainGameManager : MonoBehaviour
     private const float saveInterval = 180.0f;
 
     // start cam settings
-    private float startCamX = 0.5f;
-    private float startCamY = 0.5f;
+    private float startCamX = 0f;
+    private float startCamY = 0.6f;
 
     public bool IsSwappingScenes { get; private set; }
     public bool IsLoadingIn { get; private set; } = true;
@@ -122,7 +123,8 @@ public class MainGameManager : MonoBehaviour
     private IEnumerator FallOffEdgeCoroutine()
     {
         // turn off camera for falling effect
-        cinemachineCam.enabled = false;
+        cameraControls.DisableCam();
+        //cinemachineCam.enabled = false;
 
         // wait for reset delay time
         yield return new WaitForSeconds(resetDelayTime);
@@ -134,7 +136,8 @@ public class MainGameManager : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
 
         // turn cam back on
-        cinemachineCam.enabled = true;
+        cameraControls.EnableCam();
+        //cinemachineCam.enabled = true;
 
         // get dialogue path
         string dialoguePath = fallOffDialoguePath;
@@ -157,20 +160,20 @@ public class MainGameManager : MonoBehaviour
         playerResetInProgress = false;
     }
 
-    private void LoadCameraPos(float camX, float camY)
-    {
-        //float camX = DataManager.Instance.PlayerStats.CameraX;
-        //float camY = DataManager.Instance.PlayerStats.CameraY;
-
-        if (camX != 0 || camY != 0)
-        {
-            cinemachineCam.m_XAxis.Value = camX;
-            cinemachineCam.m_YAxis.Value = camY;
-        }
-    }
+    //private void LoadCameraPos(float camX, float camY)
+    //{
+    //    if (camX != 0 || camY != 0)
+    //    {
+    //        cinemachineCam.m_XAxis.Value = camX;
+    //        cinemachineCam.m_YAxis.Value = camY;
+    //    }
+    //}
 
     private IEnumerator StartSceneCoroutine()
     {
+        // prevent camera movement from any initial sporadic mouse movement
+        cameraControls.ToggleMouseMovement(true, false);
+
         // slight initial delay
         yield return new WaitForSeconds(initialLoadingDelay);
 
@@ -179,12 +182,12 @@ public class MainGameManager : MonoBehaviour
         {
             // load in player and camera positioning from data manager
             playerMovement.LoadPlayerPosition();
-            LoadCameraPos(DataManager.Instance.PlayerStats.CameraX, DataManager.Instance.PlayerStats.CameraY);
+            cameraControls.LoadCameraPos(DataManager.Instance.PlayerStats.CameraX, DataManager.Instance.PlayerStats.CameraY);
         }
         else
         {
             // adjust start cam for a better first look
-            LoadCameraPos(startCamX, startCamY);
+            cameraControls.LoadCameraPos(startCamX, startCamY);
         }
 
         // show and wait for loading text
@@ -192,6 +195,9 @@ public class MainGameManager : MonoBehaviour
 
         // fade out text
         StartCoroutine(FadeUI.Fade(loadingText, 0f, loadingTextFadeDuration));
+
+        // re-enable camera movement from mouse movement to allow player to look around as game fades in
+        cameraControls.ToggleMouseMovement(false, false);
 
         // fade in scene by fading out loading panel
         yield return FadeUI.Fade(loadingScreenPanel, 0f, loadingScreenFadeDuration);
@@ -233,7 +239,7 @@ public class MainGameManager : MonoBehaviour
     private void SaveDynamicData()
     {
         DataManager.Instance.SaveDynamicData(playerMovement.PlayerPosition, playerMovement.PlayerRotation,
-            cinemachineCam, AnimalManager.Instance.ActiveAnimals);
+            cameraControls.CameraReference, AnimalManager.Instance.ActiveAnimals);
     }
 
     private void AutoSaveDynamicData()

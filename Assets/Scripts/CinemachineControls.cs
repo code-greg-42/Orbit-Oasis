@@ -12,6 +12,8 @@ public class CinemachineControls : MonoBehaviour
     [SerializeField] private Texture2D customCursorTexture;
     private Vector2 cursorHotspot = new(10, 4);
 
+    public CinemachineFreeLook CameraReference => cinemachineFreeLookCam;
+
     private void Start()
     {
         // set cursor to custom cursor
@@ -19,7 +21,7 @@ public class CinemachineControls : MonoBehaviour
         DisableCursor();
     }
 
-    public void ToggleMouseMovement(bool disable)
+    public void ToggleMouseMovement(bool disable, bool adjustCursor = true)
     {
         if (disable)
         {
@@ -30,13 +32,29 @@ public class CinemachineControls : MonoBehaviour
             cinemachineFreeLookCam.m_XAxis.m_InputAxisValue = 0f;
             cinemachineFreeLookCam.m_YAxis.m_InputAxisValue = 0f;
 
-            EnableCursor();
+            if (adjustCursor)
+            {
+                EnableCursor();
+            }
         }
         else
         {
             cinemachineFreeLookCam.m_XAxis.m_InputAxisName = "Mouse X";
             cinemachineFreeLookCam.m_YAxis.m_InputAxisName = "Mouse Y";
-            DisableCursor();
+
+            if (adjustCursor)
+            {
+                DisableCursor();
+            }
+        }
+    }
+
+    public void LoadCameraPos(float camX, float camY)
+    {
+        if (camX != 0 || camY != 0)
+        {
+            cinemachineFreeLookCam.m_XAxis.Value = camX;
+            cinemachineFreeLookCam.m_YAxis.Value = camY;
         }
     }
 

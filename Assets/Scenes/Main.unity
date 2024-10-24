@@ -7639,7 +7639,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 785105713}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.047631975, y: 0.0000000021483564, z: -1.02446746e-10, w: 0.99886495}
+  m_LocalRotation: {x: 0.047631975, y: -0.0000000021483564, z: 1.02446746e-10, w: 0.99886495}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -9151,7 +9151,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.04763198, y: 0.0000000021483566, z: -1.02446746e-10, w: 0.99886495}
+  m_LocalRotation: {x: 0.04763198, y: -0.0000000021483566, z: 1.02446746e-10, w: 0.99886495}
   m_LocalPosition: {x: 0, y: 3, z: -7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -18186,9 +18186,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6aa6562e56780654eb6dbff8f3d330a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cinemachineCam: {fileID: 964580211}
   playerMovement: {fileID: 1258815351}
   playerControls: {fileID: 1258815352}
+  cameraControls: {fileID: 964580213}
   loadingScreenPanel: {fileID: 1437978882}
   loadingText: {fileID: 2147127782}
 --- !u!114 &1963380239
