@@ -64,7 +64,7 @@ public class Item : MonoBehaviour
                 DeleteItem();
                 break;
             case InventoryManager.InventoryAddStatus.InventoryFull:
-                if (this is PlaceableItem)
+                if (this is PlaceableItem or ToggleItem)
                 {
                     MainUIManager.Instance.ShowAlertText("inventory full, deleting item...", 2.5f);
                     DeleteItem();

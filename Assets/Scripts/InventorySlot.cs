@@ -10,16 +10,21 @@ public class InventorySlot : MenuItemSlot
     public bool IsRecentlyClicked { get; private set; }
     private const float doubleClickWindow = 0.42f;
 
-    public int AddAdditionalItem(int quantityToAdd)
+    public int AddAdditionalItem(int additional)
     {
+        int total = SlotItem.Quantity + additional;
+
         // calculate the remainder for if the new quantity exceeds MaxStackQuantity
-        int remainder = SlotItem.Quantity + quantityToAdd - SlotItem.MaxStackQuantity;
+        int remainder = total - SlotItem.MaxStackQuantity;
 
-        // add to DataManager first so it finds the correct slot to add to
-        DataManager.Instance.ChangeItemQuantity(SlotItem, SlotItem.Quantity + quantityToAdd);
+        // calculate new quantity to set to this slot, not to exceed max stack quantity
+        int newQuantity = Mathf.Min(total, SlotItem.MaxStackQuantity);
 
-        // add quantity to SlotItem
-        SlotItem.SetQuantity(SlotItem.Quantity + quantityToAdd);
+        // add to DataManager before setting the item's quantity so it finds the correct slot to add to
+        DataManager.Instance.ChangeItemQuantity(SlotItem, newQuantity);
+
+        // set quantity to SlotItem
+        SlotItem.SetQuantity(newQuantity);
 
         // update quantity UI
         quantityText.text = SlotItem.Quantity.ToString();
