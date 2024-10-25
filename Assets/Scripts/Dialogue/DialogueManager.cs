@@ -122,6 +122,10 @@ public class DialogueManager : MonoBehaviour
         DialogueWindowActive = true;
         dialoguePanel.SetActive(true);
 
+        // close out of any active in-game indicators
+        MainUIManager.Instance.DeactivateFarmingIndicator();
+        MainUIManager.Instance.DeactivateItemPickupIndicator();
+
         // wait allotted amount for eyes to adjust to scene transition
         yield return new WaitForSeconds(initialDelay);
 

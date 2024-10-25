@@ -458,6 +458,15 @@ public class PlayerControls : MonoBehaviour
         }
     }
 
+    private void ResetCachedItemVariables()
+    {
+        cachedItemResults = null;
+        cachedItemResultSize = 0;
+        cachedFoundAction = false;
+        cachedFoundNonItemAction = false;
+        cachedNonItemActionIndex = -1;
+    }
+
     private void ProcessFoundActions(Collider[] results, int size, bool nonItemAction, int nonItemActionIndex)
     {
         // always prioritize menu actions before items. trader and spaceship should never be in range of each other, thus should never overlap
@@ -499,6 +508,9 @@ public class PlayerControls : MonoBehaviour
 
             itemPickupCoroutine = StartCoroutine(ItemPickupCoroutine(results, size));
         }
+
+        // reset once done processing
+        ResetCachedItemVariables();
     }
 
     private (Collider[], int, bool, bool, int) ScanForActions()
