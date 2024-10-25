@@ -307,7 +307,7 @@ public class DataManager : MonoBehaviour
 
         if (MainSoundManager.Instance != null)
         {
-            // play sound money sound effect
+            // play money sound effect
             MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.Money);
         }
 
@@ -341,6 +341,12 @@ public class DataManager : MonoBehaviour
         {
             // update in-game UI --- use set amount to negative for correct floating text
             MainUIManager.Instance.UpdateCurrencyDisplay(PlayerStats.PlayerCurrency, -amount);
+        }
+
+        if (MainSoundManager.Instance != null)
+        {
+            // play money sound effect
+            MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.Money);
         }
 
         // save to file

@@ -23,6 +23,10 @@ public class FarmableObject : MonoBehaviour
     [Header("Type Setting")]
     [SerializeField] private ObjectType type;
 
+    [Header("Audio Settings")]
+    [SerializeField] private AudioClip farmSound;
+    private AudioSource audioSource;
+
     public enum ObjectType
     {
         Tree,
@@ -35,6 +39,7 @@ public class FarmableObject : MonoBehaviour
     {
         // intentionally resetting all farming between scene and session changes
         availableFarms = maxFarms;
+        audioSource = GetComponent<AudioSource>();
     }
 
     private void OnEnable()
@@ -51,6 +56,12 @@ public class FarmableObject : MonoBehaviour
         {
             availableFarms--;
             SpawnMaterial();
+
+            if (farmSound != null && audioSource != null)
+            {
+                // play farm sound
+                audioSource.PlayOneShot(farmSound);
+            }
         }
 
         RegenerateFarms();
