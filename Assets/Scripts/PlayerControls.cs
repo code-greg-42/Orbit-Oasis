@@ -49,7 +49,20 @@ public class PlayerControls : MonoBehaviour
     // farming proximity check variables
     private const float farmableSearchDistance = 2.6f;
     private FarmableObject.ObjectType nearbyFarmableObjectType;
-    private const float raycastSideOffset = 0.3f;
+    private bool farmableObjectNearby = false;
+    private bool lastFarmableCheckWasFalse = false;
+    private const float raycastSideOffset = 0.25f;
+
+    private const float checkFrequency = 0.1f; // to prevent repetitive uneccessary proximity checks
+    private float checkFrequencyTimer = 0.0f; // timer used for both farming and item pickup proximity checks
+    //private Coroutine checkFarmableObjectCoroutine;
+
+    // item proximity check variables
+    private Collider[] cachedItemResults;
+    private int cachedItemResultSize;
+    private bool cachedFoundAction;
+    private bool cachedFoundNonItemAction;
+    private int cachedNonItemActionIndex;
 
     // properties used by FarmingTool script
     public bool IsMidToolSwing => isMidToolSwing;
@@ -78,84 +91,208 @@ public class PlayerControls : MonoBehaviour
 
     void Update()
     {
+        ActionButtons();
+        UserMenuToggles();
+
+
+        //if (!BuildManager.Instance.BuildModeActive && !DialogueManager.Instance.DialogueWindowActive
+        //    && !ItemPlacementManager.Instance.ItemPlacementActive && !MainGameManager.Instance.IsSwappingScenes
+        //    && !MainGameManager.Instance.IsLoadingIn)
+        //{
+        //    // FARMING
+        //    if (QuestManager.Instance.FarmingQuestReached && toolSwingReady && playerMovement.IsGrounded && !isPickingUpItem)
+        //    {
+        //        // CHECK FOR NEARBY FARMABLE OBJECTS
+        //        bool farmableObjectIsNearby = CheckForFarmableObject();
+
+        //        if (farmableObjectIsNearby)
+        //        {
+        //            if (!isSwinging)
+        //            {
+        //                MainUIManager.Instance.ActivateFarmingIndicator();
+        //            }
+
+        //            // USER INPUT FOR FARMING
+        //            if (Input.GetKey(toolKeybind))
+        //            {
+        //                // deactivate with success set to true for green tint
+        //                MainUIManager.Instance.DeactivateFarmingIndicator(true);
+
+        //                if (nearbyFarmableObjectType == FarmableObject.ObjectType.Tree)
+        //                {
+        //                    SwingTool(true);
+        //                }
+        //                else if (nearbyFarmableObjectType == FarmableObject.ObjectType.Rock)
+        //                {
+        //                    SwingTool(false);
+        //                }
+        //                else
+        //                {
+        //                    Debug.LogWarning("Tool swing keybind pressed, but nearby farmable object is not correctly set.");
+        //                }
+        //            }
+        //        }
+        //        else
+        //        {
+        //            MainUIManager.Instance.DeactivateFarmingIndicator();
+        //        }
+        //    }
+
+        //    if (ReadyForAction)
+        //    {
+        //        // PICKUP ITEM PROCESSING
+        //        (Collider[] results, int size, bool foundAction, bool foundNonItemAction, int nonItemActionIndex) = ScanForActions();
+
+        //        if (foundAction)
+        //        {
+        //            MainUIManager.Instance.ActivateItemPickupIndicator();
+        //            if (Input.GetKeyDown(pickupKeybind))
+        //            {
+        //                // deactivate with success = true for green glow
+        //                MainUIManager.Instance.DeactivateItemPickupIndicator(true);
+
+        //                // process results based on whether there is a menu action found
+        //                ProcessFoundActions(results, size, foundNonItemAction, nonItemActionIndex);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            MainUIManager.Instance.DeactivateItemPickupIndicator(false);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        MainUIManager.Instance.DeactivateItemPickupIndicator(false);
+        //    }
+
+        //    // BOW SHOT -- ONLY WHILE PLAYER ISN"T MOVING
+        //    if (Input.GetKeyDown(shootingKeybind) && ReadyForAction && !playerMovement.IsMoving)
+        //    {
+        //        ShootBow();
+        //    }
+        //}
+
+        //// TOGGLE MENUS AND MODES
+        //if (!DialogueManager.Instance.DialogueWindowActive && !ItemPlacementManager.Instance.ItemPlacementActive &&
+        //    !MainGameManager.Instance.IsSwappingScenes && !MainGameManager.Instance.IsLoadingIn)
+        //{
+        //    // INVENTORY
+        //    if (Input.GetKeyDown(inventoryKeybind) && QuestManager.Instance.InventoryQuestReached && !InventoryManager.Instance.IsDragging &&
+        //        !TraderMenuManager.Instance.IsDragging)
+        //    {
+        //        // deactivate other menus if active
+        //        if (BuildManager.Instance.BuildModeActive)
+        //        {
+        //            BuildManager.Instance.ToggleBuildMode();
+        //        }
+        //        if (TraderMenuManager.Instance.IsMenuActive)
+        //        {
+        //            TraderMenuManager.Instance.ToggleTraderMenu();
+        //        }
+
+        //        InventoryManager.Instance.ToggleInventoryMenu();
+        //    }
+
+        //    // TRADER MENU
+        //    else if (Input.GetKeyDown(traderMenuKeybind) && !TraderMenuManager.Instance.IsDragging && !InventoryManager.Instance.IsDragging &&
+        //        QuestManager.Instance.GetCurrentQuest() == null)
+        //    {
+        //        // deactivate other menus if active
+        //        if (BuildManager.Instance.BuildModeActive)
+        //        {
+        //            BuildManager.Instance.ToggleBuildMode();
+        //        }
+        //        if (InventoryManager.Instance.IsMenuActive)
+        //        {
+        //            InventoryManager.Instance.ToggleInventoryMenu();
+        //        }
+
+        //        TraderMenuManager.Instance.ToggleTraderMenu();
+        //    }
+
+        //    // BUILD MODE -- only allow if no menus active
+        //    else if (Input.GetKeyDown(buildModeKeybind) && !InventoryManager.Instance.IsMenuActive && !TraderMenuManager.Instance.IsMenuActive &&
+        //        QuestManager.Instance.BuildingQuestReached)
+        //    {
+        //        BuildManager.Instance.ToggleBuildMode();
+        //    }
+        //}
+
+        //// ALTERNATE ESCAPE OF MENUS AND MODES
+        //if (Input.GetKeyDown(escapeKeybind) && !MainGameManager.Instance.IsSwappingScenes && !MainGameManager.Instance.IsLoadingIn)
+        //{
+        //    EscapeMenusAndBuildMode();
+        //}
+
+        //// UNSTUCK PLAYER
+        //if (Input.GetKey(escapeKeybind) && !MainGameManager.Instance.IsSwappingScenes && !MainGameManager.Instance.IsLoadingIn)
+        //{
+        //    unstuckTimer += Time.deltaTime;
+
+        //    if (unstuckTimer >= unstuckHoldLength)
+        //    {
+        //        unstuckTimer = 0.0f;
+        //        MainGameManager.Instance.UnstuckPlayer();
+        //    }
+        //}
+
+        //if (Input.GetKeyUp(escapeKeybind))
+        //{
+        //    unstuckTimer = 0.0f;
+        //}
+    }
+
+    public void EscapeMenusAndBuildMode()
+    {
+        if (InventoryManager.Instance.IsMenuActive)
+        {
+            if (!InventoryManager.Instance.IsDragging)
+            {
+                InventoryManager.Instance.ToggleInventoryMenu();
+            }
+        }
+
+        if (TraderMenuManager.Instance.IsMenuActive)
+        {
+            if (!TraderMenuManager.Instance.IsDragging)
+            {
+                TraderMenuManager.Instance.ToggleTraderMenu();
+            }
+        }
+        
+        if (BuildManager.Instance.BuildModeActive)
+        {
+            BuildManager.Instance.ToggleBuildMode();
+        }
+    }
+
+    private void ActionButtons()
+    {
         if (!BuildManager.Instance.BuildModeActive && !DialogueManager.Instance.DialogueWindowActive
             && !ItemPlacementManager.Instance.ItemPlacementActive && !MainGameManager.Instance.IsSwappingScenes
             && !MainGameManager.Instance.IsLoadingIn)
         {
-            // FARMING
-            if (QuestManager.Instance.FarmingQuestReached && toolSwingReady && playerMovement.IsGrounded && !isPickingUpItem)
-            {
-                // CHECK FOR NEARBY FARMABLE OBJECTS
-                bool farmableObjectIsNearby = CheckForFarmableObject();
+            checkFrequencyTimer += Time.deltaTime;
 
-                if (farmableObjectIsNearby)
-                {
-                    if (!isSwinging)
-                    {
-                        MainUIManager.Instance.ActivateFarmingIndicator();
-                    }
+            Farming(checkFrequencyTimer);
 
-                    // USER INPUT FOR FARMING
-                    if (Input.GetKey(toolKeybind))
-                    {
-                        // deactivate with success set to true for green tint
-                        MainUIManager.Instance.DeactivateFarmingIndicator(true);
+            PickupItemsButton(checkFrequencyTimer);
 
-                        if (nearbyFarmableObjectType == FarmableObject.ObjectType.Tree)
-                        {
-                            SwingTool(true);
-                        }
-                        else if (nearbyFarmableObjectType == FarmableObject.ObjectType.Rock)
-                        {
-                            SwingTool(false);
-                        }
-                        else
-                        {
-                            Debug.LogWarning("Tool swing keybind pressed, but nearby farmable object is not correctly set.");
-                        }
-                    }
-                }
-                else
-                {
-                    MainUIManager.Instance.DeactivateFarmingIndicator();
-                }
-            }
-
-            if (ReadyForAction)
-            {
-                // PICKUP ITEM PROCESSING
-                (Collider[] results, int size, bool foundAction, bool foundNonItemAction, int nonItemActionIndex) = ScanForActions();
-
-                if (foundAction)
-                {
-                    MainUIManager.Instance.ActivateItemPickupIndicator();
-                    if (Input.GetKeyDown(pickupKeybind))
-                    {
-                        // deactivate with success = true for green glow
-                        MainUIManager.Instance.DeactivateItemPickupIndicator(true);
-
-                        // process results based on whether there is a menu action found
-                        ProcessFoundActions(results, size, foundNonItemAction, nonItemActionIndex);
-                    }
-                }
-                else
-                {
-                    MainUIManager.Instance.DeactivateItemPickupIndicator(false);
-                }
-            }
-            else
-            {
-                MainUIManager.Instance.DeactivateItemPickupIndicator(false);
-            }
-
-            // BOW SHOT -- ONLY WHILE PLAYER ISN"T MOVING
+            // bow shot --- only while playing isn't moving
             if (Input.GetKeyDown(shootingKeybind) && ReadyForAction && !playerMovement.IsMoving)
             {
                 ShootBow();
             }
-        }
 
-        // TOGGLE MENUS AND MODES
+            if (checkFrequencyTimer >= checkFrequency)
+            {
+                checkFrequencyTimer = 0.0f;
+            }
+        }
+    }
+
+    private void UserMenuToggles()
+    {
         if (!DialogueManager.Instance.DialogueWindowActive && !ItemPlacementManager.Instance.ItemPlacementActive &&
             !MainGameManager.Instance.IsSwappingScenes && !MainGameManager.Instance.IsLoadingIn)
         {
@@ -225,27 +362,99 @@ public class PlayerControls : MonoBehaviour
         }
     }
 
-    public void EscapeMenusAndBuildMode()
+    private void Farming(float checkTimer)
     {
-        if (InventoryManager.Instance.IsMenuActive)
+        // FARMING
+        if (QuestManager.Instance.FarmingQuestReached && toolSwingReady && playerMovement.IsGrounded && !isPickingUpItem)
         {
-            if (!InventoryManager.Instance.IsDragging)
+            if (checkTimer >= checkFrequency)
             {
-                InventoryManager.Instance.ToggleInventoryMenu();
-            }
-        }
+                // CHECK FOR NEARBY FARMABLE OBJECTS
+                bool objectNearby = CheckForFarmableObject();
 
-        if (TraderMenuManager.Instance.IsMenuActive)
-        {
-            if (!TraderMenuManager.Instance.IsDragging)
+                if (objectNearby)
+                {
+                    farmableObjectNearby = true;
+                    lastFarmableCheckWasFalse = false;
+                }
+                else
+                {
+                    if (lastFarmableCheckWasFalse)
+                    {
+                        farmableObjectNearby = false;
+                    }
+                    else
+                    {
+                        lastFarmableCheckWasFalse = true;
+                    }
+                }
+            }
+
+            if (farmableObjectNearby)
             {
-                TraderMenuManager.Instance.ToggleTraderMenu();
+                if (!isSwinging)
+                {
+                    MainUIManager.Instance.ActivateFarmingIndicator();
+                }
+
+                // USER INPUT FOR FARMING
+                if (Input.GetKey(toolKeybind))
+                {
+                    // deactivate with success set to true for green tint
+                    MainUIManager.Instance.DeactivateFarmingIndicator(true);
+
+                    if (nearbyFarmableObjectType == FarmableObject.ObjectType.Tree)
+                    {
+                        SwingTool(true);
+                    }
+                    else if (nearbyFarmableObjectType == FarmableObject.ObjectType.Rock)
+                    {
+                        SwingTool(false);
+                    }
+                    else
+                    {
+                        Debug.LogWarning("Tool swing keybind pressed, but nearby farmable object is not correctly set.");
+                    }
+                }
+            }
+            else
+            {
+                MainUIManager.Instance.DeactivateFarmingIndicator();
             }
         }
-        
-        if (BuildManager.Instance.BuildModeActive)
+    }
+
+    private void PickupItemsButton(float checkTimer)
+    {
+        if (ReadyForAction)
         {
-            BuildManager.Instance.ToggleBuildMode();
+            if (checkTimer >= checkFrequency)
+            {
+                // PICKUP ITEM PROCESSING
+                //(Collider[] results, int size, bool foundAction, bool foundNonItemAction, int nonItemActionIndex) = ScanForActions();
+                (cachedItemResults, cachedItemResultSize, cachedFoundAction, cachedFoundNonItemAction, cachedNonItemActionIndex) = ScanForActions();
+            }
+
+            if (cachedFoundAction)
+            {
+                MainUIManager.Instance.ActivateItemPickupIndicator();
+                if (Input.GetKeyDown(pickupKeybind))
+                {
+                    // deactivate with success = true for green glow
+                    MainUIManager.Instance.DeactivateItemPickupIndicator(true);
+
+                    // process results based on whether there is a menu action found
+                    ProcessFoundActions(cachedItemResults, cachedItemResultSize, cachedFoundNonItemAction, cachedNonItemActionIndex);
+                }
+            }
+            else
+            {
+                MainUIManager.Instance.DeactivateItemPickupIndicator(false);
+            }
+        }
+        else
+        {
+            MainUIManager.Instance.DeactivateItemPickupIndicator(false);
         }
     }
 
@@ -398,20 +607,73 @@ public class PlayerControls : MonoBehaviour
         itemPickupCoroutine = null;
     }
 
+    //public void StartCheckFarmableObject()
+    //{
+    //    checkFarmableObjectCoroutine ??= StartCoroutine(CheckForFarmableObjectCoroutine());
+    //}
+
+    //private IEnumerator CheckForFarmableObjectCoroutine()
+    //{
+    //    while (true)
+    //    {
+    //        if (!BuildManager.Instance.BuildModeActive && !DialogueManager.Instance.DialogueWindowActive
+    //        && !ItemPlacementManager.Instance.ItemPlacementActive && !MainGameManager.Instance.IsSwappingScenes
+    //        && !MainGameManager.Instance.IsLoadingIn && toolSwingReady && playerMovement.IsGrounded && !isPickingUpItem)
+    //        {
+    //            bool objectNearby = CheckForFarmableObject();
+
+    //            if (objectNearby)
+    //            {
+    //                // set immediately
+    //                farmableObjectNearby = true;
+
+    //                noFarmableObjectTimer = 0f;
+
+    //                // activate UI immediately
+    //                MainUIManager.Instance.ActivateFarmingIndicator();
+
+    //                yield return new WaitForSeconds(farmableCheckDelay);
+    //            }
+    //            else
+    //            {
+    //                yield return new WaitForSeconds(farmableCheckDelay);
+    //                noFarmableObjectTimer += farmableCheckDelay;
+
+    //                if (noFarmableObjectTimer > noFarmableObjectTimeThreshold)
+    //                {
+    //                    noFarmableObjectTimer = 0f;
+
+    //                    // set if delay is reached
+    //                    farmableObjectNearby = false;
+
+    //                    // deactivate
+    //                    MainUIManager.Instance.DeactivateFarmingIndicator(false);
+    //                }
+    //            }
+    //        }
+    //        else
+    //        {
+    //            yield return new WaitForSeconds(farmableCheckDelay);
+    //        }
+    //    }
+    //}
+
     private bool CheckForFarmableObject()
     {
         // set origins for 3 raycasts
         // ordered with priority to the most middle ray, then the right ray (because the tool swings come from the right side)
         Vector3[] rayOrigins =
         {
-            playerObject.position,
-            playerObject.position + playerObject.right * raycastSideOffset,
-            playerObject.position - playerObject.right * raycastSideOffset,
+            playerObject.position + Vector3.up * 0.25f,
+            playerObject.position + playerObject.right * raycastSideOffset + Vector3.up * 0.25f,
+            playerObject.position - playerObject.right * raycastSideOffset + Vector3.up * 0.25f,
         };
 
         // loop through each origin and perform raycast
         foreach (Vector3 rayOrigin in rayOrigins)
         {
+            Debug.DrawRay(rayOrigin, playerObject.forward * farmableSearchDistance, Color.red, 0.1f); // Short duration for live debugging
+
             // cast a ray forwards from the specified position
             if (Physics.Raycast(rayOrigin, playerObject.forward, out RaycastHit hit, farmableSearchDistance, farmableObjectLayer))
             {
