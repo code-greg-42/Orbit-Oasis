@@ -74,9 +74,9 @@ public class PlayerControls : MonoBehaviour
     public bool IsPickingUpItem => isPickingUpItem;
 
     // main action property
-    public bool ReadyForAction => !isSwinging && !isShooting && !isPickingUpItem && playerMovement.IsGrounded && !BuildManager.Instance.BuildModeActive &&
-        !DialogueManager.Instance.DialogueWindowActive && !ItemPlacementManager.Instance.ItemPlacementActive && !InventoryManager.Instance.IsMenuActive &&
-        !TraderMenuManager.Instance.IsMenuActive && !SpaceshipSelection.Instance.IsMenuActive;
+    //public bool ReadyForAction => !isSwinging && !isShooting && !isPickingUpItem && playerMovement.IsGrounded && !BuildManager.Instance.BuildModeActive &&
+    //    !DialogueManager.Instance.DialogueWindowActive && !ItemPlacementManager.Instance.ItemPlacementActive && !InventoryManager.Instance.IsMenuActive &&
+    //    !TraderMenuManager.Instance.IsMenuActive && !SpaceshipSelection.Instance.IsMenuActive;
 
     [Header("References")]
     [SerializeField] private FarmingTool playerAxe;
@@ -89,11 +89,23 @@ public class PlayerControls : MonoBehaviour
     [Header("Layer Assignments")]
     [SerializeField] private LayerMask farmableObjectLayer;
 
+    // control bools
+    private bool IsLoaded => !MainGameManager.Instance.IsSwappingScenes && !MainGameManager.Instance.IsLoadingIn;
+    private bool NoMenusActive => !BuildManager.Instance.BuildModeActive && !InventoryManager.Instance.IsMenuActive &&
+        !TraderMenuManager.Instance.IsMenuActive && !SpaceshipSelection.Instance.IsMenuActive; // discludes ItemPlacement as that's handled separately
+    private bool ReadyForAction => playerMovement.IsGrounded && !isPickingUpItem && !isShooting;
+
     void Update()
     {
-        ActionButtons();
-        UserMenuToggles();
-
+        if (IsLoaded)
+        {
+            if (!DialogueManager.Instance.DialogueWindowActive && !ItemPlacementManager.Instance.ItemPlacementActive)
+            {
+                ActionButtons();
+                UserMenuToggles();
+            }
+            UserMenuEscape();
+        }
 
         //if (!BuildManager.Instance.BuildModeActive && !DialogueManager.Instance.DialogueWindowActive
         //    && !ItemPlacementManager.Instance.ItemPlacementActive && !MainGameManager.Instance.IsSwappingScenes
@@ -268,20 +280,25 @@ public class PlayerControls : MonoBehaviour
 
     private void ActionButtons()
     {
-        if (!BuildManager.Instance.BuildModeActive && !DialogueManager.Instance.DialogueWindowActive
-            && !ItemPlacementManager.Instance.ItemPlacementActive && !MainGameManager.Instance.IsSwappingScenes
-            && !MainGameManager.Instance.IsLoadingIn)
+        if (NoMenusActive)
         {
             checkFrequencyTimer += Time.deltaTime;
 
-            Farming(checkFrequencyTimer);
-
-            PickupItemsButton(checkFrequencyTimer);
-
-            // bow shot --- only while playing isn't moving
-            if (Input.GetKeyDown(shootingKeybind) && ReadyForAction && !playerMovement.IsMoving)
+            if (ReadyForAction)
             {
-                ShootBow();
+                Farming(checkFrequencyTimer);
+
+                // disclude !isSwinging from Farming to allow for continuous farming
+                if (!isSwinging)
+                {
+                    PickupItemsButton(checkFrequencyTimer);
+
+                    // bow shot --- only while playing isn't moving
+                    if (Input.GetKeyDown(shootingKeybind) && !playerMovement.IsMoving)
+                    {
+                        ShootBow();
+                    }
+                }
             }
 
             if (checkFrequencyTimer >= checkFrequency)
@@ -291,61 +308,68 @@ public class PlayerControls : MonoBehaviour
         }
     }
 
+    private void ResetAllIndicators()
+    {
+        farmableObjectNearby = false;
+        ResetCachedItemVariables();
+        MainUIManager.Instance.DeactivateFarmingIndicator();
+        MainUIManager.Instance.DeactivateItemPickupIndicator();
+    }
+
     private void UserMenuToggles()
     {
-        if (!DialogueManager.Instance.DialogueWindowActive && !ItemPlacementManager.Instance.ItemPlacementActive &&
-            !MainGameManager.Instance.IsSwappingScenes && !MainGameManager.Instance.IsLoadingIn)
+        // INVENTORY
+        if (Input.GetKeyDown(inventoryKeybind) && QuestManager.Instance.InventoryQuestReached && !InventoryManager.Instance.IsDragging &&
+            !TraderMenuManager.Instance.IsDragging)
         {
-            // INVENTORY
-            if (Input.GetKeyDown(inventoryKeybind) && QuestManager.Instance.InventoryQuestReached && !InventoryManager.Instance.IsDragging &&
-                !TraderMenuManager.Instance.IsDragging)
-            {
-                // deactivate other menus if active
-                if (BuildManager.Instance.BuildModeActive)
-                {
-                    BuildManager.Instance.ToggleBuildMode();
-                }
-                if (TraderMenuManager.Instance.IsMenuActive)
-                {
-                    TraderMenuManager.Instance.ToggleTraderMenu();
-                }
-
-                InventoryManager.Instance.ToggleInventoryMenu();
-            }
-
-            // TRADER MENU
-            else if (Input.GetKeyDown(traderMenuKeybind) && !TraderMenuManager.Instance.IsDragging && !InventoryManager.Instance.IsDragging &&
-                QuestManager.Instance.GetCurrentQuest() == null)
-            {
-                // deactivate other menus if active
-                if (BuildManager.Instance.BuildModeActive)
-                {
-                    BuildManager.Instance.ToggleBuildMode();
-                }
-                if (InventoryManager.Instance.IsMenuActive)
-                {
-                    InventoryManager.Instance.ToggleInventoryMenu();
-                }
-
-                TraderMenuManager.Instance.ToggleTraderMenu();
-            }
-
-            // BUILD MODE -- only allow if no menus active
-            else if (Input.GetKeyDown(buildModeKeybind) && !InventoryManager.Instance.IsMenuActive && !TraderMenuManager.Instance.IsMenuActive &&
-                QuestManager.Instance.BuildingQuestReached)
+            // deactivate other menus if active
+            if (BuildManager.Instance.BuildModeActive)
             {
                 BuildManager.Instance.ToggleBuildMode();
             }
+            if (TraderMenuManager.Instance.IsMenuActive)
+            {
+                TraderMenuManager.Instance.ToggleTraderMenu();
+            }
+
+            InventoryManager.Instance.ToggleInventoryMenu();
         }
 
+        // TRADER MENU
+        else if (Input.GetKeyDown(traderMenuKeybind) && !TraderMenuManager.Instance.IsDragging && !InventoryManager.Instance.IsDragging &&
+            QuestManager.Instance.GetCurrentQuest() == null)
+        {
+            // deactivate other menus if active
+            if (BuildManager.Instance.BuildModeActive)
+            {
+                BuildManager.Instance.ToggleBuildMode();
+            }
+            if (InventoryManager.Instance.IsMenuActive)
+            {
+                InventoryManager.Instance.ToggleInventoryMenu();
+            }
+
+            TraderMenuManager.Instance.ToggleTraderMenu();
+        }
+
+        // BUILD MODE -- only allow if no menus active
+        else if (Input.GetKeyDown(buildModeKeybind) && !InventoryManager.Instance.IsMenuActive && !TraderMenuManager.Instance.IsMenuActive &&
+            QuestManager.Instance.BuildingQuestReached)
+        {
+            BuildManager.Instance.ToggleBuildMode();
+        }
+    }
+
+    private void UserMenuEscape()
+    {
         // ALTERNATE ESCAPE OF MENUS AND MODES
-        if (Input.GetKeyDown(escapeKeybind) && !MainGameManager.Instance.IsSwappingScenes && !MainGameManager.Instance.IsLoadingIn)
+        if (Input.GetKeyDown(escapeKeybind))
         {
             EscapeMenusAndBuildMode();
         }
 
         // UNSTUCK PLAYER
-        if (Input.GetKey(escapeKeybind) && !MainGameManager.Instance.IsSwappingScenes && !MainGameManager.Instance.IsLoadingIn)
+        if (Input.GetKey(escapeKeybind))
         {
             unstuckTimer += Time.deltaTime;
 
@@ -365,7 +389,7 @@ public class PlayerControls : MonoBehaviour
     private void Farming(float checkTimer)
     {
         // FARMING
-        if (QuestManager.Instance.FarmingQuestReached && toolSwingReady && playerMovement.IsGrounded && !isPickingUpItem)
+        if (QuestManager.Instance.FarmingQuestReached && toolSwingReady)
         {
             if (checkTimer >= checkFrequency)
             {
@@ -426,7 +450,7 @@ public class PlayerControls : MonoBehaviour
 
     private void PickupItemsButton(float checkTimer)
     {
-        if (ReadyForAction)
+        if (QuestManager.Instance.FarmingQuestReached)
         {
             if (checkTimer >= checkFrequency)
             {

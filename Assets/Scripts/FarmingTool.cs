@@ -34,7 +34,11 @@ public class FarmingTool : MonoBehaviour
 
             if (other.TryGetComponent(out FarmableObject farmable))
             {
-                farmable.FarmObject();
+                if (farmable.HasAvailableFarms)
+                {
+                    MainSoundManager.Instance.PlayFarmingSound(farmable.Type);
+                    farmable.FarmObject();
+                }
             }
         }
     }
