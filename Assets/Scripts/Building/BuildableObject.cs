@@ -15,6 +15,8 @@ public class BuildableObject : MonoBehaviour
     [SerializeField] private GameObject[] attachmentSlots;
     [SerializeField] private GameObject deleteHighlight;
 
+    private Collider buildCollider;
+
     public Vector3 PlacementPosition { get; private set; }
     public Quaternion PlacementRotation { get; private set; }
     public bool IsPlaced { get; private set; }
@@ -24,6 +26,11 @@ public class BuildableObject : MonoBehaviour
     public GameObject BuildMaterialPrefab => buildMaterialPrefab;
     public int BuildPrefabIndex => buildPrefabIndex;
 
+    private void Awake()
+    {
+        buildCollider = GetComponent<Collider>();
+    }
+
     public void PlaceObject()
     {
         // activate attachment slots
@@ -32,11 +39,13 @@ public class BuildableObject : MonoBehaviour
             attachmentSlot.SetActive(true);
         }
 
-        // enable the collider
-        if (TryGetComponent(out Collider collider))
-        {
-            collider.enabled = true;
-        }
+        buildCollider.isTrigger = false;
+
+        //// enable the collider
+        //if (TryGetComponent(out Collider collider))
+        //{
+        //    collider.enabled = true;
+        //}
 
         // set placement values
         PlacementPosition = transform.position;
@@ -44,6 +53,11 @@ public class BuildableObject : MonoBehaviour
 
         // set bool
         IsPlaced = true;
+    }
+
+    public void SetIsTrigger()
+    {
+        buildCollider.isTrigger = true;
     }
 
     public void DeleteObject()
@@ -124,6 +138,40 @@ public class BuildableObject : MonoBehaviour
             {
                 slot.SetActive(true);
             }
+        }
+    }
+
+    private float CalculateOverlap(Bounds otherBounds)
+    {
+        Bounds overlapBounds = new();
+        overlapBounds.SetMinMax(
+            Vector3.Max(buildCollider.bounds.min, otherBounds.min),
+            Vector3.Min(buildCollider.bounds.max, otherBounds.max)
+        );
+
+        // return 0 if no overlap
+        if (overlapBounds.size.x <= 0 || overlapBounds.size.y <= 0 || overlapBounds.size.z <= 0)
+        {
+            return 0f;
+        }
+
+        // otherwise, return the volume of the overlapping region
+        return overlapBounds.size.x * overlapBounds.size.y * overlapBounds.size.z;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        Debug.Log("Collision enter detected with " + other.gameObject.name);
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        Debug.Log("Collision detected in OnTriggerStay with " + other.gameObject.name);
+        if (!other.CompareTag("Ground"))
+        {
+            float overlap = CalculateOverlap(other.bounds);
+
+            Debug.Log("Collision Overlap: " + overlap);
         }
     }
 }

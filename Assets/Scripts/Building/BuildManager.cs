@@ -211,10 +211,16 @@ public class BuildManager : MonoBehaviour
             Vector3 targetPosition = CalcTargetPosition();
             currentPreview = Instantiate(buildPrefabs[currentPrefabIndex], targetPosition, buildPrefabs[currentPrefabIndex].transform.rotation);
 
-            // disable collider on the current preview object
-            if (currentPreview.TryGetComponent(out Collider previewCollider))
+            //// disable collider on the current preview object
+            //if (currentPreview.TryGetComponent(out Collider previewCollider))
+            //{
+            //    previewCollider.enabled = false;
+            //}
+
+            // set collider to 'isTrigger' to prevent any interferences during preview phase
+            if (currentPreview.TryGetComponent(out BuildableObject buildable))
             {
-                previewCollider.enabled = false;
+                buildable.SetIsTrigger();
             }
 
             // set preview material to transparent material
