@@ -33,6 +33,7 @@ public class BuildManager : MonoBehaviour
     private KeyCode deleteModeKey = KeyCode.V;
 
     private GameObject currentPreview;
+    private BuildableObject currentPreviewBuildable;
     private BuildableObject lastPlacedBuild;
     private BuildableObject currentDeleteModeHighlightedBuild;
     private Material originalMaterial;
@@ -40,6 +41,8 @@ public class BuildManager : MonoBehaviour
     private bool previewIsPlaceable; // bool to track whether preview is in a placeable position
     private float lastPlacedTime = 0.0f; // used to see if build cooldown has surpassed
     private const float buildCooldown = 0.3f;
+
+    private bool previewInAttachmentSlot; // used for allowing place build despite a collision with a buildable object
 
     private void Awake()
     {
@@ -114,10 +117,12 @@ public class BuildManager : MonoBehaviour
             {
                 Destroy(currentPreview);
                 currentPreview = null;
+                currentPreviewBuildable = null;
             }
             // reset
             originalMaterial = null;
             previewIsPlaceable = false;
+            previewInAttachmentSlot = false;
 
             // cancel delete mode if active
             if (DeleteModeActive)
@@ -177,6 +182,7 @@ public class BuildManager : MonoBehaviour
                 // clear current preview
                 Destroy(currentPreview);
                 currentPreview = null;
+                currentPreviewBuildable = null;
             }
 
             // turn off highlight and reset reference if active
@@ -208,6 +214,8 @@ public class BuildManager : MonoBehaviour
     {
         if (currentPreview == null)
         {
+            previewInAttachmentSlot = false;
+
             Vector3 targetPosition = CalcTargetPosition();
             currentPreview = Instantiate(buildPrefabs[currentPrefabIndex], targetPosition, buildPrefabs[currentPrefabIndex].transform.rotation);
 
@@ -217,9 +225,10 @@ public class BuildManager : MonoBehaviour
             //    previewCollider.enabled = false;
             //}
 
-            // set collider to 'isTrigger' to prevent any interferences during preview phase
+            // set reference and set collider to 'isTrigger' to prevent any interferences during preview phase
             if (currentPreview.TryGetComponent(out BuildableObject buildable))
             {
+                currentPreviewBuildable = buildable;
                 buildable.SetIsTrigger();
             }
 
@@ -236,6 +245,7 @@ public class BuildManager : MonoBehaviour
             {
                 Destroy(currentPreview);
                 currentPreview = null;
+                currentPreviewBuildable = null;
             }
             currentPrefabIndex = index;
 
@@ -288,9 +298,12 @@ public class BuildManager : MonoBehaviour
                 targetPosition = closestAttachmentPoint.position;
                 targetRotation = closestAttachmentPoint.rotation;
                 previewIsPlaceable = true;
+                previewInAttachmentSlot = true;
             }
             else
             {
+                previewInAttachmentSlot = false;
+
                 targetPosition = CalcTargetPosition();
                 targetRotation = Quaternion.LookRotation(orientation.forward) *
                                     Quaternion.Euler(buildPrefabs[currentPrefabIndex].transform.rotation.eulerAngles);
@@ -345,9 +358,11 @@ public class BuildManager : MonoBehaviour
             }
             // finalize placement
             currentPreview = null;
+            currentPreviewBuildable = null;
             originalMaterial = null;
-            // reset bool
+            // reset bools
             previewIsPlaceable = false;
+            previewInAttachmentSlot = false;
         }
     }
 
@@ -399,15 +414,25 @@ public class BuildManager : MonoBehaviour
 
     private void UpdatePreviewIsPlaceable()
     {
-        if (currentPreview != null)
+        if (currentPreview != null && currentPreviewBuildable != null)
         {
-            if (currentPreview.TryGetComponent(out BuildableObject buildable))
+            // if player doesn't have enough materials, set to false
+            if (DataManager.Instance.PlayerBuildMaterial < currentPreviewBuildable.BuildCost)
             {
-                // if player doesn't have enough materials, set to false
-                if (DataManager.Instance.PlayerBuildMaterial < buildable.BuildCost)
-                {
-                    previewIsPlaceable = false;
-                }
+                previewIsPlaceable = false;
+                return;
+            }
+
+            // if preview is colliding with object such as a tree
+            if (currentPreviewBuildable.IsCollidingWithOther)
+            {
+                previewIsPlaceable = false;
+                return;
+            }
+
+            if (currentPreviewBuildable.IsCollidingWithBuildable && !previewInAttachmentSlot)
+            {
+                previewIsPlaceable = false;
             }
         }
     }

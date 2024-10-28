@@ -20,6 +20,8 @@ public class BuildableObject : MonoBehaviour
     public Vector3 PlacementPosition { get; private set; }
     public Quaternion PlacementRotation { get; private set; }
     public bool IsPlaced { get; private set; }
+    public bool IsCollidingWithBuildable { get; private set; }
+    public bool IsCollidingWithOther { get; private set; }
     public BuildEnums.BuildType BuildType => buildType;
     public float BuildCost => buildCost;
     public string BuildMaterialName => buildMaterialName;
@@ -141,37 +143,31 @@ public class BuildableObject : MonoBehaviour
         }
     }
 
-    private float CalculateOverlap(Bounds otherBounds)
-    {
-        Bounds overlapBounds = new();
-        overlapBounds.SetMinMax(
-            Vector3.Max(buildCollider.bounds.min, otherBounds.min),
-            Vector3.Min(buildCollider.bounds.max, otherBounds.max)
-        );
-
-        // return 0 if no overlap
-        if (overlapBounds.size.x <= 0 || overlapBounds.size.y <= 0 || overlapBounds.size.z <= 0)
-        {
-            return 0f;
-        }
-
-        // otherwise, return the volume of the overlapping region
-        return overlapBounds.size.x * overlapBounds.size.y * overlapBounds.size.z;
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        Debug.Log("Collision enter detected with " + other.gameObject.name);
-    }
-
     private void OnTriggerStay(Collider other)
     {
-        Debug.Log("Collision detected in OnTriggerStay with " + other.gameObject.name);
-        if (!other.CompareTag("Ground"))
-        {
-            float overlap = CalculateOverlap(other.bounds);
+        HandleCollider(other, true);
+    }
 
-            Debug.Log("Collision Overlap: " + overlap);
+    private void OnTriggerExit(Collider other)
+    {
+        HandleCollider(other, false);
+    }
+
+    private void HandleCollider(Collider other, bool setBool)
+    {
+        // ignore
+        if (other.CompareTag("Ground") || other.gameObject.layer == LayerMask.NameToLayer("BuildAttachmentPoint"))
+        {
+            return;
+        }
+
+        if (other.gameObject.TryGetComponent(out BuildableObject _))
+        {
+            IsCollidingWithBuildable = setBool;
+        }
+        else
+        {
+            IsCollidingWithOther = setBool;
         }
     }
 }
