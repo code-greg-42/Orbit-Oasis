@@ -26,6 +26,8 @@ public class BuildManager : MonoBehaviour
     private Color validPreviewColor = new(166 / 255f, 166 / 255f, 166 / 255f, 40 / 255f); // gray transparent color
     private Color invalidPreviewColor = new(255 / 255f, 0 / 255f, 0 / 255f, 65 / 255f); // red transparent color
     private float buildRefundRatio = 1.0f;
+    private const float colorUpdateFrequency = 0.07f;
+    private float lastColorUpdateTime;
 
     // keybinds
     private KeyCode placeBuildKey = KeyCode.F;
@@ -87,7 +89,12 @@ public class BuildManager : MonoBehaviour
 
                 UpdatePreviewIsPlaceable();
 
-                UpdatePreviewColor(previewIsPlaceable);
+                // prevents color from updating back and forth too much
+                if (Time.time - lastColorUpdateTime >= colorUpdateFrequency)
+                {
+                    UpdatePreviewColor(previewIsPlaceable);
+                    lastColorUpdateTime = Time.time;
+                }
 
                 if (Input.GetKeyDown(placeBuildKey) && currentPreview != null && previewIsPlaceable && !DialogueManager.Instance.DialogueWindowActive)
                 {
