@@ -104,154 +104,12 @@ public class PlayerControls : MonoBehaviour
                 ActionButtons();
                 UserMenuToggles();
             }
+            else
+            {
+                ResetAllIndicators();
+            }
             UserMenuEscape();
         }
-
-        //if (!BuildManager.Instance.BuildModeActive && !DialogueManager.Instance.DialogueWindowActive
-        //    && !ItemPlacementManager.Instance.ItemPlacementActive && !MainGameManager.Instance.IsSwappingScenes
-        //    && !MainGameManager.Instance.IsLoadingIn)
-        //{
-        //    // FARMING
-        //    if (QuestManager.Instance.FarmingQuestReached && toolSwingReady && playerMovement.IsGrounded && !isPickingUpItem)
-        //    {
-        //        // CHECK FOR NEARBY FARMABLE OBJECTS
-        //        bool farmableObjectIsNearby = CheckForFarmableObject();
-
-        //        if (farmableObjectIsNearby)
-        //        {
-        //            if (!isSwinging)
-        //            {
-        //                MainUIManager.Instance.ActivateFarmingIndicator();
-        //            }
-
-        //            // USER INPUT FOR FARMING
-        //            if (Input.GetKey(toolKeybind))
-        //            {
-        //                // deactivate with success set to true for green tint
-        //                MainUIManager.Instance.DeactivateFarmingIndicator(true);
-
-        //                if (nearbyFarmableObjectType == FarmableObject.ObjectType.Tree)
-        //                {
-        //                    SwingTool(true);
-        //                }
-        //                else if (nearbyFarmableObjectType == FarmableObject.ObjectType.Rock)
-        //                {
-        //                    SwingTool(false);
-        //                }
-        //                else
-        //                {
-        //                    Debug.LogWarning("Tool swing keybind pressed, but nearby farmable object is not correctly set.");
-        //                }
-        //            }
-        //        }
-        //        else
-        //        {
-        //            MainUIManager.Instance.DeactivateFarmingIndicator();
-        //        }
-        //    }
-
-        //    if (ReadyForAction)
-        //    {
-        //        // PICKUP ITEM PROCESSING
-        //        (Collider[] results, int size, bool foundAction, bool foundNonItemAction, int nonItemActionIndex) = ScanForActions();
-
-        //        if (foundAction)
-        //        {
-        //            MainUIManager.Instance.ActivateItemPickupIndicator();
-        //            if (Input.GetKeyDown(pickupKeybind))
-        //            {
-        //                // deactivate with success = true for green glow
-        //                MainUIManager.Instance.DeactivateItemPickupIndicator(true);
-
-        //                // process results based on whether there is a menu action found
-        //                ProcessFoundActions(results, size, foundNonItemAction, nonItemActionIndex);
-        //            }
-        //        }
-        //        else
-        //        {
-        //            MainUIManager.Instance.DeactivateItemPickupIndicator(false);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        MainUIManager.Instance.DeactivateItemPickupIndicator(false);
-        //    }
-
-        //    // BOW SHOT -- ONLY WHILE PLAYER ISN"T MOVING
-        //    if (Input.GetKeyDown(shootingKeybind) && ReadyForAction && !playerMovement.IsMoving)
-        //    {
-        //        ShootBow();
-        //    }
-        //}
-
-        //// TOGGLE MENUS AND MODES
-        //if (!DialogueManager.Instance.DialogueWindowActive && !ItemPlacementManager.Instance.ItemPlacementActive &&
-        //    !MainGameManager.Instance.IsSwappingScenes && !MainGameManager.Instance.IsLoadingIn)
-        //{
-        //    // INVENTORY
-        //    if (Input.GetKeyDown(inventoryKeybind) && QuestManager.Instance.InventoryQuestReached && !InventoryManager.Instance.IsDragging &&
-        //        !TraderMenuManager.Instance.IsDragging)
-        //    {
-        //        // deactivate other menus if active
-        //        if (BuildManager.Instance.BuildModeActive)
-        //        {
-        //            BuildManager.Instance.ToggleBuildMode();
-        //        }
-        //        if (TraderMenuManager.Instance.IsMenuActive)
-        //        {
-        //            TraderMenuManager.Instance.ToggleTraderMenu();
-        //        }
-
-        //        InventoryManager.Instance.ToggleInventoryMenu();
-        //    }
-
-        //    // TRADER MENU
-        //    else if (Input.GetKeyDown(traderMenuKeybind) && !TraderMenuManager.Instance.IsDragging && !InventoryManager.Instance.IsDragging &&
-        //        QuestManager.Instance.GetCurrentQuest() == null)
-        //    {
-        //        // deactivate other menus if active
-        //        if (BuildManager.Instance.BuildModeActive)
-        //        {
-        //            BuildManager.Instance.ToggleBuildMode();
-        //        }
-        //        if (InventoryManager.Instance.IsMenuActive)
-        //        {
-        //            InventoryManager.Instance.ToggleInventoryMenu();
-        //        }
-
-        //        TraderMenuManager.Instance.ToggleTraderMenu();
-        //    }
-
-        //    // BUILD MODE -- only allow if no menus active
-        //    else if (Input.GetKeyDown(buildModeKeybind) && !InventoryManager.Instance.IsMenuActive && !TraderMenuManager.Instance.IsMenuActive &&
-        //        QuestManager.Instance.BuildingQuestReached)
-        //    {
-        //        BuildManager.Instance.ToggleBuildMode();
-        //    }
-        //}
-
-        //// ALTERNATE ESCAPE OF MENUS AND MODES
-        //if (Input.GetKeyDown(escapeKeybind) && !MainGameManager.Instance.IsSwappingScenes && !MainGameManager.Instance.IsLoadingIn)
-        //{
-        //    EscapeMenusAndBuildMode();
-        //}
-
-        //// UNSTUCK PLAYER
-        //if (Input.GetKey(escapeKeybind) && !MainGameManager.Instance.IsSwappingScenes && !MainGameManager.Instance.IsLoadingIn)
-        //{
-        //    unstuckTimer += Time.deltaTime;
-
-        //    if (unstuckTimer >= unstuckHoldLength)
-        //    {
-        //        unstuckTimer = 0.0f;
-        //        MainGameManager.Instance.UnstuckPlayer();
-        //    }
-        //}
-
-        //if (Input.GetKeyUp(escapeKeybind))
-        //{
-        //    unstuckTimer = 0.0f;
-        //}
     }
 
     public void EscapeMenusAndBuildMode()
@@ -297,6 +155,7 @@ public class PlayerControls : MonoBehaviour
                     if (Input.GetKeyDown(shootingKeybind) && !playerMovement.IsMoving)
                     {
                         ShootBow();
+                        ResetAllIndicators();
                     }
                 }
             }
@@ -305,6 +164,10 @@ public class PlayerControls : MonoBehaviour
             {
                 checkFrequencyTimer = 0.0f;
             }
+        }
+        else
+        {
+            ResetAllIndicators();
         }
     }
 
@@ -427,6 +290,10 @@ public class PlayerControls : MonoBehaviour
                     // deactivate with success set to true for green tint
                     MainUIManager.Instance.DeactivateFarmingIndicator(true);
 
+                    // deactivate item pickup indicator (normal instead of success) and reset variables
+                    MainUIManager.Instance.DeactivateItemPickupIndicator();
+                    ResetCachedItemVariables();
+
                     if (nearbyFarmableObjectType == FarmableObject.ObjectType.Tree)
                     {
                         SwingTool(true);
@@ -466,6 +333,10 @@ public class PlayerControls : MonoBehaviour
                 {
                     // deactivate with success = true for green glow
                     MainUIManager.Instance.DeactivateItemPickupIndicator(true);
+
+                    // deactivate farming indicator and reset bool
+                    MainUIManager.Instance.DeactivateFarmingIndicator();
+                    farmableObjectNearby = false;
 
                     // process results based on whether there is a menu action found
                     ProcessFoundActions(cachedItemResults, cachedItemResultSize, cachedFoundNonItemAction, cachedNonItemActionIndex);
@@ -642,57 +513,6 @@ public class PlayerControls : MonoBehaviour
         // ensure coroutine is set back to null
         itemPickupCoroutine = null;
     }
-
-    //public void StartCheckFarmableObject()
-    //{
-    //    checkFarmableObjectCoroutine ??= StartCoroutine(CheckForFarmableObjectCoroutine());
-    //}
-
-    //private IEnumerator CheckForFarmableObjectCoroutine()
-    //{
-    //    while (true)
-    //    {
-    //        if (!BuildManager.Instance.BuildModeActive && !DialogueManager.Instance.DialogueWindowActive
-    //        && !ItemPlacementManager.Instance.ItemPlacementActive && !MainGameManager.Instance.IsSwappingScenes
-    //        && !MainGameManager.Instance.IsLoadingIn && toolSwingReady && playerMovement.IsGrounded && !isPickingUpItem)
-    //        {
-    //            bool objectNearby = CheckForFarmableObject();
-
-    //            if (objectNearby)
-    //            {
-    //                // set immediately
-    //                farmableObjectNearby = true;
-
-    //                noFarmableObjectTimer = 0f;
-
-    //                // activate UI immediately
-    //                MainUIManager.Instance.ActivateFarmingIndicator();
-
-    //                yield return new WaitForSeconds(farmableCheckDelay);
-    //            }
-    //            else
-    //            {
-    //                yield return new WaitForSeconds(farmableCheckDelay);
-    //                noFarmableObjectTimer += farmableCheckDelay;
-
-    //                if (noFarmableObjectTimer > noFarmableObjectTimeThreshold)
-    //                {
-    //                    noFarmableObjectTimer = 0f;
-
-    //                    // set if delay is reached
-    //                    farmableObjectNearby = false;
-
-    //                    // deactivate
-    //                    MainUIManager.Instance.DeactivateFarmingIndicator(false);
-    //                }
-    //            }
-    //        }
-    //        else
-    //        {
-    //            yield return new WaitForSeconds(farmableCheckDelay);
-    //        }
-    //    }
-    //}
 
     private bool CheckForFarmableObject()
     {
