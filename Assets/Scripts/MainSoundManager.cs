@@ -6,13 +6,22 @@ public class MainSoundManager : MonoBehaviour
 {
     public static MainSoundManager Instance;
 
-    [SerializeField] private AudioSource mainAudioSource;
+    [Header("Volume Settings")]
+    [Range(0f, 1f)]
+    [SerializeField] private float masterVolume = 0.1f;
 
-    [Header("AudioClips")]
+    [Header("UI AudioSource")]
+    [SerializeField] private AudioSource uiAudioSource;
+
+    [Header("AudioClips - 2D")]
     [SerializeField] private AudioClip questProgressClip;
     [SerializeField] private AudioClip moneyClip;
     [SerializeField] private AudioClip farmTreeSound;
     [SerializeField] private AudioClip farmRockSound;
+
+    [Header("AudioSources - 3D")]
+    [SerializeField] private AudioSource axeSource;
+    [SerializeField] private AudioSource miningSource;
 
     public enum SoundEffect
     {
@@ -22,7 +31,14 @@ public class MainSoundManager : MonoBehaviour
         FarmRock
     }
 
+    public enum SoundEffect3D
+    {
+        FarmTree,
+        FarmRock
+    }
+
     private Dictionary<SoundEffect, AudioClip> audioClips;
+    private Dictionary<SoundEffect3D, AudioSource> audioSources;
 
     private void Awake()
     {
@@ -35,13 +51,31 @@ public class MainSoundManager : MonoBehaviour
             { SoundEffect.FarmTree, farmTreeSound },
             { SoundEffect.FarmRock, farmRockSound },
         };
+
+        audioSources = new Dictionary<SoundEffect3D, AudioSource>()
+        {
+            { SoundEffect3D.FarmTree, axeSource },
+            { SoundEffect3D.FarmRock, miningSource }
+        };
     }
 
     public void PlaySoundEffect(SoundEffect effect)
     {
         if (audioClips.TryGetValue(effect, out AudioClip clip))
         {
-            mainAudioSource.PlayOneShot(clip);
+            uiAudioSource.PlayOneShot(clip);
+        }
+    }
+
+    public void PlaySoundEffect3D(SoundEffect3D effect)
+    {
+        if (audioSources.TryGetValue(effect, out AudioSource source))
+        {
+            if (source.isPlaying)
+            {
+                source.Stop();
+            }
+            source.Play();
         }
     }
 
