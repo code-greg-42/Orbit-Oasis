@@ -6,77 +6,74 @@ public class MainSoundManager : MonoBehaviour
 {
     public static MainSoundManager Instance;
 
-    [Header("Volume Settings")]
-    [Range(0f, 1f)]
-    [SerializeField] private float masterVolume = 0.1f;
+    [Header("UI AudioSources")]
+    [SerializeField] private AudioSource[] uiAudioSources;
 
-    [Header("UI AudioSource")]
-    [SerializeField] private AudioSource uiAudioSource;
+    [Header("Sound Effect Settings")]
+    [SerializeField] private List<SoundEffectSettings2D> soundEffectSettings2D;
+    [SerializeField] private List<SoundEffectSettings3D> soundEffectSettings3D;
 
-    [Header("AudioClips - 2D")]
-    [SerializeField] private AudioClip questProgressClip;
-    [SerializeField] private AudioClip moneyClip;
-    [SerializeField] private AudioClip farmTreeSound;
-    [SerializeField] private AudioClip farmRockSound;
-
-    [Header("AudioSources - 3D")]
-    [SerializeField] private AudioSource axeSource;
-    [SerializeField] private AudioSource miningSource;
+    private Dictionary<SoundEffect, SoundEffectSettings> soundEffects = new();
 
     public enum SoundEffect
     {
-        QuestProgress,
         Money,
         FarmTree,
         FarmRock
     }
 
-    public enum SoundEffect3D
-    {
-        FarmTree,
-        FarmRock
-    }
-
-    private Dictionary<SoundEffect, AudioClip> audioClips;
-    private Dictionary<SoundEffect3D, AudioSource> audioSources;
-
     private void Awake()
     {
         Instance = this;
 
-        audioClips = new Dictionary<SoundEffect, AudioClip>()
+        // map all 2d effects
+        foreach (SoundEffectSettings2D effect2D in soundEffectSettings2D)
         {
-            { SoundEffect.QuestProgress, questProgressClip },
-            { SoundEffect.Money, moneyClip },
-            { SoundEffect.FarmTree, farmTreeSound },
-            { SoundEffect.FarmRock, farmRockSound },
-        };
+            soundEffects[effect2D.Name] = effect2D;
+        }
 
-        audioSources = new Dictionary<SoundEffect3D, AudioSource>()
+        // mad all 3d effects and set volume/pitch settings to inspector settings
+        foreach (SoundEffectSettings3D effect3D in soundEffectSettings3D)
         {
-            { SoundEffect3D.FarmTree, axeSource },
-            { SoundEffect3D.FarmRock, miningSource }
-        };
+            soundEffects[effect3D.Name] = effect3D;
+            effect3D.InitAudioSettings();
+        }
     }
 
     public void PlaySoundEffect(SoundEffect effect)
     {
-        if (audioClips.TryGetValue(effect, out AudioClip clip))
+        if (soundEffects.TryGetValue(effect, out SoundEffectSettings settings))
         {
-            uiAudioSource.PlayOneShot(clip);
+            if (settings is SoundEffectSettings2D sound2D && sound2D.GetAudio() is AudioClip audioClip)
+            {
+                AudioSource uiAudioSource = GetAvailableAudioSource();
+                uiAudioSource.volume = settings.Volume;
+                uiAudioSource.pitch = settings.Pitch;
+                uiAudioSource.PlayOneShot(audioClip);
+            }
+            else if (settings is SoundEffectSettings3D sound3D && sound3D.GetAudio() is AudioSource audioSource)
+            {
+                if (audioSource.isPlaying)
+                {
+                    audioSource.Stop();
+                }
+                audioSource.Play();
+            }
         }
     }
 
-    public void PlaySoundEffect3D(SoundEffect3D effect)
+    private AudioSource GetAvailableAudioSource()
     {
-        if (audioSources.TryGetValue(effect, out AudioSource source))
+        foreach (AudioSource audioSource in uiAudioSources)
         {
-            if (source.isPlaying)
+            if (!audioSource.isPlaying)
             {
-                source.Stop();
+                return audioSource;
             }
-            source.Play();
         }
+
+        // return oldest source
+        return uiAudioSources[0];
     }
 
     public void PlayFarmingSound(FarmableObject.ObjectType farmableObjectType)
