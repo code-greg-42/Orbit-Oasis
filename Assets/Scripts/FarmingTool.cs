@@ -36,8 +36,17 @@ public class FarmingTool : MonoBehaviour
             {
                 if (farmable.HasAvailableFarms)
                 {
-                    MainSoundManager.Instance.PlayFarmingSound(farmable.Type);
                     farmable.FarmObject();
+
+                    // play corresponding sound effect
+                    if (farmable.Type == FarmableObject.ObjectType.Tree)
+                    {
+                        MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.FarmTree);
+                    }
+                    else if (farmable.Type == FarmableObject.ObjectType.Rock)
+                    {
+                        MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.FarmRock);
+                    }
                 }
             }
         }

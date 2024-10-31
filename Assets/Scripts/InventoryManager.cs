@@ -324,6 +324,7 @@ public class InventoryManager : MonoBehaviour
                 {
                     // send UI message
                     MainUIManager.Instance.ShowAlertText("You need that!", 2.5f);
+                    MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.NoSell);
                     return;
                 }
 
@@ -331,6 +332,7 @@ public class InventoryManager : MonoBehaviour
                 {
                     // send UI message
                     MainUIManager.Instance.ShowAlertText("Hang onto that for now!", 2.5f);
+                    MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.NoSell);
                     return;
                 }
             }

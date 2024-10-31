@@ -50,8 +50,6 @@ public class PlayerMovement : MonoBehaviour
     // custom gravity
     private const float customGravity = 20.0f;
     private bool gravityHacksActive;
-    private float gravityHacksRecentToggleTime;
-    private const float gravityHacksToggleCooldown = 0.25f;
 
     private float horizontalInput;
     private float verticalInput;
@@ -114,12 +112,8 @@ public class PlayerMovement : MonoBehaviour
 
     public void ToggleGravityHacks()
     {
-        if (Time.time - gravityHacksRecentToggleTime > gravityHacksToggleCooldown)
-        {
-            gravityHacksActive = !gravityHacksActive;
-            jumpForce = gravityHacksActive ? upgradedJumpForce : originalJumpForce;
-            gravityHacksRecentToggleTime = Time.time;
-        }
+        gravityHacksActive = !gravityHacksActive;
+        jumpForce = gravityHacksActive ? upgradedJumpForce : originalJumpForce;
     }
 
     public void LoadPlayerPosition()

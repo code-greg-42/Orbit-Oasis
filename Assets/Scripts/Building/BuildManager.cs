@@ -347,6 +347,9 @@ public class BuildManager : MonoBehaviour
                 // place build
                 buildable.PlaceObject();
 
+                // play sound effect
+                MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.PlaceBuild);
+
                 // update quest manager if on a PlaceBuild quest
                 if (QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.PlaceABuild ||
                     QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.PlaceMoreBuilds)
@@ -395,6 +398,9 @@ public class BuildManager : MonoBehaviour
 
         // delete the object whether refund was issued or not
         buildable.DeleteObject();
+
+        // play sound effect
+        MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.DeleteBuild);
 
         // update navmesh surface
         NavMeshManager.Instance.UpdateNavMesh();

@@ -145,6 +145,9 @@ public class ItemPlacementManager : MonoBehaviour
             // restore original material to currentItem
             SetPreviewMaterial(false);
 
+            // play sound effect
+            MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.PlaceBuild);
+
             // update quest manager if player is on the place trees quest -- no placeable items other than trees available at this point in game
             if (QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.PlantNewTrees)
             {

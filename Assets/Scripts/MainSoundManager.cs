@@ -19,7 +19,12 @@ public class MainSoundManager : MonoBehaviour
     {
         Money,
         FarmTree,
-        FarmRock
+        FarmRock,
+        PlaceBuild,
+        DeleteBuild,
+        NoSell,
+        HacksOn,
+        HacksOff
     }
 
     private void Awake()
@@ -60,6 +65,10 @@ public class MainSoundManager : MonoBehaviour
                 audioSource.Play();
             }
         }
+        else
+        {
+            Debug.LogWarning("Tried to play Sound Effect: " + effect.ToString() + ", but could not find corresponding settings in dictionary.");
+        }
     }
 
     private AudioSource GetAvailableAudioSource()
@@ -74,21 +83,5 @@ public class MainSoundManager : MonoBehaviour
 
         // return oldest source
         return uiAudioSources[0];
-    }
-
-    public void PlayFarmingSound(FarmableObject.ObjectType farmableObjectType)
-    {
-        if (farmableObjectType == FarmableObject.ObjectType.Tree)
-        {
-            PlaySoundEffect(SoundEffect.FarmTree);
-        }
-        else if (farmableObjectType == FarmableObject.ObjectType.Rock)
-        {
-            PlaySoundEffect(SoundEffect.FarmRock);
-        }
-        else
-        {
-            Debug.LogWarning("Tried to play farming sound effect, but object type did not match.");
-        }
     }
 }
