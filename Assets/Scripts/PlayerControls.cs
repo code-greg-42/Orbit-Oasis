@@ -645,18 +645,20 @@ public class PlayerControls : MonoBehaviour
 
         // get projectile from pool, set position to bow, and set active in scene
         GameObject projectile = ProjectilePool.Instance.GetPooledObject();
-        projectile.transform.position = playerBow.transform.position;
-        projectile.SetActive(true);
 
-        // set shot direction to player object's forward direction
-        Vector3 direction = playerObject.transform.forward;
-
-        // get rigidbody component and set velocity
-        if (projectile.TryGetComponent(out Rigidbody rb))
+        if (projectile != null)
         {
-            //rb.velocity = direction * 15f;
+            projectile.transform.position = playerBow.transform.position;
+            projectile.SetActive(true);
 
-            rb.AddForce(15f * direction, ForceMode.Impulse);
+            // set shot direction to player object's forward direction
+            Vector3 direction = playerObject.transform.forward;
+
+            // get rigidbody component and set velocity
+            if (projectile.TryGetComponent(out Rigidbody rb))
+            {
+                rb.AddForce(15f * direction, ForceMode.Impulse);
+            }
         }
 
         yield return new WaitForSeconds(bowShotAnimationTime - timeToBowShotRelease);

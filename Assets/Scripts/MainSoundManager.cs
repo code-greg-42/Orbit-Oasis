@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// script execution time of -10 to be able to set master volume
 public class MainSoundManager : MonoBehaviour
 {
     public static MainSoundManager Instance;

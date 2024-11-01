@@ -111,8 +111,10 @@ public class Item : MonoBehaviour
         {
             AnimalManager.Instance.AddActiveAnimal(animal);
 
+            Debug.Log("Playing animal sound.");
+
             // play spawn sound
-            MainSoundManager.Instance.PlaySoundEffect(animal.SpawnSound);
+            MainSoundManager.Instance.PlaySoundEffect(animal.Sound);
         }
         else
         {

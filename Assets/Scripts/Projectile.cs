@@ -15,12 +15,7 @@ public class Projectile : MonoBehaviour
 
     private float lifetimeTimer = 0.0f;
 
-    private void Awake()
-    {
-        Debug.Log("Awakening. Starting Coroutine.");
-        StartCoroutine(SetVolumeCoroutine());
-        Debug.Log("Coroutine Started.");
-    }
+    public GameObject DetonationEffect => detonationEffect;
 
     private void OnEnable()
     {
@@ -43,33 +38,6 @@ public class Projectile : MonoBehaviour
         }
     }
 
-    private IEnumerator SetVolumeCoroutine()
-    {
-        yield return new WaitUntil(() => MainSoundManager.Instance != null);
-
-        Debug.Log("Found MainSoundManager");
-
-        if (TryGetComponent(out AudioSource projectileSource) && detonationEffect.TryGetComponent(out AudioSource detonationSource))
-        {
-            // set volumes from inspector values
-            float masterVolume = MainSoundManager.Instance.MasterVolume;
-            float projectileVolume = MainSoundManager.Instance.ProjectileVolume;
-            float detonationVolume = MainSoundManager.Instance.DetonationVolume;
-
-            Debug.Log("Master Volume: " + masterVolume);
-            Debug.Log("Projectile Volume: " + projectileVolume);
-            Debug.Log("Detonation Volume: " + detonationVolume);
-            projectileSource.volume = projectileVolume * masterVolume;
-            detonationSource.volume = detonationVolume * masterVolume;
-
-            Debug.Log("Audio Source Volumes: " + projectileSource.volume + ", " + detonationSource.volume);
-        }
-        else
-        {
-            Debug.LogWarning("Unable to get audio sources from projectile and detonation effect.");
-        }
-    }
-
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.TryGetComponent(out Item item))
@@ -80,7 +48,8 @@ public class Projectile : MonoBehaviour
             MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.PickupItem);
             if (item is Animal animal)
             {
-                MainSoundManager.Instance.PlaySoundEffect(animal.SpawnSound);
+                Debug.Log("playing animal sound.");
+                MainSoundManager.Instance.PlaySoundEffect(animal.Sound);
             }
 
             if (item is DeadTree && QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.RemoveDeadTrees)
@@ -136,7 +105,7 @@ public class Projectile : MonoBehaviour
                     atLeastOneAnimalPickedUp = true;
 
                     // okay if it overrides, this way only one animal sound is played per pickup sequence
-                    animalSound = animal.SpawnSound;
+                    animalSound = animal.Sound;
                 }
                 
                 // increment counter if picked up item was a dead tree (added check for remove dead trees quest)
@@ -149,6 +118,7 @@ public class Projectile : MonoBehaviour
 
         if (atLeastOneAnimalPickedUp && animalSound != MainSoundManager.SoundEffect.NoSound)
         {
+            Debug.Log("Playing animal sound.");
             MainSoundManager.Instance.PlaySoundEffect(animalSound);
         }
 

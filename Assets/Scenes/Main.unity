@@ -7549,6 +7549,7 @@ RectTransform:
   - {fileID: 1837900146}
   - {fileID: 143696781}
   - {fileID: 97082200}
+  - {fileID: 938951063}
   m_Father: {fileID: 1154277283}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -9185,6 +9186,138 @@ AudioSource:
     - serializedVersion: 3
       time: 0
       value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!1 &938951062
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 938951063}
+  - component: {fileID: 938951064}
+  m_Layer: 5
+  m_Name: UISounds4
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &938951063
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 938951062}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 747118154}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!82 &938951064
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 938951062}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -12109,7 +12242,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1287715202}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.09252102, y: -0.00000001765986, z: 0.0000000016409466, w: 0.99571073}
+  m_LocalRotation: {x: 0.09252102, y: 0.000000017659854, z: -0.0000000016409462, w: 0.99571073}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -18895,6 +19028,7 @@ MonoBehaviour:
   - {fileID: 1837900147}
   - {fileID: 143696782}
   - {fileID: 97082201}
+  - {fileID: 938951064}
   soundEffectSettings2D:
   - soundName: 1
     volume: 1
@@ -18909,7 +19043,7 @@ MonoBehaviour:
     pitch: 1.1
     audioClip: {fileID: 8300000, guid: 4825243834fcd8344b5db559905ac4e0, type: 3}
   - soundName: 6
-    volume: 1
+    volume: 0.9
     pitch: 1
     audioClip: {fileID: 8300000, guid: 094883d45533c884f941a7dab201bcbc, type: 3}
   - soundName: 7
@@ -18921,15 +19055,15 @@ MonoBehaviour:
     pitch: 1
     audioClip: {fileID: 8300000, guid: a4207dbb277912d46a539b9144d12209, type: 3}
   - soundName: 9
-    volume: 0.9
+    volume: 0.8
     pitch: 1
     audioClip: {fileID: 8300000, guid: 5e3b112bf73c9a94c9864c0bcdd2e674, type: 3}
   - soundName: 10
-    volume: 0.45
-    pitch: 1.1
+    volume: 0.3
+    pitch: 1.2
     audioClip: {fileID: 8300000, guid: 10f6da84d0e7a6f479b4639b2b388741, type: 3}
   - soundName: 11
-    volume: 0.8
+    volume: 0.9
     pitch: 1
     audioClip: {fileID: 8300000, guid: 7f082a1cb5224c949a83b9b9ce7cd9cf, type: 3}
   - soundName: 12
@@ -18937,20 +19071,20 @@ MonoBehaviour:
     pitch: 1
     audioClip: {fileID: 8300000, guid: 731bd68c9897076418ef29a64b3c0505, type: 3}
   - soundName: 13
-    volume: 0.5
+    volume: 0.4
     pitch: 1.1
     audioClip: {fileID: 8300000, guid: d13ff0fe63367f849953fdf38a479e63, type: 3}
   soundEffectSettings3D:
   - soundName: 2
-    volume: 1.2
+    volume: 1.3
     pitch: 1.1
     audioSource: {fileID: 910859678}
   - soundName: 3
     volume: 1.2
     pitch: 1
     audioSource: {fileID: 1968290484}
-  projectileVolume: 0.8
-  detonationVolume: 0.8
+  projectileVolume: 1
+  detonationVolume: 1
 --- !u!4 &2080503787
 Transform:
   m_ObjectHideFlags: 0

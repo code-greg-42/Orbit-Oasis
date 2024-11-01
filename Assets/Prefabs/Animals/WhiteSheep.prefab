@@ -2821,7 +2821,7 @@ MonoBehaviour:
   roamRadius: 20
   minIdleTime: 3
   maxIdleTime: 30
-  spawnSound: 12
+  sound: 13
 --- !u!136 &1620372539494247991
 CapsuleCollider:
   m_ObjectHideFlags: 0

@@ -13,6 +13,24 @@ public class ProjectilePool : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+
+        if (MainSoundManager.Instance != null)
+        {
+            AdjustVolumeSettings();
+            InitializePool();
+        }
+        else
+        {
+            Debug.LogWarning("MainSoundManager = null, using backup initialization coroutine.");
+            StartCoroutine(BackupInitialization());
+        }
+    }
+
+    private IEnumerator BackupInitialization()
+    {
+        yield return new WaitUntil(() => MainSoundManager.Instance != null);
+
+        AdjustVolumeSettings();
         InitializePool();
     }
 
@@ -25,6 +43,23 @@ public class ProjectilePool : MonoBehaviour
             obj = Instantiate(objectToPool);
             obj.SetActive(false);
             pooledObjects.Add(obj);
+        }
+    }
+
+    private void AdjustVolumeSettings()
+    {
+        // set volume on prefab audio source
+        if (objectToPool.TryGetComponent(out AudioSource projectileSource))
+        {
+            projectileSource.volume = MainSoundManager.Instance.MasterVolume * MainSoundManager.Instance.ProjectileVolume;
+        }
+
+        if (objectToPool.TryGetComponent(out Projectile projectile))
+        {
+            if (projectile.DetonationEffect != null && projectile.DetonationEffect.TryGetComponent(out AudioSource detonationSource))
+            {
+                detonationSource.volume = MainSoundManager.Instance.MasterVolume * MainSoundManager.Instance.DetonationVolume;
+            }
         }
     }
 
