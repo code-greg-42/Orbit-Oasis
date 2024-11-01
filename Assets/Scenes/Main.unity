@@ -7703,7 +7703,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 785105713}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.047631975, y: 0.0000000021483564, z: -1.02446746e-10, w: 0.99886495}
+  m_LocalRotation: {x: 0.047631975, y: -0.0000000021483564, z: 1.02446746e-10, w: 0.99886495}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -9311,7 +9311,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.04763198, y: 0.0000000021483566, z: -1.02446746e-10, w: 0.99886495}
+  m_LocalRotation: {x: 0.04763198, y: -0.0000000021483566, z: 1.02446746e-10, w: 0.99886495}
   m_LocalPosition: {x: 0, y: 3, z: -7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -18896,44 +18896,56 @@ MonoBehaviour:
   - {fileID: 143696782}
   - {fileID: 97082201}
   soundEffectSettings2D:
-  - soundName: 0
+  - soundName: 1
     volume: 1
     pitch: 1
     audioClip: {fileID: 8300000, guid: 19a5b18b079f844bba783a9ec5f32efa, type: 3}
-  - soundName: 3
+  - soundName: 4
     volume: 0.7
     pitch: 1.2
     audioClip: {fileID: 8300000, guid: 65228e4bd627dad4b844eda200666145, type: 3}
-  - soundName: 4
+  - soundName: 5
     volume: 0.4
     pitch: 1.1
     audioClip: {fileID: 8300000, guid: 4825243834fcd8344b5db559905ac4e0, type: 3}
-  - soundName: 5
-    volume: 1
-    pitch: 1
-    audioClip: {fileID: 8300000, guid: 094883d45533c884f941a7dab201bcbc, type: 3}
   - soundName: 6
     volume: 1
     pitch: 1
-    audioClip: {fileID: 8300000, guid: 2753e0ec23a74d6448d91f0be83c3551, type: 3}
+    audioClip: {fileID: 8300000, guid: 094883d45533c884f941a7dab201bcbc, type: 3}
   - soundName: 7
     volume: 1
     pitch: 1
-    audioClip: {fileID: 8300000, guid: a4207dbb277912d46a539b9144d12209, type: 3}
+    audioClip: {fileID: 8300000, guid: 2753e0ec23a74d6448d91f0be83c3551, type: 3}
   - soundName: 8
+    volume: 1
+    pitch: 1
+    audioClip: {fileID: 8300000, guid: a4207dbb277912d46a539b9144d12209, type: 3}
+  - soundName: 9
     volume: 0.9
     pitch: 1
     audioClip: {fileID: 8300000, guid: 5e3b112bf73c9a94c9864c0bcdd2e674, type: 3}
-  - soundName: 9
+  - soundName: 10
     volume: 0.45
     pitch: 1.1
     audioClip: {fileID: 8300000, guid: 10f6da84d0e7a6f479b4639b2b388741, type: 3}
+  - soundName: 11
+    volume: 0.8
+    pitch: 1
+    audioClip: {fileID: 8300000, guid: 7f082a1cb5224c949a83b9b9ce7cd9cf, type: 3}
+  - soundName: 12
+    volume: 0.8
+    pitch: 1
+    audioClip: {fileID: 8300000, guid: 731bd68c9897076418ef29a64b3c0505, type: 3}
+  - soundName: 13
+    volume: 0.5
+    pitch: 1.1
+    audioClip: {fileID: 8300000, guid: d13ff0fe63367f849953fdf38a479e63, type: 3}
   soundEffectSettings3D:
-  - soundName: 1
+  - soundName: 2
     volume: 1.2
     pitch: 1.1
     audioSource: {fileID: 910859678}
-  - soundName: 2
+  - soundName: 3
     volume: 1.2
     pitch: 1
     audioSource: {fileID: 1968290484}

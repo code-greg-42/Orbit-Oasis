@@ -468,18 +468,20 @@ public class PlayerControls : MonoBehaviour
         yield return new WaitForSeconds(timeToMidItemPickup);
 
         int numberOfQuestItems = 0;
+        bool atLeastOneItemPickedUp = false;
 
         // loop through collider results and pickup all items
         for (int i = 0; i < size; i++)
         {
             Collider collider = results[i];
 
-            // get item component and pick it up if it's not an animal
+            // get item component and pick it up if it's not an animal/placeableitem/deadtree
             if (collider.gameObject.TryGetComponent(out Item item))
             {
                 if (item is not Animal && item is not PlaceableItem && item is not DeadTree)
                 {
                     item.PickupItem();
+                    atLeastOneItemPickedUp = true;
                     
                     if (QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.CollectMoreWood && item.ItemName == "Wood")
                     {
@@ -492,6 +494,12 @@ public class PlayerControls : MonoBehaviour
                     }
                 }
             }
+        }
+
+        if (atLeastOneItemPickedUp)
+        {
+            // play item pickup sound effect
+            MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.PickupItem);
         }
 
         // if player is on one of the collecting quests and at least 1 quest item was collected

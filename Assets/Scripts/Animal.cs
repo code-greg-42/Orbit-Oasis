@@ -9,6 +9,10 @@ public class Animal : Item
     [SerializeField] private float roamRadius;
     [SerializeField] private float minIdleTime = 3.0f;
     [SerializeField] private float maxIdleTime = 30.0f;
+
+    [Header("Sound Settings")]
+    [SerializeField] private MainSoundManager.SoundEffect spawnSound;
+
     private const float grazingTimeMin = 12.0f; // minimum idle time to set the eating/grazing animation
 
     // anti stuck variables
@@ -19,6 +23,8 @@ public class Animal : Item
 
     private NavMeshAgent agent;
     private Animator animalAnim;
+
+    public MainSoundManager.SoundEffect SpawnSound => spawnSound;
 
     private void Awake()
     {

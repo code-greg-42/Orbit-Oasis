@@ -110,6 +110,14 @@ public class Item : MonoBehaviour
         if (this is Animal animal)
         {
             AnimalManager.Instance.AddActiveAnimal(animal);
+
+            // play spawn sound
+            MainSoundManager.Instance.PlaySoundEffect(animal.SpawnSound);
+        }
+        else
+        {
+            // play normal drop sound
+            MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.DropItem);
         }
     }
 

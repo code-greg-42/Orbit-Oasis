@@ -294,22 +294,32 @@ public class InventoryManager : MonoBehaviour
 
     public void DropDraggedItem()
     {
-        if (DragSlot != null && DragSlot.SlotItem.IsDroppable)
+        if (DragSlot != null)
         {
-            // instantiate item in game world near player
-            Vector3 dropPos = playerTransform.position + playerTransform.forward * 2;
-            DragSlot.SlotItem.DropItem(dropPos);
-
-            // item removed from data manager in .DropItem()
-
-            // clear slot selection
-            if (DragSlot.IsSelected)
+            if (DragSlot.SlotItem.IsDroppable)
             {
-                RemoveSlotSelection();
-            }
+                // instantiate item in game world near player
+                Vector3 dropPos = playerTransform.position + playerTransform.forward * 2;
+                DragSlot.SlotItem.DropItem(dropPos);
 
-            // clear slot from inventory
-            DragSlot.ClearSlot();
+                // item removed from data manager in .DropItem()
+
+                // sound played from .DropItem() to allow for different drop sounds depending on type
+
+                // clear slot selection
+                if (DragSlot.IsSelected)
+                {
+                    RemoveSlotSelection();
+                }
+
+                // clear slot from inventory
+                DragSlot.ClearSlot();
+            }
+            else
+            {
+                // play UI sound for can't do that
+                MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.NoSell);
+            }
         }
     }
 

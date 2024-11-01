@@ -20,6 +20,8 @@ public class FarmableObject : MonoBehaviour
     private int availableFarms;
     private Coroutine regenCoroutine;
 
+    private float timeOfDisable = 0.0f;
+
     [Header("Type Setting")]
     [SerializeField] private ObjectType type;
 
@@ -42,9 +44,26 @@ public class FarmableObject : MonoBehaviour
     private void OnEnable()
     {
         // handling case where an object is picked up into inventory and re-placed
-        RegenerateFarms();
+        // this way a farmable object effectively continues regenning available farms, even when in inventory
 
-        // intentionally not stopping the coroutine on disable, as this way the availableFarms continue to regenerate even when a tree is in inventory
+        if (availableFarms < maxFarms && timeOfDisable != 0.0f)
+        {
+            float timeElapsed = Time.time - timeOfDisable;
+            int regensMissed = Mathf.FloorToInt(timeElapsed / regenInterval);
+
+            int newAvailableFarms = Mathf.Min(availableFarms + regensMissed, maxFarms);
+
+            availableFarms = newAvailableFarms;
+        }
+
+        timeOfDisable = 0.0f;
+
+        RegenerateFarms();
+    }
+
+    private void OnDisable()
+    {
+        timeOfDisable = Time.time;
     }
 
     public void FarmObject()

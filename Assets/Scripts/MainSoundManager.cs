@@ -28,6 +28,7 @@ public class MainSoundManager : MonoBehaviour
 
     public enum SoundEffect
     {
+        NoSound,
         Money,
         FarmTree,
         FarmRock,
@@ -37,7 +38,10 @@ public class MainSoundManager : MonoBehaviour
         HacksOn,
         HacksOff,
         QuestProgress,
-        QuestComplete
+        QuestComplete,
+        PickupItem,
+        DropItem,
+        Sheep
     }
 
     // master volume will be adjustable from the main menu scene, so the 3d audio settings only need to be set once
