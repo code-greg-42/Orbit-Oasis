@@ -41,7 +41,7 @@ public class DataManager : MonoBehaviour
 
             // TEMPORARY/TESTING
             ResetQuestStatus();
-            PlayerStats.QuestIndex = 8;
+            //PlayerStats.QuestIndex = 8;
         }
         else
         {
@@ -112,16 +112,6 @@ public class DataManager : MonoBehaviour
             SaveRaceStats();
         }
     }
-
-    //public void IncreaseQuestIndex()
-    //{
-    //    // never needs to go down
-    //    PlayerStats.QuestIndex++;
-
-    //    Debug.Log("Quest Index: " + PlayerStats.QuestIndex);
-
-    //    SavePlayerStats();
-    //}
 
     public void UpdateQuestStatus(int questIndex, int questProgress)
     {

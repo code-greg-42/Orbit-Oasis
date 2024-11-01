@@ -13,4 +13,5 @@ public class PlayerData
     public Quaternion PlayerRotation = Quaternion.identity;
     public int QuestIndex;
     public int QuestProgress;
+    public float MasterVolume;
 }

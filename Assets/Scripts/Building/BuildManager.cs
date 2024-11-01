@@ -46,6 +46,11 @@ public class BuildManager : MonoBehaviour
 
     private bool previewInAttachmentSlot; // used for allowing place build despite a collision with a buildable object
 
+    // --- this script can be optimized ---
+
+    // --- for example, instead of repetitively looking for attachments and setting the position when a preview is already in an attachment slot,
+    //                  it could wait for a minimum mouse movement or player movement to begin to look again
+
     private void Awake()
     {
         Instance = this;
@@ -225,12 +230,6 @@ public class BuildManager : MonoBehaviour
 
             Vector3 targetPosition = CalcTargetPosition();
             currentPreview = Instantiate(buildPrefabs[currentPrefabIndex], targetPosition, buildPrefabs[currentPrefabIndex].transform.rotation);
-
-            //// disable collider on the current preview object
-            //if (currentPreview.TryGetComponent(out Collider previewCollider))
-            //{
-            //    previewCollider.enabled = false;
-            //}
 
             // set reference and set collider to 'isTrigger' to prevent any interferences during preview phase
             if (currentPreview.TryGetComponent(out BuildableObject buildable))

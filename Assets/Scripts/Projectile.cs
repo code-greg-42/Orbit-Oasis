@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using System.Threading;
 using UnityEngine;
 
@@ -13,6 +14,11 @@ public class Projectile : MonoBehaviour
     [SerializeField] private GameObject detonationEffect;
 
     private float lifetimeTimer = 0.0f;
+
+    private void Awake()
+    {
+        StartCoroutine(SetVolumeCoroutine());
+    }
 
     private void OnEnable()
     {
@@ -32,6 +38,25 @@ public class Projectile : MonoBehaviour
         if (lifetimeTimer >= maxLifetime)
         {
             gameObject.SetActive(false);
+        }
+    }
+
+    private IEnumerator SetVolumeCoroutine()
+    {
+        yield return new WaitUntil(() => MainSoundManager.Instance != null);
+
+        if (TryGetComponent(out AudioSource projectileSource) && detonationEffect.TryGetComponent(out AudioSource detonationSource))
+        {
+            // set volumes from inspector values
+            float masterVolume = MainSoundManager.Instance.MasterVolume;
+            float projectileVolume = MainSoundManager.Instance.ProjectileVolume;
+            float detonationVolume = MainSoundManager.Instance.DetonationVolume;
+            projectileSource.volume = projectileVolume * masterVolume;
+            detonationSource.volume = detonationVolume * masterVolume;
+        }
+        else
+        {
+            Debug.LogWarning("Unable to get audio sources from projectile and detonation effect.");
         }
     }
 

@@ -12,9 +12,9 @@ public class SoundEffectSettings3D : SoundEffectSettings
         return audioSource;
     }
 
-    public void InitAudioSettings()
+    public void InitAudioSettings(float masterVolume)
     {
-        audioSource.volume = Volume;
+        audioSource.volume = Volume * masterVolume;
         audioSource.pitch = Pitch;
     }
 }

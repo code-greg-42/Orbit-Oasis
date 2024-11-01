@@ -6,6 +6,9 @@ public class MainSoundManager : MonoBehaviour
 {
     public static MainSoundManager Instance;
 
+    [Header("Volume Settings")]
+    [Range(0f, 2f)][SerializeField] private float masterVolume;
+
     [Header("UI AudioSources")]
     [SerializeField] private AudioSource[] uiAudioSources;
 
@@ -13,7 +16,15 @@ public class MainSoundManager : MonoBehaviour
     [SerializeField] private List<SoundEffectSettings2D> soundEffectSettings2D;
     [SerializeField] private List<SoundEffectSettings3D> soundEffectSettings3D;
 
+    [Header("Additional Effect Volumes")] // effects/audio sources that are part of a prefab, and are set when instantiated into a pool
+    [Range(0f, 5f)][SerializeField] private float projectileVolume;
+    [Range(0f, 5f)][SerializeField] private float detonationVolume;
+
     private Dictionary<SoundEffect, SoundEffectSettings> soundEffects = new();
+
+    public float MasterVolume => masterVolume; // used by sound effects in projectile pool
+    public float ProjectileVolume => projectileVolume;
+    public float DetonationVolume => detonationVolume;
 
     public enum SoundEffect
     {
@@ -27,21 +38,24 @@ public class MainSoundManager : MonoBehaviour
         HacksOff
     }
 
+    // master volume will be adjustable from the main menu scene, so the 3d audio settings only need to be set once
     private void Awake()
     {
         Instance = this;
 
-        // map all 2d effects
+        // get master volume setting from data manager
+
+        // map all 2d effects --- choosing not to modify with mastervolume yet to keep things easier for controlling mid-test in the inspector
         foreach (SoundEffectSettings2D effect2D in soundEffectSettings2D)
         {
             soundEffects[effect2D.Name] = effect2D;
         }
 
-        // mad all 3d effects and set volume/pitch settings to inspector settings
+        // map all 3d effects and set volume/pitch settings to inspector settings
         foreach (SoundEffectSettings3D effect3D in soundEffectSettings3D)
         {
             soundEffects[effect3D.Name] = effect3D;
-            effect3D.InitAudioSettings();
+            effect3D.InitAudioSettings(masterVolume);
         }
     }
 
@@ -52,7 +66,7 @@ public class MainSoundManager : MonoBehaviour
             if (settings is SoundEffectSettings2D sound2D && sound2D.GetAudio() is AudioClip audioClip)
             {
                 AudioSource uiAudioSource = GetAvailableAudioSource();
-                uiAudioSource.volume = settings.Volume;
+                uiAudioSource.volume = settings.Volume * masterVolume;
                 uiAudioSource.pitch = settings.Pitch;
                 uiAudioSource.PlayOneShot(audioClip);
             }
@@ -62,6 +76,7 @@ public class MainSoundManager : MonoBehaviour
                 {
                     audioSource.Stop();
                 }
+
                 audioSource.Play();
             }
         }
