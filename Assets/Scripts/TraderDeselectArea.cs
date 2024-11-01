@@ -11,6 +11,7 @@ public class TraderDeselectArea : MonoBehaviour, IPointerClickHandler
         {
             // unselect current selection
             TraderMenuManager.Instance.RemoveSlotSelection();
+            MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.Click);
         }
     }
 }

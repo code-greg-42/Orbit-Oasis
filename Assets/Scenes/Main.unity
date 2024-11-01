@@ -19059,9 +19059,9 @@ MonoBehaviour:
     pitch: 1
     audioClip: {fileID: 8300000, guid: 5e3b112bf73c9a94c9864c0bcdd2e674, type: 3}
   - soundName: 10
-    volume: 0.3
-    pitch: 1.2
-    audioClip: {fileID: 8300000, guid: 10f6da84d0e7a6f479b4639b2b388741, type: 3}
+    volume: 0.4
+    pitch: 1.1
+    audioClip: {fileID: 8300000, guid: 7bd6b897eb5ca4b7d88a205c4a51640c, type: 3}
   - soundName: 11
     volume: 0.9
     pitch: 1
@@ -19074,6 +19074,30 @@ MonoBehaviour:
     volume: 0.4
     pitch: 1.1
     audioClip: {fileID: 8300000, guid: d13ff0fe63367f849953fdf38a479e63, type: 3}
+  - soundName: 14
+    volume: 1
+    pitch: 1.4
+    audioClip: {fileID: 8300000, guid: 7abccce1359ba0d4a8421bcc212783c5, type: 3}
+  - soundName: 15
+    volume: 1
+    pitch: 1
+    audioClip: {fileID: 8300000, guid: 7abccce1359ba0d4a8421bcc212783c5, type: 3}
+  - soundName: 16
+    volume: 1
+    pitch: 1
+    audioClip: {fileID: 8300000, guid: 3ea865a2730d2eb478bcd7ca3f8a9363, type: 3}
+  - soundName: 17
+    volume: 1
+    pitch: 1
+    audioClip: {fileID: 8300000, guid: 3ea865a2730d2eb478bcd7ca3f8a9363, type: 3}
+  - soundName: 18
+    volume: 1.1
+    pitch: 0.7
+    audioClip: {fileID: 8300000, guid: 3ea865a2730d2eb478bcd7ca3f8a9363, type: 3}
+  - soundName: 19
+    volume: 1
+    pitch: 1.3
+    audioClip: {fileID: 8300000, guid: 3ea865a2730d2eb478bcd7ca3f8a9363, type: 3}
   soundEffectSettings3D:
   - soundName: 2
     volume: 1.3
@@ -19083,8 +19107,8 @@ MonoBehaviour:
     volume: 1.2
     pitch: 1
     audioSource: {fileID: 1968290484}
-  projectileVolume: 1
-  detonationVolume: 1
+  projectileVolume: 2
+  detonationVolume: 2
 --- !u!4 &2080503787
 Transform:
   m_ObjectHideFlags: 0

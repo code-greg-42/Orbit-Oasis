@@ -29,6 +29,11 @@ public class TraderSlot : MenuItemSlot
             if (SlotItem != null)
             {
                 SelectSlot();
+                MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.Select);
+            }
+            else
+            {
+                MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.Click);
             }
         }
     }

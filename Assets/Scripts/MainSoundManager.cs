@@ -42,7 +42,13 @@ public class MainSoundManager : MonoBehaviour
         QuestComplete,
         PickupItem,
         DropItem,
-        Sheep
+        Sheep,
+        Click,
+        Select,
+        EndDrag,
+        SpaceMenuSelect,
+        SpaceMenuEnter,
+        SpaceMenuBack
     }
 
     // master volume will be adjustable from the main menu scene, so the 3d audio settings only need to be set once

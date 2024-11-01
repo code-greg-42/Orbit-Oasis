@@ -22,8 +22,6 @@ public class AnimalManager : MonoBehaviour
     public void AddActiveAnimal(Animal animal, bool saveToData = true)
     {
         ActiveAnimals.Add(animal);
-        Debug.Log("Animal added to active animals list.");
-        Debug.Log("Active Animal Count: " + ActiveAnimals.Count);
 
         if (saveToData)
         {
@@ -36,8 +34,6 @@ public class AnimalManager : MonoBehaviour
         if (ActiveAnimals.Contains(animal))
         {
             ActiveAnimals.Remove(animal);
-            Debug.Log("Animal removed from active animals list.");
-            Debug.Log("Active Animal Count: " + ActiveAnimals.Count);
             UpdateDataManager();
         }
         else

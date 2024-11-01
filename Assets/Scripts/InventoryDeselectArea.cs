@@ -11,6 +11,7 @@ public class InventoryDeselectArea : MonoBehaviour, IPointerClickHandler
         {
             // unselect current selection
             InventoryManager.Instance.RemoveSlotSelection();
+            MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.Click);
         }
     }
 }

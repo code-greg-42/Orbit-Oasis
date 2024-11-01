@@ -48,7 +48,6 @@ public class Projectile : MonoBehaviour
             MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.PickupItem);
             if (item is Animal animal)
             {
-                Debug.Log("playing animal sound.");
                 MainSoundManager.Instance.PlaySoundEffect(animal.Sound);
             }
 
@@ -118,7 +117,6 @@ public class Projectile : MonoBehaviour
 
         if (atLeastOneAnimalPickedUp && animalSound != MainSoundManager.SoundEffect.NoSound)
         {
-            Debug.Log("Playing animal sound.");
             MainSoundManager.Instance.PlaySoundEffect(animalSound);
         }
 

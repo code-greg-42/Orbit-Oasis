@@ -58,31 +58,91 @@ public class InventorySlot : MenuItemSlot
     {
         if (eventData.button == PointerEventData.InputButton.Left)
         {
-            // unselect current selection
-            InventoryManager.Instance.RemoveSlotSelection();
+            OnLeftClick();
+            //// unselect current selection
+            //InventoryManager.Instance.RemoveSlotSelection();
 
-            // select slot if slot has an item
-            if (SlotItem != null)
-            {
-                SelectSlot();
-            }
+            //// select slot if slot has an item
+            //if (SlotItem != null)
+            //{
+            //    SelectSlot();
+            //}
 
-            if (SlotItem is PlaceableItem placeableItem)
+            //if (SlotItem is PlaceableItem placeableItem)
+            //{
+            //    if (IsRecentlyClicked)
+            //    {
+            //        ItemPlacementManager.Instance.ActivateItemPlacement(placeableItem);
+            //        ClearSlot();
+            //    }
+            //    else
+            //    {
+            //        IsRecentlyClicked = true;
+            //        Invoke(nameof(ResetRecentlyClicked), doubleClickWindow);
+            //    }
+            //}
+            //else if (SlotItem is Animal animal)
+            //{
+            //    if (IsRecentlyClicked)
+            //    {
+            //        Transform playerTransform = GameObject.Find("PlayerModel").transform;
+
+            //        if (playerTransform != null)
+            //        {
+            //            // calculate drop position based on player
+            //            Vector3 dropPos = playerTransform.position + playerTransform.forward * 2;
+
+            //            // drop item out of inventory and into scene
+            //            animal.DropItem(dropPos);
+
+            //            // deselect and clear slot
+            //            DeselectSlot();
+            //            ClearSlot();
+            //        }
+            //    }
+            //    else
+            //    {
+            //        IsRecentlyClicked = true;
+            //        Invoke(nameof(ResetRecentlyClicked), doubleClickWindow);
+            //    }
+            //}
+            //else if (SlotItem is ToggleItem toggleItem)
+            //{
+            //    if (IsRecentlyClicked)
+            //    {
+            //        // toggle items ability and show alert message, without getting rid of the item or clearing the slot
+            //        toggleItem.ToggleAbility();
+            //    }
+            //    else
+            //    {
+            //        IsRecentlyClicked = true;
+            //        Invoke(nameof(ResetRecentlyClicked), doubleClickWindow);
+            //    }
+            //}
+        }
+    }
+
+    private void OnLeftClick()
+    {
+        // unselect current selection
+        InventoryManager.Instance.RemoveSlotSelection();
+
+        // select slot if slot has an item
+        if (SlotItem != null)
+        {
+            SelectSlot();
+            MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.Select);
+
+            if (IsRecentlyClicked)
             {
-                if (IsRecentlyClicked)
+                // -- elected efficiency over DRY in this method --- //
+
+                if (SlotItem is PlaceableItem placeableItem)
                 {
                     ItemPlacementManager.Instance.ActivateItemPlacement(placeableItem);
                     ClearSlot();
                 }
-                else
-                {
-                    IsRecentlyClicked = true;
-                    Invoke(nameof(ResetRecentlyClicked), doubleClickWindow);
-                }
-            }
-            else if (SlotItem is Animal animal)
-            {
-                if (IsRecentlyClicked)
+                else if (SlotItem is Animal animal)
                 {
                     Transform playerTransform = GameObject.Find("PlayerModel").transform;
 
@@ -94,30 +154,28 @@ public class InventorySlot : MenuItemSlot
                         // drop item out of inventory and into scene
                         animal.DropItem(dropPos);
 
-                        // deselect and clear slot
                         DeselectSlot();
                         ClearSlot();
                     }
+                    else
+                    {
+                        Debug.LogWarning("Could not find 'PlayerModel' transform in InventorySlot script.");
+                    }
                 }
-                else
+                else if (SlotItem is ToggleItem toggleItem)
                 {
-                    IsRecentlyClicked = true;
-                    Invoke(nameof(ResetRecentlyClicked), doubleClickWindow);
-                }
-            }
-            else if (SlotItem is ToggleItem toggleItem)
-            {
-                if (IsRecentlyClicked)
-                {
-                    // toggle items ability and show alert message, without getting rid of the item or clearing the slot
                     toggleItem.ToggleAbility();
                 }
-                else
-                {
-                    IsRecentlyClicked = true;
-                    Invoke(nameof(ResetRecentlyClicked), doubleClickWindow);
-                }
             }
+            else
+            {
+                IsRecentlyClicked = true;
+                Invoke(nameof(ResetRecentlyClicked), doubleClickWindow);
+            }
+        }
+        else
+        {
+            MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.Click);
         }
     }
 

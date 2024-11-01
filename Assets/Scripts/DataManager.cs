@@ -41,7 +41,7 @@ public class DataManager : MonoBehaviour
 
             // TEMPORARY/TESTING
             ResetQuestStatus();
-            //PlayerStats.QuestIndex = 1;
+            PlayerStats.QuestIndex = 11;
         }
         else
         {

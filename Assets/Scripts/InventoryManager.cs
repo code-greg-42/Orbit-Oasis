@@ -257,6 +257,7 @@ public class InventoryManager : MonoBehaviour
             IsDragging = false;
             DragSlot = null;
             dragImage.gameObject.SetActive(false);
+            MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.EndDrag);
             sellSlotHighlightPanel.SetActive(false);
             //storeSlotHighlightPanel.SetActive(false);
             UpdateCurrencyDisplay();

@@ -114,12 +114,17 @@ public class SpaceshipSelection : MonoBehaviour
         // BUTTON PRESS
         if (Input.GetKeyDown(KeyCode.Return))
         {
+            // play sound
+            MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.SpaceMenuEnter);
+
+            // execute button press
             PressSelectedButton();
         }
 
         // EXIT MENU
         if (Input.GetKeyDown(KeyCode.Escape))
         {
+            MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.SpaceMenuBack);
             int newMenuStage = currentMenuStage - 1;
 
             // go to main menu if escape is pressed from a further menu, otherwise exit the menu altogether
@@ -159,6 +164,9 @@ public class SpaceshipSelection : MonoBehaviour
     {
         if (AreIndicesValid(currentMenuStage, selection))
         {
+            // play sound
+            MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.SpaceMenuSelect);
+
             // call deselect before changing currentSelection
             DeselectCurrentSelection();
 

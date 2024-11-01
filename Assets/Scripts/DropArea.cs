@@ -18,6 +18,7 @@ public class DropArea : MonoBehaviour, IDropHandler, IPointerClickHandler
         if (eventData.button == PointerEventData.InputButton.Left)
         {
             InventoryManager.Instance.RemoveSlotSelection();
+            MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.Click);
         }
     }
 }

@@ -101,6 +101,8 @@ public class MainGameManager : MonoBehaviour
         // close all open menus
         playerControls.EscapeMenusAndBuildMode();
 
+        MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.Select);
+
         startNewSceneCoroutine ??= StartCoroutine(StartNewSceneCoroutine(false));
     }
 
