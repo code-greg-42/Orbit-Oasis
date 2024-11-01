@@ -209,6 +209,11 @@ public class QuestManager : MonoBehaviour
         {
             CompleteQuest();
         }
+        else
+        {
+            // play quest progress sound
+            MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.QuestProgress);
+        }
     }
 
     private void StartNewQuest(bool showDialogue = true)
@@ -238,6 +243,9 @@ public class QuestManager : MonoBehaviour
 
         // update UI with a successful quest completion
         MainUIManager.Instance.ShowQuestSuccess();
+
+        // play quest completion sound
+        MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.QuestComplete);
 
         // update UI with overall tutorial progress
         MainUIManager.Instance.UpdateTutorialProgressBar(activeQuestIndex + 1, introQuests.Length);

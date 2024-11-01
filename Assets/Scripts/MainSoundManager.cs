@@ -35,7 +35,9 @@ public class MainSoundManager : MonoBehaviour
         DeleteBuild,
         NoSell,
         HacksOn,
-        HacksOff
+        HacksOff,
+        QuestProgress,
+        QuestComplete
     }
 
     // master volume will be adjustable from the main menu scene, so the 3d audio settings only need to be set once
@@ -96,7 +98,8 @@ public class MainSoundManager : MonoBehaviour
             }
         }
 
-        // return oldest source
+        // log info and return oldest source
+        Debug.LogWarning("Entire AudioSource array is being used, you may want to add an additional source to the array.");
         return uiAudioSources[0];
     }
 }
