@@ -207,6 +207,19 @@ public class PlayerMovement : MonoBehaviour
             {
                 slopeAheadPlayer = hitAhead.normal;
                 isSlopeAhead = true;
+
+                if (hitAhead.collider.CompareTag("Ground"))
+                {
+                    MainSoundManager.Instance.SetFootstepType(MainSoundManager.FootstepType.Ground);
+                }
+                else if (hitAhead.collider.CompareTag("Buildable") || hitAhead.collider.CompareTag("MainSpaceship"))
+                {
+                    MainSoundManager.Instance.SetFootstepType(MainSoundManager.FootstepType.Wood);
+                }
+                else
+                {
+                    MainSoundManager.Instance.SetFootstepType(MainSoundManager.FootstepType.NoSound);
+                }
             }
 
             if (isSlopeAhead)
@@ -251,7 +264,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void GroundCheck()
     {
-        isGrounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + groundCheckBuffer, groundLayer);
+        isGrounded = Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, playerHeight * 0.5f + groundCheckBuffer, groundLayer);
 
         if (isGrounded)
         {
@@ -259,6 +272,20 @@ public class PlayerMovement : MonoBehaviour
 
             if (airTime > 0)
             {
+                // update sound manager with new ground type
+                if (hit.collider.CompareTag("Ground"))
+                {
+                    MainSoundManager.Instance.SetFootstepType(MainSoundManager.FootstepType.Ground);
+                }
+                else if (hit.collider.CompareTag("Buildable") || hit.collider.CompareTag("MainSpaceship"))
+                {
+                    MainSoundManager.Instance.SetFootstepType(MainSoundManager.FootstepType.Wood);
+                }
+                else
+                {
+                    MainSoundManager.Instance.SetFootstepType(MainSoundManager.FootstepType.NoSound);
+                }
+
                 playerAnimation.TriggerLanding();
             }
 

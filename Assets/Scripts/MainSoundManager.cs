@@ -10,18 +10,22 @@ public class MainSoundManager : MonoBehaviour
     [Header("Volume Settings")]
     [Range(0f, 2f)][SerializeField] private float masterVolume;
 
-    [Header("UI AudioSources")]
+    [Header("AudioSources")]
     [SerializeField] private AudioSource[] uiAudioSources;
+    [SerializeField] private AudioSource[] playerAudioSources;
 
     [Header("Sound Effect Settings")]
     [SerializeField] private List<SoundEffectSettings2D> soundEffectSettings2D;
     [SerializeField] private List<SoundEffectSettings3D> soundEffectSettings3D;
+    [SerializeField] private List<SoundEffectSettingsFootstep> soundEffectSettingsFootsteps;
 
     [Header("Additional Effect Volumes")] // effects/audio sources that are part of a prefab, and are set when instantiated into a pool
     [Range(0f, 5f)][SerializeField] private float projectileVolume;
     [Range(0f, 5f)][SerializeField] private float detonationVolume;
 
     private Dictionary<SoundEffect, SoundEffectSettings> soundEffects = new();
+
+    private FootstepType footstepType;
 
     public float MasterVolume => masterVolume; // used by sound effects in projectile pool
     public float ProjectileVolume => projectileVolume;
@@ -48,7 +52,17 @@ public class MainSoundManager : MonoBehaviour
         EndDrag,
         SpaceMenuSelect,
         SpaceMenuEnter,
-        SpaceMenuBack
+        SpaceMenuBack,
+        Footstep,
+        JumpLand,
+        JumpStart
+    }
+
+    public enum FootstepType
+    {
+        NoSound,
+        Ground,
+        Wood,
     }
 
     // master volume will be adjustable from the main menu scene, so the 3d audio settings only need to be set once
@@ -70,18 +84,32 @@ public class MainSoundManager : MonoBehaviour
             soundEffects[effect3D.Name] = effect3D;
             effect3D.InitAudioSettings(masterVolume);
         }
+
+        foreach (SoundEffectSettingsFootstep effectFootstep in soundEffectSettingsFootsteps)
+        {
+            soundEffects[effectFootstep.Name] = effectFootstep;
+        }
     }
 
     public void PlaySoundEffect(SoundEffect effect)
     {
         if (soundEffects.TryGetValue(effect, out SoundEffectSettings settings))
         {
-            if (settings is SoundEffectSettings2D sound2D && sound2D.GetAudio() is AudioClip audioClip)
+            if (settings is SoundEffectSettings2D sound2D && sound2D.GetAudio() is AudioClip uiClip)
             {
-                AudioSource uiAudioSource = GetAvailableAudioSource();
-                uiAudioSource.volume = settings.Volume * masterVolume;
-                uiAudioSource.pitch = settings.Pitch;
-                uiAudioSource.PlayOneShot(audioClip);
+                PlayClip(uiAudioSources, uiClip, settings.Volume, settings.Pitch);
+                //AudioSource uiAudioSource = GetAvailableAudioSource(uiAudioSources);
+                //uiAudioSource.volume = settings.Volume * masterVolume;
+                //uiAudioSource.pitch = settings.Pitch;
+                //uiAudioSource.PlayOneShot(audioClip);
+            }
+            else if (settings is SoundEffectSettingsFootstep soundFootstep && soundFootstep.GetAudio(footstepType) is AudioClip footstepClip)
+            {
+                PlayClip(playerAudioSources, footstepClip, settings.Volume, settings.Pitch);
+                //AudioSource playerAudioSource = GetAvailableAudioSource(playerAudioSources);
+                //playerAudioSource.volume = settings.Volume * masterVolume;
+                //playerAudioSource.pitch = settings.Pitch;
+                //playerAudioSource.PlayOneShot(footstepClip);
             }
             else if (settings is SoundEffectSettings3D sound3D && sound3D.GetAudio() is AudioSource audioSource)
             {
@@ -89,7 +117,6 @@ public class MainSoundManager : MonoBehaviour
                 {
                     audioSource.Stop();
                 }
-
                 audioSource.Play();
             }
         }
@@ -99,9 +126,30 @@ public class MainSoundManager : MonoBehaviour
         }
     }
 
-    private AudioSource GetAvailableAudioSource()
+    public void SetFootstepType(FootstepType type)
     {
-        foreach (AudioSource audioSource in uiAudioSources)
+        footstepType = type;
+    }
+
+    private void PlayClip(AudioSource[] audioSources, AudioClip audioClip, float volume, float pitch)
+    {
+        AudioSource audioSource = GetAvailableAudioSource(audioSources);
+
+        if (audioSource != null && audioClip != null & volume > 0)
+        {
+            audioSource.volume = volume * masterVolume;
+            audioSource.pitch = pitch;
+            audioSource.PlayOneShot(audioClip);
+        }
+        else
+        {
+            Debug.LogWarning("Tried to play an audio clip without proper source, clip, or volume settings.");
+        }
+    }
+
+    private AudioSource GetAvailableAudioSource(AudioSource[] audioSources)
+    {
+        foreach (AudioSource audioSource in audioSources)
         {
             if (!audioSource.isPlaying)
             {

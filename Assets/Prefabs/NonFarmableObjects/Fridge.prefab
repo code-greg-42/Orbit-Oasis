@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5008803421924511994}
   m_Layer: 10
   m_Name: Fridge
-  m_TagString: Untagged
+  m_TagString: NonFarmableObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

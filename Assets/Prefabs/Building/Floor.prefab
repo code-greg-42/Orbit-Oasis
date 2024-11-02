@@ -816,7 +816,7 @@ GameObject:
   - component: {fileID: 8328895465041270579}
   m_Layer: 12
   m_Name: Floor
-  m_TagString: Untagged
+  m_TagString: Buildable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -14,6 +14,8 @@ public class PlayerAnimation : MonoBehaviour
     private bool isMining;
     private bool isPickingUpItem;
     private bool isShooting;
+    private bool isRunning;
+    private bool isSprinting;
 
     private const float jumpAnimationTime = 0.533f;
     private const float landingAnimationTime = 0.6f;
@@ -21,6 +23,15 @@ public class PlayerAnimation : MonoBehaviour
     private const float itemPickupAnimationTime = 2.234f / 1.2f;
     private const float shootingAnimationTime = 0.967f;
     private const float shootingAnimationReleasePct = 0.428f;
+
+    private const float runningFirstFootstepPct = 0.378f;
+    private const float runningSecondFootstepPct = 0.867f;
+    private const float sprintingFirstFootstepPct = 0.42f;
+    private const float sprintingSecondFootstepPct = 0.937f;
+    private const float footstepPctThreshold = 0.062f;
+
+    private bool firstFootstepPlayed = false;
+    private bool secondFootstepPlayed = false;
 
     public bool IsFalling => isFalling;
 
@@ -31,9 +42,16 @@ public class PlayerAnimation : MonoBehaviour
         Sprint,
     }
 
+    private void Update()
+    {
+        PlayFootstepSounds();
+    }
+
     public void SetPlayerSpeed(PlayerSpeed speed)
     {
         float targetSpeed = 0.0f;
+        isRunning = false;
+        isSprinting = false;
 
         switch (speed)
         {
@@ -42,10 +60,12 @@ public class PlayerAnimation : MonoBehaviour
 
             case PlayerSpeed.Run:
                 targetSpeed = 0.5f;
+                isRunning = true;
                 break;
 
             case PlayerSpeed.Sprint:
                 targetSpeed = 1.0f;
+                isSprinting = true;
                 break;
         }
 
@@ -68,6 +88,10 @@ public class PlayerAnimation : MonoBehaviour
             isLanding = false;
 
             playerAnim.SetTrigger("jumpUp");
+
+            // play sound
+            MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.JumpStart);
+
             StartCoroutine(ResetJumpUp());
         }
     }
@@ -95,6 +119,9 @@ public class PlayerAnimation : MonoBehaviour
         {
             isLanding = true;
             playerAnim.SetTrigger("jumpDown");
+
+            // play sound
+            MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.JumpLand);
 
             isFalling = false;
             playerAnim.SetBool("isFalling", false);
@@ -169,6 +196,82 @@ public class PlayerAnimation : MonoBehaviour
             }
         }
         return false;
+    }
+
+    private void PlayFootstepSounds()
+    {
+        if (isRunning || isSprinting)
+        {
+            // get current state of running/sprinting animation
+            (PlayerSpeed speed, float animationPct) = GetRunningAnimationState();
+
+            // use only the decimal portion, as the number of cycles does not matter
+            animationPct %= 1.0f;
+
+            // ensure character is actually in running/sprinting animation state
+            if (speed == PlayerSpeed.Idle)
+            {
+                ResetFootstepsPlayed();
+                return;
+            }
+
+            // set percentages based on running/sprinting
+            float firstFootstepPct = speed == PlayerSpeed.Run ? runningFirstFootstepPct : sprintingFirstFootstepPct;
+            float secondFootstepPct = speed == PlayerSpeed.Run ? runningSecondFootstepPct : sprintingSecondFootstepPct;
+
+            // ensure bools are reset
+            if (animationPct < firstFootstepPct)
+            {
+                ResetFootstepsPlayed();
+            }
+            else if (animationPct < secondFootstepPct)
+            {
+                secondFootstepPlayed = false;
+            }
+
+            // play footstep sounds if within thresholds
+            if (!firstFootstepPlayed && animationPct >= firstFootstepPct && animationPct <= firstFootstepPct + footstepPctThreshold)
+            {
+                firstFootstepPlayed = true;
+                // play sound
+                MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.Footstep);
+            }
+            else if (!secondFootstepPlayed && animationPct >= secondFootstepPct && animationPct <= secondFootstepPct + footstepPctThreshold)
+            {
+                secondFootstepPlayed = true;
+                // play sound
+                MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.Footstep);
+            }
+        }
+        else
+        {
+            // reset bools when not running or sprinting
+            ResetFootstepsPlayed();
+        }
+    }
+
+    private void ResetFootstepsPlayed()
+    {
+        firstFootstepPlayed = false;
+        secondFootstepPlayed = false;
+    }
+
+    private (PlayerSpeed, float) GetRunningAnimationState()
+    {
+        AnimatorStateInfo stateInfo = playerAnim.GetCurrentAnimatorStateInfo(0);
+        float animationPct = stateInfo.normalizedTime;
+        PlayerSpeed speed = PlayerSpeed.Idle;
+
+        if (stateInfo.IsName("RunForward"))
+        {
+            speed = PlayerSpeed.Run;
+        }
+        else if (stateInfo.IsName("Sprint"))
+        {
+            speed = PlayerSpeed.Sprint;
+        }
+
+        return (speed, animationPct);
     }
 
     private IEnumerator ResetAxeSwing()
