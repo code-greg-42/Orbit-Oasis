@@ -380,6 +380,10 @@ public class PlayerControls : MonoBehaviour
 
                 if (actionCollider.CompareTag("MainSpaceship"))
                 {
+                    // play menu open sound effect
+                    MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.SpaceMenuEnter);
+
+                    // open space race menu
                     SpaceshipSelection.Instance.ActivateSpaceshipSelection();
                 }
                 else

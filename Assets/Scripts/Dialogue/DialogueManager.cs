@@ -141,7 +141,8 @@ public class DialogueManager : MonoBehaviour
             {
                 dialogueText.text += word + " ";
 
-                // PLACE SOUND EFFECT HERE LATER
+                // play sound effect
+                MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.Typing);
 
                 yield return new WaitForSeconds(wordDisplayDelay);
             }
@@ -156,6 +157,7 @@ public class DialogueManager : MonoBehaviour
                 elapsedTime += Time.deltaTime;
                 if (Input.GetKeyDown(nextDialogueKey) || Input.GetKeyDown(nextDialogueKeyAlt) || Input.GetKeyDown(nextDialogueKeyAltTwo))
                 {
+                    MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.NextDialogue);
                     elapsedTime = maxDelayTime;
                 }
 

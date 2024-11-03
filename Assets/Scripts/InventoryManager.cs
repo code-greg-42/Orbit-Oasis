@@ -138,6 +138,9 @@ public class InventoryManager : MonoBehaviour
 
     public void ToggleInventoryMenu()
     {
+        // play sound effect
+        MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.ToggleMenu);
+
         inventoryMenu.SetActive(!IsMenuActive);
         IsMenuActive = !IsMenuActive;
         EndDrag();

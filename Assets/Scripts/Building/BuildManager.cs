@@ -48,8 +48,10 @@ public class BuildManager : MonoBehaviour
 
     // --- this script can be optimized ---
 
-    // --- for example, instead of repetitively looking for attachments and setting the position when a preview is already in an attachment slot,
-    //                  it could wait for a minimum mouse movement or player movement to begin to look again
+    // --- potential gameplay improvements :
+    // --- 1. build is not placeable even when in an attachment slot if it collides directly through an already placed build
+    // --- 2. placed builds hold references to other builds they are attached to
+    // --- 3. upon deletion of a build, checks if one of the attached builds eventually connects to the ground, and if not, builds fall or are destroyed
 
     private void Awake()
     {
@@ -123,6 +125,9 @@ public class BuildManager : MonoBehaviour
 
     public void ToggleBuildMode()
     {
+        // play sound effect
+        MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.ToggleBuildMode);
+
         if (BuildModeActive)
         {
             if (currentPreview != null)

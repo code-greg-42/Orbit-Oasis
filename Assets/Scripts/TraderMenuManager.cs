@@ -196,6 +196,9 @@ public class TraderMenuManager : MonoBehaviour
         EndDrag();
         RemoveSlotSelection();
 
+        // play sound effect
+        MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.ToggleMenu);
+
         // disables camera mouse movement when menu is active, enable when menu inactive
         camControls.ToggleMouseMovement(IsMenuActive);
     }

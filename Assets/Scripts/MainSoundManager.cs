@@ -16,6 +16,7 @@ public class MainSoundManager : MonoBehaviour
 
     [Header("Sound Effect Settings")]
     [SerializeField] private List<SoundEffectSettings2D> soundEffectSettings2D;
+    [SerializeField] private List<SoundEffectSettings2DRandomPitch> soundEffectSettings2DRandomPitch;
     [SerializeField] private List<SoundEffectSettings3D> soundEffectSettings3D;
     [SerializeField] private List<SoundEffectSettingsFootstep> soundEffectSettingsFootsteps;
 
@@ -55,7 +56,11 @@ public class MainSoundManager : MonoBehaviour
         SpaceMenuBack,
         Footstep,
         JumpLand,
-        JumpStart
+        JumpStart,
+        Typing,
+        NextDialogue,
+        ToggleMenu,
+        ToggleBuildMode
     }
 
     public enum FootstepType
@@ -78,6 +83,12 @@ public class MainSoundManager : MonoBehaviour
             soundEffects[effect2D.Name] = effect2D;
         }
 
+        // map 2d effects with random pitch requirements
+        foreach (SoundEffectSettings2DRandomPitch effectRandomPitch in soundEffectSettings2DRandomPitch)
+        {
+            soundEffects[effectRandomPitch.Name] = effectRandomPitch;
+        }
+
         // map all 3d effects and set volume/pitch settings to inspector settings
         foreach (SoundEffectSettings3D effect3D in soundEffectSettings3D)
         {
@@ -97,19 +108,15 @@ public class MainSoundManager : MonoBehaviour
         {
             if (settings is SoundEffectSettings2D sound2D && sound2D.GetAudio() is AudioClip uiClip)
             {
-                PlayClip(uiAudioSources, uiClip, settings.Volume, settings.Pitch);
-                //AudioSource uiAudioSource = GetAvailableAudioSource(uiAudioSources);
-                //uiAudioSource.volume = settings.Volume * masterVolume;
-                //uiAudioSource.pitch = settings.Pitch;
-                //uiAudioSource.PlayOneShot(audioClip);
+                // randomize pitch if needed
+                float pitch = settings is SoundEffectSettings2DRandomPitch randomPitchSettings ?
+                    randomPitchSettings.GetRandomPitch() : settings.Pitch;
+
+                PlayClip(uiAudioSources, uiClip, settings.Volume, pitch);
             }
             else if (settings is SoundEffectSettingsFootstep soundFootstep && soundFootstep.GetAudio(footstepType) is AudioClip footstepClip)
             {
                 PlayClip(playerAudioSources, footstepClip, settings.Volume, settings.Pitch);
-                //AudioSource playerAudioSource = GetAvailableAudioSource(playerAudioSources);
-                //playerAudioSource.volume = settings.Volume * masterVolume;
-                //playerAudioSource.pitch = settings.Pitch;
-                //playerAudioSource.PlayOneShot(footstepClip);
             }
             else if (settings is SoundEffectSettings3D sound3D && sound3D.GetAudio() is AudioSource audioSource)
             {
