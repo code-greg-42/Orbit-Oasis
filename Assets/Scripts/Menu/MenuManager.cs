@@ -53,7 +53,6 @@ public class MenuManager : MonoBehaviour
 
     public void OnButtonClick(MenuButton clickedButton)
     {
-        Debug.Log("Button Clicked: " + clickedButton.gameObject.name);
         buttonClickCoroutine ??= StartCoroutine(ButtonClickCoroutine(clickedButton));
     }
 
