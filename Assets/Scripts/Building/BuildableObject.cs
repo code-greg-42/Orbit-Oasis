@@ -23,6 +23,10 @@ public class BuildableObject : MonoBehaviour
     private int otherCollisionCount = 0;
     private const int framesPerCollisionCheck = 10;// number of frames between collision checks
     private const int colliderValidationInterval = 5;
+    private Collider[] overlapColliders = new Collider[10];
+    private Vector3 overlapBoxRadius;
+    private const float overlapBoxModifier = 0.85f;
+    private LayerMask buildableLayer;
     private Coroutine collisionCheckCoroutine;
     private Coroutine colliderValidationCoroutine;
 
@@ -40,6 +44,10 @@ public class BuildableObject : MonoBehaviour
     private void Awake()
     {
         buildCollider = GetComponent<Collider>();
+        buildableLayer = LayerMask.GetMask("BuildableLayer");
+
+        // set size of overlap box that looks for colliding buildable objects
+        overlapBoxRadius = transform.localScale * overlapBoxModifier / 2;
     }
 
     public void PlaceObject()
@@ -172,7 +180,7 @@ public class BuildableObject : MonoBehaviour
 
     private void AddCollider(Collider other)
     {
-        if (other.gameObject.TryGetComponent(out BuildableObject _))
+        if (other.gameObject.CompareTag("Buildable"))
         {
             if (buildableColliders.Add(other)) buildableCollisionCount++;
         }
@@ -184,7 +192,7 @@ public class BuildableObject : MonoBehaviour
 
     private void RemoveCollider(Collider other)
     {
-        if (other.gameObject.TryGetComponent(out BuildableObject _))
+        if (other.gameObject.CompareTag("Buildable"))
         {
             if (buildableColliders.Remove(other)) buildableCollisionCount--;
         }
@@ -204,8 +212,36 @@ public class BuildableObject : MonoBehaviour
                 yield return null;
             }
 
-            // calculate each flag based on collider counts
-            IsCollidingWithBuildable = buildableCollisionCount > 0;
+            bool collidersFound = false;
+
+            // only set CollidingWithBuildable to true if the collision is more than at the edges
+            if (buildableCollisionCount > 0)
+            {
+                // clear array
+                System.Array.Clear(overlapColliders, 0, overlapColliders.Length);
+
+                // search for buildable colliders within box, slightly smaller than actual object
+                int numColliders = Physics.OverlapBoxNonAlloc(transform.position, overlapBoxRadius, overlapColliders, transform.rotation, buildableLayer, QueryTriggerInteraction.Ignore);
+
+                // loop through found colliders and set bool to true if at least one was found
+                if (numColliders > 0)
+                {
+                    for (int i = 0; i < numColliders; i++)
+                    {
+                        Collider collider = overlapColliders[i];
+                        if (collider == buildCollider) continue;
+
+                        if (collider.CompareTag("Buildable"))
+                        {
+                            collidersFound = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // set bools
+            IsCollidingWithBuildable = collidersFound;
             IsCollidingWithOther = otherCollisionCount > 0;
         }
     }

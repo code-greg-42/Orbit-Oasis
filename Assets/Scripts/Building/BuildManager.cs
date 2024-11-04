@@ -440,17 +440,21 @@ public class BuildManager : MonoBehaviour
                 return;
             }
 
-            // if preview is colliding with object such as a tree
-            if (currentPreviewBuildable.IsCollidingWithOther)
+            if (currentPreviewBuildable.IsCollidingWithOther || currentPreviewBuildable.IsCollidingWithBuildable)
             {
                 previewIsPlaceable = false;
-                return;
             }
+ 
+            //if (currentPreviewBuildable.IsCollidingWithOther)
+            //{
+            //    previewIsPlaceable = false;
+            //    return;
+            //}
 
-            if (currentPreviewBuildable.IsCollidingWithBuildable && !previewInAttachmentSlot)
-            {
-                previewIsPlaceable = false;
-            }
+            //if (currentPreviewBuildable.IsCollidingWithBuildable && !previewInAttachmentSlot)
+            //{
+            //    previewIsPlaceable = false;
+            //}
         }
     }
 

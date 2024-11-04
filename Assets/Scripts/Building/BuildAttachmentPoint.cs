@@ -29,4 +29,27 @@ public class BuildAttachmentPoint : MonoBehaviour
 
         return false;
     }
+
+    //public BuildableObject CheckForNearbyBuild(Collider[] overlaps, LayerMask buildLayer)
+    //{
+    //    // clear array
+    //    System.Array.Clear(overlaps, 0, overlaps.Length);
+
+    //    // check for any nearby buildable objects
+    //    int size = Physics.OverlapSphereNonAlloc(transform.position, checkRadius, overlaps, buildLayer);
+
+    //    // loop through array and return true if buildable object is found
+    //    for (int i = 0; i < size; i++)
+    //    {
+    //        if (overlaps[i].TryGetComponent(out BuildableObject buildable))
+    //        {
+    //            if (buildable.IsPlaced)
+    //            {
+    //                return buildable;
+    //            }
+    //        }
+    //    }
+
+    //    return null;
+    //}
 }
