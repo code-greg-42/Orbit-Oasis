@@ -13,6 +13,7 @@ public class MenuManager : MonoBehaviour
     [SerializeField] private MenuButton[] menuButtons;
     [SerializeField] private Image loadingScreenPanel;
     [SerializeField] private TMP_Text introText;
+    [SerializeField] private Slider volumeSlider;
 
     [Header("Disabled Button Sprite")]
     [SerializeField] private Sprite disabledButtonSprite;
@@ -20,6 +21,10 @@ public class MenuManager : MonoBehaviour
     [Header("Custom Cursor")]
     [SerializeField] private Texture2D customCursorTexture;
     private Vector2 cursorHotspot = new(10, 4);
+
+    [Header("Audio")]
+    [SerializeField] private AudioSource clickSound;
+    [SerializeField] private AudioSource menuMusic;
 
     // intro settings
     private const string introTextString = "GamesByGreg presents";
@@ -35,6 +40,9 @@ public class MenuManager : MonoBehaviour
     private Coroutine fadeLoadingScreenCoroutine;
     private Coroutine buttonClickCoroutine;
 
+    private float baseClickVolume;
+    private float baseMusicVolume;
+
     private void Awake()
     {
         Instance = this;
@@ -43,6 +51,13 @@ public class MenuManager : MonoBehaviour
     private void Start()
     {
         DisableCursor();
+
+        // get base volumes from inspector settings
+        baseClickVolume = clickSound.volume;
+        baseMusicVolume = menuMusic.volume;
+
+        // set slider value to data manager volume setting
+        volumeSlider.value = DataManager.Instance.PlayerStats.MasterVolume;
 
         // set cursor to custom cursor
         Cursor.SetCursor(customCursorTexture, cursorHotspot, CursorMode.Auto);
@@ -56,10 +71,38 @@ public class MenuManager : MonoBehaviour
         buttonClickCoroutine ??= StartCoroutine(ButtonClickCoroutine(clickedButton));
     }
 
+    // attached to slider directly
+    public void OnVolumeChange(float volume)
+    {
+        DataManager.Instance.SetMasterVolume(volume);
+
+        // adjust the menu music with updated value, including the /100
+        menuMusic.volume = baseMusicVolume * (volume / 100);
+    }
+
+    private void PlayClickSound()
+    {
+        clickSound.volume = baseClickVolume * DataManager.Instance.PlayerStats.MasterVolume;
+        clickSound.Play();
+    }
+
+    private void StartMusic()
+    {
+        menuMusic.volume = 0f;
+        menuMusic.Play();
+
+        Debug.Log("Master Volume: " + DataManager.Instance.PlayerStats.MasterVolume);
+        StartCoroutine(FadeUI.FadeAudio(menuMusic, baseMusicVolume * DataManager.Instance.PlayerStats.MasterVolume, 2.0f));
+    }
+
     private IEnumerator ButtonClickCoroutine(MenuButton clickedButton)
     {
+        PlayClickSound();
+
         // lock and hide the cursor upon click
         DisableCursor();
+
+        volumeSlider.enabled = false;
 
         // loop through and disable buttons
         foreach (MenuButton menuButton in menuButtons)
@@ -78,6 +121,8 @@ public class MenuManager : MonoBehaviour
         {
             DataManager.Instance.StartNewGame();
         }
+
+        StartCoroutine(FadeUI.FadeAudio(menuMusic, 0f, 2.0f));
 
         // fade to black
         // if loading screen is still fading in, stop the coroutine and fade it out from the current alpha
@@ -114,6 +159,8 @@ public class MenuManager : MonoBehaviour
     {
         yield return new WaitForSeconds(introDelay);
 
+        StartMusic();
+
         // show opening credits if beginning of a new session
         if (!DataManager.Instance.IntroLoadingTextShown)
         {
@@ -127,6 +174,7 @@ public class MenuManager : MonoBehaviour
         // brief wait before enabling buttons and cursor
         yield return new WaitForSeconds(0.1f);
 
+        volumeSlider.enabled = true;
         EnableButtons();
         EnableCursor();
     }

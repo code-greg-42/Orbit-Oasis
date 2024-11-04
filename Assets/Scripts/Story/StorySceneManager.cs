@@ -14,6 +14,11 @@ public class StorySceneManager : MonoBehaviour
     [Header("Story Sprites")]
     [SerializeField] private Sprite[] storySprites;
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource storyMusic;
+
+    private float baseMusicVolume;
+
     private Dictionary<Sprite, string> storyScenes;
 
     private const float sceneDuration = 12.0f;
@@ -32,6 +37,8 @@ public class StorySceneManager : MonoBehaviour
         {
             storyScenes[storySprites[i]] = storyTexts[i];
         }
+
+        baseMusicVolume = storyMusic.volume;
     }
 
     private void Start()
@@ -39,9 +46,24 @@ public class StorySceneManager : MonoBehaviour
         StartCoroutine(StartScene());
     }
 
+    private void StartMusic()
+    {
+        storyMusic.volume = 0f;
+        storyMusic.Play();
+
+        StartCoroutine(FadeUI.FadeAudio(storyMusic, baseMusicVolume * DataManager.Instance.PlayerStats.MasterVolume, 2.0f));
+    }
+
+    private void FadeOutMusic(float duration)
+    {
+        StartCoroutine(FadeUI.FadeAudio(storyMusic, 0f, duration));
+    }
+
     private IEnumerator StartScene()
     {
         DisableCursor();
+
+        StartMusic();
 
         yield return StoryUIManager.Instance.FadeInScene();
 
@@ -50,6 +72,8 @@ public class StorySceneManager : MonoBehaviour
         StoryUIManager.Instance.StartUploadingText();
 
         yield return PlayStoryScenes();
+
+        FadeOutMusic(2.1f);
 
         yield return StoryUIManager.Instance.FadeOutScene();
 

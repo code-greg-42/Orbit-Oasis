@@ -62,6 +62,19 @@ public class DataManager : MonoBehaviour
         NewGameStarted = false;
     }
 
+    public void SetMasterVolume(float volume)
+    {
+        // adjust for the whole number aspect of the slider
+        float adjustedVolume = volume / 100;
+
+        PlayerStats.MasterVolume = adjustedVolume;
+    }
+
+    public void SaveVolume()
+    {
+        SavePlayerStats();
+    }
+
     public void SetIntroLoadingTextShown()
     {
         IntroLoadingTextShown = true;

@@ -66,7 +66,7 @@ public class MenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     public void FadeOut(float duration)
     {
-        StartCoroutine(FadeUI.Fade(buttonText, 0f, duration));
-        StartCoroutine(FadeUI.Fade(buttonGraphic, 0f, duration));
+        StartCoroutine(FadeUI.Fade(buttonText, 0f, duration, false));
+        StartCoroutine(FadeUI.Fade(buttonGraphic, 0f, duration, false));
     }
 }
