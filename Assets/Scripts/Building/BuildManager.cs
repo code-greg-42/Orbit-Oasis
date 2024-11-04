@@ -44,14 +44,16 @@ public class BuildManager : MonoBehaviour
     private float lastPlacedTime = 0.0f; // used to see if build cooldown has surpassed
     private const float buildCooldown = 0.3f;
 
-    private bool previewInAttachmentSlot; // used for allowing place build despite a collision with a buildable object
 
-    // --- this script can be optimized ---
+    // --- Delete Build available to player even if deleting it makes other builds or objects appear to be levitating --- //
+    // ------ currently a design choice to allow extra freedom for player, keep the simulation theme, and allow players to make things weird if they want to
 
-    // --- potential gameplay improvements :
-    // --- 1. build is not placeable even when in an attachment slot if it collides directly through an already placed build
-    // --- 2. placed builds hold references to other builds they are attached to
-    // --- 3. upon deletion of a build, checks if one of the attached builds eventually connects to the ground, and if not, builds fall or are destroyed
+    // --- If adding a restraint were necessary, could be done by the following: --- //
+    // ------ 1. create a list of attached builds in buildable object script
+    // ------ 2. when enabling/disabling attachment slots, store reference to buildable object
+    // ------ 3. add a flag isOnGround if a buildable object is placed at or around its default height
+    // ------ 4. when .DeleteBuild() is called, loop through trees of attached objects, and disallow delete (play rejection sound) if no isOnGround = true is found
+    // ------ 5. alternatively, allow the delete, but if no isOnGround is found, enable gravity on all builds in the trees and allow builds to fall
 
     private void Awake()
     {
@@ -139,7 +141,6 @@ public class BuildManager : MonoBehaviour
             // reset
             originalMaterial = null;
             previewIsPlaceable = false;
-            previewInAttachmentSlot = false;
 
             // cancel delete mode if active
             if (DeleteModeActive)
@@ -231,8 +232,6 @@ public class BuildManager : MonoBehaviour
     {
         if (currentPreview == null)
         {
-            previewInAttachmentSlot = false;
-
             Vector3 targetPosition = CalcTargetPosition();
             currentPreview = Instantiate(buildPrefabs[currentPrefabIndex], targetPosition, buildPrefabs[currentPrefabIndex].transform.rotation);
 
@@ -306,15 +305,18 @@ public class BuildManager : MonoBehaviour
 
             if (closestAttachmentPoint != null)
             {
-                targetPosition = closestAttachmentPoint.position;
-                targetRotation = closestAttachmentPoint.rotation;
+                closestAttachmentPoint.GetPositionAndRotation(out targetPosition, out targetRotation);
+
+                // ensure it never clips under the ground --- specifically a fix to floors attaching to downramps
+                if (targetPosition.y < buildPrefabs[currentPrefabIndex].transform.position.y)
+                {
+                    targetPosition.y = buildPrefabs[currentPrefabIndex].transform.position.y; ;
+                }
+
                 previewIsPlaceable = true;
-                previewInAttachmentSlot = true;
             }
             else
             {
-                previewInAttachmentSlot = false;
-
                 targetPosition = CalcTargetPosition();
                 targetRotation = Quaternion.LookRotation(orientation.forward) *
                                     Quaternion.Euler(buildPrefabs[currentPrefabIndex].transform.rotation.eulerAngles);
@@ -374,9 +376,8 @@ public class BuildManager : MonoBehaviour
             currentPreview = null;
             currentPreviewBuildable = null;
             originalMaterial = null;
-            // reset bools
+            // reset bool
             previewIsPlaceable = false;
-            previewInAttachmentSlot = false;
         }
     }
 
@@ -444,17 +445,6 @@ public class BuildManager : MonoBehaviour
             {
                 previewIsPlaceable = false;
             }
- 
-            //if (currentPreviewBuildable.IsCollidingWithOther)
-            //{
-            //    previewIsPlaceable = false;
-            //    return;
-            //}
-
-            //if (currentPreviewBuildable.IsCollidingWithBuildable && !previewInAttachmentSlot)
-            //{
-            //    previewIsPlaceable = false;
-            //}
         }
     }
 
