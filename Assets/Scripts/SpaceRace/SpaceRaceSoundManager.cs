@@ -62,6 +62,7 @@ public class SpaceRaceSoundManager : MonoBehaviour
 
     private void Start()
     {
+        //AudioListener.volume = DataManager.Instance.PlayerStats.MasterVolume / 2; // normalize for audio listener's 0 to 1 range.
         ChooseTrackAndStartMusic();
     }
 
