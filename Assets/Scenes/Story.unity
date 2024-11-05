@@ -1338,10 +1338,10 @@ MonoBehaviour:
   - Your mind, including everything you learned in your time on earth, is being uploaded
     to a state-of-the-art simulated reality as we speak.
   - "You\u2019ll have your own plot of land deep in space, where you can build and
-    decorate however you choose! True freedom!"
+    decorate however you wish! True freedom!"
   - "If you have any issues, our HelpBot 'Patches' will be with you and should be
-    able to fix most of them! I\u2019m sure it\u2019ll all be perfect though. Congratulations
-    and good luck!"
+    able to fix them! I\u2019m sure it\u2019ll all be perfect. Congratulations and
+    good luck!"
   storySprites:
   - {fileID: 21300000, guid: b30d262ee24a9ee489ebec666621f1b5, type: 3}
   - {fileID: 21300000, guid: 97fe927c06ab7e54a818035f84ce24f3, type: 3}

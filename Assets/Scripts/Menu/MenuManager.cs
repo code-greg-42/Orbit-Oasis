@@ -43,6 +43,8 @@ public class MenuManager : MonoBehaviour
     private float baseClickVolume;
     private float baseMusicVolume;
 
+    private const float volumeSliderModifier = 100.0f;
+
     private void Awake()
     {
         Instance = this;
@@ -57,7 +59,7 @@ public class MenuManager : MonoBehaviour
         baseMusicVolume = menuMusic.volume;
 
         // set slider value to data manager volume setting
-        volumeSlider.value = DataManager.Instance.PlayerStats.MasterVolume;
+        volumeSlider.value = DataManager.Instance.PlayerStats.MasterVolume * volumeSliderModifier;
 
         // set cursor to custom cursor
         Cursor.SetCursor(customCursorTexture, cursorHotspot, CursorMode.Auto);
@@ -77,7 +79,7 @@ public class MenuManager : MonoBehaviour
         DataManager.Instance.SetMasterVolume(volume);
 
         // adjust the menu music with updated value, including the /100
-        menuMusic.volume = baseMusicVolume * (volume / 100);
+        menuMusic.volume = baseMusicVolume * (volume / volumeSliderModifier);
     }
 
     private void PlayClickSound()
@@ -91,7 +93,6 @@ public class MenuManager : MonoBehaviour
         menuMusic.volume = 0f;
         menuMusic.Play();
 
-        Debug.Log("Master Volume: " + DataManager.Instance.PlayerStats.MasterVolume);
         StartCoroutine(FadeUI.FadeAudio(menuMusic, baseMusicVolume * DataManager.Instance.PlayerStats.MasterVolume, 2.0f));
     }
 
