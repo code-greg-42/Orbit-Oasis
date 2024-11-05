@@ -540,8 +540,6 @@ public class PlayerControls : MonoBehaviour
         // loop through each origin and perform raycast
         foreach (Vector3 rayOrigin in rayOrigins)
         {
-            Debug.DrawRay(rayOrigin, playerObject.forward * farmableSearchDistance, Color.red, 0.1f); // Short duration for live debugging
-
             // cast a ray forwards from the specified position
             if (Physics.Raycast(rayOrigin, playerObject.forward, out RaycastHit hit, farmableSearchDistance, farmableObjectLayer))
             {

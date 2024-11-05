@@ -44,7 +44,6 @@ public class BuildManager : MonoBehaviour
     private float lastPlacedTime = 0.0f; // used to see if build cooldown has surpassed
     private const float buildCooldown = 0.3f;
 
-
     // --- Delete Build available to player even if deleting it makes other builds or objects appear to be levitating --- //
     // ------ currently a design choice to allow extra freedom for player, keep the simulation theme, and allow players to make things weird if they want to
 

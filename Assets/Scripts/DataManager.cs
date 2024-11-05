@@ -38,10 +38,6 @@ public class DataManager : MonoBehaviour
 
             CreateSaveDirectory();
             LoadAllData();
-
-            // TEMPORARY/TESTING
-            ResetQuestStatus();
-            PlayerStats.QuestIndex = 11;
         }
         else
         {
@@ -54,7 +50,28 @@ public class DataManager : MonoBehaviour
         // set bool for story scene's manager
         NewGameStarted = true;
 
-        // ADD THIS LATER --- WIPE ALL EXISTING FILE DATA
+        // delete all files in save folder
+        DeleteSavedFile();
+
+        // initialize new data
+        LoadAllData();
+    }
+
+    private void DeleteSavedFile()
+    {
+        string directoryPath = Application.persistentDataPath + saveFolderName;
+
+        if (Directory.Exists(directoryPath))
+        {
+            // delete all files
+            foreach (var file in Directory.GetFiles(directoryPath))
+            {
+                File.Delete(file);
+                Debug.Log("Deleted file.");
+            }
+
+            Debug.Log("Deleted all files.");
+        }
     }
 
     public void ResetNewGameStarted()
@@ -68,6 +85,8 @@ public class DataManager : MonoBehaviour
         float adjustedVolume = volume / 100;
 
         PlayerStats.MasterVolume = adjustedVolume;
+
+        Debug.Log("Master Volume Set To: " + volume / 100);
     }
 
     public void SaveVolume()
@@ -132,15 +151,6 @@ public class DataManager : MonoBehaviour
         PlayerStats.QuestProgress = questProgress;
 
         SavePlayerStats();
-    }
-
-    // TEMPORARY/TESTING ONLY
-    private void ResetQuestStatus()
-    {
-        PlayerStats.QuestIndex = 0;
-        PlayerStats.QuestProgress = 0;
-
-        Debug.Log("Quest Status Reset to 0.");
     }
 
     public void SetRaceDifficulty(int difficulty)
@@ -374,15 +384,24 @@ public class DataManager : MonoBehaviour
 
     private void SaveToFile(object data, string variableName)
     {
+        // get file path and convert to json
         string filePath = GetSaveFilePath(variableName);
-        string tempFilePath = filePath + ".tmp";
-
-        // convert to json and write to temp file
         string json = JsonUtility.ToJson(data);
-        File.WriteAllText(tempFilePath, json);
 
-        // once write is successful, replace the original file
-        File.Replace(tempFilePath, filePath, null);
+        // if a file exists, write a temp file, then replace
+        if (File.Exists(filePath))
+        {
+            string tempFilePath = filePath + ".tmp";
+            File.WriteAllText(tempFilePath, json);
+
+            // once write is successful, replace the original file
+            File.Replace(tempFilePath, filePath, null);
+        }
+        else
+        {
+            // write directly to file path
+            File.WriteAllText(filePath, json);
+        }
     }
 
     private T LoadFromFile<T>(string variableName)

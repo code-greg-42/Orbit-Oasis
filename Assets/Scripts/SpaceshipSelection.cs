@@ -112,7 +112,7 @@ public class SpaceshipSelection : MonoBehaviour
         }
 
         // BUTTON PRESS
-        if (Input.GetKeyDown(KeyCode.Return))
+        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.F))
         {
             // play sound
             MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.SpaceMenuEnter);

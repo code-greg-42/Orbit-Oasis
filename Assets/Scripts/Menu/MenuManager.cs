@@ -48,6 +48,8 @@ public class MenuManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+
+        AudioListener.volume = 1.0f;
     }
 
     private void Start()
@@ -121,6 +123,7 @@ public class MenuManager : MonoBehaviour
         if (clickedButton.gameObject.name == "NewGameButton")
         {
             DataManager.Instance.StartNewGame();
+            DataManager.Instance.SetMasterVolume(volumeSlider.value);
         }
 
         StartCoroutine(FadeUI.FadeAudio(menuMusic, 0f, 2.0f));
@@ -184,8 +187,8 @@ public class MenuManager : MonoBehaviour
     {
         foreach (MenuButton menuButton in menuButtons)
         {
-            // TEMPORARY --- ONLY TO TEST --- ACTUAL WILL BE BASED ON ACTIVE QUEST INDEX / LACK OF A SAVED GAME
-            if (menuButton.gameObject.name == "ContinueButton" && DataManager.Instance.PlayerStats.PlayerCurrency == 0)
+            if (menuButton.gameObject.name == "ContinueButton" && DataManager.Instance.PlayerStats.QuestIndex == 0 &&
+                DataManager.Instance.PlayerStats.QuestProgress == 0)
             {
                 if (menuButton.TryGetComponent(out Image buttonImage))
                 {

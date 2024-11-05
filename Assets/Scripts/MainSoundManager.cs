@@ -81,7 +81,11 @@ public class MainSoundManager : MonoBehaviour
     {
         Instance = this;
 
+        // make sure Audio Listener is at 1
+        AudioListener.volume = 1.0f;
+
         // get master volume setting from data manager
+        masterVolume *= DataManager.Instance.PlayerStats.MasterVolume;
 
         // map all 2d effects --- choosing not to modify with mastervolume yet to keep things easier for controlling mid-test in the inspector
         foreach (SoundEffectSettings2D effect2D in soundEffectSettings2D)
