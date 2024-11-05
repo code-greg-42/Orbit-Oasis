@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Linq;
 
 public class MainGameManager : MonoBehaviour
 {
@@ -126,7 +127,6 @@ public class MainGameManager : MonoBehaviour
     {
         // turn off camera for falling effect
         cameraControls.DisableCam();
-        //cinemachineCam.enabled = false;
 
         // wait for reset delay time
         yield return new WaitForSeconds(resetDelayTime);
@@ -139,7 +139,6 @@ public class MainGameManager : MonoBehaviour
 
         // turn cam back on
         cameraControls.EnableCam();
-        //cinemachineCam.enabled = true;
 
         // get dialogue path
         string dialoguePath = fallOffDialoguePath;
@@ -161,15 +160,6 @@ public class MainGameManager : MonoBehaviour
 
         playerResetInProgress = false;
     }
-
-    //private void LoadCameraPos(float camX, float camY)
-    //{
-    //    if (camX != 0 || camY != 0)
-    //    {
-    //        cinemachineCam.m_XAxis.Value = camX;
-    //        cinemachineCam.m_YAxis.Value = camY;
-    //    }
-    //}
 
     private IEnumerator StartSceneCoroutine()
     {
@@ -265,14 +255,17 @@ public class MainGameManager : MonoBehaviour
 
         // split string into chars
         char[] chars = text.ToCharArray();
+        char[] periods = loadingTextEnding.ToCharArray();
+
+        // calculate total time and play sound effect
+        float totalTime = chars.Length * charDelayOne + periods.Length * charDelayTwo + loadingTextEndDelay;
+        MainSoundManager.Instance.PlayLoadingSound(totalTime);
 
         foreach (char c in chars)
         {
             loadingText.text += c;
             yield return new WaitForSeconds(charDelayOne);
         }
-
-        char[] periods = loadingTextEnding.ToCharArray();
 
         foreach (char p in periods)
         {
