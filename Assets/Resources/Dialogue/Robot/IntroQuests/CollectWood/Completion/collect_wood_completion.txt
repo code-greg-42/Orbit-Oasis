@@ -1,1 +1,1 @@
-Pretty simple, right?! Anything you pick up (or capture) always goes to your inventory, so long as you have room.
+Pretty simple, right?! Anything you pick up goes right to your inventory, so long as you have room.

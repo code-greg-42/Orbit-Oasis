@@ -15,6 +15,11 @@ public class TraderBuyDropArea : DropArea
 
     public override void OnPointerClick(PointerEventData eventData)
     {
-        Debug.Log("clicked");
+        if (eventData.button == PointerEventData.InputButton.Left)
+        {
+            // unselect current selection
+            TraderMenuManager.Instance.RemoveSlotSelection();
+            MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.Click);
+        }
     }
 }
