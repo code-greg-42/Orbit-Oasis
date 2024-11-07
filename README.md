@@ -153,18 +153,19 @@ Deep into the future, humanity has taken to the stars and colonized many planets
 **Phase 8: Background Music, Sound Effects, and Particle Effects** (September 25th - October 23rd)
 - Add and integrate background music, sound effects, and particle effects into the game.
 - Deadline: Wednesday, October 23rd
-- UPDATE: CURRENT
+- UPDATE: COMPLETED 10.30
 
 **Phase 9: Testing and Bug Fixing** (October 23rd - October 24th)
 - Conduct thorough self-testing to ensure the game runs smoothly and is free of major bugs.
 - Left only a short amount of time for this because testing and bug fixing is happening throughout the other phases.
 - Deadline: Thursday, October 24th
+- UPDATE: COMPLETED 11.7
 
 **Phase 10: Release** (October 25th)
 - Prepare and release the game on Steam or itch.io.
 - Allow friends and family to play and provide feedback.
 - Deadline: Friday, October 25th
-
+- UPDATE: CURRENT
 ---
 
 ## 7. Deadline
