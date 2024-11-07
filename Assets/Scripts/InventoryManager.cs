@@ -136,10 +136,13 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
-    public void ToggleInventoryMenu()
+    public void ToggleInventoryMenu(bool playSound = true)
     {
-        // play sound effect
-        MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.ToggleMenu);
+        if (playSound)
+        {
+            // play sound effect
+            MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.ToggleMenu);
+        }
 
         inventoryMenu.SetActive(!IsMenuActive);
         IsMenuActive = !IsMenuActive;

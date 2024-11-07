@@ -294,6 +294,7 @@ public class PlayerMovement : MonoBehaviour
         else
         {
             rb.drag = airDrag;
+            MainSoundManager.Instance.SetFootstepType(MainSoundManager.FootstepType.NoSound);
         }
     }
 

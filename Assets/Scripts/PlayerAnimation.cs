@@ -24,11 +24,11 @@ public class PlayerAnimation : MonoBehaviour
     private const float shootingAnimationTime = 0.967f;
     private const float shootingAnimationReleasePct = 0.428f;
 
-    private const float runningFirstFootstepPct = 0.378f;
-    private const float runningSecondFootstepPct = 0.867f;
-    private const float sprintingFirstFootstepPct = 0.42f;
-    private const float sprintingSecondFootstepPct = 0.937f;
-    private const float footstepPctThreshold = 0.062f;
+    private const float runningFirstFootstepPct = 0.358f; // .378
+    private const float runningSecondFootstepPct = 0.837f; // .867
+    private const float sprintingFirstFootstepPct = 0.402f; // .42
+    private const float sprintingSecondFootstepPct = 0.902f; // .937
+    private const float footstepPctThreshold = 0.08f; // .062
 
     private bool firstFootstepPlayed = false;
     private bool secondFootstepPlayed = false;

@@ -29,9 +29,9 @@ public class MainSoundManager : MonoBehaviour
     private FootstepType footstepType;
 
     // loading sound
-    private Coroutine loadingSoundCoroutine;
-    private const float loadingSoundLength = 0.204f;
-    private const int loadingSoundPlays = 2;
+    //private Coroutine loadingSoundCoroutine;
+    //private const float loadingSoundLength = 0.204f;
+    //private const int loadingSoundPlays = 2;
 
     public float MasterVolume => masterVolume; // used by sound effects in projectile pool
     public float ProjectileVolume => projectileVolume;
@@ -76,7 +76,7 @@ public class MainSoundManager : MonoBehaviour
         Wood,
     }
 
-    // master volume will be adjustable from the main menu scene, so the 3d audio settings only need to be set once
+    // master volume is adjustable only from the main menu scene, so the 3d audio settings only need to be set once
     private void Awake()
     {
         Instance = this;
@@ -148,34 +148,34 @@ public class MainSoundManager : MonoBehaviour
         footstepType = type;
     }
 
-    public void PlayLoadingSound(float totalTime)
-    {
-        loadingSoundCoroutine ??= StartCoroutine(LoadingSoundCoroutine(totalTime));
-    }
+    //public void PlayLoadingSound(float totalTime)
+    //{
+    //    loadingSoundCoroutine ??= StartCoroutine(LoadingSoundCoroutine(totalTime));
+    //}
 
-    private IEnumerator LoadingSoundCoroutine(float totalTime)
-    {
-        float blankTime = totalTime - loadingSoundLength * loadingSoundPlays;
-        float delayTime = blankTime / (loadingSoundPlays + 1);
+    //private IEnumerator LoadingSoundCoroutine(float totalTime)
+    //{
+    //    float blankTime = totalTime - loadingSoundLength * loadingSoundPlays;
+    //    float delayTime = blankTime / (loadingSoundPlays + 1);
 
-        // delay time initially worked out to have evenly distributed beginning, middle, and end pauses,
-        // but in practice in worked better to have a shorter delay time, leaving a longer gap at the end. 
+    //    // delay time initially worked out to have evenly distributed beginning, middle, and end pauses,
+    //    // but in practice in worked better to have a shorter delay time, leaving a longer gap at the end. 
 
-        // disallow less than 0
-        delayTime = Mathf.Max(delayTime, 0);
+    //    // disallow less than 0
+    //    delayTime = Mathf.Max(delayTime, 0);
 
-        for (int i = 0; i < loadingSoundPlays; i++)
-        {
-            PlaySoundEffect(SoundEffect.LoadingSound);
+    //    for (int i = 0; i < loadingSoundPlays; i++)
+    //    {
+    //        PlaySoundEffect(SoundEffect.LoadingSound);
 
-            if (i != loadingSoundPlays - 1)
-            {
-                yield return new WaitForSeconds(delayTime);
-            }
-        }
+    //        if (i != loadingSoundPlays - 1)
+    //        {
+    //            yield return new WaitForSeconds(delayTime);
+    //        }
+    //    }
 
-        loadingSoundCoroutine = null;
-    }
+    //    loadingSoundCoroutine = null;
+    //}
 
     private void PlayClip(AudioSource[] audioSources, AudioClip audioClip, float volume, float pitch)
     {

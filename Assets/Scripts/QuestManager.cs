@@ -310,7 +310,7 @@ public class QuestManager : MonoBehaviour
         // toggle off inventory menu if active
         if (InventoryManager.Instance.IsMenuActive)
         {
-            InventoryManager.Instance.ToggleInventoryMenu();
+            InventoryManager.Instance.ToggleInventoryMenu(false);
         }
 
         // get amount from the quest object, this way if it's changed it only needs to be changed in one place

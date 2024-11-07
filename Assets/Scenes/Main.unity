@@ -19462,7 +19462,7 @@ MonoBehaviour:
   - {fileID: 1155201418}
   soundEffectSettings2D:
   - soundName: 1
-    volume: 1
+    volume: 0.8
     pitch: 1
     audioClip: {fileID: 8300000, guid: 19a5b18b079f844bba783a9ec5f32efa, type: 3}
   - soundName: 4
@@ -19474,7 +19474,7 @@ MonoBehaviour:
     pitch: 1.1
     audioClip: {fileID: 8300000, guid: 4825243834fcd8344b5db559905ac4e0, type: 3}
   - soundName: 6
-    volume: 0.9
+    volume: 0.65
     pitch: 1
     audioClip: {fileID: 8300000, guid: 094883d45533c884f941a7dab201bcbc, type: 3}
   - soundName: 7
@@ -19494,7 +19494,7 @@ MonoBehaviour:
     pitch: 1.1
     audioClip: {fileID: 8300000, guid: 7bd6b897eb5ca4b7d88a205c4a51640c, type: 3}
   - soundName: 11
-    volume: 0.9
+    volume: 1
     pitch: 1
     audioClip: {fileID: 8300000, guid: 7f082a1cb5224c949a83b9b9ce7cd9cf, type: 3}
   - soundName: 12
@@ -19532,7 +19532,7 @@ MonoBehaviour:
   - soundName: 25
     volume: 1
     pitch: 1
-    audioClip: {fileID: 8300000, guid: 0d54653003bc3524ab6b64cac060bd52, type: 3}
+    audioClip: {fileID: 8300000, guid: 4e7ce19b0c9dda1458946554f940d3b8, type: 3}
   - soundName: 26
     volume: 1
     pitch: 1
@@ -19570,7 +19570,6 @@ MonoBehaviour:
     groundClips:
     - {fileID: 8300000, guid: 9e68ea1ebd76aa44c8cfa5beb9850830, type: 3}
     - {fileID: 8300000, guid: 1deb201b8bf8f89479323a74e421150b, type: 3}
-    - {fileID: 8300000, guid: 7c518e8469a403b4c981664ecb28a79a, type: 3}
     - {fileID: 8300000, guid: 1f2844efbf7abf647ba3d75d510f823a, type: 3}
     - {fileID: 8300000, guid: fa95ebee958fb0e41a42a832aab767eb, type: 3}
     - {fileID: 8300000, guid: 0cfeb72dea261a54cb7672590d2d1656, type: 3}
