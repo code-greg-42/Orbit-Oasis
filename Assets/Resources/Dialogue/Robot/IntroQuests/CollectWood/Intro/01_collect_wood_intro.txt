@@ -1,1 +1,1 @@
-Now you just have to pickup the wood. Walk up to it and press [F].
+To pick up the wood, use [F].

@@ -1,1 +1,1 @@
-In a moment, hit [tab] to pull up your inventory. You should see the dead trees listed there. Click and drag them onto the SELL tab.
+In a moment, hit [TAB] to pull up your inventory. You should see the dead trees listed there. Click and drag them onto the SELL slot.

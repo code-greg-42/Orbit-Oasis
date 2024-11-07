@@ -1,0 +1,1 @@
+If you decide you want to delete lots of things, pressing [V] while in build mode will let you select specific builds to delete.
