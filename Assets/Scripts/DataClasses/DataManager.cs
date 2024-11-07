@@ -342,7 +342,10 @@ public class DataManager : MonoBehaviour
 
     public void SubtractCurrency(float amount)
     {
-        PlayerStats.PlayerCurrency -= amount;
+        // ensure it does not go below 0
+        float newAmount = Mathf.Max(0, PlayerStats.PlayerCurrency - amount);
+
+        PlayerStats.PlayerCurrency = newAmount;
 
         if (MainUIManager.Instance != null)
         {

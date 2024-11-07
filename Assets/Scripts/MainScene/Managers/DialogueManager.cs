@@ -19,7 +19,7 @@ public class DialogueManager : MonoBehaviour
     private KeyCode nextDialogueKeyAltTwo = KeyCode.Escape;
 
     // dialogue window word display
-    private const float maxDelayTime = 10.0f;
+    private const float maxDelayTime = 20.0f;
     private const float wordDisplayDelay = 0.1f;
     private const float initialDelay = 0.3f;
 

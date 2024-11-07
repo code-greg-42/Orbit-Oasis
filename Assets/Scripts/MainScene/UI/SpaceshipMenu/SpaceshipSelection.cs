@@ -35,8 +35,8 @@ public class SpaceshipSelection : MonoBehaviour
     private SelectionPanelButton[][] menuStages;
     private int upgradeStage = 2; // must match index of upgrade stage in menuStages
 
-    private readonly float[] boostUpgradeCosts = { 500, 1500, 6000 };
-    private readonly float[] rocketUpgradeCosts = { 200, 600, 2400 };
+    private readonly float[] boostUpgradeCosts = { 1000, 3000, 9000 };
+    private readonly float[] rocketUpgradeCosts = { 800, 2400, 7200 };
 
     private delegate void ButtonAction();
     private ButtonAction[][] buttonActions;
@@ -409,19 +409,35 @@ public class SpaceshipSelection : MonoBehaviour
 
     private void OnUpgradeBoostPressed()
     {
-        if (DataManager.Instance.RaceStats.BoostUpgradeLevel < DataManager.Instance.RaceStats.MaxBoostLevel)
+        int boostLevel = DataManager.Instance.RaceStats.BoostUpgradeLevel;
+
+        if (boostLevel < DataManager.Instance.RaceStats.MaxBoostLevel && boostLevel >= 0 && boostLevel < boostUpgradeCosts.Length)
         {
-            DataManager.Instance.UpgradeBoost();
-            UpdateUpgradeDisplay();
+            float boostCost = boostUpgradeCosts[boostLevel];
+
+            if (DataManager.Instance.PlayerStats.PlayerCurrency >= boostCost)
+            {
+                DataManager.Instance.SubtractCurrency(boostCost);
+                DataManager.Instance.UpgradeBoost();
+                UpdateUpgradeDisplay();
+            }
         }
     }
 
     private void OnUpgradeRocketsPressed()
     {
-        if (DataManager.Instance.RaceStats.RocketUpgradeLevel < DataManager.Instance.RaceStats.MaxRocketLevel)
+        int rocketLevel = DataManager.Instance.RaceStats.RocketUpgradeLevel;
+
+        if (rocketLevel < DataManager.Instance.RaceStats.MaxRocketLevel && rocketLevel >= 0 && rocketLevel < rocketUpgradeCosts.Length)
         {
-            DataManager.Instance.UpgradeRockets();
-            UpdateUpgradeDisplay();
+            float rocketCost = rocketUpgradeCosts[rocketLevel];
+
+            if (DataManager.Instance.PlayerStats.PlayerCurrency >= rocketCost)
+            {
+                DataManager.Instance.SubtractCurrency(rocketCost);
+                DataManager.Instance.UpgradeRockets();
+                UpdateUpgradeDisplay();
+            }
         }
     }
 
