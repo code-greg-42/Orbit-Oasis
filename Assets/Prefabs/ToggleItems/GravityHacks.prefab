@@ -151,9 +151,8 @@ MonoBehaviour:
   image: {fileID: 21300000, guid: 1585a023738d25942a54d242b2909afd, type: 3}
   maxStackQuantity: 1
   quantity: 1
-  sellPricePerUnit: 5000
-  buyPricePerUnit: 10000
+  sellPricePerUnit: 20000
+  buyPricePerUnit: 40000
   buildMaterialPerUnit: 0
   prefabIndex: 22
   pickupDelay: 0.3
-  alertMessage: toggling gravity hacks...

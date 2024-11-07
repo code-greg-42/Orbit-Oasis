@@ -1,1 +1,1 @@
-Wow! You completed it on insane mode? I didn't even think that was possible! Well done! Your rewards for such a run are quite insane too. Your take is $[MONEY_PH].
+Wow! You completed it on insane? I didn't even think that was possible! I guess I better pay up, then. You've earned $[MONEY_PH]!

@@ -403,7 +403,6 @@ public class SpaceshipSelection : MonoBehaviour
 
     private void StartSpaceRace()
     {
-        Debug.Log("Space Race started with difficulty: " + currentSelection);
         MainGameManager.Instance.StartSpaceRaceScene(currentSelection);
         DeactivateSpaceshipSelection();
     }

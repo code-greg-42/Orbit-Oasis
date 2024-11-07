@@ -74,16 +74,6 @@ public class RewardsManager : MonoBehaviour
                     dialoguePath += "space_race_win";
                 }
 
-                //if (QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.SpaceRace)
-                //{
-                //    StartCoroutine(ShowDialogueAndCompleteQuest(dialoguePath, rewardAmount));
-                //}
-                //else
-                //{
-                //    // show dialogue
-                //    ShowRewardsDialogue(dialoguePath, rewardAmount);
-                //}
-
                 // show dialogue
                 ShowRewardsDialogue(dialoguePath, rewardAmount);
             }
@@ -122,16 +112,6 @@ public class RewardsManager : MonoBehaviour
                         break;
                 }
 
-                //if (QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.SpaceRace)
-                //{
-                //    StartCoroutine(ShowDialogueAndCompleteQuest(dialoguePath));
-                //}
-                //else
-                //{
-                //    // show dialogue
-                //    ShowRewardsDialogue(dialoguePath);
-                //}
-
                 // show dialogue
                 ShowRewardsDialogue(dialoguePath);
             }
@@ -156,29 +136,6 @@ public class RewardsManager : MonoBehaviour
         // show dialogue in window
         DialogueManager.Instance.ShowDialogue(dialogue);
     }
-
-    // coroutine for when intro quest is active --- quest completes upon completion of dialogue
-    //private IEnumerator ShowDialogueAndCompleteQuest(string dialoguePath, float rewardAmount = 0)
-    //{
-    //    Dictionary<DialogueManager.PlaceholderType, string> replacements = new();
-
-    //    if (rewardAmount != 0)
-    //    {
-    //        replacements.Add(DialogueManager.PlaceholderType.Money, rewardAmount.ToString());
-    //    }
-
-    //    // get dialogue from file system/dialogue manager (including any placeholder replacements)
-    //    List<string> dialogue = DialogueManager.Instance.GetDialogue(dialoguePath, replacements);
-
-    //    // await parameter set to true for waiting until dialogue is shown/moved on from
-    //    yield return DialogueManager.Instance.ShowDialogue(dialogue, true);
-
-    //    // double check if on space race quest, complete the quest if so
-    //    if (QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.SpaceRace)
-    //    {
-    //        QuestManager.Instance.UpdateCurrentQuest();
-    //    }
-    //}
 
     // wait for load screen
     private IEnumerator WaitThenCheckRewards()

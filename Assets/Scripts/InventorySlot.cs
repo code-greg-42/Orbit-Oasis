@@ -59,66 +59,6 @@ public class InventorySlot : MenuItemSlot
         if (eventData.button == PointerEventData.InputButton.Left)
         {
             OnLeftClick();
-            //// unselect current selection
-            //InventoryManager.Instance.RemoveSlotSelection();
-
-            //// select slot if slot has an item
-            //if (SlotItem != null)
-            //{
-            //    SelectSlot();
-            //}
-
-            //if (SlotItem is PlaceableItem placeableItem)
-            //{
-            //    if (IsRecentlyClicked)
-            //    {
-            //        ItemPlacementManager.Instance.ActivateItemPlacement(placeableItem);
-            //        ClearSlot();
-            //    }
-            //    else
-            //    {
-            //        IsRecentlyClicked = true;
-            //        Invoke(nameof(ResetRecentlyClicked), doubleClickWindow);
-            //    }
-            //}
-            //else if (SlotItem is Animal animal)
-            //{
-            //    if (IsRecentlyClicked)
-            //    {
-            //        Transform playerTransform = GameObject.Find("PlayerModel").transform;
-
-            //        if (playerTransform != null)
-            //        {
-            //            // calculate drop position based on player
-            //            Vector3 dropPos = playerTransform.position + playerTransform.forward * 2;
-
-            //            // drop item out of inventory and into scene
-            //            animal.DropItem(dropPos);
-
-            //            // deselect and clear slot
-            //            DeselectSlot();
-            //            ClearSlot();
-            //        }
-            //    }
-            //    else
-            //    {
-            //        IsRecentlyClicked = true;
-            //        Invoke(nameof(ResetRecentlyClicked), doubleClickWindow);
-            //    }
-            //}
-            //else if (SlotItem is ToggleItem toggleItem)
-            //{
-            //    if (IsRecentlyClicked)
-            //    {
-            //        // toggle items ability and show alert message, without getting rid of the item or clearing the slot
-            //        toggleItem.ToggleAbility();
-            //    }
-            //    else
-            //    {
-            //        IsRecentlyClicked = true;
-            //        Invoke(nameof(ResetRecentlyClicked), doubleClickWindow);
-            //    }
-            //}
         }
     }
 

@@ -186,21 +186,13 @@ public class PlayerMovement : MonoBehaviour
 
         if (isGrounded)
         {
-            // raycast origin positions and distance
-            //Vector3 rayBelowPlayer = transform.position;
+            // raycast origin position and distance
             Vector3 rayAheadPlayer = transform.position + transform.forward * 0.5f; // 1
             float rayDistance = playerHeight;
 
-            // variables to store slope values
-            //Vector3 slopeBelowPlayer = Vector3.up;
+            // variable to store slope value
             Vector3 slopeAheadPlayer = Vector3.up;
             bool isSlopeAhead = false;
-
-            // raycast below
-            //if (Physics.Raycast(rayBelowPlayer, Vector3.down, out RaycastHit hitBelow, rayDistance, groundLayer))
-            //{
-            //    slopeBelowPlayer = hitBelow.normal;
-            //}
 
             // raycast in front to detect upcoming terrain
             if (Physics.Raycast(rayAheadPlayer, Vector3.down, out RaycastHit hitAhead, rayDistance, groundLayer))
@@ -224,20 +216,6 @@ public class PlayerMovement : MonoBehaviour
 
             if (isSlopeAhead)
             {
-                // calculate diff in slope between current surface and upcoming surface
-                //float slopeDifference = Vector3.Angle(slopeBelowPlayer, slopeAheadPlayer);
-
-                //if (slopeDifference > 15.0f) // 5
-                //{
-                //    //if (rb.velocity.y > 0)
-                //    //{
-                //    //    rb.AddForce(2f * Vector3.down, ForceMode.Force); // 10f
-                //    //}
-                //    //else if (rb.velocity.y < 0)
-                //    //{
-                //    //    rb.AddForce(10f * Vector3.up, ForceMode.Force);
-                //    //}
-                //}
                 moveDirection = Vector3.ProjectOnPlane(moveDirection, slopeAheadPlayer);
             }
 

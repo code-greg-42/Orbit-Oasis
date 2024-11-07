@@ -1,1 +1,1 @@
-Congratulations on completing the space race! That was really quite the run! For your effort, you've been rewarded $[MONEY_PH]. Feel free to complete it again, though there's no guarantee you'll be so lucky the next time!
+That was really quite the run, and earned you $[MONEY_PH]! Feel free to complete it again, though there's no guarantee you'll be so lucky the next time!

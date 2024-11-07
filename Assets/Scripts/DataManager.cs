@@ -67,10 +67,7 @@ public class DataManager : MonoBehaviour
             foreach (var file in Directory.GetFiles(directoryPath))
             {
                 File.Delete(file);
-                Debug.Log("Deleted file.");
             }
-
-            Debug.Log("Deleted all files.");
         }
     }
 
@@ -85,8 +82,6 @@ public class DataManager : MonoBehaviour
         float adjustedVolume = volume / 100;
 
         PlayerStats.MasterVolume = adjustedVolume;
-
-        Debug.Log("Master Volume Set To: " + volume / 100);
     }
 
     public void SaveVolume()
@@ -211,8 +206,6 @@ public class DataManager : MonoBehaviour
 
         // add to list
         PlacedItems.ItemList.Add(placeableItemData);
-
-        Debug.Log("Added a placed item. Number of placed items: " + PlacedItems.ItemList.Count);
 
         // save to file
         SavePlacedItems();

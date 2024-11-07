@@ -73,11 +73,6 @@ public class PlayerControls : MonoBehaviour
     public bool IsSwinging => isSwinging;
     public bool IsPickingUpItem => isPickingUpItem;
 
-    // main action property
-    //public bool ReadyForAction => !isSwinging && !isShooting && !isPickingUpItem && playerMovement.IsGrounded && !BuildManager.Instance.BuildModeActive &&
-    //    !DialogueManager.Instance.DialogueWindowActive && !ItemPlacementManager.Instance.ItemPlacementActive && !InventoryManager.Instance.IsMenuActive &&
-    //    !TraderMenuManager.Instance.IsMenuActive && !SpaceshipSelection.Instance.IsMenuActive;
-
     [Header("References")]
     [SerializeField] private FarmingTool playerAxe;
     [SerializeField] private FarmingTool playerMiningPick;
@@ -545,8 +540,11 @@ public class PlayerControls : MonoBehaviour
             {
                 if (hit.collider.TryGetComponent(out FarmableObject farmable))
                 {
-                    nearbyFarmableObjectType = farmable.Type;
-                    return true;
+                    if (QuestManager.Instance.CollectStonesQuestReached || farmable.Type == FarmableObject.ObjectType.Tree)
+                    {
+                        nearbyFarmableObjectType = farmable.Type;
+                        return true;
+                    }
                 }
             }
         }

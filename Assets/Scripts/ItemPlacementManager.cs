@@ -105,7 +105,6 @@ public class ItemPlacementManager : MonoBehaviour
     {
         ItemPlacementActive = true;
         InventoryManager.Instance.ToggleInventoryMenu(false);
-        MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.ToggleBuildMode);
         item.gameObject.transform.SetParent(null);
         currentItem = item;
 

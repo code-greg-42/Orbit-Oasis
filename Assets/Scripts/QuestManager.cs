@@ -39,10 +39,12 @@ public class QuestManager : MonoBehaviour
     // quest indices and corresponding flags for disallowing certain actions before the quest has introduced it
     private int inventoryQuestIndex;
     private int farmingQuestIndex;
+    private int collectStonesQuestIndex;
     private int buildingQuestIndex;
     private int spaceRaceQuestIndex;
     public bool InventoryQuestReached => activeQuestIndex >= inventoryQuestIndex;
     public bool FarmingQuestReached => activeQuestIndex >= farmingQuestIndex;
+    public bool CollectStonesQuestReached => activeQuestIndex >= collectStonesQuestIndex;
     public bool BuildingQuestReached => activeQuestIndex >= buildingQuestIndex;
     public bool SpaceRaceQuestReached => activeQuestIndex >= spaceRaceQuestIndex;
     public bool AllowSellFarmables => activeQuestIndex >= buildingQuestIndex; // quest completion point where farmables are no longer required
@@ -101,6 +103,7 @@ public class QuestManager : MonoBehaviour
         // set indices here so the get quest index loop only has to run one time per quest index
         inventoryQuestIndex = GetQuestIndex(IntroQuest.SellDeadTrees);
         farmingQuestIndex = GetQuestIndex(IntroQuest.FarmTree);
+        collectStonesQuestIndex = GetQuestIndex(IntroQuest.CollectStones);
         buildingQuestIndex = GetQuestIndex(IntroQuest.PlaceABuild);
         spaceRaceQuestIndex = GetQuestIndex(IntroQuest.SpaceRace);
 

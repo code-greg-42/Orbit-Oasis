@@ -257,10 +257,6 @@ public class MainGameManager : MonoBehaviour
         char[] chars = text.ToCharArray();
         char[] periods = loadingTextEnding.ToCharArray();
 
-        // calculate total time and play sound effect
-        //float totalTime = chars.Length * charDelayOne + periods.Length * charDelayTwo + loadingTextEndDelay;
-        //MainSoundManager.Instance.PlayLoadingSound(totalTime);
-
         MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.LoadingSound);
 
         foreach (char c in chars)
