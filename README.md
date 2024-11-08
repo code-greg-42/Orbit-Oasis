@@ -165,10 +165,13 @@ Deep into the future, humanity has taken to the stars and colonized many planets
 - Prepare and release the game on Steam or itch.io.
 - Allow friends and family to play and provide feedback.
 - Deadline: Friday, October 25th
-- UPDATE: CURRENT
+- UPDATE: COMPLETED 11.8
 ---
 
 ## 7. Deadline
 
 - Total Project Duration: 19 weeks
 - Final Deadline: Wednesday, October 25th
+
+- FINAL COMPLETION: Friday, November 8th
+- TOTAL TIME: 21 weeks
