@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
-using UnityEditor.Build.Reporting;
 using UnityEngine;
 
 // script execution time of -100 to run before other scripts
