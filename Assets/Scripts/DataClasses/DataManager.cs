@@ -83,9 +83,12 @@ public class DataManager : MonoBehaviour
         PlayerStats.MasterVolume = adjustedVolume;
     }
 
-    public void SaveVolume()
+    public void SetLookSensitivity(float sensitivity)
     {
-        SavePlayerStats();
+        // adjust for the whole number aspect of the slider
+        float adjustedSensitivity = sensitivity / 100;
+
+        PlayerStats.LookSensitivity = adjustedSensitivity;
     }
 
     public void SetIntroLoadingTextShown()

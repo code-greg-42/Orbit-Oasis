@@ -14,4 +14,5 @@ public class PlayerData
     public int QuestIndex;
     public int QuestProgress;
     public float MasterVolume = 1.0f;
+    public float LookSensitivity = 1.0f;
 }
