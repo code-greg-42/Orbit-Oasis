@@ -103,8 +103,8 @@ MonoBehaviour:
   image: {fileID: 21300000, guid: 7789de51ec424104d83e176c314bd750, type: 3}
   maxStackQuantity: 50
   quantity: 1
-  sellPricePerUnit: 20
-  buyPricePerUnit: 40
+  sellPricePerUnit: 80
+  buyPricePerUnit: 160
   buildMaterialPerUnit: 1
   prefabIndex: 0
   pickupDelay: 0.3

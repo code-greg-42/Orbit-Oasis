@@ -278,8 +278,8 @@ MonoBehaviour:
   image: {fileID: 21300000, guid: 9cb4e393ee364ce4183d26b55726f6bf, type: 3}
   maxStackQuantity: 1
   quantity: 1
-  sellPricePerUnit: 1000
-  buyPricePerUnit: 2000
+  sellPricePerUnit: 600
+  buyPricePerUnit: 1200
   buildMaterialPerUnit: 0
   prefabIndex: 12
   pickupDelay: 0.3
@@ -312,7 +312,6 @@ MonoBehaviour:
   maxFarms: 8
   regenInterval: 60
   type: 0
-  farmSound: {fileID: 8300000, guid: 9240225387af40a40adc9c39fdffe1b7, type: 3}
 --- !u!65 &599301573105120682
 BoxCollider:
   m_ObjectHideFlags: 0

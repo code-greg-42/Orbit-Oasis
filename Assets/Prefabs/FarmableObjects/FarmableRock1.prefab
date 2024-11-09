@@ -88,9 +88,9 @@ MonoBehaviour:
   dropHeight: 1
   offsetLength: 0
   dropTorqueAmount: 0
-  materialWeights: 3c000000190000000c00000003000000
-  maxFarms: 8
-  regenInterval: 60
+  materialWeights: 280000001e0000001600000008000000
+  maxFarms: 6
+  regenInterval: 45
   type: 1
 --- !u!54 &5262803497544468561
 Rigidbody:

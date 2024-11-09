@@ -22,11 +22,11 @@ public class TraderMenuManager : MonoBehaviour
 
     private readonly int[] weightsNumberOfItems = { 50, 40, 9, 1 }; // for 5, 6, 7, 8
     private readonly int[] numberOfItemsArray = { 5, 6, 7, 8 };
-    private readonly int[] weightsTraderItems = { 2, 23, 30, 5, 13, 5, 10, 3, 4, 2, 3 }; // weights for tradeItemPrefabs array
+    private readonly int[] weightsTraderItems = { 2, 15, 20, 5, 18, 8, 10, 5, 6, 4, 7 }; // weights for tradeItemPrefabs array
     private readonly int[] quantitiesTraderItems = { 20, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 
     // timer variables
-    private const float refreshInterval = 300.0f;
+    private const float refreshInterval = 150.0f;
     private const float refreshTimerSaveInterval = 30.0f;
     private float refreshTimer;
     private Coroutine refreshTimerCoroutine;
