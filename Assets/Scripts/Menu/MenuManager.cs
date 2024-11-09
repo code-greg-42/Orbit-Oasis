@@ -14,6 +14,7 @@ public class MenuManager : MonoBehaviour
     [SerializeField] private Image loadingScreenPanel;
     [SerializeField] private TMP_Text introText;
     [SerializeField] private Slider volumeSlider;
+    [SerializeField] private Slider lookSensitivitySlider;
 
     [Header("Disabled Button Sprite")]
     [SerializeField] private Sprite disabledButtonSprite;
@@ -43,7 +44,7 @@ public class MenuManager : MonoBehaviour
     private float baseClickVolume;
     private float baseMusicVolume;
 
-    private const float volumeSliderModifier = 100.0f;
+    private const float sliderModifier = 100.0f;
 
     private void Awake()
     {
@@ -60,8 +61,9 @@ public class MenuManager : MonoBehaviour
         baseClickVolume = clickSound.volume;
         baseMusicVolume = menuMusic.volume;
 
-        // set slider value to data manager volume setting
-        volumeSlider.value = DataManager.Instance.PlayerStats.MasterVolume * volumeSliderModifier;
+        // set slider values from data manager
+        volumeSlider.value = DataManager.Instance.PlayerStats.MasterVolume * sliderModifier;
+        lookSensitivitySlider.value = DataManager.Instance.PlayerStats.LookSensitivity * sliderModifier;
 
         // set cursor to custom cursor
         Cursor.SetCursor(customCursorTexture, cursorHotspot, CursorMode.Auto);
@@ -81,7 +83,13 @@ public class MenuManager : MonoBehaviour
         DataManager.Instance.SetMasterVolume(volume);
 
         // adjust the menu music with updated value, including the /100
-        menuMusic.volume = baseMusicVolume * (volume / volumeSliderModifier);
+        menuMusic.volume = baseMusicVolume * (volume / sliderModifier);
+    }
+
+    // attached to slider directly
+    public void OnLookSensitivityChange(float sensitivity)
+    {
+        DataManager.Instance.SetLookSensitivity(sensitivity);
     }
 
     private void PlayClickSound()
