@@ -1,1 +1,1 @@
-In a moment, hit [TAB] to pull up your inventory. You should see the dead trees listed there. Click and drag them onto the SELL slot.
+In a moment, hit <i><b><color=#FFFF00>[TAB]</color></b></i> to pull up your inventory. You should see the dead trees listed there. <i><b><color=#FFFF00>[CLICK AND DRAG]</color></b></i> them onto the SELL slot.

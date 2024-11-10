@@ -1,1 +1,1 @@
-Wow! You completed it on insane? I didn't even think that was possible! I guess I better pay up, then. You've earned $[MONEY_PH]!
+Wow! You completed it on insane? I didn't even think that was possible! I guess I better pay up, then. You've earned <i><b><color=#FFFF00>$[MONEY_PH]</color></b></i>!

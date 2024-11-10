@@ -1,1 +1,1 @@
-That was really quite the run, and earned you $[MONEY_PH]! Feel free to complete it again, though there's no guarantee you'll be so lucky the next time!
+That was really quite the run, and earned you <i><b><color=#FFFF00>$[MONEY_PH]</color></b></i>! Feel free to complete it again, though there's no guarantee you'll be so lucky the next time!

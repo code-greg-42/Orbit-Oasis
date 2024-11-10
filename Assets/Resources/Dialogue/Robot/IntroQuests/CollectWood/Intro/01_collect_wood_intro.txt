@@ -1,1 +1,1 @@
-To pick up the wood, use [F].
+To pick up the wood, use <i><b><color=#FFFF00>[F]</color></b></i>.

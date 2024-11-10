@@ -1,1 +1,1 @@
-Walk up to one of the trees and press [E] to swing at it! If you hit it just right, a piece of wood will fly right off!
+Walk up to one of the trees and press <i><b><color=#FFFF00>[E]</color></b></i> to swing at it! If you hit it just right, a piece of wood will fly right off!

@@ -306,22 +306,25 @@ public class DataManager : MonoBehaviour
 
     public void AddCurrency(float amount)
     {
-        PlayerStats.PlayerCurrency += amount;
-
-        if (MainUIManager.Instance != null)
+        if (amount > 0)
         {
-            // update in-game UI
-            MainUIManager.Instance.UpdateCurrencyDisplay(PlayerStats.PlayerCurrency, amount);
-        }
+            PlayerStats.PlayerCurrency += amount;
 
-        if (MainSoundManager.Instance != null)
-        {
-            // play money sound effect
-            MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.Money);
-        }
+            if (MainUIManager.Instance != null)
+            {
+                // update in-game UI
+                MainUIManager.Instance.UpdateCurrencyDisplay(PlayerStats.PlayerCurrency, amount);
+            }
 
-        // save to file
-        SavePlayerStats();
+            if (MainSoundManager.Instance != null)
+            {
+                // play money sound effect
+                MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.Money);
+            }
+
+            // save to file
+            SavePlayerStats();
+        }
     }
 
     // used only on load --- DO NOT SAVE TO FILE
@@ -344,25 +347,28 @@ public class DataManager : MonoBehaviour
 
     public void SubtractCurrency(float amount)
     {
-        // ensure it does not go below 0
-        float newAmount = Mathf.Max(0, PlayerStats.PlayerCurrency - amount);
-
-        PlayerStats.PlayerCurrency = newAmount;
-
-        if (MainUIManager.Instance != null)
+        if (amount > 0)
         {
-            // update in-game UI --- use set amount to negative for correct floating text
-            MainUIManager.Instance.UpdateCurrencyDisplay(PlayerStats.PlayerCurrency, -amount);
-        }
+            // ensure it does not go below 0
+            float newAmount = Mathf.Max(0, PlayerStats.PlayerCurrency - amount);
 
-        if (MainSoundManager.Instance != null)
-        {
-            // play money sound effect
-            MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.Money);
-        }
+            PlayerStats.PlayerCurrency = newAmount;
 
-        // save to file
-        SavePlayerStats();
+            if (MainUIManager.Instance != null)
+            {
+                // update in-game UI --- use set amount to negative for correct floating text
+                MainUIManager.Instance.UpdateCurrencyDisplay(PlayerStats.PlayerCurrency, -amount);
+            }
+
+            if (MainSoundManager.Instance != null)
+            {
+                // play money sound effect
+                MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.Money);
+            }
+
+            // save to file
+            SavePlayerStats();
+        }
     }
 
     private void CreateSaveDirectory()

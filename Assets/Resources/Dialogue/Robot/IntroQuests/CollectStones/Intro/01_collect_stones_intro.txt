@@ -1,1 +1,1 @@
-Now let's try out the mining pick. Use [E] and [F] on one of the rocks you placed, and collect some gemstones!
+Now let's try out the mining pick. Use <i><b><color=#FFFF00>[E]</color></b></i> and <i><b><color=#FFFF00>[F]</color></b></i> on one of the rocks you placed, and collect some gemstones!

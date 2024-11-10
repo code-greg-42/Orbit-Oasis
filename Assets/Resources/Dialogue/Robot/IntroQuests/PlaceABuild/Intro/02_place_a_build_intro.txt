@@ -1,1 +1,1 @@
-All you have to do is press [B] to enter build mode, aim where you want to place it, then press [F] to lock it in!
+All you have to do is press <i><b><color=#FFFF00>[B]</color></b></i> to enter build mode, aim where you want to place it, then press <i><b><color=#FFFF00>[F]</color></b></i> to lock it in!

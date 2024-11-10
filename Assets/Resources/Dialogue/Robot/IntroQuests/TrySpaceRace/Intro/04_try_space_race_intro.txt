@@ -1,1 +1,1 @@
-Access the space race by pressing [F] near the spaceship, and selecting [START RACE]. You'll need to navigate the menu with arrow keys and [ENTER], as the technology is quite ancient.
+Access the race's menu by pressing <i><b><color=#FFFF00>[F]</color></b></i> near the spaceship. You'll need to navigate the menu with <i><b><color=#FFFF00>[ARROW KEYS]</color></b></i> and <i><b><color=#FFFF00>[ENTER]</color></b></i>, as the ship's technology is quite ancient.

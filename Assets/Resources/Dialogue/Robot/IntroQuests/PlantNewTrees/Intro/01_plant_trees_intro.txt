@@ -1,1 +1,1 @@
-Okay, let's plant some new trees! I've added some to your inventory. Double click them to plant them wherever you'd like!
+Okay, let's plant some new trees! I've added some to your inventory. <i><b><color=#FFFF00>[DOUBLE CLICK]</color></b></i> them to enter the placement mode, then press <i><b><color=#FFFF00>[F]</color></b></i> to plant them wherever!

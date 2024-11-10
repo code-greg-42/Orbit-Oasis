@@ -1,1 +1,1 @@
-For starters, let's get rid of these dead trees in the area. Use [WASD] to walk towards them, stand still, and use [C] to fire your capture device.
+For starters, let's get rid of these dead trees in the area. <i><b><color=#FFFF00>[WASD]</color></b></i> lets you move near them, and <i><b><color=#FFFF00>[C]</color></b></i> (while standing still) fires your capture device.
