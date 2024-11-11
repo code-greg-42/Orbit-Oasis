@@ -43,7 +43,7 @@ public class PlayerControls : MonoBehaviour
     private bool isSwinging = false;
 
     // unstuck variables
-    private const float unstuckHoldLength = 3.0f;
+    private const float unstuckHoldLength = 2.0f;
     private float unstuckTimer = 0.0f;
 
     // farming proximity check variables

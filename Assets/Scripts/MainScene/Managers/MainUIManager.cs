@@ -59,6 +59,9 @@ public class MainUIManager : MonoBehaviour
     [SerializeField] private GameObject traderMenuControlsPanel;
     [SerializeField] private GameObject itemPlacementControlsPanel;
 
+    [Header("Unstuck Indicator")]
+    [SerializeField] private GameObject unstuckIndicatorPanel;
+
     // tutorial progress settings
     private float tutorialProgressFadeDuration = 0.3f;
     private Coroutine tutorialProgressBarCoroutine;
@@ -129,38 +132,6 @@ public class MainUIManager : MonoBehaviour
         if (changeAmount != 0)
         {
             CreateFloatingCurrencyText(changeAmount);
-        }
-    }
-
-    public void ActivateControlsDisplay()
-    {
-        if (!controlsDisplayPanel.activeInHierarchy)
-        {
-            controlsDisplayPanel.SetActive(true);
-        }
-    }
-
-    public void DeactivateControlsDisplay()
-    {
-        if (controlsDisplayPanel.activeInHierarchy)
-        {
-            controlsDisplayPanel.SetActive(false);
-        }
-    }
-
-    public void ActivateItemPlacementControlsPanel()
-    {
-        if (!itemPlacementControlsPanel.activeInHierarchy)
-        {
-            itemPlacementControlsPanel.SetActive(true);
-        }
-    }
-
-    public void DeactivateItemPlacementControlsPanel()
-    {
-        if (itemPlacementControlsPanel.activeInHierarchy)
-        {
-            itemPlacementControlsPanel.SetActive(false);
         }
     }
 
@@ -355,6 +326,28 @@ public class MainUIManager : MonoBehaviour
     public void DeactivateDeleteModeIndicator()
     {
         deleteModeIndicator.SetActive(false);
+    }
+
+    public void ActivateControlsDisplay()
+    {
+        controlsDisplayPanel.SetActive(true);
+        unstuckIndicatorPanel.SetActive(true);
+    }
+
+    public void DeactivateControlsDisplay()
+    {
+        controlsDisplayPanel.SetActive(false);
+        unstuckIndicatorPanel.SetActive(false);
+    }
+
+    public void ActivateItemPlacementControlsPanel()
+    {
+        itemPlacementControlsPanel.SetActive(true);
+    }
+
+    public void DeactivateItemPlacementControlsPanel()
+    {
+        itemPlacementControlsPanel.SetActive(false);
     }
 
     public void ShowAlertText(string text, float duration)
@@ -578,15 +571,6 @@ public class MainUIManager : MonoBehaviour
         farmingSuccessIndicator.color = successIndicatorStartColor;
         farmingSuccessIndicator.gameObject.SetActive(false);
     }
-
-    //private void ResetItemPickupIndicator()
-    //{
-    //    itemPickupIndicatorPanel.color = indicatorPanelStartColor;
-    //    itemPickupIndicatorText.color = indicatorTextStartColor;
-    //    itemPickupIndicator.transform.localScale = indicatorOriginalScale;
-    //    itemPickupSuccessIndicator.color = successIndicatorStartColor;
-    //    itemPickupSuccessIndicator.gameObject.SetActive(false);
-    //}
 
     private void CreateFloatingText(TMP_Text textBoxOrigin, string text, Color color)
     {
