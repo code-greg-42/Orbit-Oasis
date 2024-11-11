@@ -132,6 +132,7 @@ public class MenuManager : MonoBehaviour
         {
             DataManager.Instance.StartNewGame();
             DataManager.Instance.SetMasterVolume(volumeSlider.value);
+            DataManager.Instance.SetLookSensitivity(lookSensitivitySlider.value);
         }
 
         StartCoroutine(FadeUI.FadeAudio(menuMusic, 0f, 2.0f));

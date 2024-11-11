@@ -133,23 +133,30 @@ public class TraderMenuManager : MonoBehaviour
 
     public void BuyDraggedItem()
     {
-        if (DragSlot != null && DragSlot.BuyPrice < DataManager.Instance.PlayerStats.PlayerCurrency)
+        if (DragSlot != null)
         {
-            // update data manager with purchase
-            DataManager.Instance.SubtractCurrency(DragSlot.BuyPrice);
-
-            // remove item from trader inventory in DataManager
-            DataManager.Instance.RemoveSingleTraderItem(DragSlot.SlotItem, refreshTimer);
-
-            // add item to player inventory --- .PickupItem() will automatically add to inventory in data manager as well
-            DragSlot.SlotItem.PickupItem();
-
-            // clear slot selection
-            if (DragSlot.IsSelected)
+            if (DragSlot.BuyPrice < DataManager.Instance.PlayerStats.PlayerCurrency)
             {
-                RemoveSlotSelection();
+                // update data manager with purchase
+                DataManager.Instance.SubtractCurrency(DragSlot.BuyPrice);
+
+                // remove item from trader inventory in DataManager
+                DataManager.Instance.RemoveSingleTraderItem(DragSlot.SlotItem, refreshTimer);
+
+                // add item to player inventory --- .PickupItem() will automatically add to inventory in data manager as well
+                DragSlot.SlotItem.PickupItem();
+
+                // clear slot selection
+                if (DragSlot.IsSelected)
+                {
+                    RemoveSlotSelection();
+                }
+                DragSlot.ClearSlot();
             }
-            DragSlot.ClearSlot();
+            else
+            {
+                MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.NoSell);
+            }
         }
     }
 
@@ -198,6 +205,16 @@ public class TraderMenuManager : MonoBehaviour
 
         // play sound effect
         MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.ToggleMenu);
+
+        // toggle controls display
+        if (IsMenuActive)
+        {
+            MainUIManager.Instance.DeactivateControlsDisplay();
+        }
+        else
+        {
+            MainUIManager.Instance.ActivateControlsDisplay();
+        }
 
         // disables camera mouse movement when menu is active, enable when menu inactive
         camControls.ToggleMouseMovement(IsMenuActive);
@@ -248,6 +265,7 @@ public class TraderMenuManager : MonoBehaviour
             IsDragging = false;
             DragSlot = null;
             dragImage.gameObject.SetActive(false);
+            MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.EndDrag);
             buySlotHighlightPanel.SetActive(false);
         }
     }

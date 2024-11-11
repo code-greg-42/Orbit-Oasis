@@ -52,6 +52,13 @@ public class MainUIManager : MonoBehaviour
     [SerializeField] private GameObject buildModeIndicator;
     [SerializeField] private GameObject deleteModeIndicator;
 
+    [Header("Controls Display")]
+    [SerializeField] private GameObject controlsDisplayPanel;
+    [SerializeField] private GameObject inventoryControlsPanel;
+    [SerializeField] private GameObject buildModeControlsPanel;
+    [SerializeField] private GameObject traderMenuControlsPanel;
+    [SerializeField] private GameObject itemPlacementControlsPanel;
+
     // tutorial progress settings
     private float tutorialProgressFadeDuration = 0.3f;
     private Coroutine tutorialProgressBarCoroutine;
@@ -108,6 +115,7 @@ public class MainUIManager : MonoBehaviour
         questTextStartColor = questProgressText.color;
 
         UpdateCurrencyDisplay(DataManager.Instance.PlayerStats.PlayerCurrency);
+        InitControlsDisplay();
     }
 
     public void UpdateCurrencyDisplay(float newAmount, float changeAmount = 0)
@@ -121,6 +129,82 @@ public class MainUIManager : MonoBehaviour
         if (changeAmount != 0)
         {
             CreateFloatingCurrencyText(changeAmount);
+        }
+    }
+
+    public void ActivateControlsDisplay()
+    {
+        if (!controlsDisplayPanel.activeInHierarchy)
+        {
+            controlsDisplayPanel.SetActive(true);
+        }
+    }
+
+    public void DeactivateControlsDisplay()
+    {
+        if (controlsDisplayPanel.activeInHierarchy)
+        {
+            controlsDisplayPanel.SetActive(false);
+        }
+    }
+
+    public void ActivateItemPlacementControlsPanel()
+    {
+        if (!itemPlacementControlsPanel.activeInHierarchy)
+        {
+            itemPlacementControlsPanel.SetActive(true);
+        }
+    }
+
+    public void DeactivateItemPlacementControlsPanel()
+    {
+        if (itemPlacementControlsPanel.activeInHierarchy)
+        {
+            itemPlacementControlsPanel.SetActive(false);
+        }
+    }
+
+    public void UpdateControlsDisplay(QuestManager.IntroQuest introQuest)
+    {
+        // activate panels based on the quest started/completed
+
+        switch (introQuest)
+        {
+            case QuestManager.IntroQuest.SellDeadTrees:
+                inventoryControlsPanel.SetActive(true);
+                break;
+
+            case QuestManager.IntroQuest.PlaceABuild:
+                buildModeControlsPanel.SetActive(true);
+                break;
+
+            case QuestManager.IntroQuest.SpaceRace:
+                traderMenuControlsPanel.SetActive(true);
+                break;
+
+            default:
+                Debug.LogWarning("IntroQuest given to MainUIManager.UpdateControlsDisplay() does not match.");
+                break;
+        }
+    }
+
+    private void InitControlsDisplay()
+    {
+        // activate panels based on which quests have been reached
+
+        if (QuestManager.Instance.InventoryQuestReached)
+        {
+            inventoryControlsPanel.SetActive(true);
+        }
+
+        if (QuestManager.Instance.BuildingQuestReached)
+        {
+            buildModeControlsPanel.SetActive(true);
+        }
+
+        if (QuestManager.Instance.AllQuestsCompleted)
+        {
+            traderMenuControlsPanel.SetActive(true);
         }
     }
 

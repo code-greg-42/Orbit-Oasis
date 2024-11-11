@@ -62,10 +62,12 @@ public class ItemPlacementManager : MonoBehaviour
             if (Input.GetKeyDown(placeKey) && currentItem != null && currentItem.IsPlaceable())
             {
                 PlaceItem();
+                MainUIManager.Instance.ActivateControlsDisplay();
             }
             else if (Input.GetKeyDown(escapeKey))
             {
                 ReturnItemToInventory();
+                MainUIManager.Instance.ActivateControlsDisplay();
             }
             else if (Input.GetKeyDown(backToInventoryKey))
             {
@@ -105,6 +107,11 @@ public class ItemPlacementManager : MonoBehaviour
     {
         ItemPlacementActive = true;
         InventoryManager.Instance.ToggleInventoryMenu(false);
+
+        // force deactivate main controls panel and activate item placement controls
+        MainUIManager.Instance.DeactivateControlsDisplay();
+        MainUIManager.Instance.ActivateItemPlacementControlsPanel();
+
         item.gameObject.transform.SetParent(null);
         currentItem = item;
 
@@ -139,6 +146,8 @@ public class ItemPlacementManager : MonoBehaviour
         {
             Debug.LogWarning("Could not find collider component on placeable item.");
         }
+
+        MainUIManager.Instance.DeactivateItemPlacementControlsPanel();
         currentItem = null;
         ItemPlacementActive = false;
     }

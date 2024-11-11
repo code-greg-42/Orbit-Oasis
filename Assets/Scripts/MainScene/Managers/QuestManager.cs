@@ -47,6 +47,7 @@ public class QuestManager : MonoBehaviour
     public bool CollectStonesQuestReached => activeQuestIndex >= collectStonesQuestIndex;
     public bool BuildingQuestReached => activeQuestIndex >= buildingQuestIndex;
     public bool SpaceRaceQuestReached => activeQuestIndex >= spaceRaceQuestIndex;
+    public bool AllQuestsCompleted => activeQuestIndex > spaceRaceQuestIndex;
     public bool AllowSellFarmables => activeQuestIndex >= buildingQuestIndex; // quest completion point where farmables are no longer required
     public bool AllowSellBuildMaterial => activeQuestIndex >= spaceRaceQuestIndex; // quest completion point where building is no longer required
 
@@ -83,14 +84,14 @@ public class QuestManager : MonoBehaviour
         introQuests = new Quest[]
         {
             new Quest("Remove Dead Trees", IntroQuest.RemoveDeadTrees, 10, null),
-            new Quest("Sell Dead Trees", IntroQuest.SellDeadTrees, 10, RewardForSellDeadTrees),
+            new Quest("Sell Dead Trees", IntroQuest.SellDeadTrees, 10, RewardForSellDeadTrees, SellDeadTreesIntroAction),
             new Quest("Plant New Trees", IntroQuest.PlantNewTrees, 6, RewardForPlantNewTrees, PlantNewTreesIntroAction),
             new Quest("Place Rocks", IntroQuest.PlaceRocks, 2, null),
             new Quest("Farm Tree", IntroQuest.FarmTree, 1, null),
             new Quest("Collect Wood", IntroQuest.CollectWood, 1, null),
             new Quest("Collect More Wood", IntroQuest.CollectMoreWood, 10, null),
             new Quest("Collect Stones", IntroQuest.CollectStones, 5, null),
-            new Quest("Place A Build", IntroQuest.PlaceABuild, 1, RewardForPlaceABuild),
+            new Quest("Place A Build", IntroQuest.PlaceABuild, 1, RewardForPlaceABuild, PlaceABuildIntroAction),
             new Quest("Undo Last Build", IntroQuest.UndoLastBuild, 1, RewardForUndoLastBuild, UndoLastBuildIntroAction),
             new Quest("Place More Builds", IntroQuest.PlaceMoreBuilds, 20, RewardForPlaceMoreBuilds, PlaceMoreBuildsIntroAction),
             new Quest("Try Space Race", IntroQuest.SpaceRace, 1, RewardForSpaceRace)
@@ -350,14 +351,25 @@ public class QuestManager : MonoBehaviour
 
     private void RewardForSpaceRace()
     {
+        MainUIManager.Instance.UpdateControlsDisplay(IntroQuest.SpaceRace);
         RewardItems(tutorialRewardPrefabs, 0.3f);
     }
 
     // INTRO ACTIONS
 
+    private void SellDeadTreesIntroAction()
+    {
+        MainUIManager.Instance.UpdateControlsDisplay(IntroQuest.SellDeadTrees);
+    }
+
     private void PlantNewTreesIntroAction()
     {
         changeGrassColorCoroutine ??= StartCoroutine(ChangeGrassColorCoroutine());
+    }
+
+    private void PlaceABuildIntroAction()
+    {
+        MainUIManager.Instance.UpdateControlsDisplay(IntroQuest.PlaceABuild);
     }
 
     private void UndoLastBuildIntroAction()

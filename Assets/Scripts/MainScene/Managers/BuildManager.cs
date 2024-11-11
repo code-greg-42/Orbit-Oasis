@@ -112,6 +112,9 @@ public class BuildManager : MonoBehaviour
                 if (Input.GetKeyDown(undoBuildKey) && lastPlacedBuild != null && !DialogueManager.Instance.DialogueWindowActive)
                 {
                     DeleteBuild(lastPlacedBuild);
+
+                    // to prevent a preview from instantly popping up after deleting with undoBuildKey
+                    lastPlacedTime = Time.time;
                 }
 
                 HandleUserPrefabChange();
@@ -124,10 +127,13 @@ public class BuildManager : MonoBehaviour
         }
     }
 
-    public void ToggleBuildMode()
+    public void ToggleBuildMode(bool playSound = true)
     {
-        // play sound effect
-        MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.ToggleBuildMode);
+        if (playSound)
+        {
+            // play sound effect
+            MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.ToggleBuildMode);
+        }
 
         if (BuildModeActive)
         {
@@ -137,6 +143,7 @@ public class BuildManager : MonoBehaviour
                 currentPreview = null;
                 currentPreviewBuildable = null;
             }
+
             // reset
             originalMaterial = null;
             previewIsPlaceable = false;
@@ -152,11 +159,13 @@ public class BuildManager : MonoBehaviour
         // update UI with current state of build mode
         if (BuildModeActive)
         {
+            MainUIManager.Instance.DeactivateControlsDisplay();
             MainUIManager.Instance.ActivateBuildModeIndicator();
         }
         else
         {
             MainUIManager.Instance.DeactivateBuildModeIndicator();
+            MainUIManager.Instance.ActivateControlsDisplay();
         }
     }
 
@@ -176,7 +185,7 @@ public class BuildManager : MonoBehaviour
         
         if (!BuildModeActive)
         {
-            ToggleBuildMode();
+            ToggleBuildMode(false);
         }
     }
 
@@ -186,7 +195,7 @@ public class BuildManager : MonoBehaviour
 
         if (BuildModeActive)
         {
-            ToggleBuildMode();
+            ToggleBuildMode(false);
         }
     }
 

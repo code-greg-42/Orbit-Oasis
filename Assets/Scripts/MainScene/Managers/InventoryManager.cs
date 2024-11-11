@@ -149,6 +149,16 @@ public class InventoryManager : MonoBehaviour
         EndDrag();
         RemoveSlotSelection();
 
+        // toggle controls display
+        if (IsMenuActive)
+        {
+            MainUIManager.Instance.DeactivateControlsDisplay();
+        }
+        else
+        {
+            MainUIManager.Instance.ActivateControlsDisplay();
+        }
+
         // disables camera mouse movement when menu is active, enable when menu inactive
         camControls.ToggleMouseMovement(IsMenuActive);
     }
