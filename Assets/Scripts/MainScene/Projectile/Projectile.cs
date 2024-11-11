@@ -51,23 +51,22 @@ public class Projectile : MonoBehaviour
                 MainSoundManager.Instance.PlaySoundEffect(animal.Sound);
             }
 
+            int numDeadTrees = 0;
             if (item is DeadTree && QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.RemoveDeadTrees)
             {
-                // update quest manager with quest completion
-                QuestManager.Instance.UpdateCurrentQuest();
+                numDeadTrees = 1;
             }
 
-            // deactivate projectile and return to pool
+            PickupNearbyItems(item, numDeadTrees);
             Deactivate();
         }
         else if (collision.gameObject.TryGetComponent(out BuildableObject buildable))
         {
             BuildManager.Instance.DeleteBuild(buildable);
-
-            // return to pool
+            PickupNearbyItems();
             Deactivate();
         }
-        else if (collision.gameObject.CompareTag("Ground")// || collision.gameObject.TryGetComponent(out BuildableObject _))
+        else if (collision.gameObject.CompareTag("Ground")
             && groundSequenceCoroutine == null)
         {
             if (gameObject.activeInHierarchy)
@@ -77,15 +76,12 @@ public class Projectile : MonoBehaviour
         }
     }
 
-    private IEnumerator GroundSequence()
+    private void PickupNearbyItems(Item initialItem = null, int deadTreesAlreadyPickedUp = 0)
     {
-        // Wait for the specified delay
-        yield return new WaitForSeconds(groundSequenceDelay);
-
         // check for nearby items
         Collider[] colliders = Physics.OverlapSphere(transform.position, captureRadius);
 
-        int deadTreesPickedUp = 0;
+        int deadTreesPickedUp = deadTreesAlreadyPickedUp;
         bool atLeastOneItemPickedUp = false;
         bool atLeastOneAnimalPickedUp = false;
         MainSoundManager.SoundEffect animalSound = MainSoundManager.SoundEffect.NoSound;
@@ -93,7 +89,7 @@ public class Projectile : MonoBehaviour
         // find any items in collider array
         foreach (var collider in colliders)
         {
-            if (collider.TryGetComponent(out Item item))
+            if (collider.TryGetComponent(out Item item) && item != initialItem)
             {
                 SendToInventory(item);
 
@@ -103,10 +99,10 @@ public class Projectile : MonoBehaviour
                 {
                     atLeastOneAnimalPickedUp = true;
 
-                    // okay if it overrides, this way only one animal sound is played per pickup sequence
+                    // okay if this overrides, too keep from too many animal sounds playing
                     animalSound = animal.Sound;
                 }
-                
+
                 // increment counter if picked up item was a dead tree (added check for remove dead trees quest)
                 if (item is DeadTree && QuestManager.Instance.GetCurrentQuest() == QuestManager.IntroQuest.RemoveDeadTrees)
                 {
@@ -129,7 +125,13 @@ public class Projectile : MonoBehaviour
         {
             QuestManager.Instance.UpdateCurrentQuest(deadTreesPickedUp);
         }
+    }
 
+    private IEnumerator GroundSequence()
+    {
+        // Wait for the specified delay
+        yield return new WaitForSeconds(groundSequenceDelay);
+        PickupNearbyItems();
         Deactivate();
     }
 
