@@ -3186,6 +3186,7 @@ MonoBehaviour:
   minIdleTime: 1
   maxIdleTime: 20
   sound: 13
+  bodyObjectTransform: {fileID: 2449460702805496623}
 --- !u!136 &5192840149793833988
 CapsuleCollider:
   m_ObjectHideFlags: 0
