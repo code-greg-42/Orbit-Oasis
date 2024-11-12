@@ -61,10 +61,13 @@ public class Animal : Item
                     // randomize idle time
                     float idleTime = Random.Range(minIdleTime, maxIdleTime);
 
-                    // set eating animation --- potential to set this only if animal is on the grass level, as opposed to on a buildable object
+                    // set eating animation --- only if animal is on the grass level, as opposed to on a buildable object
                     if (idleTime > grazingTimeMin)
                     {
-                        animalAnim.SetBool("isEating", true);
+                        if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 1.0f) && hit.collider.CompareTag("Ground"))
+                        {
+                            animalAnim.SetBool("isEating", true);
+                        }
                     }
 
                     yield return new WaitForSeconds(idleTime);
@@ -78,6 +81,7 @@ public class Animal : Item
                 }
 
                 SetRandomDestination();
+                animalAnim.SetBool("isEating", false); // ensure eating animation stops on new destination
                 stuckTimer = 0.0f; // reset timer when setting new destination
             }
 
