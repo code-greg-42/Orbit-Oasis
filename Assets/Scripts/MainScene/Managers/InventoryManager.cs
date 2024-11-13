@@ -153,6 +153,9 @@ public class InventoryManager : MonoBehaviour
         if (IsMenuActive)
         {
             MainUIManager.Instance.DeactivateControlsDisplay();
+
+            // also update currency display
+            UpdateCurrencyDisplay();
         }
         else
         {
