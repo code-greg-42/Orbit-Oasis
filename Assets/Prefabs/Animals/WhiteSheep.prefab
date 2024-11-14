@@ -2813,8 +2813,8 @@ MonoBehaviour:
   image: {fileID: 21300000, guid: f980170f6c3a27e478210b95f379a072, type: 3}
   maxStackQuantity: 1
   quantity: 1
-  sellPricePerUnit: 2000
-  buyPricePerUnit: 4000
+  sellPricePerUnit: 1500
+  buyPricePerUnit: 3000
   buildMaterialPerUnit: 0
   prefabIndex: 2
   pickupDelay: 0.3
@@ -2822,7 +2822,6 @@ MonoBehaviour:
   minIdleTime: 3
   maxIdleTime: 30
   sound: 13
-  bodyObjectTransform: {fileID: 3897894456128677354}
 --- !u!136 &1620372539494247991
 CapsuleCollider:
   m_ObjectHideFlags: 0

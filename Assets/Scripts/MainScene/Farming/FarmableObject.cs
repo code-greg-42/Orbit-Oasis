@@ -64,6 +64,7 @@ public class FarmableObject : MonoBehaviour
     private void OnDisable()
     {
         timeOfDisable = Time.time;
+        regenCoroutine = null;
     }
 
     public void FarmObject()
@@ -130,7 +131,8 @@ public class FarmableObject : MonoBehaviour
         {
             yield return new WaitForSeconds(regenInterval);
 
-            availableFarms++;
+            // ensure it doesn't go above maxFarms
+            availableFarms = Mathf.Min(availableFarms + 1, maxFarms);
         }
 
         // set to null to indicate it's no longer running
