@@ -35,7 +35,7 @@ public class FarmableObject : MonoBehaviour
 
     public ObjectType Type => type;
 
-    private void Start()
+    private void Awake()
     {
         // intentionally resetting all farming between scene and session changes
         availableFarms = maxFarms;
@@ -46,32 +46,33 @@ public class FarmableObject : MonoBehaviour
         // handling case where an object is picked up into inventory and re-placed
         // this way a farmable object effectively continues regenning available farms, even when in inventory
 
-        if (availableFarms < maxFarms && timeOfDisable != 0.0f)
+        if (availableFarms < maxFarms)
         {
             float timeElapsed = Time.time - timeOfDisable;
             int regensMissed = Mathf.FloorToInt(timeElapsed / regenInterval);
-
-            int newAvailableFarms = Mathf.Min(availableFarms + regensMissed, maxFarms);
-
-            availableFarms = newAvailableFarms;
+            availableFarms = Mathf.Min(availableFarms + regensMissed, maxFarms);
         }
 
-        timeOfDisable = 0.0f;
-
         RegenerateFarms();
+        timeOfDisable = 0.0f;
     }
 
     private void OnDisable()
     {
         timeOfDisable = Time.time;
-        regenCoroutine = null;
+
+        if (regenCoroutine != null)
+        {
+            StopCoroutine(regenCoroutine);
+            regenCoroutine = null;
+        }
     }
 
     public void FarmObject()
     {
         if (availableFarms > 0)
         {
-            availableFarms--;
+            availableFarms = Mathf.Max(availableFarms - 1, 0);
             SpawnMaterial();
         }
 
