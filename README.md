@@ -24,6 +24,35 @@ Visit the [**game page**](grandersson.itch.io/orbit-oasis) on itch.io to downloa
 ## Codebase Overview 💻
 
 ## Developer Notes 📝
+Developing Orbit Oasis was both a rewarding and challenging experience. The scope was much larger than anything I'd tackled before, providing the opportunity to build complex systems, learn new skills, and grow as a programmer. Each feature brought unique challenges that required a focus on both performance and gameplay.
+
+---
+
+#### Development Anecdote:
+One challenge I encountered involved the building mechanics. The foundation for these mechanics had already been implemented, but one hard-to-solve issue remained: how to disallow the placement of a new build when the preview object was clipping through an already placed build.
+
+At first glance, this might seem simple — you could just disallow placement whenever a collision occurs. However, the building mechanics relied on slight overlaps between builds to create visually seamless connections, so blocking all collisions wasn’t a viable option. What I really needed was a way to determine *how much* the preview was colliding with existing builds. Unfortunately, collision volume information wasn’t readily available. 
+
+Performance was a key consideration, so constant calculations weren’t ideal, and manually measuring the overlap proved inaccurate. After exploring several approaches, I eventually settled on a solution that achieved the goal with minimal overhead. You can view the implementation in [BuildableObject.cs](github.com/code-greg-42/Orbit-Oasis/blob/main/Assets/Scripts/MainScene/Building/BuildableObject.cs)
+
+This challenge taught me a valuable lesson in problem-solving: sometimes, you need to come up with creative solutions due to constraints from existing systems. It was frustrating to know how simple the solution could have been if any collision disallowed building, but this approach ultimately resulted in better overall gameplay, and prevented the need for a rework of the building mechanics I was already happy with.
+
+---
+
+Overall, developing Orbit Oasis allowed me to refine my skills in problem solving, performance optimization, debugging, and designing scalable systems — key strengths I’m eager to bring to future projects.
+
+#### Other Things I Learned/Increased Knowledge Of:
+- Code Organization
+- Unity's Physics System
+- Unity's Raycasting System
+- Data Persistence
+- Inventory Systems
+- Game State Management
+- Object-Oriented Programming
+- Cinemachine Integration
+- Audio Management
+- Scalable Programming
+- Optimization Programming
 
 ## Additional Documentation 📂
 - [**Game Design Document**](GameDesignDocument.md)
