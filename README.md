@@ -10,14 +10,16 @@ Check out the [**game trailer**](https://youtu.be/Y6ZFQQC7rkk) on YouTube!
 Visit the [**game page**](grandersson.itch.io/orbit-oasis) on itch.io to download and start playing!
 
 ## Key Features 🌟
-- **Dynamic Building System**: Players can build freely, but are required to attach above-ground builds to existing builds, similar to systems in games like Fortnite.
-- **Interactive Farming Mechanics**: Proximity-based farming system that detects nearby farmable objects and selects the appropriate tool automatically. Includes object-specific resource regeneration.
-- **Flexible and Robust Inventory System**: All objects in the game are represented as items, allowing them to be added to inventory, sold, or re-placed seamlessly. Items include unique descriptions and buy/sell values.
-- **Customizable Environment**: Players can dynamically modify the scene by capturing (adding to inventory) and re-placing objects in real time. This system provides full freedom for reshaping the environment while maintaining smooth integration with inventory mechanics.
-- **Space Race Minigame**: A standalone game mode with unique movement, attack, and camera mechanics, offering a distinct gameplay experience. It has multiple difficulties with conditional rewards, and rewards earned tie back to the main game’s economy.
-- **Performant Autosave Functionality**: Automatically saves progress whenever any key action occurs. This ensures that a player does not lose progress even in the event of a crash. Data saving is divided into subsections to maintain performant gameplay.
-- **AI Navigation for Animals**: Dynamically updates the navigation mesh when objects are moved or placed in the scene, allowing accurate pathfinding in a changing environment.
-- **Easily Exentensible Systems**: Core systems are built to accommodate the addition of new items, objects, and sounds with minimal code changes, allowing for future expansion with available assets.
+- Dynamic Building System
+- Interactive Farming Mechanics
+- Flexible and Robust Inventory System
+- Customizable Environment
+- Space Race Minigame
+- Performant Autosave Functionality
+- AI Navigation for Animals
+- Easily Exentensible Systems
+
+[Additional descriptions on features](KeyFeatureDetails.md)
 
 ## Codebase Overview 💻
 
