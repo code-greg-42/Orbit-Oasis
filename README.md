@@ -7,7 +7,7 @@ The game was created as a portfolio project with the intent of showcasing progra
 Check out the [**game trailer**](https://youtu.be/Y6ZFQQC7rkk) on YouTube!
 
 ## Play Now! 🎮
-Visit the [**game page**](grandersson.itch.io/orbit-oasis) on itch.io to download and start playing!
+Visit the [**game page**](https://grandersson.itch.io/orbit-oasis) on itch.io to download and start playing!
 
 ## Key Features 🌟
 - Dynamic Building System
@@ -19,7 +19,7 @@ Visit the [**game page**](grandersson.itch.io/orbit-oasis) on itch.io to downloa
 - AI Navigation for Animals
 - Easily Exentensible Systems
 
-[Additional descriptions on features](KeyFeatureDetails.md)
+[Additional descriptions on features](https://github.com/code-greg-42/Orbit-Oasis/blob/main/KeyFeaturesDetails.md)
 
 ## Codebase Overview 💻
 
@@ -33,7 +33,7 @@ One challenge I encountered involved the building mechanics. The foundation for 
 
 At first glance, this might seem simple — you could just disallow placement whenever a collision occurs. However, the building mechanics relied on slight overlaps between builds to create visually seamless connections, so blocking all collisions wasn’t a viable option. What I really needed was a way to determine *how much* the preview was colliding with existing builds. Unfortunately, collision volume information wasn’t readily available. 
 
-Performance was a key consideration, so constant calculations weren’t ideal, and manually measuring the overlap proved inaccurate. After exploring several approaches, I eventually settled on a solution that achieved the goal with minimal overhead. You can view the implementation in [BuildableObject.cs](github.com/code-greg-42/Orbit-Oasis/blob/main/Assets/Scripts/MainScene/Building/BuildableObject.cs)
+Performance was a key consideration, so constant calculations weren’t ideal, and manually measuring the overlap proved inaccurate. After exploring several approaches, I eventually settled on a solution that achieved the goal with minimal overhead. You can view the implementation in [BuildableObject.cs](https://github.com/code-greg-42/Orbit-Oasis/blob/main/Assets/Scripts/MainScene/Building/BuildableObject.cs)
 
 This challenge taught me a valuable lesson in problem-solving: sometimes, you need to come up with creative solutions due to constraints from existing systems. It was frustrating to know how simple the solution could have been if any collision disallowed building, but this approach ultimately resulted in better overall gameplay, and prevented the need for a rework of the building mechanics I was already happy with.
 
@@ -55,7 +55,7 @@ Overall, developing Orbit Oasis allowed me to refine my skills in problem solvin
 - Optimization Programming
 
 ## Additional Documentation 📂
-- [**Game Design Document**](GameDesignDocument.md)
+- [**Game Design Document**](https://github.com/code-greg-42/Orbit-Oasis/blob/main/GameDesignDocument.md)
 
 ## Additional Gameplay Videos 🎥
 - [**Space Race Minigame - Insane Difficulty**](https://youtu.be/8dULJcSHKwY)
