@@ -16,7 +16,7 @@ Visit the [**game page**](https://grandersson.itch.io/orbit-oasis) on itch.io to
 - Customizable Environment
 - Space Race Minigame
 - Performant Autosave Functionality
-- Easily Exentensible Systems
+- Easily Extensible Systems
 
 [More Information On Key Features](https://github.com/code-greg-42/Orbit-Oasis/blob/main/KeyFeaturesDetails.md)
 
