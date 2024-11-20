@@ -41,7 +41,7 @@ This challenge taught me a valuable lesson in problem-solving: sometimes, you ne
 
 Overall, developing Orbit Oasis allowed me to refine my skills in problem solving, performance optimization, debugging, and designing scalable systems — key strengths I’m eager to bring to future projects.
 
-#### Other Things I Learned/Increased Knowledge Of:
+#### Other Skills I Strengthened:
 - Code Organization
 - Unity's Physics System
 - Unity's Raycasting System
@@ -51,8 +51,6 @@ Overall, developing Orbit Oasis allowed me to refine my skills in problem solvin
 - Object-Oriented Programming
 - Cinemachine Integration
 - Audio Management
-- Scalable Programming
-- Optimization Programming
 
 ## Additional Documentation 📂
 - [**Game Design Document**](https://github.com/code-greg-42/Orbit-Oasis/blob/main/GameDesignDocument.md)
