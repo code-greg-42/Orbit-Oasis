@@ -18,7 +18,7 @@ Visit the [**game page**](https://grandersson.itch.io/orbit-oasis) on itch.io to
 - Performant Autosave Functionality
 - Easily Exentensible Systems
 
-[Additional descriptions on features](https://github.com/code-greg-42/Orbit-Oasis/blob/main/KeyFeaturesDetails.md)
+[More Information On Key Features](https://github.com/code-greg-42/Orbit-Oasis/blob/main/KeyFeaturesDetails.md)
 
 ## Codebase Overview 💻
 
