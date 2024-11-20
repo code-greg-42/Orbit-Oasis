@@ -44,7 +44,6 @@ Overall, developing Orbit Oasis allowed me to refine my skills in problem solvin
 #### Other Skills I Strengthened:
 - Code Organization
 - Unity's Physics System
-- Unity's Raycasting System
 - Data Persistence
 - Inventory Systems
 - Game State Management
