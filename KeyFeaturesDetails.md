@@ -30,14 +30,9 @@ A standalone game mode with unique movement, attack, and camera mechanics, offer
 Automatically saves progress whenever any key action occurs. This ensures that a player does not lose progress even in the event of a crash. Data saving is divided into subsections to maintain performant gameplay.
 <br>
 <br>
-**AI Navigation for Animals:**
-<br>
-Dynamically updates the navigation mesh when objects are moved or placed in the scene, allowing accurate pathfinding in a changing environment.
-<br>
-<br>
 **Easily Exentensible Systems:**
 <br>
 Core systems are built to accommodate the addition of new items, objects, and sounds with minimal code changes, allowing for future expansion with available assets.
 <br>
 <br>
-[**Back to Main README**](README.md)
+[**Back to Project Main**](https://github.com/code-greg-42/Orbit-Oasis)
