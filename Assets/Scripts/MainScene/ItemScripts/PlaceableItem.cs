@@ -15,6 +15,9 @@ public class PlaceableItem : Item
     [SerializeField] private float frontBound;
     [SerializeField] private float backBound;
 
+    [Header("Custom Bottom Point")]
+    [SerializeField] private Transform customBottomPoint; // used to determine if floor collision should be ignored, only needed for objects with non-ground pivot
+
     // initialize in awake
     private Vector3[] localBounds;
     private int ignoreLayer;
@@ -38,6 +41,8 @@ public class PlaceableItem : Item
     
     public BuildEnums.BuildType AttachmentType => attachmentType;
     public override bool IsDroppable { get; } = false;
+
+    // this script could be optimized to run checks similarly to the way buildable object works
 
     private void Awake()
     {
@@ -127,7 +132,6 @@ public class PlaceableItem : Item
                 lastIsPlaceable = false;
                 return false;
             }
-            
         }
 
         // return true if each bound area found a valid surface
@@ -155,12 +159,18 @@ public class PlaceableItem : Item
             return;
         }
 
-        // ignore interactions with floor objects
+        // ignore trigger interactions with a floor below the bottom of the object (as placed items slightly overlap the floor)
         if (other.gameObject.TryGetComponent(out BuildableObject buildable))
         {
             if (buildable.BuildType == BuildEnums.BuildType.Floor)
             {
-                return;
+                Vector3 bottomPoint = transform.position;
+                if (customBottomPoint != null) bottomPoint = customBottomPoint.position;
+
+                if (buildable.transform.position.y <= bottomPoint.y)
+                {
+                    return;
+                }
             }
         }
 

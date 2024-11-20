@@ -27,12 +27,14 @@ public class ItemPlacementManager : MonoBehaviour
     private PlaceableItem currentItem;
     private Renderer[] currentItemRenderers;
 
-    // --- Similarly to BuildManager, the Item Placement script/scripts could be modified to have a more realistic feel if needed.
+    // ---  Similarly to BuildManager, this script could be modified to have a more realistic feel if needed.
     // ----- 1. Attach references to the build an item was placed on, and vice versa
     // ----- 2. Before deleting a build/item, either also delete the attached objects, or allow them to have gravity enabled to fall
     // ----- 3. This would also require re-setting the references when re-creating the saved scene at launch
     // ----- 4. Because of this, it would be highly recommended to make a .PlaceItem() method in PlaceableItem, similar to what's in BuildableObject
     // ----- 5. This would allow for a single-use raycast when called, to check for a buildable object, and add the appropriate references if found
+
+    // --- Additionally, this script could be optimized for better performance if needed, by running less frequent placeable/not placeable checks
 
     private void Awake()
     {
