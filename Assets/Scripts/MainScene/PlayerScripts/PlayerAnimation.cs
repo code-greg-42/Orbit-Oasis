@@ -33,7 +33,10 @@ public class PlayerAnimation : MonoBehaviour
     private bool firstFootstepPlayed = false;
     private bool secondFootstepPlayed = false;
 
+    private bool justLanded;
+
     public bool IsFalling => isFalling;
+    public bool JustLanded => justLanded;
 
     public enum PlayerSpeed
     {
@@ -119,6 +122,7 @@ public class PlayerAnimation : MonoBehaviour
         {
             isLanding = true;
             playerAnim.SetTrigger("jumpDown");
+            justLanded = true;
 
             // play sound
             MainSoundManager.Instance.PlaySoundEffect(MainSoundManager.SoundEffect.JumpLand);
@@ -282,7 +286,9 @@ public class PlayerAnimation : MonoBehaviour
 
     private IEnumerator ResetLanding()
     {
-        yield return new WaitForSeconds(landingAnimationTime);
+        yield return new WaitForSeconds(landingAnimationTime * 0.6f);
+        justLanded = false;
+        yield return new WaitForSeconds(landingAnimationTime * 0.4f);
         isLanding = false;
     }
 

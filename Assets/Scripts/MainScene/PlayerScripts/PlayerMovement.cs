@@ -167,7 +167,7 @@ public class PlayerMovement : MonoBehaviour
             }
 
             // check for jump
-            if (Input.GetKeyDown(jumpKey) && isGrounded && jumpReady)
+            if (Input.GetKeyDown(jumpKey) && isGrounded && jumpReady && !playerAnimation.JustLanded)
             {
                 Jump();
             }
