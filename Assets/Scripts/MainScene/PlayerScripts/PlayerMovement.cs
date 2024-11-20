@@ -332,14 +332,19 @@ public class PlayerMovement : MonoBehaviour
             // increment air time
             airTime += Time.deltaTime;
 
-            // raycast downward to check distance to the ground
-            float raycastDistance = playerHeight * 1.3f;
-
-            if (!Physics.Raycast(transform.position, Vector3.down, out RaycastHit _, raycastDistance, groundLayer))
+            if (airTime > airTimeThreshold && !playerAnimation.IsFalling)
             {
-                if (airTime > airTimeThreshold && !playerAnimation.IsFalling)
+                if (rb.velocity.y > 0)
                 {
                     playerAnimation.TriggerFallingLoop();
+                }
+                else
+                {
+                    float raycastDistance = playerHeight * 1.3f;
+                    if (!Physics.Raycast(transform.position, Vector3.down, out RaycastHit _, raycastDistance, groundLayer))
+                    {
+                        playerAnimation.TriggerFallingLoop();
+                    }
                 }
             }
         }
