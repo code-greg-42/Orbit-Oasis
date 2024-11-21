@@ -15,8 +15,9 @@ Visit the [**game page**](https://grandersson.itch.io/orbit-oasis) on itch.io to
 - Flexible and Robust Inventory System
 - Customizable Environment
 - Space Race Minigame
+- Introductory Quest System
 - Performant Autosave Functionality
-- Easily Extensible Systems
+- Scalable Systems
 
 [More Information On Key Features](https://github.com/code-greg-42/Orbit-Oasis/blob/main/KeyFeaturesDetails.md)
 
@@ -45,6 +46,7 @@ Overall, developing Orbit Oasis allowed me to refine my skills in problem solvin
 - Unity's Physics System
 - Data Persistence
 - Inventory Systems
+- Quest Design and Implementation
 - Game State Management
 - Object-Oriented Programming
 - Cinemachine Integration
