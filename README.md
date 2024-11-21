@@ -22,6 +22,62 @@ Visit the [**game page**](https://grandersson.itch.io/orbit-oasis) on itch.io to
 [More Information On Key Features](https://github.com/code-greg-42/Orbit-Oasis/blob/main/KeyFeaturesDetails.md)
 
 ## Codebase Overview 💻
+The scripts folder is located at:
+<br>
+[/Assets/Scripts](https://github.com/code-greg-42/Orbit-Oasis/tree/main/Assets/Scripts)
+
+#### Data Manager
+The DataManager script is the highest-level script in the project. It is active across all scenes and is responsible for maintaining, saving, and loading the game state. You can find it here:
+<br>
+[/Assets/Scripts/DataClasses/DataManager.cs](https://github.com/code-greg-42/Orbit-Oasis/blob/main/Assets/Scripts/DataClasses/DataManager.cs)
+
+#### Organized By Scene
+The codebase is structured with scene-specific folders. Each scene has its own dedicated folder containing the scripts and logic relevant to that part of the game:
+<br>
+[/Assets/Scripts/MainScene/]()
+<br>
+[/Assets/Scripts/SpaceRace/]()
+<br>
+[/Assets/Scripts/Menu/]()
+<br>
+[/Assets/Scripts/Story/]()
+
+#### Managers Folder
+The bulk of the game’s logic is in the main scene, with manager scripts handling specific features such as building and inventory. These scripts are the highest level scripts in the main scene and are located in the following folder:
+<br>
+[/Assets/Scripts/MainScene/Managers](https://github.com/code-greg-42/Orbit-Oasis/tree/main/Assets/Scripts/MainScene/Managers)
+
+#### Key Scripts By Feature
+Additionally, here is a breakdown of important scripts grouped by their respective features.
+
+##### Player Mechanics
+- [PlayerAnimation.cs]() - player animation states.
+- [PlayerControls.cs]() - input and action availability.
+- [PlayerMovement.cs]() - movement logic and physics.
+##### Building
+- [BuildManager.cs]() - building placement and validation.
+- [BuildableObject.cs]() - attachment point and collision checking.
+##### Farming
+- [FarmableObject.cs]() - farmable resource mechanics and generation.
+- [FarmingTool.cs]() - tool collision tracking and interaction.
+##### Inventory
+- [InventoryManager.cs]() - add, sell, drop items.
+- [InventorySlot.cs]() - display component for inventory.
+- [Item.cs]() - base class for item properties.
+##### Customizable Environment
+- [ItemPlacementManager.cs]() - activates placement mode and maintains preview.
+- [PlaceableItem.cs]() - valid placement determination.
+- [Projectile.cs]() - captures objects into inventory.
+##### Space Race Minigame
+- [SpaceRaceGameManager.cs]() - overall minigame logic.
+- [SpaceRacePlayerMovement.cs]() - spaceship movement controller.
+- [SpaceRaceAsteroid.cs]() - obstacle behavior and interactions.
+##### Introductory Quests/Dialogue
+- [QuestManager.cs]() - tracks quest progress and gives rewards.
+- [DialogueManager.cs]() - fetches and displays in-game dialogue.
+##### Sound/UI
+- [MainSoundManager.cs]() - manages sound effects in the main scene.
+- [MainUIManager.cs]() - manages ui elements in the main scene.
 
 ## Developer Notes 📝
 Developing Orbit Oasis was both a rewarding and challenging experience. The scope was much larger than anything I'd tackled before, providing the opportunity to build complex systems, learn new skills, and grow as a programmer. Each feature brought unique challenges that required a focus on both performance and gameplay.
