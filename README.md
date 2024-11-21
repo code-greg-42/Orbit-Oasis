@@ -34,13 +34,13 @@ The DataManager script is the highest-level script in the project. It is active 
 #### Organized By Scene
 The codebase is structured with scene-specific folders. Each scene has its own dedicated folder containing the scripts and logic relevant to that part of the game:
 <br>
-[/Assets/Scripts/MainScene/]()
+[/Assets/Scripts/MainScene/](https://github.com/code-greg-42/Orbit-Oasis/tree/main/Assets/Scripts/MainScene)
 <br>
-[/Assets/Scripts/SpaceRace/]()
+[/Assets/Scripts/SpaceRace/](https://github.com/code-greg-42/Orbit-Oasis/tree/main/Assets/Scripts/SpaceRace)
 <br>
-[/Assets/Scripts/Menu/]()
+[/Assets/Scripts/Menu/](https://github.com/code-greg-42/Orbit-Oasis/tree/main/Assets/Scripts/Menu)
 <br>
-[/Assets/Scripts/Story/]()
+[/Assets/Scripts/Story/](https://github.com/code-greg-42/Orbit-Oasis/tree/main/Assets/Scripts/Story)
 
 #### Managers Folder
 The bulk of the game’s logic is in the main scene, with manager scripts handling specific features such as building and inventory. These scripts are the highest level scripts in the main scene and are located in the following folder:
@@ -51,33 +51,33 @@ The bulk of the game’s logic is in the main scene, with manager scripts handli
 Additionally, here is a breakdown of important scripts grouped by their respective features.
 
 ##### Player Mechanics
-- [PlayerAnimation.cs]() - player animation states.
-- [PlayerControls.cs]() - input and action availability.
-- [PlayerMovement.cs]() - movement logic and physics.
+- [PlayerAnimation.cs](https://github.com/code-greg-42/Orbit-Oasis/blob/main/Assets/Scripts/MainScene/PlayerScripts/PlayerAnimation.cs) - Player animation states.
+- [PlayerControls.cs](https://github.com/code-greg-42/Orbit-Oasis/blob/main/Assets/Scripts/MainScene/PlayerScripts/PlayerControls.cs) - Input and action availability.
+- [PlayerMovement.cs](https://github.com/code-greg-42/Orbit-Oasis/blob/main/Assets/Scripts/MainScene/PlayerScripts/PlayerMovement.cs) - Movement logic and physics.
 ##### Building
-- [BuildManager.cs]() - building placement and validation.
-- [BuildableObject.cs]() - attachment point and collision checking.
+- [BuildManager.cs](https://github.com/code-greg-42/Orbit-Oasis/blob/main/Assets/Scripts/MainScene/Managers/BuildManager.cs) - Building placement and validation.
+- [BuildableObject.cs](https://github.com/code-greg-42/Orbit-Oasis/blob/main/Assets/Scripts/MainScene/Building/BuildableObject.cs) - Attachment point and collision checking.
 ##### Farming
-- [FarmableObject.cs]() - farmable resource mechanics and generation.
-- [FarmingTool.cs]() - tool collision tracking and interaction.
+- [FarmableObject.cs](https://github.com/code-greg-42/Orbit-Oasis/blob/main/Assets/Scripts/MainScene/Farming/FarmableObject.cs) - Farmable resource mechanics and generation.
+- [FarmingTool.cs](https://github.com/code-greg-42/Orbit-Oasis/blob/main/Assets/Scripts/MainScene/Farming/FarmingTool.cs) - Tool collision tracking and interaction.
 ##### Inventory
-- [InventoryManager.cs]() - add, sell, drop items.
-- [InventorySlot.cs]() - display component for inventory.
-- [Item.cs]() - base class for item properties.
+- [InventoryManager.cs](https://github.com/code-greg-42/Orbit-Oasis/blob/main/Assets/Scripts/MainScene/Managers/InventoryManager.cs) - Add, sell, drop items.
+- [InventorySlot.cs](https://github.com/code-greg-42/Orbit-Oasis/blob/main/Assets/Scripts/MainScene/UI/Inventory/InventorySlot.cs) - Display component for inventory.
+- [Item.cs](https://github.com/code-greg-42/Orbit-Oasis/blob/main/Assets/Scripts/MainScene/ItemScripts/Item.cs) - Base class for item properties.
 ##### Customizable Environment
-- [ItemPlacementManager.cs]() - activates placement mode and maintains preview.
-- [PlaceableItem.cs]() - valid placement determination.
-- [Projectile.cs]() - captures objects into inventory.
+- [ItemPlacementManager.cs](https://github.com/code-greg-42/Orbit-Oasis/blob/main/Assets/Scripts/MainScene/Managers/ItemPlacementManager.cs) - Activates placement mode and maintains preview.
+- [PlaceableItem.cs](https://github.com/code-greg-42/Orbit-Oasis/blob/main/Assets/Scripts/MainScene/ItemScripts/PlaceableItem.cs) - Valid placement determination.
+- [Projectile.cs](https://github.com/code-greg-42/Orbit-Oasis/blob/main/Assets/Scripts/MainScene/Projectile/Projectile.cs) - Captures objects into inventory.
 ##### Space Race Minigame
-- [SpaceRaceGameManager.cs]() - overall minigame logic.
-- [SpaceRacePlayerMovement.cs]() - spaceship movement controller.
-- [SpaceRaceAsteroid.cs]() - obstacle behavior and interactions.
+- [SpaceRaceGameManager.cs](https://github.com/code-greg-42/Orbit-Oasis/blob/main/Assets/Scripts/SpaceRace/SpaceRaceGameManager.cs) - Overall minigame logic.
+- [SpaceRacePlayerMovement.cs](https://github.com/code-greg-42/Orbit-Oasis/blob/main/Assets/Scripts/SpaceRace/SpaceRacePlayerMovement.cs) - Spaceship movement controller.
+- [SpaceRaceAsteroid.cs](https://github.com/code-greg-42/Orbit-Oasis/blob/main/Assets/Scripts/SpaceRace/SpaceRaceAsteroid.cs) - Obstacle behavior and interactions.
 ##### Introductory Quests/Dialogue
-- [QuestManager.cs]() - tracks quest progress and gives rewards.
-- [DialogueManager.cs]() - fetches and displays in-game dialogue.
+- [QuestManager.cs](https://github.com/code-greg-42/Orbit-Oasis/blob/main/Assets/Scripts/MainScene/Managers/QuestManager.cs) - Tracks quest progress and gives rewards.
+- [DialogueManager.cs](https://github.com/code-greg-42/Orbit-Oasis/blob/main/Assets/Scripts/MainScene/Managers/DialogueManager.cs) - Fetches and displays in-game dialogue.
 ##### Sound/UI
-- [MainSoundManager.cs]() - manages sound effects in the main scene.
-- [MainUIManager.cs]() - manages ui elements in the main scene.
+- [MainSoundManager.cs](https://github.com/code-greg-42/Orbit-Oasis/blob/main/Assets/Scripts/MainScene/Managers/MainSoundManager.cs) - Plays sound effects through a centralized system.
+- [MainUIManager.cs](https://github.com/code-greg-42/Orbit-Oasis/blob/main/Assets/Scripts/MainScene/Managers/MainUIManager.cs) - Handles UI element changes in the main scene.
 
 ## Developer Notes 📝
 Developing Orbit Oasis was both a rewarding and challenging experience. The scope was much larger than anything I'd tackled before, providing the opportunity to build complex systems, learn new skills, and grow as a programmer. Each feature brought unique challenges that required a focus on both performance and gameplay.
