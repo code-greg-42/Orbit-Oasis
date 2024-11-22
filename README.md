@@ -110,7 +110,7 @@ Overall, developing Orbit Oasis allowed me to refine my skills in problem solvin
 
 ## Additional Documentation 📂
 - [**Game Design Document**](https://github.com/code-greg-42/Orbit-Oasis/blob/main/GameDesignDocument.md)
-- [**Assets Used List**](https://github.com/code-greg-42/Orbit-Oasis/blob/main/AssetsUsed.md)
+- [**List of Assets Used**](https://github.com/code-greg-42/Orbit-Oasis/blob/main/AssetsUsed.md)
 
 ## Additional Gameplay Videos 🎥
 - [**Space Race Minigame - Insane Difficulty**](https://youtu.be/8dULJcSHKwY)
