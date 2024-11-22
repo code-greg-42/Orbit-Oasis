@@ -110,6 +110,7 @@ Overall, developing Orbit Oasis allowed me to refine my skills in problem solvin
 
 ## Additional Documentation 📂
 - [**Game Design Document**](https://github.com/code-greg-42/Orbit-Oasis/blob/main/GameDesignDocument.md)
+- [**Assets Used List**](https://github.com/code-greg-42/Orbit-Oasis/blob/main/AssetsUsed.md)
 
 ## Additional Gameplay Videos 🎥
 - [**Space Race Minigame - Insane Difficulty**](https://youtu.be/8dULJcSHKwY)
@@ -119,11 +120,7 @@ Overall, developing Orbit Oasis allowed me to refine my skills in problem solvin
 The code in this project is licensed under the [MIT License](https://github.com/code-greg-42/Orbit-Oasis/blob/main/LICENSE).
 
 ## Assets Used 📦
-This project uses free assets from the Unity Asset Store. All assets are licensed under the [Standard Unity Asset Store End User License Agreement (EULA)](https://unity.com/legal/as-terms).
-
-These assets:
-- Cannot be redistributed or extracted from this project.
-- Must be acquired directly from the Unity Asset Store if you wish to use them in your own projects.
+This project uses free assets from the Unity Asset Store. All assets are licensed under the [Standard Unity Asset Store End User License Agreement (EULA)](https://unity.com/legal/as-terms). These assets cannot be redistributed or extracted from this project, and must be acquired directly from the Unity Asset Store if you wish to use them in your own projects.
 
 For a full list of assets used and their sources, see [AssetsUsed.md](https://github.com/code-greg-42/Orbit-Oasis/blob/main/AssetsUsed.md).
 
