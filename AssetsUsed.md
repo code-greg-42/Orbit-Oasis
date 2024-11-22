@@ -1,6 +1,6 @@
 ## Assets Used
 
-This project uses the following assets from the Unity Asset Store. All assets are licensed under the [Standard Unity Asset Store End User License Agreement (EULA).](https://unity.com/legal/as-terms)
+This project uses the following assets from the Unity Asset Store. All assets are licensed under the [Standard Unity Asset Store End User License Agreement (EULA)](https://unity.com/legal/as-terms).
 
 ---
 
