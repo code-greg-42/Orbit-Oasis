@@ -115,10 +115,8 @@ Overall, developing Orbit Oasis allowed me to refine my skills in problem solvin
 - [**Space Race Minigame - Insane Difficulty**](https://youtu.be/8dULJcSHKwY)
 - [**Full Tutorial Playthrough**](https://youtu.be/dJkheYfaU6U)
 
-## Programs Used 🛠️
-[![Unity Badge](https://img.shields.io/badge/Unity-2022.3.20f1-ffcc00?logo=unity&logoColor=white)](https://unity.com/releases/editor/whats-new/2022.3.20)
-<br>
-[![Audacity Badge](https://img.shields.io/badge/Audacity-Audio_Editing-blue?logo=audacity&logoColor=white)](https://www.audacityteam.org/)
+## License 📜
+The code in this project is licensed under the [MIT License](https://github.com/code-greg-42/Orbit-Oasis/blob/main/LICENSE).
 
 ## Assets Used 📦
 This project uses free assets from the Unity Asset Store. All assets are licensed under the [Standard Unity Asset Store End User License Agreement (EULA)](https://unity.com/legal/as-terms).
@@ -129,5 +127,7 @@ These assets:
 
 For a full list of assets used and their sources, see [AssetsUsed.md](https://github.com/code-greg-42/Orbit-Oasis/blob/main/AssetsUsed.md).
 
-## License 📜
-The code in this project is licensed under the [MIT License]().
+## Programs Used 🛠️
+[![Unity Badge](https://img.shields.io/badge/Unity-2022.3.20f1-ffcc00?logo=unity&logoColor=white)](https://unity.com/releases/editor/whats-new/2022.3.20)
+<br>
+[![Audacity Badge](https://img.shields.io/badge/Audacity-Audio_Editing-blue?logo=audacity&logoColor=white)](https://www.audacityteam.org/)
